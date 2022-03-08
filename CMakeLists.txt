@@ -111,6 +111,7 @@ catkin_package(
 ###########
 ## Build ##
 ###########
+add_subdirectory(external/dynamixel-sdk)
 
 ## Specify additional locations of header files
 ## Your package locations should be listed before other locations
@@ -147,7 +148,10 @@ add_executable(${PROJECT_NAME}_node src/l3x-z_node.cpp)
 ## Specify libraries to link a library or executable target against
 target_link_libraries(${PROJECT_NAME}_node
   ${catkin_LIBRARIES}
+  dynamixel
 )
+
+target_compile_options(${PROJECT_NAME}_node PRIVATE -std=c++17)
 
 #############
 ## Install ##
