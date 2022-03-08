@@ -8,3 +8,15 @@ L3X-Z base robot control package (ROS).
 [Raspberry Pi 4/8 GB](https://www.raspberrypi.com/products/raspberry-pi-4-model-b/), [Buster](https://www.raspberrypi.com/software/operating-systems/#raspberry-pi-os-legacy), [ROS Noetic Ninjemys](https://varhowto.com/install-ros-noetic-raspberry-pi-4/).
 #### Host (Devlopment PC)
 Ubuntu 20.04 LTS, [ROS Noetic Ninjemys](http://wiki.ros.org/noetic/Installation/Ubuntu).
+
+### Build Instruction
+```bash
+source /opt/ros/noetic/setup.bash
+# Prepare catkin workspace (only need to be done once)
+mkdir -p catkin_ws/src && cd catkin_ws
+catkin_make
+# Clone this repository
+cd src && git clone https://github.com/107-systems/l3x-z && cd ..
+# Invoke catkin_make from the catkin workspace root.
+catkin_make
+```
