@@ -25,6 +25,7 @@ int main(int argc, char **argv)
 {
   ros::init(argc, argv, "l3xz");
 
+  ros::NodeHandle node_handle;
 
   dynamixel::PortHandler * portHandler = dynamixel::PortHandler::getPortHandler(DYNAMIXEL_DEVICE_NAME.c_str());
   dynamixel::PacketHandler * packetHandler = dynamixel::PacketHandler::getPacketHandler(DYNAMIXEL_PROTOCOL_VERSION);
