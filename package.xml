@@ -1,15 +1,15 @@
 <?xml version="1.0"?>
 <package format="2">
-  <name>l3x-z</name>
+  <name>l3xz</name>
   <version>0.0.0</version>
-  <description>The l3x-z package</description>
+  <description>The l3xz package</description>
 
   <maintainer email="consulting@lxrobotics.com">Alexander Entinger</maintainer>
 
   <license>Copyright LXRobotics GmbH</license>
 
   <url type="website">https://107-systems.org/</url>
-  <url type="repository">https://github.com/107-systems/l3x-z</url>
+  <url type="repository">https://github.com/107-systems/l3xz</url>
 
   <author email="consulting@lxrobotics.com">Alexander Entinger</author>
 

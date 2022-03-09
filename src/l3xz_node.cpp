@@ -23,7 +23,7 @@ static int         const DYNAMIXEL_BAUD_RATE = 115200;
 
 int main(int argc, char **argv)
 {
-  ros::init(argc, argv, "l3x-z");
+  ros::init(argc, argv, "l3xz");
 
 
   dynamixel::PortHandler * portHandler = dynamixel::PortHandler::getPortHandler(DYNAMIXEL_DEVICE_NAME.c_str());
