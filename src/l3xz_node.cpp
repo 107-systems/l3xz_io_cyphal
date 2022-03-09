@@ -1,3 +1,9 @@
+/**
+ * Copyright (c) 2022 LXRobotics GmbH.
+ * Author: Alexander Entinger <alexander.entinger@lxrobotics.com>
+ * Contributors: https://github.com/107-systems/107-Arduino-UAVCAN/graphs/contributors.
+ */
+
 /**************************************************************************************
  * INCLUDE
  **************************************************************************************/
@@ -8,6 +14,8 @@
 #include <ros/console.h>
 
 #include <dynamixel_sdk.h>
+
+#include <l3xz/dynamixel/DynamixelController.h>
 
 /**************************************************************************************
  * CONSTANT
@@ -44,15 +52,24 @@ int main(int argc, char **argv)
   for (uint8_t id : servo_id_vect)
     ROS_INFO("[ID:%03d]", id);
 
-  portHandler->closePort();
 
+  dynamixel::DynamixelController dynamixel_ctrl(*portHandler, *packetHandler);
 
-  ros::Rate loop_rate(10);
+  uint8_t led_off = 0;
+  uint8_t led_on = 1;
+
+  ros::Rate loop_rate(1);
   while (ros::ok())
   {
     ros::spinOnce();
+
+    dynamixel_ctrl.syncWrite(65, sizeof(led_off), std::make_tuple(1, &led_off));
+    loop_rate.sleep();
+    dynamixel_ctrl.syncWrite(65, sizeof(led_on), std::make_tuple(1, &led_on));
     loop_rate.sleep();
   }
+
+  portHandler->closePort();
 
   return EXIT_SUCCESS;
 }
