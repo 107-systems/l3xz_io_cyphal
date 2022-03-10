@@ -84,6 +84,49 @@ Error DynamixelController::syncWrite(uint16_t const start_address, uint16_t cons
   return Error::None;
 }
 
+std::tuple<Error, DynamixelController::SyncReadData> DynamixelController::syncRead(uint16_t const start_address, uint16_t const data_length, uint8_t const id)
+{
+  auto [err, data] = syncRead(start_address, data_length, std::vector<uint8_t>{id});
+  return std::make_tuple(err, data.at(0));
+}
+
+std::tuple<Error, DynamixelController::SyncReadDataVect> DynamixelController::syncRead(uint16_t const start_address, uint16_t const data_length, std::vector<uint8_t> const & id_vect)
+{
+  SyncReadDataVect data_vect;
+
+  GroupSyncRead group_sync_read(_port_handler.get(), _packet_handler.get(), start_address, data_length);
+
+  for(auto id : id_vect)
+  {
+    if (!group_sync_read.addParam(id))
+      return std::make_tuple(Error::AddParam, data_vect);
+  }
+
+  if (int res = group_sync_read.txRxPacket(); res != COMM_SUCCESS)
+  {
+    ROS_ERROR("%s::%s error, 'GroupSyncRead::txRxPacket()' %s", __FILE__, __FUNCTION__, _packet_handler->getTxRxResult(res));
+    return std::make_tuple(Error::TxRxPacket, data_vect);
+  }
+
+  for(auto id : id_vect)
+  {
+    uint8_t dxl_error = 0;
+    if (group_sync_read.getError(id, &dxl_error))
+      ROS_ERROR("%s::%s 'GroupSyncRead::getError(%d)' returns %s", __FILE__, __FUNCTION__, id, _packet_handler->getRxPacketError(dxl_error));
+  }
+
+
+  for(auto id : id_vect)
+  {
+    if (group_sync_read.isAvailable(id, start_address, data_length))
+      data_vect.push_back(std::make_tuple(id, group_sync_read.getData(id, start_address, data_length)));
+    else
+      data_vect.push_back(std::make_tuple(id, std::nullopt));
+  }
+
+  return std::make_tuple(Error::None, data_vect);
+}
+
 /**************************************************************************************
  * NAMESPACE
  **************************************************************************************/

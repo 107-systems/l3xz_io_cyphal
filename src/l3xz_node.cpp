@@ -56,6 +56,13 @@ int main(int argc, char **argv)
     loop_rate.sleep();
     dynamixel_ctrl.syncWrite(65, sizeof(led_on), std::make_tuple(1, &led_on));
     loop_rate.sleep();
+
+    if (auto [err, position_tuple] = dynamixel_ctrl.syncRead(132, 4, 1); err == dynamixel::Error::None)
+    {
+      auto [id, position] = position_tuple;
+      if (position)
+        ROS_INFO("[ID:%03d] Present Position (Reg 132): %d", id, position.value());
+    }
   }
 
   return EXIT_SUCCESS;

@@ -35,7 +35,8 @@ enum class Error : ssize_t
   None          =  0,
   AddParam      = -1,
   TxPacket      = -2,
-  BroadcastPing = -3,
+  TxRxPacket    = -3,
+  BroadcastPing = -4,
 };
 
 /**************************************************************************************
@@ -57,6 +58,11 @@ public:
   typedef std::tuple<uint8_t, uint8_t *> SyncWriteData;
   Error syncWrite(uint16_t const start_address, uint16_t const data_length, SyncWriteData const & data);
   Error syncWrite(uint16_t const start_address, uint16_t const data_length, std::vector<SyncWriteData> const & data);
+
+  typedef std::tuple<uint8_t, std::optional<uint32_t>> SyncReadData;
+  typedef std::vector<SyncReadData> SyncReadDataVect;
+  std::tuple<Error, SyncReadData>     syncRead(uint16_t const start_address, uint16_t const data_length, uint8_t const id);
+  std::tuple<Error, SyncReadDataVect> syncRead(uint16_t const start_address, uint16_t const data_length, std::vector<uint8_t> const & id_vect);
 
 
 private:
