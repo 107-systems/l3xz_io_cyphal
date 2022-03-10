@@ -15,6 +15,7 @@
 
 #include <tuple>
 #include <vector>
+#include <memory>
 
 #include <dynamixel_sdk.h>
 
@@ -33,14 +34,20 @@ class DynamixelController
 {
 public:
 
-  DynamixelController(PortHandler & port_handler, PacketHandler & packet_handler);
+  DynamixelController(std::string const device_name,
+                      float       const protocol_version,
+                      int         const baudrate);
+  ~DynamixelController();
 
   enum class Error : ssize_t
   {
-    None     =  0,
-    AddParam = -1,
-    TxPacket = -2,
+    None          =  0,
+    AddParam      = -1,
+    TxPacket      = -2,
+    BroadcastPing = -3,
   };
+
+  std::tuple<Error, std::vector<uint8_t>> broadcastPing();
 
   typedef std::tuple<uint8_t, uint8_t *> SyncWriteData;
   Error syncWrite(uint16_t const start_address, uint16_t const data_length, SyncWriteData const & data);
@@ -49,8 +56,8 @@ public:
 
 private:
 
-  PortHandler & _port_handler;
-  PacketHandler & _packet_handler;
+  std::unique_ptr<PortHandler> _port_handler;
+  std::unique_ptr<PacketHandler> _packet_handler;
 };
 
 /**************************************************************************************

@@ -35,25 +35,14 @@ int main(int argc, char **argv)
 
   ros::NodeHandle node_handle;
 
-  dynamixel::PortHandler * portHandler = dynamixel::PortHandler::getPortHandler(DYNAMIXEL_DEVICE_NAME.c_str());
-  dynamixel::PacketHandler * packetHandler = dynamixel::PacketHandler::getPacketHandler(DYNAMIXEL_PROTOCOL_VERSION);
+  dynamixel::DynamixelController dynamixel_ctrl(DYNAMIXEL_DEVICE_NAME, DYNAMIXEL_PROTOCOL_VERSION, DYNAMIXEL_BAUD_RATE);
 
-  if (!portHandler->openPort())
-    ROS_FATAL("libdynamixel:openPort failed.");
-
-  if (!portHandler->setBaudRate(DYNAMIXEL_BAUD_RATE))
-    ROS_FATAL("libdynamixel:setBaudRate failed.");
-
-  std::vector<uint8_t> servo_id_vect;
-  if (int const res = packetHandler->broadcastPing(portHandler, servo_id_vect); res != COMM_SUCCESS)
-    ROS_ERROR("%s", packetHandler->getTxRxResult(res));
-
-  ROS_INFO("Detected Dynamixel:");
-  for (uint8_t id : servo_id_vect)
-    ROS_INFO("[ID:%03d]", id);
-
-
-  dynamixel::DynamixelController dynamixel_ctrl(*portHandler, *packetHandler);
+  if (auto [err, servo_id_vect] = dynamixel_ctrl.broadcastPing(); err == dynamixel::DynamixelController::Error::None)
+  {
+    ROS_INFO("Detected Dynamixel:");
+    for (uint8_t id : servo_id_vect)
+      ROS_INFO("[ID:%03d]", id);
+  }
 
   uint8_t led_off = 0;
   uint8_t led_on = 1;
@@ -68,8 +57,6 @@ int main(int argc, char **argv)
     dynamixel_ctrl.syncWrite(65, sizeof(led_on), std::make_tuple(1, &led_on));
     loop_rate.sleep();
   }
-
-  portHandler->closePort();
 
   return EXIT_SUCCESS;
 }
