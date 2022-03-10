@@ -15,7 +15,7 @@
 
 #include <dynamixel_sdk.h>
 
-#include <l3xz/CoxaController.h>
+#include <l3xz/dynamixel/MX28Controller.h>
 #include <l3xz/dynamixel/DynamixelController.h>
 
 /**************************************************************************************
@@ -37,7 +37,7 @@ int main(int argc, char **argv)
   ros::NodeHandle node_handle;
 
   std::unique_ptr<dynamixel::DynamixelController> dynamixel_ctrl(new dynamixel::DynamixelController(DYNAMIXEL_DEVICE_NAME, DYNAMIXEL_PROTOCOL_VERSION, DYNAMIXEL_BAUD_RATE));
-  std::unique_ptr<l3xz::CoxaController> coxa_ctrl(new l3xz::CoxaController(std::move(dynamixel_ctrl)));
+  std::unique_ptr<dynamixel::MX28Controller> coxa_ctrl(new dynamixel::MX28Controller(std::move(dynamixel_ctrl)));
 
   ros::Rate loop_rate(1);
   while (ros::ok())

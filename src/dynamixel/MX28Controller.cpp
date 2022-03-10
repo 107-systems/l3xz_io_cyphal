@@ -8,7 +8,7 @@
  * INCLUDE
  **************************************************************************************/
 
-#include <l3xz/CoxaController.h>
+#include <l3xz/dynamixel/MX28Controller.h>
 
 #include <ros/console.h>
 
@@ -16,17 +16,17 @@
  * NAMESPACE
  **************************************************************************************/
 
-namespace l3xz
+namespace dynamixel
 {
 
 /**************************************************************************************
  * CTOR/DTOR
  **************************************************************************************/
 
-CoxaController::CoxaController(std::unique_ptr<dynamixel::DynamixelController> mx28_ctrl)
-: _mx28_ctrl{std::move(mx28_ctrl)}
+MX28Controller::MX28Controller(std::unique_ptr<DynamixelController> dyn_ctrl)
+: _dyn_ctrl{std::move(dyn_ctrl)}
 {
-  if (auto [err, _mx28_id_vect] = _mx28_ctrl->broadcastPing(); err == dynamixel::Error::None)
+  if (auto [err, _mx28_id_vect] = _dyn_ctrl->broadcastPing(); err == Error::None)
   {
     ROS_INFO("Detected Dynamixel:");
     for (uint8_t id : _mx28_id_vect)
@@ -40,20 +40,20 @@ CoxaController::CoxaController(std::unique_ptr<dynamixel::DynamixelController> m
  * PUBLIC MEMBER FUNCTIONS
  **************************************************************************************/
 
-void CoxaController::turnLedOn()
+void MX28Controller::turnLedOn()
 {
   uint8_t led_on = 1;
-  _mx28_ctrl->syncWrite(65, sizeof(led_on), std::make_tuple(1, &led_on));
+  _dyn_ctrl->syncWrite(65, sizeof(led_on), std::make_tuple(1, &led_on));
 }
 
-void CoxaController::turnLedOff()
+void MX28Controller::turnLedOff()
 {
   uint8_t led_off = 0;
-  _mx28_ctrl->syncWrite(65, sizeof(led_off), std::make_tuple(1, &led_off));
+  _dyn_ctrl->syncWrite(65, sizeof(led_off), std::make_tuple(1, &led_off));
 }
 
 /**************************************************************************************
  * NAMESPACE
  **************************************************************************************/
 
-} /* l3xz */
+} /* dynamixel */

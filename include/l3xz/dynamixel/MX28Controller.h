@@ -13,32 +13,32 @@
 
 #include <memory>
 
-#include "dynamixel/DynamixelController.h"
+#include "DynamixelController.h"
 
 /**************************************************************************************
  * NAMESPACE
  **************************************************************************************/
 
-namespace l3xz
+namespace dynamixel
 {
 
 /**************************************************************************************
  * CLASS DECLARATION
  **************************************************************************************/
 
-class CoxaController
+class MX28Controller
 {
 
 public:
 
-  CoxaController(std::unique_ptr<dynamixel::DynamixelController> mx28_ctrl);
+  MX28Controller(std::unique_ptr<DynamixelController> dyn_ctrl);
 
   void turnLedOn();
   void turnLedOff();
 
 private:
 
-  std::unique_ptr<dynamixel::DynamixelController> _mx28_ctrl;
+  std::unique_ptr<DynamixelController> _dyn_ctrl;
   std::vector<uint8_t> _mx28_id_vect;
 
 };
@@ -47,6 +47,6 @@ private:
  * NAMESPACE
  **************************************************************************************/
 
-} /* l3xz */
+} /* dynamixel */
 
 #endif /* DYNAMIXEL_COXA_CONTROLLER_H_ */
