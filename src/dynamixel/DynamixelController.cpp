@@ -84,13 +84,13 @@ Error DynamixelController::syncWrite(uint16_t const start_address, uint16_t cons
   return Error::None;
 }
 
-std::tuple<Error, DynamixelController::SyncReadData> DynamixelController::syncRead(uint16_t const start_address, uint16_t const data_length, uint8_t const id)
+std::tuple<Error, SyncReadData> DynamixelController::syncRead(uint16_t const start_address, uint16_t const data_length, uint8_t const id)
 {
   auto [err, data] = syncRead(start_address, data_length, std::vector<uint8_t>{id});
   return std::make_tuple(err, data.at(0));
 }
 
-std::tuple<Error, DynamixelController::SyncReadDataVect> DynamixelController::syncRead(uint16_t const start_address, uint16_t const data_length, std::vector<uint8_t> const & id_vect)
+std::tuple<Error, SyncReadDataVect> DynamixelController::syncRead(uint16_t const start_address, uint16_t const data_length, std::vector<uint8_t> const & id_vect)
 {
   SyncReadDataVect data_vect;
 
