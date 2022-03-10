@@ -25,6 +25,7 @@ namespace dynamixel
 
 enum class MX28ControlTable : uint16_t
 {
+  LED             =  65,
   PresentPosition = 132,
 };
 
@@ -54,13 +55,23 @@ MX28Controller::MX28Controller(std::unique_ptr<DynamixelController> dyn_ctrl)
 void MX28Controller::turnLedOn()
 {
   uint8_t led_on = 1;
-  _dyn_ctrl->syncWrite(65, sizeof(led_on), std::make_tuple(1, &led_on));
+  SyncWriteDataVect led_on_data;
+
+  for (auto id : _mx28_id_vect)
+    led_on_data.push_back(std::make_tuple(id, &led_on));
+
+  _dyn_ctrl->syncWrite(static_cast<int>(MX28ControlTable::LED), sizeof(led_on), led_on_data);
 }
 
 void MX28Controller::turnLedOff()
 {
   uint8_t led_off = 0;
-  _dyn_ctrl->syncWrite(65, sizeof(led_off), std::make_tuple(1, &led_off));
+  SyncWriteDataVect led_off_data;
+
+  for (auto id : _mx28_id_vect)
+    led_off_data.push_back(std::make_tuple(id, &led_off));
+
+  _dyn_ctrl->syncWrite(static_cast<int>(MX28ControlTable::LED), sizeof(led_off), led_off_data);
 }
 
 MX28Controller::AngleDataVect MX28Controller::getCurrentPosition()
