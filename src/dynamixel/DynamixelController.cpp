@@ -115,7 +115,6 @@ std::tuple<Error, SyncReadDataVect> DynamixelController::syncRead(uint16_t const
       ROS_ERROR("%s::%s 'GroupSyncRead::getError(%d)' returns %s", __FILE__, __FUNCTION__, id, _packet_handler->getRxPacketError(dxl_error));
   }
 
-
   for(auto id : id_vect)
   {
     if (group_sync_read.isAvailable(id, start_address, data_length))

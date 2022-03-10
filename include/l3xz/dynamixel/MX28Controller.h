@@ -36,6 +36,9 @@ public:
   void turnLedOn();
   void turnLedOff();
 
+  typedef std::vector<std::tuple<uint8_t, float>> AngleDataVect;
+  AngleDataVect getCurrentPosition();
+
 private:
 
   std::unique_ptr<DynamixelController> _dyn_ctrl;

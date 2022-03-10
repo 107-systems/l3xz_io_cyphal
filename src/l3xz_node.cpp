@@ -37,26 +37,21 @@ int main(int argc, char **argv)
   ros::NodeHandle node_handle;
 
   std::unique_ptr<dynamixel::DynamixelController> dynamixel_ctrl(new dynamixel::DynamixelController(DYNAMIXEL_DEVICE_NAME, DYNAMIXEL_PROTOCOL_VERSION, DYNAMIXEL_BAUD_RATE));
-  std::unique_ptr<dynamixel::MX28Controller> coxa_ctrl(new dynamixel::MX28Controller(std::move(dynamixel_ctrl)));
+  std::unique_ptr<dynamixel::MX28Controller> mx28_ctrl(new dynamixel::MX28Controller(std::move(dynamixel_ctrl)));
 
   ros::Rate loop_rate(1);
   while (ros::ok())
   {
     ros::spinOnce();
 
-    coxa_ctrl->turnLedOn();
+    mx28_ctrl->turnLedOn();
     loop_rate.sleep();
-    coxa_ctrl->turnLedOff();
+    mx28_ctrl->turnLedOff();
     loop_rate.sleep();
 
-    /*
-    if (auto [err, position_tuple] = dynamixel_ctrl->syncRead(132, 4, 1); err == dynamixel::Error::None)
-    {
-      auto [id, position] = position_tuple;
-      if (position)
-        ROS_INFO("[ID:%03d] Present Position (Reg 132): %d", id, position.value());
-    }
-    */
+    dynamixel::MX28Controller::AngleDataVect angle_vect = mx28_ctrl->getCurrentPosition();
+    for (auto [id, angle_deg] : angle_vect)
+      ROS_INFO("[ID:%03d] Angle = %0.02f deg", id, angle_deg);
   }
 
   return EXIT_SUCCESS;
