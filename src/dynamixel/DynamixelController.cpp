@@ -124,6 +124,8 @@ std::tuple<Error, SyncReadDataVect> DynamixelController::syncRead(uint16_t const
       data_vect.push_back(std::make_tuple(id, std::nullopt));
   }
 
+  group_sync_read.clearParam();
+
   return std::make_tuple(Error::None, data_vect);
 }
 
