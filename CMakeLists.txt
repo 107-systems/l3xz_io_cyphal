@@ -112,6 +112,7 @@ catkin_package(
 ## Build ##
 ###########
 add_subdirectory(external/dynamixel-sdk)
+add_subdirectory(external/ik/current)
 
 ## Specify additional locations of header files
 ## Your package locations should be listed before other locations
