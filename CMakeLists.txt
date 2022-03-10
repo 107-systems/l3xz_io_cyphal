@@ -135,6 +135,7 @@ include_directories(
 ## The recommended prefix ensures that target names across packages don't collide
 add_executable(${PROJECT_NAME}_node
   src/dynamixel/DynamixelController.cpp
+  src/CoxaController.cpp
   src/l3xz_node.cpp
 )
 

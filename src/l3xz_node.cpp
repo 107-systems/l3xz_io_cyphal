@@ -15,6 +15,7 @@
 
 #include <dynamixel_sdk.h>
 
+#include <l3xz/CoxaController.h>
 #include <l3xz/dynamixel/DynamixelController.h>
 
 /**************************************************************************************
@@ -36,33 +37,26 @@ int main(int argc, char **argv)
   ros::NodeHandle node_handle;
 
   std::unique_ptr<dynamixel::DynamixelController> dynamixel_ctrl(new dynamixel::DynamixelController(DYNAMIXEL_DEVICE_NAME, DYNAMIXEL_PROTOCOL_VERSION, DYNAMIXEL_BAUD_RATE));
-
-  if (auto [err, servo_id_vect] = dynamixel_ctrl->broadcastPing(); err == dynamixel::Error::None)
-  {
-    ROS_INFO("Detected Dynamixel:");
-    for (uint8_t id : servo_id_vect)
-      ROS_INFO("[ID:%03d]", id);
-  }
-
-  uint8_t led_off = 0;
-  uint8_t led_on = 1;
+  std::unique_ptr<l3xz::CoxaController> coxa_ctrl(new l3xz::CoxaController(std::move(dynamixel_ctrl)));
 
   ros::Rate loop_rate(1);
   while (ros::ok())
   {
     ros::spinOnce();
 
-    dynamixel_ctrl->syncWrite(65, sizeof(led_off), std::make_tuple(1, &led_off));
+    coxa_ctrl->turnLedOn();
     loop_rate.sleep();
-    dynamixel_ctrl->syncWrite(65, sizeof(led_on), std::make_tuple(1, &led_on));
+    coxa_ctrl->turnLedOff();
     loop_rate.sleep();
 
+    /*
     if (auto [err, position_tuple] = dynamixel_ctrl->syncRead(132, 4, 1); err == dynamixel::Error::None)
     {
       auto [id, position] = position_tuple;
       if (position)
         ROS_INFO("[ID:%03d] Present Position (Reg 132): %d", id, position.value());
     }
+    */
   }
 
   return EXIT_SUCCESS;

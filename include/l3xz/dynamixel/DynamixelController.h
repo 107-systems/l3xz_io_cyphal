@@ -31,7 +31,7 @@ namespace dynamixel
  * TYPEDEF
  **************************************************************************************/
 
-enum class Error : ssize_t
+enum class Error : int
 {
   None          =  0,
   AddParam      = -1,
