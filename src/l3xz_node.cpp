@@ -37,7 +37,7 @@ int main(int argc, char **argv)
 
   dynamixel::DynamixelController dynamixel_ctrl(DYNAMIXEL_DEVICE_NAME, DYNAMIXEL_PROTOCOL_VERSION, DYNAMIXEL_BAUD_RATE);
 
-  if (auto [err, servo_id_vect] = dynamixel_ctrl.broadcastPing(); err == dynamixel::DynamixelController::Error::None)
+  if (auto [err, servo_id_vect] = dynamixel_ctrl.broadcastPing(); err == dynamixel::Error::None)
   {
     ROS_INFO("Detected Dynamixel:");
     for (uint8_t id : servo_id_vect)

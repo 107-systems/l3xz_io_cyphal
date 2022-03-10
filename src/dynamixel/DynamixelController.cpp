@@ -45,7 +45,7 @@ DynamixelController::~DynamixelController()
  * PUBLIC MEMBER FUNCTION
  **************************************************************************************/
 
-std::tuple<DynamixelController::Error, std::vector<uint8_t>> DynamixelController::broadcastPing()
+std::tuple<Error, std::vector<uint8_t>> DynamixelController::broadcastPing()
 {
   std::vector<uint8_t> servo_id_vect;
 
@@ -58,12 +58,12 @@ std::tuple<DynamixelController::Error, std::vector<uint8_t>> DynamixelController
   return std::make_tuple(Error::None, servo_id_vect);
 }
 
-DynamixelController::Error DynamixelController::syncWrite(uint16_t const start_address, uint16_t const data_length, SyncWriteData const & data)
+Error DynamixelController::syncWrite(uint16_t const start_address, uint16_t const data_length, SyncWriteData const & data)
 {
   return syncWrite(start_address, data_length, std::vector<SyncWriteData>{data});
 }
 
-DynamixelController::Error DynamixelController::syncWrite(uint16_t const start_address, uint16_t const data_length, std::vector<SyncWriteData> const & data)
+Error DynamixelController::syncWrite(uint16_t const start_address, uint16_t const data_length, std::vector<SyncWriteData> const & data)
 {
   GroupSyncWrite group_sync_write(_port_handler.get(), _packet_handler.get(), start_address, data_length);
 

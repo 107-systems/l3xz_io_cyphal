@@ -27,6 +27,18 @@ namespace dynamixel
 {
 
 /**************************************************************************************
+ * TYPEDEF
+ **************************************************************************************/
+
+enum class Error : ssize_t
+{
+  None          =  0,
+  AddParam      = -1,
+  TxPacket      = -2,
+  BroadcastPing = -3,
+};
+
+/**************************************************************************************
  * CLASS DECLARATION
  **************************************************************************************/
 
@@ -39,13 +51,6 @@ public:
                       int         const baudrate);
   ~DynamixelController();
 
-  enum class Error : ssize_t
-  {
-    None          =  0,
-    AddParam      = -1,
-    TxPacket      = -2,
-    BroadcastPing = -3,
-  };
 
   std::tuple<Error, std::vector<uint8_t>> broadcastPing();
 
