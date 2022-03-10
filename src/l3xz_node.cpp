@@ -35,9 +35,9 @@ int main(int argc, char **argv)
 
   ros::NodeHandle node_handle;
 
-  dynamixel::DynamixelController dynamixel_ctrl(DYNAMIXEL_DEVICE_NAME, DYNAMIXEL_PROTOCOL_VERSION, DYNAMIXEL_BAUD_RATE);
+  std::unique_ptr<dynamixel::DynamixelController> dynamixel_ctrl(new dynamixel::DynamixelController(DYNAMIXEL_DEVICE_NAME, DYNAMIXEL_PROTOCOL_VERSION, DYNAMIXEL_BAUD_RATE));
 
-  if (auto [err, servo_id_vect] = dynamixel_ctrl.broadcastPing(); err == dynamixel::Error::None)
+  if (auto [err, servo_id_vect] = dynamixel_ctrl->broadcastPing(); err == dynamixel::Error::None)
   {
     ROS_INFO("Detected Dynamixel:");
     for (uint8_t id : servo_id_vect)
@@ -52,12 +52,12 @@ int main(int argc, char **argv)
   {
     ros::spinOnce();
 
-    dynamixel_ctrl.syncWrite(65, sizeof(led_off), std::make_tuple(1, &led_off));
+    dynamixel_ctrl->syncWrite(65, sizeof(led_off), std::make_tuple(1, &led_off));
     loop_rate.sleep();
-    dynamixel_ctrl.syncWrite(65, sizeof(led_on), std::make_tuple(1, &led_on));
+    dynamixel_ctrl->syncWrite(65, sizeof(led_on), std::make_tuple(1, &led_on));
     loop_rate.sleep();
 
-    if (auto [err, position_tuple] = dynamixel_ctrl.syncRead(132, 4, 1); err == dynamixel::Error::None)
+    if (auto [err, position_tuple] = dynamixel_ctrl->syncRead(132, 4, 1); err == dynamixel::Error::None)
     {
       auto [id, position] = position_tuple;
       if (position)
