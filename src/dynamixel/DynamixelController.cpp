@@ -63,7 +63,7 @@ Error DynamixelController::syncWrite(uint16_t const start_address, uint16_t cons
   return syncWrite(start_address, data_length, std::vector<SyncWriteData>{data});
 }
 
-Error DynamixelController::syncWrite(uint16_t const start_address, uint16_t const data_length, std::vector<SyncWriteData> const & data)
+Error DynamixelController::syncWrite(uint16_t const start_address, uint16_t const data_length, SyncWriteDataVect const & data)
 {
   GroupSyncWrite group_sync_write(_port_handler.get(), _packet_handler.get(), start_address, data_length);
 

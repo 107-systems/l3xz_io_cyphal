@@ -41,6 +41,7 @@ enum class Error : int
 };
 
 typedef std::tuple<uint8_t, uint8_t *>               SyncWriteData;
+typedef std::vector<SyncWriteData>                   SyncWriteDataVect;
 typedef std::tuple<uint8_t, std::optional<uint32_t>> SyncReadData;
 typedef std::vector<SyncReadData>                    SyncReadDataVect;
 
@@ -61,7 +62,7 @@ public:
   std::tuple<Error, std::vector<uint8_t>> broadcastPing();
 
   Error syncWrite(uint16_t const start_address, uint16_t const data_length, SyncWriteData const & data);
-  Error syncWrite(uint16_t const start_address, uint16_t const data_length, std::vector<SyncWriteData> const & data);
+  Error syncWrite(uint16_t const start_address, uint16_t const data_length, SyncWriteDataVect const & data);
 
   std::tuple<Error, SyncReadData>     syncRead(uint16_t const start_address, uint16_t const data_length, uint8_t const id);
   std::tuple<Error, SyncReadDataVect> syncRead(uint16_t const start_address, uint16_t const data_length, std::vector<uint8_t> const & id_vect);
