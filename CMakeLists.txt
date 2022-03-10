@@ -135,6 +135,7 @@ include_directories(
 ## The recommended prefix ensures that target names across packages don't collide
 add_executable(${PROJECT_NAME}_node
   src/dynamixel/DynamixelController.cpp
+  src/phy/serial/AsyncSerial.cpp
   src/CoxaController.cpp
   src/l3xz_node.cpp
 )
@@ -153,6 +154,9 @@ add_executable(${PROJECT_NAME}_node
 target_link_libraries(${PROJECT_NAME}_node
   ${catkin_LIBRARIES}
   dynamixel
+  boost_system
+  boost_thread
+  pthread
 )
 
 target_compile_options(${PROJECT_NAME}_node PRIVATE -std=c++17)
