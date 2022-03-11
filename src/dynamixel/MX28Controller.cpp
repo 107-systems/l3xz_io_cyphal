@@ -10,6 +10,8 @@
 
 #include <l3xz/dynamixel/MX28Controller.h>
 
+#include <cassert>
+
 #include <ros/console.h>
 
 /**************************************************************************************
@@ -60,23 +62,27 @@ std::optional<IdVect> MX28Controller::discover()
     return std::nullopt;
 }
 
-void MX28Controller::turnLedOn()
+void MX28Controller::turnLedOn(IdVect const & id_vect)
 {
+  assert(id_vect.size() > 0);
+
   uint8_t led_on = 1;
   SyncWriteDataVect led_on_data;
 
-  for (auto id : _mx28_id_vect)
+  for (auto id : id_vect)
     led_on_data.push_back(std::make_tuple(id, &led_on));
 
   _dyn_ctrl->syncWrite(static_cast<int>(MX28ControlTable::LED), sizeof(led_on), led_on_data);
 }
 
-void MX28Controller::turnLedOff()
+void MX28Controller::turnLedOff(IdVect const & id_vect)
 {
+  assert(id_vect.size() > 0);
+
   uint8_t led_off = 0;
   SyncWriteDataVect led_off_data;
 
-  for (auto id : _mx28_id_vect)
+  for (auto id : id_vect)
     led_off_data.push_back(std::make_tuple(id, &led_off));
 
   _dyn_ctrl->syncWrite(static_cast<int>(MX28ControlTable::LED), sizeof(led_off), led_off_data);

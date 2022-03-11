@@ -39,8 +39,8 @@ int main(int argc, char **argv)
   std::unique_ptr<dynamixel::DynamixelController> dynamixel_ctrl(new dynamixel::DynamixelController(DYNAMIXEL_DEVICE_NAME, DYNAMIXEL_PROTOCOL_VERSION, DYNAMIXEL_BAUD_RATE));
   std::unique_ptr<dynamixel::MX28Controller> mx28_ctrl(new dynamixel::MX28Controller(std::move(dynamixel_ctrl)));
 
-  std::optional<dynamixel::IdVect> id_vect =  mx28_ctrl->discover();
-  if (!id_vect)
+  std::optional<dynamixel::IdVect> opt_id_vect =  mx28_ctrl->discover();
+  if (!opt_id_vect)
     ROS_ERROR("Zero MX-28 servos detected.");
 
 
@@ -49,9 +49,9 @@ int main(int argc, char **argv)
   {
     ros::spinOnce();
 
-    mx28_ctrl->turnLedOn();
+    mx28_ctrl->turnLedOn(opt_id_vect.value());
     loop_rate.sleep();
-    mx28_ctrl->turnLedOff();
+    mx28_ctrl->turnLedOff(opt_id_vect.value());
     loop_rate.sleep();
 
     dynamixel::MX28Controller::AngleDataVect angle_vect = mx28_ctrl->getCurrentPosition();

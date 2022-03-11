@@ -37,8 +37,8 @@ public:
   std::optional<IdVect> discover();
 
 
-  void turnLedOn();
-  void turnLedOff();
+  void turnLedOn (IdVect const & id_vect);
+  void turnLedOff(IdVect const & id_vect);
 
   typedef std::vector<std::tuple<uint8_t, float>> AngleDataVect;
   AngleDataVect getCurrentPosition();
