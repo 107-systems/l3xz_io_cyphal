@@ -42,6 +42,12 @@ int main(int argc, char **argv)
   std::optional<dynamixel::IdVect> opt_id_vect =  mx28_ctrl->discover();
   if (!opt_id_vect)
     ROS_ERROR("Zero MX-28 servos detected.");
+  else
+  {
+    ROS_INFO("Detected Dynamixel MX-28:");
+    for (uint8_t id : opt_id_vect.value())
+      ROS_INFO("[ID:%d]", id);
+  }
 
 
   ros::Rate loop_rate(1);

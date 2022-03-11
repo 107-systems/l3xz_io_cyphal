@@ -38,16 +38,7 @@ enum class MX28ControlTable : uint16_t
 MX28Controller::MX28Controller(std::unique_ptr<DynamixelController> dyn_ctrl)
 : _dyn_ctrl{std::move(dyn_ctrl)}
 {
-  if (auto [err, id_vect] = _dyn_ctrl->broadcastPing(); err == Error::None)
-  {
-    ROS_INFO("Detected Dynamixel:");
-    for (uint8_t id : id_vect)
-      ROS_INFO("[ID:%03d]", id);
 
-    _mx28_id_vect = id_vect;
-  }
-  else
-    ROS_ERROR("%s::%s error, 'broadcastPing()' failed with %d", __FILE__, __FUNCTION__, static_cast<int>(err));
 }
 
 /**************************************************************************************

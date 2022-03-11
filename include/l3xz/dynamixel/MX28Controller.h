@@ -28,7 +28,6 @@ namespace dynamixel
 
 class MX28Controller
 {
-
 public:
 
   MX28Controller(std::unique_ptr<DynamixelController> dyn_ctrl);
@@ -43,11 +42,10 @@ public:
   typedef std::vector<std::tuple<uint8_t, float>> AngleDataVect;
   AngleDataVect getCurrentPosition(IdVect const & id_vect);
 
+
 private:
 
   std::unique_ptr<DynamixelController> _dyn_ctrl;
-  std::vector<uint8_t> _mx28_id_vect;
-
 };
 
 /**************************************************************************************
