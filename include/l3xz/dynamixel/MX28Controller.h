@@ -41,7 +41,7 @@ public:
   void turnLedOff(IdVect const & id_vect);
 
   typedef std::vector<std::tuple<uint8_t, float>> AngleDataVect;
-  AngleDataVect getCurrentPosition();
+  AngleDataVect getCurrentPosition(IdVect const & id_vect);
 
 private:
 

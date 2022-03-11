@@ -88,21 +88,23 @@ void MX28Controller::turnLedOff(IdVect const & id_vect)
   _dyn_ctrl->syncWrite(static_cast<int>(MX28ControlTable::LED), sizeof(led_off), led_off_data);
 }
 
-MX28Controller::AngleDataVect MX28Controller::getCurrentPosition()
+MX28Controller::AngleDataVect MX28Controller::getCurrentPosition(IdVect const & id_vect)
 {
-  AngleDataVect angle_data;
+  assert(id_vect.size() > 0);
 
-  if (auto [err, position_vect] = _dyn_ctrl->syncRead(static_cast<int>(MX28ControlTable::PresentPosition), 4, _mx28_id_vect); err == Error::None)
+  AngleDataVect angle_data_vect;
+
+  if (auto [err, position_vect] = _dyn_ctrl->syncRead(static_cast<int>(MX28ControlTable::PresentPosition), 4, id_vect); err == Error::None)
   {
     for (auto [id, position_raw] : position_vect)
       if (position_raw)
       {
         float const position_deg = static_cast<float>(position_raw.value()) * 360.0f / 4096;
-        angle_data.push_back(std::make_tuple(id, position_deg));
+        angle_data_vect.push_back(std::make_tuple(id, position_deg));
       }
   }
 
-  return angle_data;
+  return angle_data_vect;
 }
 
 /**************************************************************************************
