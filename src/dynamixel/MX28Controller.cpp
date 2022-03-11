@@ -79,7 +79,7 @@ void MX28Controller::turnLedOff(IdVect const & id_vect)
   _dyn_ctrl->syncWrite(static_cast<int>(MX28ControlTable::LED), sizeof(led_off), led_off_data);
 }
 
-MX28Controller::AngleDataVect MX28Controller::getCurrentPosition(IdVect const & id_vect)
+MX28Controller::AngleDataVect MX28Controller::getAngle(IdVect const & id_vect)
 {
   assert(id_vect.size() > 0);
 

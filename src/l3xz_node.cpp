@@ -60,7 +60,7 @@ int main(int argc, char **argv)
     mx28_ctrl->turnLedOff(opt_id_vect.value());
     loop_rate.sleep();
 
-    dynamixel::MX28Controller::AngleDataVect angle_vect = mx28_ctrl->getCurrentPosition(opt_id_vect.value());
+    dynamixel::MX28Controller::AngleDataVect angle_vect = mx28_ctrl->getAngle(opt_id_vect.value());
     for (auto [id, angle_deg] : angle_vect)
       ROS_INFO("[ID:%03d] Angle = %0.02f deg", id, angle_deg);
   }
