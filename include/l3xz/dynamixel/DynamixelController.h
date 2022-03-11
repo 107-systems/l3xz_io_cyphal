@@ -40,6 +40,7 @@ enum class Error : int
   BroadcastPing = -4,
 };
 
+typedef std::vector<uint8_t>                         IdVect;
 typedef std::tuple<uint8_t, uint8_t *>               SyncWriteData;
 typedef std::vector<SyncWriteData>                   SyncWriteDataVect;
 typedef std::tuple<uint8_t, std::optional<uint32_t>> SyncReadData;
@@ -59,13 +60,13 @@ public:
   ~DynamixelController();
 
 
-  std::tuple<Error, std::vector<uint8_t>> broadcastPing();
+  std::tuple<Error, IdVect> broadcastPing();
 
   Error syncWrite(uint16_t const start_address, uint16_t const data_length, SyncWriteData const & data);
   Error syncWrite(uint16_t const start_address, uint16_t const data_length, SyncWriteDataVect const & data);
 
   std::tuple<Error, SyncReadData>     syncRead(uint16_t const start_address, uint16_t const data_length, uint8_t const id);
-  std::tuple<Error, SyncReadDataVect> syncRead(uint16_t const start_address, uint16_t const data_length, std::vector<uint8_t> const & id_vect);
+  std::tuple<Error, SyncReadDataVect> syncRead(uint16_t const start_address, uint16_t const data_length, IdVect const & id_vect);
 
 
 private:

@@ -39,6 +39,11 @@ int main(int argc, char **argv)
   std::unique_ptr<dynamixel::DynamixelController> dynamixel_ctrl(new dynamixel::DynamixelController(DYNAMIXEL_DEVICE_NAME, DYNAMIXEL_PROTOCOL_VERSION, DYNAMIXEL_BAUD_RATE));
   std::unique_ptr<dynamixel::MX28Controller> mx28_ctrl(new dynamixel::MX28Controller(std::move(dynamixel_ctrl)));
 
+  std::optional<dynamixel::IdVect> id_vect =  mx28_ctrl->discover();
+  if (!id_vect)
+    ROS_ERROR("Zero MX-28 servos detected.");
+
+
   ros::Rate loop_rate(1);
   while (ros::ok())
   {

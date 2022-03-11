@@ -33,6 +33,10 @@ public:
 
   MX28Controller(std::unique_ptr<DynamixelController> dyn_ctrl);
 
+
+  std::optional<IdVect> discover();
+
+
   void turnLedOn();
   void turnLedOff();
 

@@ -45,9 +45,9 @@ DynamixelController::~DynamixelController()
  * PUBLIC MEMBER FUNCTION
  **************************************************************************************/
 
-std::tuple<Error, std::vector<uint8_t>> DynamixelController::broadcastPing()
+std::tuple<Error, IdVect> DynamixelController::broadcastPing()
 {
-  std::vector<uint8_t> servo_id_vect;
+  IdVect servo_id_vect;
 
   if (int const res = _packet_handler->broadcastPing(_port_handler.get(), servo_id_vect); res != COMM_SUCCESS)
   {
@@ -90,7 +90,7 @@ std::tuple<Error, SyncReadData> DynamixelController::syncRead(uint16_t const sta
   return std::make_tuple(err, data.at(0));
 }
 
-std::tuple<Error, SyncReadDataVect> DynamixelController::syncRead(uint16_t const start_address, uint16_t const data_length, std::vector<uint8_t> const & id_vect)
+std::tuple<Error, SyncReadDataVect> DynamixelController::syncRead(uint16_t const start_address, uint16_t const data_length, IdVect const & id_vect)
 {
   SyncReadDataVect data_vect;
 

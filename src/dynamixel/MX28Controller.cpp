@@ -52,6 +52,14 @@ MX28Controller::MX28Controller(std::unique_ptr<DynamixelController> dyn_ctrl)
  * PUBLIC MEMBER FUNCTIONS
  **************************************************************************************/
 
+std::optional<IdVect> MX28Controller::discover()
+{
+  if (auto [err, id_vect] = _dyn_ctrl->broadcastPing(); err == Error::None)
+    return id_vect;
+  else
+    return std::nullopt;
+}
+
 void MX28Controller::turnLedOn()
 {
   uint8_t led_on = 1;
