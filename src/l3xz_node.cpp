@@ -49,6 +49,9 @@ int main(int argc, char **argv)
       ROS_INFO("[ID:%d]", id);
   }
 
+  float angle = 0.0f;
+
+  mx28_ctrl->torqueOn(opt_id_vect.value());
 
   ros::Rate loop_rate(1);
   while (ros::ok())
@@ -60,9 +63,29 @@ int main(int argc, char **argv)
     mx28_ctrl->turnLedOff(opt_id_vect.value());
     loop_rate.sleep();
 
-    dynamixel::MX28Controller::AngleDataVect angle_vect = mx28_ctrl->getAngle(opt_id_vect.value());
-    for (auto [id, angle_deg] : angle_vect)
-      ROS_INFO("[ID:%03d] Angle = %0.02f deg", id, angle_deg);
+    dynamixel::MX28Controller::AngleDataVect angle_vect_act = mx28_ctrl->getAngle(opt_id_vect.value());
+    for (auto [id, angle_deg] : angle_vect_act)
+      ROS_INFO("[ID:%03d] Angle Act = %0.02f deg", id, angle_deg);
+
+    dynamixel::MX28Controller::AngleDataVect angle_vect_set = angle_vect_act;
+    std::transform(angle_vect_act.begin(),
+                   angle_vect_act.end(),
+                   angle_vect_set.begin(),
+                   [](std::tuple<uint8_t, float> const & in) -> std::tuple<uint8_t, float>
+                   {
+                     auto [id, angle_set] = in;
+                     angle_set += 10.0f;
+                     while (angle_set > 360.0f)
+                      angle_set -= 360.0f;
+                     return std::make_tuple(id, angle_set);
+                   });
+
+    for (auto [id, angle_deg] : angle_vect_set)
+      ROS_INFO("[ID:%03d] Angle Set = %0.02f deg", id, angle_deg);
+
+
+    if (!mx28_ctrl->setAngle(angle_vect_set))
+      ROS_ERROR("setAngle() failed");
   }
 
   return EXIT_SUCCESS;

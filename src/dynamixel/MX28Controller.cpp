@@ -27,7 +27,9 @@ namespace dynamixel
 
 enum class MX28ControlTable : uint16_t
 {
+  Torque_Enable   =  64,
   LED             =  65,
+  GoalPosition    = 116,
   PresentPosition = 132,
 };
 
@@ -66,6 +68,37 @@ void MX28Controller::turnLedOn(IdVect const & id_vect)
   _dyn_ctrl->syncWrite(static_cast<int>(MX28ControlTable::LED), sizeof(led_on), led_on_data);
 }
 
+void MX28Controller::torqueOn(uint8_t const id)
+{
+  torqueOn(IdVect{id});
+}
+
+void MX28Controller::torqueOn(IdVect const & id_vect)
+{
+  assert(id_vect.size() > 0);
+
+  uint8_t torque_enable_on = 1;
+  SyncWriteDataVect torque_enable_on_data;
+
+  for (auto id : id_vect)
+    torque_enable_on_data.push_back(std::make_tuple(id, &torque_enable_on));
+
+  _dyn_ctrl->syncWrite(static_cast<int>(MX28ControlTable::Torque_Enable), sizeof(torque_enable_on), torque_enable_on_data);
+}
+
+void MX28Controller::torqueOff(IdVect const & id_vect)
+{
+  assert(id_vect.size() > 0);
+
+  uint8_t torque_enable_off = 0;
+  SyncWriteDataVect torque_enable_off_data;
+
+  for (auto id : id_vect)
+    torque_enable_off_data.push_back(std::make_tuple(id, &torque_enable_off));
+
+  _dyn_ctrl->syncWrite(static_cast<int>(MX28ControlTable::Torque_Enable), sizeof(torque_enable_off), torque_enable_off_data);
+}
+
 void MX28Controller::turnLedOff(IdVect const & id_vect)
 {
   assert(id_vect.size() > 0);
@@ -77,6 +110,16 @@ void MX28Controller::turnLedOff(IdVect const & id_vect)
     led_off_data.push_back(std::make_tuple(id, &led_off));
 
   _dyn_ctrl->syncWrite(static_cast<int>(MX28ControlTable::LED), sizeof(led_off), led_off_data);
+}
+
+std::optional<MX28Controller::AngleData> MX28Controller::getAngle(uint8_t const id)
+{
+  MX28Controller::AngleDataVect const angle_data_vect = getAngle(IdVect{id});
+
+  if(angle_data_vect.size())
+    return angle_data_vect.front();
+  else
+    return std::nullopt;
 }
 
 MX28Controller::AngleDataVect MX28Controller::getAngle(IdVect const & id_vect)
@@ -96,6 +139,28 @@ MX28Controller::AngleDataVect MX28Controller::getAngle(IdVect const & id_vect)
   }
 
   return angle_data_vect;
+}
+
+bool MX28Controller::setAngle(AngleData const & angle_data)
+{
+  return setAngle(AngleDataVect{angle_data});
+}
+
+bool MX28Controller::setAngle(AngleDataVect const & angle_data_vect)
+{
+  assert(angle_data_vect.size() > 0);
+
+  std::vector<uint32_t> position_raw_vect;
+  SyncWriteDataVect sync_write_data_vect;
+
+  for (auto [id, position_deg] : angle_data_vect)
+  {
+    position_raw_vect.push_back(static_cast<uint32_t>(position_deg * 4096.0f/360.0f));
+    uint8_t * position_raw_data_ptr = reinterpret_cast<uint8_t *>(&position_raw_vect.back());
+    sync_write_data_vect.push_back(std::make_tuple(id, position_raw_data_ptr));
+  }
+
+  return (_dyn_ctrl->syncWrite(static_cast<int>(MX28ControlTable::GoalPosition), 4, sync_write_data_vect) == Error::None);
 }
 
 /**************************************************************************************

@@ -32,15 +32,24 @@ public:
 
   MX28Controller(std::unique_ptr<DynamixelController> dyn_ctrl);
 
-
   std::optional<IdVect> discover();
 
 
   void turnLedOn (IdVect const & id_vect);
   void turnLedOff(IdVect const & id_vect);
 
-  typedef std::vector<std::tuple<uint8_t, float>> AngleDataVect;
-  AngleDataVect getAngle(IdVect const & id_vect);
+  void torqueOn (uint8_t const id);
+  void torqueOn (IdVect const & id_vect);
+  void torqueOff(IdVect const & id_vect);
+
+  typedef std::tuple<uint8_t, float> AngleData;
+  typedef std::vector<AngleData> AngleDataVect;
+
+  std::optional<AngleData> getAngle(uint8_t const id);
+  AngleDataVect            getAngle(IdVect const & id_vect);
+
+  bool setAngle(AngleData const & angle_data);
+  bool setAngle(AngleDataVect const & angle_data_vect);
 
 
 private:
