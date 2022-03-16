@@ -163,6 +163,7 @@ target_link_libraries(${PROJECT_NAME}_node
 target_compile_options(${PROJECT_NAME}_node PRIVATE -std=c++17)
 
 add_subdirectory(tooling/dynctrl)
+add_subdirectory(tooling/ssc32ctrl)
 
 #############
 ## Install ##
