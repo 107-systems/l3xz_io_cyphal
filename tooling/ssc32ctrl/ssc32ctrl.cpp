@@ -34,7 +34,7 @@ int main(int argc, char **argv)
     desc.add_options()
       ("help", "Show this help message.")
       ("device-name", boost::program_options::value<std::string>(&param_device_name)->required(), "SSC32U servo controller device name.")
-      ("baud-rate", boost::program_options::value<int>(&param_baudrate)->default_value(9600), "SSC32U servo controller baud rate.")
+      ("baud-rate", boost::program_options::value<int>(&param_baudrate)->default_value(115200), "SSC32U servo controller baud rate.")
       ("move", "Move a single servo.")
       ("channel",
        boost::program_options::value<int>(&param_channel)->notifier([](int const val)
