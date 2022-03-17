@@ -14,7 +14,7 @@
 
 #include <boost/program_options.hpp>
 
-#include <l3xz/phy/serial/AsyncSerial.h>
+#include <l3xz/ssc32/SSC32.h>
 
 /**************************************************************************************
  * MAIN
@@ -75,8 +75,7 @@ int main(int argc, char **argv)
 
     boost::program_options::notify(vm);
 
-    phy::serial::AsyncSerial serial;
-    serial.open(param_device_name, param_baudrate);
+    ssc32::SSC32 ssc32_ctrl(param_device_name, param_baudrate);
   
     /**************************************************************************************
      * --move
@@ -97,23 +96,8 @@ int main(int argc, char **argv)
         return EXIT_FAILURE;
       }
 
-      std::stringstream msg;
-      msg << "#"
-          << param_channel
-          << "P"
-          << param_pulse_width_us
-          << "T"
-          << param_move_time_us
-          << '\r';
-      
-      std::string const msg_str(msg.str());
-      std::cout << msg_str << std::endl;
-
-      std::vector<uint8_t> const msg_vect(msg_str.begin(), msg_str.end());
-      serial.transmit(msg_vect);
+      ssc32_ctrl.setPulseWidth(param_channel, param_pulse_width_us, param_move_time_us);
     }
-
-    serial.close();
   }
   catch(std::exception const & e)
   {
