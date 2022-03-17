@@ -14,7 +14,7 @@
 
 #include <boost/program_options.hpp>
 
-#include <l3xz/ssc32/SSC32.h>
+#include <l3xz/driver/ssc32/SSC32.h>
 
 /**************************************************************************************
  * MAIN
@@ -75,7 +75,7 @@ int main(int argc, char **argv)
 
     boost::program_options::notify(vm);
 
-    ssc32::SSC32 ssc32_ctrl(param_device_name, param_baudrate);
+    l3xz::driver::SSC32 ssc32_ctrl(param_device_name, param_baudrate);
   
     /**************************************************************************************
      * --move

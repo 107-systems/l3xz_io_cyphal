@@ -4,8 +4,8 @@
  * Contributors: https://github.com/107-systems/107-Arduino-UAVCAN/graphs/contributors.
  */
 
-#ifndef SSC32_SSC32_H_
-#define SSC32_SSC32_H_
+#ifndef DRIVER_SSC32_SSC32_H_
+#define DRIVER_SSC32_SSC32_H_
 
 /**************************************************************************************
  * INCLUDE
@@ -21,7 +21,7 @@
  * NAMESPACE
  **************************************************************************************/
 
-namespace ssc32
+namespace l3xz::driver
 {
 
 /**************************************************************************************
@@ -55,6 +55,6 @@ private:
  * NAMESPACE
  **************************************************************************************/
 
-} /* ssc32 */
+} /* l3xz::driver */
 
-#endif /* SSC32_SSC32_H_ */
+#endif /* DRIVER_SSC32_SSC32_H_ */

@@ -5,7 +5,7 @@ set(SSC32CTRL_TARGET ssc32ctrl)
 ##########################################################################
 add_executable(${SSC32CTRL_TARGET}
     ../../src/phy/serial/AsyncSerial.cpp
-    ../../src/ssc32/SSC32.cpp
+    ../../src/driver/ssc32/SSC32.cpp
     ssc32ctrl.cpp
 )
 target_compile_options(${SSC32CTRL_TARGET} PRIVATE -std=c++17)

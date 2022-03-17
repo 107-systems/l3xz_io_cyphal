@@ -138,7 +138,7 @@ add_executable(${PROJECT_NAME}_node
   src/dynamixel/DynamixelController.cpp
   src/dynamixel/MX28Controller.cpp
   src/phy/serial/AsyncSerial.cpp
-  src/ssc32/SSC32.cpp
+  src/driver/ssc32/SSC32.cpp
   src/l3xz_node.cpp
 )
 
