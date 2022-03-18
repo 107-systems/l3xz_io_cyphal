@@ -15,8 +15,8 @@
 
 #include <dynamixel_sdk.h>
 
+#include <l3xz/driver/dynamixel/MX28.h>
 #include <l3xz/driver/dynamixel/Dynamixel.h>
-#include <l3xz/driver/dynamixel/MX28Controller.h>
 
 /**************************************************************************************
  * CONSTANT
@@ -37,7 +37,7 @@ int main(int argc, char **argv)
   ros::NodeHandle node_handle;
 
   std::unique_ptr<dynamixel::Dynamixel> dynamixel_ctrl(new dynamixel::Dynamixel(DYNAMIXEL_DEVICE_NAME, DYNAMIXEL_PROTOCOL_VERSION, DYNAMIXEL_BAUD_RATE));
-  std::unique_ptr<dynamixel::MX28Controller> mx28_ctrl(new dynamixel::MX28Controller(std::move(dynamixel_ctrl)));
+  std::unique_ptr<dynamixel::MX28> mx28_ctrl(new dynamixel::MX28(std::move(dynamixel_ctrl)));
 
   std::optional<dynamixel::IdVect> opt_id_vect =  mx28_ctrl->discover();
   if (!opt_id_vect)
@@ -63,11 +63,11 @@ int main(int argc, char **argv)
     mx28_ctrl->turnLedOff(opt_id_vect.value());
     loop_rate.sleep();
 
-    dynamixel::MX28Controller::AngleDataVect angle_vect_act = mx28_ctrl->getAngle(opt_id_vect.value());
+    dynamixel::MX28::AngleDataVect angle_vect_act = mx28_ctrl->getAngle(opt_id_vect.value());
     for (auto [id, angle_deg] : angle_vect_act)
       ROS_INFO("[ID:%03d] Angle Act = %0.02f deg", id, angle_deg);
 
-    dynamixel::MX28Controller::AngleDataVect angle_vect_set = angle_vect_act;
+    dynamixel::MX28::AngleDataVect angle_vect_set = angle_vect_act;
     std::transform(angle_vect_act.begin(),
                    angle_vect_act.end(),
                    angle_vect_set.begin(),

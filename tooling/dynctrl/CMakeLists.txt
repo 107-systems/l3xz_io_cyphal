@@ -5,7 +5,7 @@ set(DYNCTRL_TARGET dynctrl)
 ##########################################################################
 add_executable(${DYNCTRL_TARGET}
   ../../src/driver/dynamixel/Dynamixel.cpp
-  ../../src/driver/dynamixel/MX28Controller.cpp
+  ../../src/driver/dynamixel/MX28.cpp
   dynctrl.cpp
 )
 target_compile_options(${DYNCTRL_TARGET} PRIVATE -std=c++17)

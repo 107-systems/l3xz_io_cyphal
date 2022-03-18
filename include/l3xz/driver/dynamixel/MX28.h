@@ -4,8 +4,8 @@
  * Contributors: https://github.com/107-systems/107-Arduino-UAVCAN/graphs/contributors.
  */
 
-#ifndef DYNAMIXEL_COXA_CONTROLLER_H_
-#define DYNAMIXEL_COXA_CONTROLLER_H_
+#ifndef DYNAMIXEL_MX28_H_
+#define DYNAMIXEL_MX28_H_
 
 /**************************************************************************************
  * INCLUDE
@@ -26,11 +26,11 @@ namespace dynamixel
  * CLASS DECLARATION
  **************************************************************************************/
 
-class MX28Controller
+class MX28
 {
 public:
 
-  MX28Controller(std::unique_ptr<Dynamixel> dyn_ctrl);
+  MX28(std::unique_ptr<Dynamixel> dyn_ctrl);
 
   std::optional<IdVect> discover();
 
@@ -63,4 +63,4 @@ private:
 
 } /* dynamixel */
 
-#endif /* DYNAMIXEL_COXA_CONTROLLER_H_ */
+#endif /* DYNAMIXEL_MX28_H_ */

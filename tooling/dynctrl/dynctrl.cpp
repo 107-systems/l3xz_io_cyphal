@@ -15,8 +15,8 @@
 
 #include <boost/program_options.hpp>
 
+#include <l3xz/driver/dynamixel/MX28.h>
 #include <l3xz/driver/dynamixel/Dynamixel.h>
-#include <l3xz/driver/dynamixel/MX28Controller.h>
 
 /**************************************************************************************
  * CONSTANT
@@ -66,7 +66,7 @@ int main(int argc, char **argv)
     boost::program_options::notify(vm);
 
     std::unique_ptr<dynamixel::Dynamixel> dynamixel_ctrl(new dynamixel::Dynamixel(param_device_name, DYNAMIXEL_PROTOCOL_VERSION, param_baudrate));
-    std::unique_ptr<dynamixel::MX28Controller> mx28_ctrl(new dynamixel::MX28Controller(std::move(dynamixel_ctrl)));
+    std::unique_ptr<dynamixel::MX28> mx28_ctrl(new dynamixel::MX28(std::move(dynamixel_ctrl)));
 
     /**************************************************************************************
      * --discover
@@ -95,7 +95,7 @@ int main(int argc, char **argv)
     {
       if (vm.count("id"))
       {
-        std::optional<dynamixel::MX28Controller::AngleData> opt_angle = mx28_ctrl->getAngle(param_id);
+        std::optional<dynamixel::MX28::AngleData> opt_angle = mx28_ctrl->getAngle(param_id);
 
         if (opt_angle)
         {
@@ -113,7 +113,7 @@ int main(int argc, char **argv)
 
         if (opt_id_vect)
         {
-          dynamixel::MX28Controller::AngleDataVect angle_vect = mx28_ctrl->getAngle(opt_id_vect.value());
+          dynamixel::MX28::AngleDataVect angle_vect = mx28_ctrl->getAngle(opt_id_vect.value());
           for (auto [id, angle_deg] : angle_vect) {
             std::cout << "[ID: " << static_cast<int>(id) << "] Angle = " << angle_deg << "°" << std::endl;
           }
@@ -144,7 +144,7 @@ int main(int argc, char **argv)
 
       mx28_ctrl->torqueOn(param_id);
 
-      dynamixel::MX28Controller::AngleData const angle_data = std::make_tuple(param_id, param_target_angle);
+      dynamixel::MX28::AngleData const angle_data = std::make_tuple(param_id, param_target_angle);
 
       if (!mx28_ctrl->setAngle(angle_data)) {
         std::cerr << "Error setting target angle." << std::endl;

@@ -136,7 +136,7 @@ include_directories(
 ## The recommended prefix ensures that target names across packages don't collide
 add_executable(${PROJECT_NAME}_node
   src/driver/dynamixel/Dynamixel.cpp
-  src/driver/dynamixel/MX28Controller.cpp
+  src/driver/dynamixel/MX28.cpp
   src/phy/serial/AsyncSerial.cpp
   src/driver/ssc32/SSC32.cpp
   src/l3xz_node.cpp
