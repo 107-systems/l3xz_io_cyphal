@@ -19,6 +19,13 @@
 #include <l3xz/driver/dynamixel/Dynamixel.h>
 
 /**************************************************************************************
+ * NAMESPACE
+ **************************************************************************************/
+
+using namespace l3xz::driver;
+using namespace boost::program_options;
+
+/**************************************************************************************
  * CONSTANT
  **************************************************************************************/
 
@@ -37,20 +44,20 @@ int main(int argc, char **argv)
     int param_id;
     float param_target_angle;
 
-    boost::program_options::options_description desc("Allowed options");
+    options_description desc("Allowed options");
     desc.add_options()
       ("help", "Produce help message.")
-      ("device-name", boost::program_options::value<std::string>(&param_device_name)->required(), "Device name of attached U2D2 USB-to-RS458 converter.")
-      ("baud-rate", boost::program_options::value<int>(&param_baudrate)->default_value(115200), "Baud rate of attached Dynamixel servos.")
-      ("id", boost::program_options::value<int>(&param_id), "Dynamixel servo ID.")
-      ("target-angle", boost::program_options::value<float>(&param_target_angle), "Desired target angle in degrees.")
+      ("device-name", value<std::string>(&param_device_name)->required(), "Device name of attached U2D2 USB-to-RS458 converter.")
+      ("baud-rate", value<int>(&param_baudrate)->default_value(115200), "Baud rate of attached Dynamixel servos.")
+      ("id", value<int>(&param_id), "Dynamixel servo ID.")
+      ("target-angle", value<float>(&param_target_angle), "Desired target angle in degrees.")
       ("discover", "List the ID of all connected servos.")
       ("get-angle", "Retrieve current angle of a specific servo.")
       ("set-angle", "Set target angle for a specific servo.")
       ;
 
-    boost::program_options::variables_map vm;
-    boost::program_options::store(boost::program_options::command_line_parser(argc, argv).options(desc).run(), vm);
+    variables_map vm;
+    store(command_line_parser(argc, argv).options(desc).run(), vm);
 
     /**************************************************************************************
      * --help
@@ -63,10 +70,10 @@ int main(int argc, char **argv)
       return EXIT_SUCCESS;
     }
 
-    boost::program_options::notify(vm);
+    notify(vm);
 
-    std::shared_ptr<l3xz::driver::Dynamixel> dynamixel_ctrl = std::make_shared<l3xz::driver::Dynamixel>(param_device_name, DYNAMIXEL_PROTOCOL_VERSION, param_baudrate);
-    std::unique_ptr<l3xz::driver::MX28> mx28_ctrl(new l3xz::driver::MX28(dynamixel_ctrl));
+    std::shared_ptr<Dynamixel> dynamixel_ctrl = std::make_shared<Dynamixel>(param_device_name, DYNAMIXEL_PROTOCOL_VERSION, param_baudrate);
+    std::unique_ptr<MX28> mx28_ctrl(new MX28(dynamixel_ctrl));
 
     /**************************************************************************************
      * --discover
@@ -74,7 +81,7 @@ int main(int argc, char **argv)
 
     if (vm.count("discover"))
     {
-      std::optional<l3xz::driver::Dynamixel::IdVect> opt_id_vect =  mx28_ctrl->discover();
+      std::optional<Dynamixel::IdVect> opt_id_vect =  mx28_ctrl->discover();
 
       if (!opt_id_vect) {
         std::cout << "Zero node IDs discovered." << std::endl;
@@ -95,7 +102,7 @@ int main(int argc, char **argv)
     {
       if (vm.count("id"))
       {
-        std::optional<l3xz::driver::MX28::AngleData> opt_angle = mx28_ctrl->getAngle(param_id);
+        std::optional<MX28::AngleData> opt_angle = mx28_ctrl->getAngle(param_id);
 
         if (opt_angle)
         {
@@ -109,11 +116,11 @@ int main(int argc, char **argv)
       }
       else
       {
-        std::optional<l3xz::driver::Dynamixel::IdVect> opt_id_vect =  mx28_ctrl->discover();
+        std::optional<Dynamixel::IdVect> opt_id_vect =  mx28_ctrl->discover();
 
         if (opt_id_vect)
         {
-          l3xz::driver::MX28::AngleDataVect angle_vect = mx28_ctrl->getAngle(opt_id_vect.value());
+          MX28::AngleDataVect angle_vect = mx28_ctrl->getAngle(opt_id_vect.value());
           for (auto [id, angle_deg] : angle_vect) {
             std::cout << "[ID: " << static_cast<int>(id) << "] Angle = " << angle_deg << "°" << std::endl;
           }
@@ -144,7 +151,7 @@ int main(int argc, char **argv)
 
       mx28_ctrl->torqueOn(param_id);
 
-      l3xz::driver::MX28::AngleData const angle_data = std::make_tuple(param_id, param_target_angle);
+      MX28::AngleData const angle_data = std::make_tuple(param_id, param_target_angle);
 
       if (!mx28_ctrl->setAngle(angle_data)) {
         std::cerr << "Error setting target angle." << std::endl;

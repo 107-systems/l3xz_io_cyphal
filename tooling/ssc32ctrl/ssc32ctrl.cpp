@@ -17,6 +17,13 @@
 #include <l3xz/driver/ssc32/SSC32.h>
 
 /**************************************************************************************
+ * NAMESPACE
+ **************************************************************************************/
+
+using namespace l3xz::driver;
+using namespace boost::program_options;
+
+/**************************************************************************************
  * MAIN
  **************************************************************************************/
 
@@ -30,37 +37,37 @@ int main(int argc, char **argv)
     int param_pulse_width_us;
     int param_move_time_us;
 
-    boost::program_options::options_description desc("Allowed options");
+    options_description desc("Allowed options");
     desc.add_options()
       ("help", "Show this help message.")
-      ("device-name", boost::program_options::value<std::string>(&param_device_name)->required(), "SSC32U servo controller device name.")
-      ("baud-rate", boost::program_options::value<int>(&param_baudrate)->default_value(115200), "SSC32U servo controller baud rate.")
+      ("device-name", value<std::string>(&param_device_name)->required(), "SSC32U servo controller device name.")
+      ("baud-rate", value<int>(&param_baudrate)->default_value(115200), "SSC32U servo controller baud rate.")
       ("move", "Move a single servo.")
       ("channel",
-       boost::program_options::value<int>(&param_channel)->notifier([](int const val)
+       value<int>(&param_channel)->notifier([](int const val)
                                                                     {
                                                                       if(val < 0 || val > 31)
-                                                                        throw boost::program_options::validation_error(boost::program_options::validation_error::invalid_option_value, "channel", std::to_string(val));
+                                                                        throw validation_error(validation_error::invalid_option_value, "channel", std::to_string(val));
                                                                     }),
        "Lynxmotion SSC32U servo channel (0 - 31).")
       ("pulse-width",
-       boost::program_options::value<int>(&param_pulse_width_us)->notifier([](int const val)
+       value<int>(&param_pulse_width_us)->notifier([](int const val)
                                                                     {
                                                                       if(val < 500 || val > 2500)
-                                                                        throw boost::program_options::validation_error(boost::program_options::validation_error::invalid_option_value, "pulse-width", std::to_string(val));
+                                                                        throw validation_error(validation_error::invalid_option_value, "pulse-width", std::to_string(val));
                                                                     }),
        "Servo pulse width / us (500 - 2500).")
       ("move-time",
-       boost::program_options::value<int>(&param_move_time_us)->notifier([](int const val)
+       value<int>(&param_move_time_us)->notifier([](int const val)
                                                                     {
                                                                       if(val < 0 || val > 65535)
-                                                                        throw boost::program_options::validation_error(boost::program_options::validation_error::invalid_option_value, "move-time", std::to_string(val));
+                                                                        throw validation_error(validation_error::invalid_option_value, "move-time", std::to_string(val));
                                                                     }),
        "Servo move time / us (0 - 65535).")
       ;
 
-    boost::program_options::variables_map vm;
-    boost::program_options::store(boost::program_options::command_line_parser(argc, argv).options(desc).run(), vm);
+    variables_map vm;
+    store(command_line_parser(argc, argv).options(desc).run(), vm);
 
     /**************************************************************************************
      * --help
@@ -73,9 +80,9 @@ int main(int argc, char **argv)
       return EXIT_SUCCESS;
     }
 
-    boost::program_options::notify(vm);
+    notify(vm);
 
-    l3xz::driver::SSC32 ssc32_ctrl(param_device_name, param_baudrate);
+    SSC32 ssc32_ctrl(param_device_name, param_baudrate);
   
     /**************************************************************************************
      * --move
