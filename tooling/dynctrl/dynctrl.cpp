@@ -15,8 +15,8 @@
 
 #include <boost/program_options.hpp>
 
+#include <l3xz/driver/dynamixel/Dynamixel.h>
 #include <l3xz/driver/dynamixel/MX28Controller.h>
-#include <l3xz/driver/dynamixel/DynamixelController.h>
 
 /**************************************************************************************
  * CONSTANT
@@ -65,7 +65,7 @@ int main(int argc, char **argv)
 
     boost::program_options::notify(vm);
 
-    std::unique_ptr<dynamixel::DynamixelController> dynamixel_ctrl(new dynamixel::DynamixelController(param_device_name, DYNAMIXEL_PROTOCOL_VERSION, param_baudrate));
+    std::unique_ptr<dynamixel::Dynamixel> dynamixel_ctrl(new dynamixel::Dynamixel(param_device_name, DYNAMIXEL_PROTOCOL_VERSION, param_baudrate));
     std::unique_ptr<dynamixel::MX28Controller> mx28_ctrl(new dynamixel::MX28Controller(std::move(dynamixel_ctrl)));
 
     /**************************************************************************************

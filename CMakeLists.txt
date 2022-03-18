@@ -135,7 +135,7 @@ include_directories(
 ## With catkin_make all packages are built within a single CMake context
 ## The recommended prefix ensures that target names across packages don't collide
 add_executable(${PROJECT_NAME}_node
-  src/driver/dynamixel/DynamixelController.cpp
+  src/driver/dynamixel/Dynamixel.cpp
   src/driver/dynamixel/MX28Controller.cpp
   src/phy/serial/AsyncSerial.cpp
   src/driver/ssc32/SSC32.cpp

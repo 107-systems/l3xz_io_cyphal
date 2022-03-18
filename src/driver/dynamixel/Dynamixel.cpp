@@ -8,7 +8,7 @@
  * INCLUDE
  **************************************************************************************/
 
-#include <l3xz/driver/dynamixel/DynamixelController.h>
+#include <l3xz/driver/dynamixel/Dynamixel.h>
 
 /**************************************************************************************
  * NAMESPACE
@@ -21,9 +21,9 @@ namespace dynamixel
  * CTOR/DTOR
  **************************************************************************************/
 
-DynamixelController::DynamixelController(std::string const device_name,
-                                         float       const protocol_version,
-                                         int         const baudrate)
+Dynamixel::Dynamixel(std::string const device_name,
+                     float       const protocol_version,
+                     int         const baudrate)
 : _port_handler{PortHandler::getPortHandler(device_name.c_str())}
 , _packet_handler{PacketHandler::getPacketHandler(protocol_version)}
 {
@@ -34,7 +34,7 @@ DynamixelController::DynamixelController(std::string const device_name,
     printf("%s::%s error, 'PortHandler::setBaudRate()' failed.", __FILE__, __FUNCTION__);
 }
 
-DynamixelController::~DynamixelController()
+Dynamixel::~Dynamixel()
 {
   _port_handler->closePort();
 }
@@ -43,7 +43,7 @@ DynamixelController::~DynamixelController()
  * PUBLIC MEMBER FUNCTION
  **************************************************************************************/
 
-std::tuple<Error, IdVect> DynamixelController::broadcastPing()
+std::tuple<Error, IdVect> Dynamixel::broadcastPing()
 {
   IdVect servo_id_vect;
 
@@ -56,12 +56,12 @@ std::tuple<Error, IdVect> DynamixelController::broadcastPing()
   return std::make_tuple(Error::None, servo_id_vect);
 }
 
-Error DynamixelController::syncWrite(uint16_t const start_address, uint16_t const data_length, SyncWriteData const & data)
+Error Dynamixel::syncWrite(uint16_t const start_address, uint16_t const data_length, SyncWriteData const & data)
 {
   return syncWrite(start_address, data_length, std::vector<SyncWriteData>{data});
 }
 
-Error DynamixelController::syncWrite(uint16_t const start_address, uint16_t const data_length, SyncWriteDataVect const & data)
+Error Dynamixel::syncWrite(uint16_t const start_address, uint16_t const data_length, SyncWriteDataVect const & data)
 {
   GroupSyncWrite group_sync_write(_port_handler.get(), _packet_handler.get(), start_address, data_length);
 
@@ -82,13 +82,13 @@ Error DynamixelController::syncWrite(uint16_t const start_address, uint16_t cons
   return Error::None;
 }
 
-std::tuple<Error, SyncReadData> DynamixelController::syncRead(uint16_t const start_address, uint16_t const data_length, uint8_t const id)
+std::tuple<Error, SyncReadData> Dynamixel::syncRead(uint16_t const start_address, uint16_t const data_length, uint8_t const id)
 {
   auto [err, data] = syncRead(start_address, data_length, std::vector<uint8_t>{id});
   return std::make_tuple(err, data.at(0));
 }
 
-std::tuple<Error, SyncReadDataVect> DynamixelController::syncRead(uint16_t const start_address, uint16_t const data_length, IdVect const & id_vect)
+std::tuple<Error, SyncReadDataVect> Dynamixel::syncRead(uint16_t const start_address, uint16_t const data_length, IdVect const & id_vect)
 {
   SyncReadDataVect data_vect;
 

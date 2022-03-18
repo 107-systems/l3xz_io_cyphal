@@ -35,7 +35,7 @@ enum class MX28ControlTable : uint16_t
  * CTOR/DTOR
  **************************************************************************************/
 
-MX28Controller::MX28Controller(std::unique_ptr<DynamixelController> dyn_ctrl)
+MX28Controller::MX28Controller(std::unique_ptr<Dynamixel> dyn_ctrl)
 : _dyn_ctrl{std::move(dyn_ctrl)}
 {
 

@@ -4,8 +4,8 @@
  * Contributors: https://github.com/107-systems/107-Arduino-UAVCAN/graphs/contributors.
  */
 
-#ifndef DYNAMIXEL_DYNAMIXEL_H_
-#define DYNAMIXEL_DYNAMIXEL_H_
+#ifndef DYNAMIXEL_H_
+#define DYNAMIXEL_H_
 
 /**************************************************************************************
  * INCLUDE
@@ -50,14 +50,14 @@ typedef std::vector<SyncReadData>                    SyncReadDataVect;
  * CLASS DECLARATION
  **************************************************************************************/
 
-class DynamixelController
+class Dynamixel
 {
 public:
 
-  DynamixelController(std::string const device_name,
-                      float       const protocol_version,
-                      int         const baudrate);
-  ~DynamixelController();
+   Dynamixel(std::string const device_name,
+             float       const protocol_version,
+             int         const baudrate);
+  ~Dynamixel();
 
 
   std::tuple<Error, IdVect> broadcastPing();
@@ -81,4 +81,4 @@ private:
 
 }; /* dynamixel */
 
-#endif /* DYNAMIXEL_DYNAMIXEL_H_ */
+#endif /* DYNAMIXEL_H_ */

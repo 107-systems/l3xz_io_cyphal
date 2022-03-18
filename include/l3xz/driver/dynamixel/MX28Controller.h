@@ -13,7 +13,7 @@
 
 #include <memory>
 
-#include <l3xz/driver/dynamixel/DynamixelController.h>
+#include <l3xz/driver/dynamixel/Dynamixel.h>
 
 /**************************************************************************************
  * NAMESPACE
@@ -30,7 +30,7 @@ class MX28Controller
 {
 public:
 
-  MX28Controller(std::unique_ptr<DynamixelController> dyn_ctrl);
+  MX28Controller(std::unique_ptr<Dynamixel> dyn_ctrl);
 
   std::optional<IdVect> discover();
 
@@ -54,7 +54,7 @@ public:
 
 private:
 
-  std::unique_ptr<DynamixelController> _dyn_ctrl;
+  std::unique_ptr<Dynamixel> _dyn_ctrl;
 };
 
 /**************************************************************************************
