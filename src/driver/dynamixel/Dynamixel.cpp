@@ -43,7 +43,7 @@ Dynamixel::~Dynamixel()
  * PUBLIC MEMBER FUNCTION
  **************************************************************************************/
 
-std::tuple<Error, IdVect> Dynamixel::broadcastPing()
+std::tuple<Dynamixel::Error, Dynamixel::IdVect> Dynamixel::broadcastPing()
 {
   IdVect servo_id_vect;
 
@@ -56,12 +56,12 @@ std::tuple<Error, IdVect> Dynamixel::broadcastPing()
   return std::make_tuple(Error::None, servo_id_vect);
 }
 
-Error Dynamixel::syncWrite(uint16_t const start_address, uint16_t const data_length, SyncWriteData const & data)
+Dynamixel::Error Dynamixel::syncWrite(uint16_t const start_address, uint16_t const data_length, SyncWriteData const & data)
 {
   return syncWrite(start_address, data_length, std::vector<SyncWriteData>{data});
 }
 
-Error Dynamixel::syncWrite(uint16_t const start_address, uint16_t const data_length, SyncWriteDataVect const & data)
+Dynamixel::Error Dynamixel::syncWrite(uint16_t const start_address, uint16_t const data_length, SyncWriteDataVect const & data)
 {
   GroupSyncWrite group_sync_write(_port_handler.get(), _packet_handler.get(), start_address, data_length);
 
@@ -82,13 +82,13 @@ Error Dynamixel::syncWrite(uint16_t const start_address, uint16_t const data_len
   return Error::None;
 }
 
-std::tuple<Error, SyncReadData> Dynamixel::syncRead(uint16_t const start_address, uint16_t const data_length, uint8_t const id)
+std::tuple<Dynamixel::Error, Dynamixel::SyncReadData> Dynamixel::syncRead(uint16_t const start_address, uint16_t const data_length, uint8_t const id)
 {
   auto [err, data] = syncRead(start_address, data_length, std::vector<uint8_t>{id});
   return std::make_tuple(err, data.at(0));
 }
 
-std::tuple<Error, SyncReadDataVect> Dynamixel::syncRead(uint16_t const start_address, uint16_t const data_length, IdVect const & id_vect)
+std::tuple<Dynamixel::Error, Dynamixel::SyncReadDataVect> Dynamixel::syncRead(uint16_t const start_address, uint16_t const data_length, IdVect const & id_vect)
 {
   SyncReadDataVect data_vect;
 
@@ -130,4 +130,4 @@ std::tuple<Error, SyncReadDataVect> Dynamixel::syncRead(uint16_t const start_add
  * NAMESPACE
  **************************************************************************************/
 
-}; /* dynamixel */
+} /* dynamixel */

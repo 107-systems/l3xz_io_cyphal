@@ -32,21 +32,21 @@ public:
 
   MX28(std::shared_ptr<Dynamixel> dyn_ctrl);
 
-  std::optional<IdVect> discover();
+  std::optional<Dynamixel::IdVect> discover();
 
 
-  void turnLedOn (IdVect const & id_vect);
-  void turnLedOff(IdVect const & id_vect);
+  void turnLedOn (Dynamixel::IdVect const & id_vect);
+  void turnLedOff(Dynamixel::IdVect const & id_vect);
 
-  void torqueOn (uint8_t const id);
-  void torqueOn (IdVect const & id_vect);
-  void torqueOff(IdVect const & id_vect);
+  void torqueOn (Dynamixel::Id const id);
+  void torqueOn (Dynamixel::IdVect const & id_vect);
+  void torqueOff(Dynamixel::IdVect const & id_vect);
 
-  typedef std::tuple<uint8_t, float> AngleData;
+  typedef std::tuple<Dynamixel::Id, float> AngleData;
   typedef std::vector<AngleData> AngleDataVect;
 
-  std::optional<AngleData> getAngle(uint8_t const id);
-  AngleDataVect            getAngle(IdVect const & id_vect);
+  std::optional<AngleData> getAngle(Dynamixel::Id const id);
+  AngleDataVect            getAngle(Dynamixel::IdVect const & id_vect);
 
   bool setAngle(AngleData const & angle_data);
   bool setAngle(AngleDataVect const & angle_data_vect);

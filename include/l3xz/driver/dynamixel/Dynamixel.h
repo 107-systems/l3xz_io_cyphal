@@ -28,26 +28,6 @@ namespace dynamixel
 {
 
 /**************************************************************************************
- * TYPEDEF
- **************************************************************************************/
-
-enum class Error : int
-{
-  None          =  0,
-  AddParam      = -1,
-  TxPacket      = -2,
-  TxRxPacket    = -3,
-  BroadcastPing = -4,
-};
-
-typedef uint8_t                                 Id;
-typedef std::vector<Id>                         IdVect;
-typedef std::tuple<Id, uint8_t *>               SyncWriteData;
-typedef std::vector<SyncWriteData>              SyncWriteDataVect;
-typedef std::tuple<Id, std::optional<uint32_t>> SyncReadData;
-typedef std::vector<SyncReadData>               SyncReadDataVect;
-
-/**************************************************************************************
  * CLASS DECLARATION
  **************************************************************************************/
 
@@ -59,6 +39,23 @@ public:
              float       const protocol_version,
              int         const baudrate);
   ~Dynamixel();
+
+
+  enum class Error : int
+  {
+    None          =  0,
+    AddParam      = -1,
+    TxPacket      = -2,
+    TxRxPacket    = -3,
+    BroadcastPing = -4,
+  };
+
+  typedef uint8_t                                 Id;
+  typedef std::vector<Id>                         IdVect;
+  typedef std::tuple<Id, uint8_t *>               SyncWriteData;
+  typedef std::vector<SyncWriteData>              SyncWriteDataVect;
+  typedef std::tuple<Id, std::optional<uint32_t>> SyncReadData;
+  typedef std::vector<SyncReadData>               SyncReadDataVect;
 
 
   std::tuple<Error, IdVect> broadcastPing();

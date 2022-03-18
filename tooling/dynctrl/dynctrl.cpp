@@ -74,7 +74,7 @@ int main(int argc, char **argv)
 
     if (vm.count("discover"))
     {
-      std::optional<dynamixel::IdVect> opt_id_vect =  mx28_ctrl->discover();
+      std::optional<dynamixel::Dynamixel::IdVect> opt_id_vect =  mx28_ctrl->discover();
 
       if (!opt_id_vect) {
         std::cout << "Zero node IDs discovered." << std::endl;
@@ -109,7 +109,7 @@ int main(int argc, char **argv)
       }
       else
       {
-        std::optional<dynamixel::IdVect> opt_id_vect =  mx28_ctrl->discover();
+        std::optional<dynamixel::Dynamixel::IdVect> opt_id_vect =  mx28_ctrl->discover();
 
         if (opt_id_vect)
         {
