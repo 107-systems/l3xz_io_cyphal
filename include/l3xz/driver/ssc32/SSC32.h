@@ -25,10 +25,6 @@ namespace l3xz::driver
 {
 
 /**************************************************************************************
- * TYPEDEF
- **************************************************************************************/
-
-/**************************************************************************************
  * CLASS DECLARATION
  **************************************************************************************/
 
@@ -45,7 +41,7 @@ public:
     InvParam_PulseWidth = -2,
   };
 
-  Error setPulseWidth(uint8_t const channel, uint16_t const pulse_width_us, uint16_t const move_time_us);
+  Error setPulseWidth(uint8_t const channel, uint16_t const pulse_width_us, uint16_t const move_time_ms);
 
 private:
   phy::serial::AsyncSerial _serial;

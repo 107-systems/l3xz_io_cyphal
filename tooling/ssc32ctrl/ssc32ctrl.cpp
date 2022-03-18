@@ -35,7 +35,7 @@ int main(int argc, char **argv)
     int param_baudrate;
     int param_channel;
     int param_pulse_width_us;
-    int param_move_time_us;
+    int param_move_time_ms;
 
     options_description desc("Allowed options");
     desc.add_options()
@@ -58,12 +58,12 @@ int main(int argc, char **argv)
                                                                     }),
        "Servo pulse width / us (500 - 2500).")
       ("move-time",
-       value<int>(&param_move_time_us)->notifier([](int const val)
+       value<int>(&param_move_time_ms)->notifier([](int const val)
                                                                     {
                                                                       if(val < 0 || val > 65535)
                                                                         throw validation_error(validation_error::invalid_option_value, "move-time", std::to_string(val));
                                                                     }),
-       "Servo move time / us (0 - 65535).")
+       "Servo move time / ms (0 - 65535).")
       ;
 
     variables_map vm;
@@ -103,7 +103,7 @@ int main(int argc, char **argv)
         return EXIT_FAILURE;
       }
 
-      ssc32_ctrl.setPulseWidth(param_channel, param_pulse_width_us, param_move_time_us);
+      ssc32_ctrl.setPulseWidth(param_channel, param_pulse_width_us, param_move_time_ms);
     }
   }
   catch(std::exception const & e)

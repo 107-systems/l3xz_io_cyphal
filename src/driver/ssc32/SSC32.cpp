@@ -39,7 +39,7 @@ SSC32::~SSC32()
  * PUBLIC MEMBER FUNCTIONS
  **************************************************************************************/
 
-SSC32::Error SSC32::setPulseWidth(uint8_t const channel, uint16_t const pulse_width_us, uint16_t const move_time_us)
+SSC32::Error SSC32::setPulseWidth(uint8_t const channel, uint16_t const pulse_width_us, uint16_t const move_time_ms)
 {
   auto isValidChannel    = [](size_t const c) -> bool { return ((c >= 0) && (c <= 31)); };
   auto isValidPulseWidth = [](size_t const p) -> bool { return ((p >= 500) && (p <= 2500)); };
@@ -56,7 +56,7 @@ SSC32::Error SSC32::setPulseWidth(uint8_t const channel, uint16_t const pulse_wi
       << "P"
       << static_cast<unsigned int>(pulse_width_us)
       << "T"
-      << static_cast<unsigned int>(move_time_us)
+      << static_cast<unsigned int>(move_time_ms)
       << '\r';
   std::string const msg_str(msg.str());
   std::vector<uint8_t> const msg_vect(msg_str.begin(), msg_str.end());
