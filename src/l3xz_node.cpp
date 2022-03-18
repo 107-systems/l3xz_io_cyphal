@@ -36,10 +36,10 @@ int main(int argc, char **argv)
 
   ros::NodeHandle node_handle;
 
-  std::shared_ptr<dynamixel::Dynamixel> dynamixel_ctrl = std::make_shared<dynamixel::Dynamixel>(DYNAMIXEL_DEVICE_NAME, DYNAMIXEL_PROTOCOL_VERSION, DYNAMIXEL_BAUD_RATE);
-  std::unique_ptr<dynamixel::MX28> mx28_ctrl(new dynamixel::MX28(dynamixel_ctrl));
+  std::shared_ptr<l3xz::driver::Dynamixel> dynamixel_ctrl = std::make_shared<l3xz::driver::Dynamixel>(DYNAMIXEL_DEVICE_NAME, DYNAMIXEL_PROTOCOL_VERSION, DYNAMIXEL_BAUD_RATE);
+  std::unique_ptr<l3xz::driver::MX28> mx28_ctrl(new l3xz::driver::MX28(dynamixel_ctrl));
 
-  std::optional<dynamixel::Dynamixel::IdVect> opt_id_vect =  mx28_ctrl->discover();
+  std::optional<l3xz::driver::Dynamixel::IdVect> opt_id_vect =  mx28_ctrl->discover();
   if (!opt_id_vect)
     ROS_ERROR("Zero MX-28 servos detected.");
   else
@@ -63,11 +63,11 @@ int main(int argc, char **argv)
     mx28_ctrl->turnLedOff(opt_id_vect.value());
     loop_rate.sleep();
 
-    dynamixel::MX28::AngleDataVect angle_vect_act = mx28_ctrl->getAngle(opt_id_vect.value());
+    l3xz::driver::MX28::AngleDataVect angle_vect_act = mx28_ctrl->getAngle(opt_id_vect.value());
     for (auto [id, angle_deg] : angle_vect_act)
       ROS_INFO("[ID:%03d] Angle Act = %0.02f deg", id, angle_deg);
 
-    dynamixel::MX28::AngleDataVect angle_vect_set = angle_vect_act;
+    l3xz::driver::MX28::AngleDataVect angle_vect_set = angle_vect_act;
     std::transform(angle_vect_act.begin(),
                    angle_vect_act.end(),
                    angle_vect_set.begin(),

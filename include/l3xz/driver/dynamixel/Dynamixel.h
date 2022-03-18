@@ -24,7 +24,7 @@
  * NAMESPACE
  **************************************************************************************/
 
-namespace dynamixel
+namespace l3xz::driver
 {
 
 /**************************************************************************************
@@ -69,14 +69,14 @@ public:
 
 private:
 
-  std::unique_ptr<PortHandler> _port_handler;
-  std::unique_ptr<PacketHandler> _packet_handler;
+  std::unique_ptr<dynamixel::PortHandler> _port_handler;
+  std::unique_ptr<dynamixel::PacketHandler> _packet_handler;
 };
 
 /**************************************************************************************
  * NAMESPACE
  **************************************************************************************/
 
-}; /* dynamixel */
+}; /* l3xz::driver */
 
 #endif /* DYNAMIXEL_H_ */

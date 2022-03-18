@@ -14,7 +14,7 @@
  * NAMESPACE
  **************************************************************************************/
 
-namespace dynamixel
+namespace l3xz::driver
 {
 
 /**************************************************************************************
@@ -24,8 +24,8 @@ namespace dynamixel
 Dynamixel::Dynamixel(std::string const device_name,
                      float       const protocol_version,
                      int         const baudrate)
-: _port_handler{PortHandler::getPortHandler(device_name.c_str())}
-, _packet_handler{PacketHandler::getPacketHandler(protocol_version)}
+: _port_handler{dynamixel::PortHandler::getPortHandler(device_name.c_str())}
+, _packet_handler{dynamixel::PacketHandler::getPacketHandler(protocol_version)}
 {
   if (!_port_handler->openPort())
     printf("%s::%s error, 'PortHandler::openPort()' failed.", __FILE__, __FUNCTION__);
@@ -63,7 +63,7 @@ Dynamixel::Error Dynamixel::syncWrite(uint16_t const start_address, uint16_t con
 
 Dynamixel::Error Dynamixel::syncWrite(uint16_t const start_address, uint16_t const data_length, SyncWriteDataVect const & data)
 {
-  GroupSyncWrite group_sync_write(_port_handler.get(), _packet_handler.get(), start_address, data_length);
+  dynamixel::GroupSyncWrite group_sync_write(_port_handler.get(), _packet_handler.get(), start_address, data_length);
 
   for(auto [id, data_ptr] : data)
   {
@@ -92,7 +92,7 @@ std::tuple<Dynamixel::Error, Dynamixel::SyncReadDataVect> Dynamixel::syncRead(ui
 {
   SyncReadDataVect data_vect;
 
-  GroupSyncRead group_sync_read(_port_handler.get(), _packet_handler.get(), start_address, data_length);
+  dynamixel::GroupSyncRead group_sync_read(_port_handler.get(), _packet_handler.get(), start_address, data_length);
 
   for(auto id : id_vect)
   {
@@ -130,4 +130,4 @@ std::tuple<Dynamixel::Error, Dynamixel::SyncReadDataVect> Dynamixel::syncRead(ui
  * NAMESPACE
  **************************************************************************************/
 
-} /* dynamixel */
+} /* l3xz::driver */

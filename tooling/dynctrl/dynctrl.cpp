@@ -65,8 +65,8 @@ int main(int argc, char **argv)
 
     boost::program_options::notify(vm);
 
-    std::shared_ptr<dynamixel::Dynamixel> dynamixel_ctrl = std::make_shared<dynamixel::Dynamixel>(param_device_name, DYNAMIXEL_PROTOCOL_VERSION, param_baudrate);
-    std::unique_ptr<dynamixel::MX28> mx28_ctrl(new dynamixel::MX28(dynamixel_ctrl));
+    std::shared_ptr<l3xz::driver::Dynamixel> dynamixel_ctrl = std::make_shared<l3xz::driver::Dynamixel>(param_device_name, DYNAMIXEL_PROTOCOL_VERSION, param_baudrate);
+    std::unique_ptr<l3xz::driver::MX28> mx28_ctrl(new l3xz::driver::MX28(dynamixel_ctrl));
 
     /**************************************************************************************
      * --discover
@@ -74,7 +74,7 @@ int main(int argc, char **argv)
 
     if (vm.count("discover"))
     {
-      std::optional<dynamixel::Dynamixel::IdVect> opt_id_vect =  mx28_ctrl->discover();
+      std::optional<l3xz::driver::Dynamixel::IdVect> opt_id_vect =  mx28_ctrl->discover();
 
       if (!opt_id_vect) {
         std::cout << "Zero node IDs discovered." << std::endl;
@@ -95,7 +95,7 @@ int main(int argc, char **argv)
     {
       if (vm.count("id"))
       {
-        std::optional<dynamixel::MX28::AngleData> opt_angle = mx28_ctrl->getAngle(param_id);
+        std::optional<l3xz::driver::MX28::AngleData> opt_angle = mx28_ctrl->getAngle(param_id);
 
         if (opt_angle)
         {
@@ -109,11 +109,11 @@ int main(int argc, char **argv)
       }
       else
       {
-        std::optional<dynamixel::Dynamixel::IdVect> opt_id_vect =  mx28_ctrl->discover();
+        std::optional<l3xz::driver::Dynamixel::IdVect> opt_id_vect =  mx28_ctrl->discover();
 
         if (opt_id_vect)
         {
-          dynamixel::MX28::AngleDataVect angle_vect = mx28_ctrl->getAngle(opt_id_vect.value());
+          l3xz::driver::MX28::AngleDataVect angle_vect = mx28_ctrl->getAngle(opt_id_vect.value());
           for (auto [id, angle_deg] : angle_vect) {
             std::cout << "[ID: " << static_cast<int>(id) << "] Angle = " << angle_deg << "°" << std::endl;
           }
@@ -144,7 +144,7 @@ int main(int argc, char **argv)
 
       mx28_ctrl->torqueOn(param_id);
 
-      dynamixel::MX28::AngleData const angle_data = std::make_tuple(param_id, param_target_angle);
+      l3xz::driver::MX28::AngleData const angle_data = std::make_tuple(param_id, param_target_angle);
 
       if (!mx28_ctrl->setAngle(angle_data)) {
         std::cerr << "Error setting target angle." << std::endl;
