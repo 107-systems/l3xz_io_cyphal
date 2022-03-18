@@ -161,7 +161,7 @@ target_link_libraries(${PROJECT_NAME}_node
   pthread
 )
 
-target_compile_options(${PROJECT_NAME}_node PRIVATE -std=c++17)
+target_compile_options(${PROJECT_NAME}_node PRIVATE -std=c++17 -Wall -Werror -pedantic)
 
 add_subdirectory(tooling/dynctrl)
 add_subdirectory(tooling/ssc32ctrl)
