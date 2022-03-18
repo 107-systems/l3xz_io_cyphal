@@ -40,30 +40,30 @@ int main(int argc, char **argv)
     options_description desc("Allowed options");
     desc.add_options()
       ("help", "Show this help message.")
-      ("device-name", value<std::string>(&param_device_name)->required(), "SSC32U servo controller device name.")
-      ("baud-rate", value<int>(&param_baudrate)->default_value(115200), "SSC32U servo controller baud rate.")
+      ("device", value<std::string>(&param_device_name)->required(), "SSC32U servo controller device name, i.e. /dev/ttyUSB0.")
+      ("baud", value<int>(&param_baudrate)->default_value(115200), "SSC32U servo controller baud rate.")
       ("move", "Move a single servo.")
       ("channel",
        value<int>(&param_channel)->notifier([](int const val)
-                                                                    {
-                                                                      if(val < 0 || val > 31)
-                                                                        throw validation_error(validation_error::invalid_option_value, "channel", std::to_string(val));
-                                                                    }),
-       "Lynxmotion SSC32U servo channel (0 - 31).")
-      ("pulse-width",
+                                            {
+                                              if(val < 0 || val > 31)
+                                                throw validation_error(validation_error::invalid_option_value, "channel", std::to_string(val));
+                                            }),
+       "Servo channel (0 - 31).")
+      ("pulse",
        value<int>(&param_pulse_width_us)->notifier([](int const val)
-                                                                    {
-                                                                      if(val < 500 || val > 2500)
-                                                                        throw validation_error(validation_error::invalid_option_value, "pulse-width", std::to_string(val));
-                                                                    }),
+                                                   {
+                                                    if(val < 500 || val > 2500)
+                                                        throw validation_error(validation_error::invalid_option_value, "pulse", std::to_string(val));
+                                                   }),
        "Servo pulse width / us (500 - 2500).")
-      ("move-time",
+      ("time",
        value<int>(&param_move_time_ms)->notifier([](int const val)
-                                                                    {
-                                                                      if(val < 0 || val > 65535)
-                                                                        throw validation_error(validation_error::invalid_option_value, "move-time", std::to_string(val));
-                                                                    }),
-       "Servo move time / ms (0 - 65535).")
+                                                 {
+                                                  if(val < 0 || val > 65535)
+                                                      throw validation_error(validation_error::invalid_option_value, "time", std::to_string(val));
+                                                 }),
+       "Servo travel time / ms (0 - 65535).")
       ;
 
     variables_map vm;
@@ -94,12 +94,12 @@ int main(int argc, char **argv)
         std::cerr << "Error, specify servo channel via '--channel'" << std::endl;
         return EXIT_FAILURE;
       }
-      if (!vm.count("pulse-width")) {
-        std::cerr << "Error, specify servo pulse width via '--pulse-width'" << std::endl;
+      if (!vm.count("pulse")) {
+        std::cerr << "Error, specify servo pulse width via '--pulse'" << std::endl;
         return EXIT_FAILURE;
       }
-      if (!vm.count("move-time")) {
-        std::cerr << "Error, specify servo move time via '--move-time'" << std::endl;
+      if (!vm.count("time")) {
+        std::cerr << "Error, specify servo travel time via '--time'" << std::endl;
         return EXIT_FAILURE;
       }
 
