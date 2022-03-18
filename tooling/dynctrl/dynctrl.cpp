@@ -65,8 +65,8 @@ int main(int argc, char **argv)
 
     boost::program_options::notify(vm);
 
-    std::unique_ptr<dynamixel::Dynamixel> dynamixel_ctrl(new dynamixel::Dynamixel(param_device_name, DYNAMIXEL_PROTOCOL_VERSION, param_baudrate));
-    std::unique_ptr<dynamixel::MX28> mx28_ctrl(new dynamixel::MX28(std::move(dynamixel_ctrl)));
+    std::shared_ptr<dynamixel::Dynamixel> dynamixel_ctrl = std::make_shared<dynamixel::Dynamixel>(param_device_name, DYNAMIXEL_PROTOCOL_VERSION, param_baudrate);
+    std::unique_ptr<dynamixel::MX28> mx28_ctrl(new dynamixel::MX28(dynamixel_ctrl));
 
     /**************************************************************************************
      * --discover

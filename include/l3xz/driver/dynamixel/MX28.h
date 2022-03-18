@@ -30,7 +30,7 @@ class MX28
 {
 public:
 
-  MX28(std::unique_ptr<Dynamixel> dyn_ctrl);
+  MX28(std::shared_ptr<Dynamixel> dyn_ctrl);
 
   std::optional<IdVect> discover();
 
@@ -54,7 +54,7 @@ public:
 
 private:
 
-  std::unique_ptr<Dynamixel> _dyn_ctrl;
+  std::shared_ptr<Dynamixel> _dyn_ctrl;
 };
 
 /**************************************************************************************

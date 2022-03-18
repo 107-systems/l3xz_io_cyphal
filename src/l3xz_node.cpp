@@ -36,8 +36,8 @@ int main(int argc, char **argv)
 
   ros::NodeHandle node_handle;
 
-  std::unique_ptr<dynamixel::Dynamixel> dynamixel_ctrl(new dynamixel::Dynamixel(DYNAMIXEL_DEVICE_NAME, DYNAMIXEL_PROTOCOL_VERSION, DYNAMIXEL_BAUD_RATE));
-  std::unique_ptr<dynamixel::MX28> mx28_ctrl(new dynamixel::MX28(std::move(dynamixel_ctrl)));
+  std::shared_ptr<dynamixel::Dynamixel> dynamixel_ctrl = std::make_shared<dynamixel::Dynamixel>(DYNAMIXEL_DEVICE_NAME, DYNAMIXEL_PROTOCOL_VERSION, DYNAMIXEL_BAUD_RATE);
+  std::unique_ptr<dynamixel::MX28> mx28_ctrl(new dynamixel::MX28(dynamixel_ctrl));
 
   std::optional<dynamixel::IdVect> opt_id_vect =  mx28_ctrl->discover();
   if (!opt_id_vect)
