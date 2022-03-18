@@ -4,8 +4,8 @@ cmake_minimum_required(VERSION 3.15)
 set(DYNCTRL_TARGET dynctrl)
 ##########################################################################
 add_executable(${DYNCTRL_TARGET}
-  ../../src/dynamixel/DynamixelController.cpp
-  ../../src/dynamixel/MX28Controller.cpp
+  ../../src/driver/dynamixel/DynamixelController.cpp
+  ../../src/driver/dynamixel/MX28Controller.cpp
   dynctrl.cpp
 )
 target_compile_options(${DYNCTRL_TARGET} PRIVATE -std=c++17)

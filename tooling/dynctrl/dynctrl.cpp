@@ -15,8 +15,8 @@
 
 #include <boost/program_options.hpp>
 
-#include <l3xz/dynamixel/MX28Controller.h>
-#include <l3xz/dynamixel/DynamixelController.h>
+#include <l3xz/driver/dynamixel/MX28Controller.h>
+#include <l3xz/driver/dynamixel/DynamixelController.h>
 
 /**************************************************************************************
  * CONSTANT

@@ -8,11 +8,9 @@
  * INCLUDE
  **************************************************************************************/
 
-#include <l3xz/dynamixel/MX28Controller.h>
+#include <l3xz/driver/dynamixel/MX28Controller.h>
 
 #include <cassert>
-
-#include <ros/console.h>
 
 /**************************************************************************************
  * NAMESPACE

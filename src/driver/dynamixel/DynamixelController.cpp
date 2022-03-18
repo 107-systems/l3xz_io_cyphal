@@ -8,7 +8,7 @@
  * INCLUDE
  **************************************************************************************/
 
-#include <l3xz/dynamixel/DynamixelController.h>
+#include <l3xz/driver/dynamixel/DynamixelController.h>
 
 /**************************************************************************************
  * NAMESPACE
