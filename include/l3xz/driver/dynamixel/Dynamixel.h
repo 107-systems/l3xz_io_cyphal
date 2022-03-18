@@ -40,11 +40,12 @@ enum class Error : int
   BroadcastPing = -4,
 };
 
-typedef std::vector<uint8_t>                         IdVect;
-typedef std::tuple<uint8_t, uint8_t *>               SyncWriteData;
-typedef std::vector<SyncWriteData>                   SyncWriteDataVect;
-typedef std::tuple<uint8_t, std::optional<uint32_t>> SyncReadData;
-typedef std::vector<SyncReadData>                    SyncReadDataVect;
+typedef uint8_t                                 Id;
+typedef std::vector<Id>                         IdVect;
+typedef std::tuple<Id, uint8_t *>               SyncWriteData;
+typedef std::vector<SyncWriteData>              SyncWriteDataVect;
+typedef std::tuple<Id, std::optional<uint32_t>> SyncReadData;
+typedef std::vector<SyncReadData>               SyncReadDataVect;
 
 /**************************************************************************************
  * CLASS DECLARATION
