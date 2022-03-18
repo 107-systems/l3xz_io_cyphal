@@ -49,8 +49,6 @@ int main(int argc, char **argv)
       ROS_INFO("[ID:%d]", id);
   }
 
-  float angle = 0.0f;
-
   mx28_ctrl->torqueOn(opt_id_vect.value());
 
   ros::Rate loop_rate(1);
