@@ -122,6 +122,13 @@ include_directories(
   ${catkin_INCLUDE_DIRS}
 )
 
+add_library(${PROJECT_NAME}_common
+  src/common/threading/ThreadBase.cpp
+  src/common/threading/ThreadStats.cpp
+)
+target_compile_options(${PROJECT_NAME}_common PRIVATE -std=c++17 -Wall -Werror -pedantic)
+
+
 ## Declare a C++ library
 # add_library(${PROJECT_NAME}
 #   src/${PROJECT_NAME}/l3xz.cpp
