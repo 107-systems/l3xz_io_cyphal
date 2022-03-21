@@ -113,6 +113,7 @@ catkin_package(
 ###########
 add_subdirectory(external/dynamixel-sdk)
 add_subdirectory(external/ik/current)
+add_subdirectory(external/libsweep/current)
 
 ## Specify additional locations of header files
 ## Your package locations should be listed before other locations
