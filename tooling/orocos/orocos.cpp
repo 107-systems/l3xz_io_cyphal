@@ -34,13 +34,13 @@ int main(int argc, char **argv)
 {
   KDL::Chain front_right_leg_chain;
 
-  KDL::Vector const front_right_leg_coxa(102.0, 216.81, 0.0);
+  KDL::Vector const front_right_leg_base_coxa(102.0, 216.81, 0.0);
   KDL::Vector const front_right_leg_coxa_femur(20.0, 0.0, -20.0);
   KDL::Vector const front_right_leg_femur_tibia(130.0, 0.0, 90.0);
   KDL::Vector const front_right_leg_tibia_endpoint(25.0, 0.0, -205.0);
 
   /* Base -> MX-28 Front/Right */
-  front_right_leg_chain.addSegment(Segment(Joint(Joint::None), Frame(front_right_leg_coxa)));
+  front_right_leg_chain.addSegment(Segment(Joint(Joint::None), Frame(front_right_leg_base_coxa)));
   /* MX-28 Front/Right z-axis rotation */
   front_right_leg_chain.addSegment(Segment(Joint(Joint::RotZ)));
   /* Coxa axis to femur axis. */
