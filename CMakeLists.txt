@@ -112,7 +112,7 @@ catkin_package(
 ## Build ##
 ###########
 add_subdirectory(external/libdynamixel/current)
-add_subdirectory(external/liborcos-kdl/current)
+add_subdirectory(external/liborocos-kdl/current)
 add_subdirectory(external/libsweep/current)
 
 ## Specify additional locations of header files
@@ -172,6 +172,7 @@ target_link_libraries(${PROJECT_NAME}_node
 target_compile_options(${PROJECT_NAME}_node PRIVATE -std=c++17 -Wall -Werror -pedantic)
 
 add_subdirectory(tooling/dynctrl)
+add_subdirectory(tooling/orocos)
 add_subdirectory(tooling/ssc32ctrl)
 
 #############
