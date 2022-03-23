@@ -112,7 +112,7 @@ catkin_package(
 ## Build ##
 ###########
 add_subdirectory(external/libdynamixel/current)
-add_subdirectory(external/ik/current)
+add_subdirectory(external/liborcos-kdl/current)
 add_subdirectory(external/libsweep/current)
 
 ## Specify additional locations of header files
