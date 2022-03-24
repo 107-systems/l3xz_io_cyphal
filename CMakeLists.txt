@@ -123,13 +123,6 @@ include_directories(
   ${catkin_INCLUDE_DIRS}
 )
 
-add_library(${PROJECT_NAME}_common
-  src/common/threading/ThreadBase.cpp
-  src/common/threading/ThreadStats.cpp
-)
-target_compile_options(${PROJECT_NAME}_common PRIVATE -std=c++17 -Wall -Werror -pedantic)
-
-
 ## Declare a C++ library
 # add_library(${PROJECT_NAME}
 #   src/${PROJECT_NAME}/l3xz.cpp
@@ -144,10 +137,13 @@ target_compile_options(${PROJECT_NAME}_common PRIVATE -std=c++17 -Wall -Werror -
 ## With catkin_make all packages are built within a single CMake context
 ## The recommended prefix ensures that target names across packages don't collide
 add_executable(${PROJECT_NAME}_node
+  src/common/threading/ThreadBase.cpp
+  src/common/threading/ThreadStats.cpp
   src/driver/dynamixel/Dynamixel.cpp
   src/driver/dynamixel/MX28.cpp
   src/phy/serial/AsyncSerial.cpp
   src/driver/ssc32/SSC32.cpp
+  src/driver/sweep/SweepThread.cpp
   src/l3xz_node.cpp
 )
 
@@ -169,6 +165,7 @@ target_link_libraries(${PROJECT_NAME}_node
   boost_system
   boost_thread
   pthread
+  sweep
 )
 
 target_compile_options(${PROJECT_NAME}_node PRIVATE -std=c++17 -Wall -Werror -pedantic)
@@ -176,6 +173,7 @@ target_compile_options(${PROJECT_NAME}_node PRIVATE -std=c++17 -Wall -Werror -pe
 add_subdirectory(tooling/dynctrl)
 add_subdirectory(tooling/orocos)
 add_subdirectory(tooling/ssc32ctrl)
+add_subdirectory(tooling/sweepctrl)
 
 #############
 ## Install ##
