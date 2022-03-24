@@ -111,6 +111,7 @@ catkin_package(
 ###########
 ## Build ##
 ###########
+add_subdirectory(external/libcanard/current)
 add_subdirectory(external/libdynamixel/current)
 add_subdirectory(external/liborocos-kdl/current)
 add_subdirectory(external/libsweep/current)
@@ -163,6 +164,7 @@ add_executable(${PROJECT_NAME}_node
 ## Specify libraries to link a library or executable target against
 target_link_libraries(${PROJECT_NAME}_node
   ${catkin_LIBRARIES}
+  canard
   dynamixel
   boost_system
   boost_thread
