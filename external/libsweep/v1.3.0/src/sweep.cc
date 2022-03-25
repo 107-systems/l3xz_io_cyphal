@@ -216,6 +216,8 @@ sweep_device_s sweep_device_construct(const char* port, int32_t bitrate, sweep_e
   // initialize assuming the device is scanning
   auto out = new sweep_device{serial, /*is_scanning=*/true, /*stop_thread=*/{false}, /*scan_queue=*/{20}};
 
+  std::this_thread::sleep_for(std::chrono::seconds(5));
+
   // send a stop scanning command in case the scanner was powered on and scanning
   sweep_device_stop_scanning(out, error);
 
