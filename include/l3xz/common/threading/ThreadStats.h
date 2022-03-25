@@ -11,7 +11,7 @@
  * INCLUDES
  **************************************************************************************/
 
-#include <map>
+#include <list>
 #include <mutex>
 #include <thread>
 #include <string>
@@ -32,8 +32,8 @@ class ThreadStats
 {
 public:
 
-  void add   (std::thread::id const thd_id, std::string const & name);
-  void remove(std::thread::id const thd_id);
+  void add   (std::string const & thd_name);
+  void remove(std::string const & thd_name);
 
   friend std::ostream & operator << (std::ostream & os, ThreadStats & stats);
 
@@ -44,7 +44,7 @@ private:
     std::string name;
   } Data;
 
-  std::map<std::thread::id, Data> _data;
+  std::list<Data> _data;
   std::mutex _data_mtx;
 };
 

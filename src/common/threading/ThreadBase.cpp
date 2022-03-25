@@ -46,6 +46,8 @@ ThreadBase::~ThreadBase()
 
 void ThreadBase::startThread()
 {
+  _thread_running = true;
+  _stats.add(_thread_name);
   _thd = std::thread([this]{ this->threadFunc(); });
 }
 
@@ -55,19 +57,14 @@ void ThreadBase::startThread()
 
 void ThreadBase::threadFunc()
 {
-  _thread_running = true;
-  std::cout << "threadFunc - 1" << std::endl;
-  _stats.add(std::this_thread::get_id(), _thread_name);
-  std::cout << "threadFunc - 2" << std::endl;
   setup();
-  std::cout << "threadFunc - 3" << std::endl;
   while (_thread_running)
     loop();
 }
 
 void ThreadBase::stopThread()
 {
-  _stats.remove(std::this_thread::get_id());
+  _stats.remove(_thread_name);
 
   if (_thd.joinable())
   {

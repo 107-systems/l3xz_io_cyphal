@@ -28,9 +28,7 @@ SweepThread::SweepThread(std::string const device_name, int const rotation_speed
 , _sample_rate_Hz{sample_rate_Hz}
 , _on_scan_complete_callback{func}
 {
-  std::cout << "\tCTOR1" << std::endl;
   startThread();
-  std::cout << "\tCTOR2" << std::endl;
 }
 
 SweepThread::~SweepThread()
@@ -44,21 +42,15 @@ SweepThread::~SweepThread()
 
 void SweepThread::setup()
 {
-  std::cout << "\t1" << std::endl;
   _scanner.set_motor_speed(_rotation_speed_rpm);
-  std::cout << "\t2" << std::endl;
   while (!_scanner.get_motor_ready()) { std::this_thread::sleep_for(std::chrono::milliseconds(100)); }
-  std::cout << "\t3" << std::endl;
   _scanner.set_sample_rate(_sample_rate_Hz);
-  std::cout << "\t4" << std::endl;
   _scanner.start_scanning();
-  std::cout << "\t5" << std::endl;
 }
 
 
 void SweepThread::loop()
 {
-  std::cout << "\tLOOP1" << std::endl;
   sweep::scan const scan = _scanner.get_scan();
 
   ScanDataVect scan_data_vect;

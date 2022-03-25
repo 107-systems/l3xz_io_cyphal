@@ -57,7 +57,7 @@ int main(int argc, char **argv)
     sweep_thd.setup();
     std::cout << "after setup" << std::endl;
     */
-    //for(;;) std::this_thread::sleep_for (std::chrono::seconds(1));
+    for(;;) std::this_thread::sleep_for (std::chrono::seconds(1));
     /*
     for(;;)
     {

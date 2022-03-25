@@ -21,17 +21,17 @@ namespace l3xz::common::threading
  * PUBLIC MEMBER FUNCTIONS
  **************************************************************************************/
 
-void ThreadStats::add(std::thread::id const thd_id, std::string const & name)
+void ThreadStats::add(std::string const & thd_name)
 {
   std::lock_guard<std::mutex> lock(_data_mtx);
-  Data thd_data{name};
-  _data[thd_id] = thd_data;
+  Data thd_data{thd_name};
+  _data.push_back(thd_data);
 }
 
-void ThreadStats::remove(std::thread::id const thd_id)
+void ThreadStats::remove(std::string const & thd_name)
 {
   std::lock_guard<std::mutex> lock(_data_mtx);
-  _data.erase(thd_id);
+  _data.remove_if([thd_name](Data const & d) { return (d.name == thd_name); });
 }
 
 std::ostream & operator << (std::ostream & os, ThreadStats & stats)
@@ -41,12 +41,11 @@ std::ostream & operator << (std::ostream & os, ThreadStats & stats)
   os << "L3XZ Thread Statistics:" << std::endl;
   os << "\tNum Threads: " << stats._data.size() << std::endl;
 
-  for (auto [thd_id, thd_data] : stats._data)
+  for (auto thd_data : stats._data)
   {
     os << "\t["
-       << thd_id
-       << "] "
        << thd_data.name
+       << "] "
        << std::endl;
   }
   return os;
