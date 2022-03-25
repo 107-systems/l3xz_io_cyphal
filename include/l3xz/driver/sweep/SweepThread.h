@@ -34,13 +34,13 @@ class SweepThread : common::threading::ThreadBase
 {
 public:
 
-   SweepThread(std::string const device_name, int const baudrate, int const rotation_speed_rpm, int const sample_rate_Hz);
-  ~SweepThread();
-
   typedef std::tuple<double,double> ScanData;
   typedef std::vector<ScanData> ScanDataVect;
   typedef std::function<void(ScanDataVect const &)> OnScanCompleteCallbackFunc;
-  void onScanComplete(OnScanCompleteCallbackFunc func);
+
+   SweepThread(std::string const device_name, int const rotation_speed_rpm, int const sample_rate_Hz, OnScanCompleteCallbackFunc func);
+  ~SweepThread();
+
 
 protected:
 

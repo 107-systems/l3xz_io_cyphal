@@ -9,6 +9,8 @@
  **************************************************************************************/
 
 #include <string>
+#include <thread>
+#include <chrono>
 #include <sstream>
 #include <iostream>
 
@@ -48,9 +50,22 @@ int main(int argc, char **argv)
 {
   try
   {
-    SweepThread sweep_thd("/dev/ttyUSB0", 115200, 1, 500);
-    //sweep_thd.onScanComplete(sweep_scan_complete);
-    for(;;) { }
+    SweepThread sweep_thd("/dev/ttyUSB0", 1, 500, sweep_scan_complete);
+    l3xz::common::threading::ThreadBase::stats(std::cout);
+    /*
+    std::cout << "before setup" << std::endl;
+    sweep_thd.setup();
+    std::cout << "after setup" << std::endl;
+    */
+    //for(;;) std::this_thread::sleep_for (std::chrono::seconds(1));
+    /*
+    for(;;)
+    {
+      std::cout << "before loop" << std::endl;
+      sweep_thd.loop();
+      std::cout << "after loop" << std::endl;
+    }
+    */
     return EXIT_SUCCESS;
   }
   catch(sweep::device_error const & e)

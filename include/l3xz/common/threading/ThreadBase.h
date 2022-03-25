@@ -36,20 +36,26 @@ public:
    ThreadBase(std::string const & thread_name);
   ~ThreadBase();
 
-  friend std::ostream & operator << (std::ostream & os, ThreadBase const & thd_base);
+  static void stats(std::ostream & out) {
+    out << _stats << std::endl;
+  }
 
 protected:
 
+  void startThread();
+
   virtual void setup() = 0;
-  virtual void loop() = 0;
+  virtual void loop () = 0;
 
 private:
 
-  std::atomic<bool> _terminate_thread;
+  std::string const & _thread_name;
+  std::atomic<bool> _thread_running;
   std::thread _thd;
   static ThreadStats _stats;
 
   void threadFunc();
+  void stopThread();
 };
 
 /**************************************************************************************

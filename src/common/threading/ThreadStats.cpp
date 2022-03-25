@@ -38,9 +38,12 @@ std::ostream & operator << (std::ostream & os, ThreadStats & stats)
 {
   std::lock_guard<std::mutex> lock(stats._data_mtx);
 
+  os << "L3XZ Thread Statistics:" << std::endl;
+  os << "\tNum Threads: " << stats._data.size() << std::endl;
+
   for (auto [thd_id, thd_data] : stats._data)
   {
-    os << "["
+    os << "\t["
        << thd_id
        << "] "
        << thd_data.name
