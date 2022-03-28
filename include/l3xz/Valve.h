@@ -4,60 +4,44 @@
  * Contributors: https://github.com/107-systems/107-Arduino-UAVCAN/graphs/contributors.
  */
 
-#ifndef DRIVER_SSC32_SSC32_H_
-#define DRIVER_SSC32_SSC32_H_
+#ifndef VALVE_H_
+#define VALVE_H_
 
 /**************************************************************************************
- * INCLUDE
+ * INCLUDES
  **************************************************************************************/
 
-#include <stdint.h>
-
-#include <string>
 #include <memory>
 
-#include <l3xz/phy/serial/AsyncSerial.h>
+#include <l3xz/Const.h>
+#include <l3xz/driver/ssc32/SSC32.h>
 
 /**************************************************************************************
  * NAMESPACE
  **************************************************************************************/
 
-namespace l3xz::driver
+namespace l3xz
 {
 
 /**************************************************************************************
  * CLASS DECLARATION
  **************************************************************************************/
 
-class SSC32
+class Valve
 {
 public:
-   SSC32(std::string const device_name, size_t const baudrate);
-  ~SSC32();
+   Valve(driver::SharedSSC32 & ssc32);
 
-  enum class Error : int
-  {
-    None                =  0,
-    InvParam_Channel    = -1,
-    InvParam_PulseWidth = -2,
-  };
-
-  Error setPulseWidth(uint8_t const channel, uint16_t const pulse_width_us, uint16_t const move_time_ms);
+   void set(Leg const leg, Joint const joint, uint16_t const pulse_width_us);
 
 private:
-  phy::serial::AsyncSerial _serial;
+  driver::SharedSSC32 _ssc32;
 };
-
-/**************************************************************************************
- * TYPEDEF
- **************************************************************************************/
-
-typedef std::shared_ptr<SSC32> SharedSSC32;
 
 /**************************************************************************************
  * NAMESPACE
  **************************************************************************************/
 
-} /* l3xz::driver */
+} /* l3xz */
 
-#endif /* DRIVER_SSC32_SSC32_H_ */
+#endif /* VALVE_H_ */
