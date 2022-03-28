@@ -28,6 +28,9 @@ SweepThread::SweepThread(std::string const device_name, int const rotation_speed
 , _sample_rate_Hz{sample_rate_Hz}
 , _on_scan_complete_callback{func}
 {
+  assert(_rotation_speed_rpm >= MIN_ROTATION_SPEED_RPM && _rotation_speed_rpm <= MAX_ROTATION_SPEED_RPM);
+  assert(_sample_rate_Hz == 500 || _sample_rate_Hz == 750 || _sample_rate_Hz == 1000);
+
   startThread();
 }
 

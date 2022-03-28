@@ -41,6 +41,8 @@ public:
    SweepThread(std::string const device_name, int const rotation_speed_rpm, int const sample_rate_Hz, OnScanCompleteCallbackFunc func);
   ~SweepThread();
 
+  static int constexpr MIN_ROTATION_SPEED_RPM =  0;
+  static int constexpr MAX_ROTATION_SPEED_RPM = 10;
 
 protected:
 
