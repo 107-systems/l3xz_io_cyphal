@@ -102,12 +102,11 @@ int main(int argc, char **argv)
     {
       if (vm.count("id"))
       {
-        std::optional<MX28::AngleData> opt_angle = mx28_ctrl->getAngle(param_id);
+        std::optional<float> opt_angle_deg = mx28_ctrl->getAngle(param_id);
 
-        if (opt_angle)
+        if (opt_angle_deg)
         {
-          auto [id, angle_deg] = opt_angle.value();
-          std::cout << "[ID: " << static_cast<int>(id) << "] Angle = " << angle_deg << "°" << std::endl;
+          std::cout << "[ID: " << static_cast<int>(param_id) << "] Angle = " << opt_angle_deg.value() << "°" << std::endl;
           return EXIT_SUCCESS;
         }
 

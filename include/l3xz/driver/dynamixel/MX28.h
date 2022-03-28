@@ -45,8 +45,8 @@ public:
   typedef std::tuple<Dynamixel::Id, float> AngleData;
   typedef std::vector<AngleData> AngleDataVect;
 
-  std::optional<AngleData> getAngle(Dynamixel::Id const id);
-  AngleDataVect            getAngle(Dynamixel::IdVect const & id_vect);
+  std::optional<float> getAngle(Dynamixel::Id const id);
+  AngleDataVect        getAngle(Dynamixel::IdVect const & id_vect);
 
   bool setAngle(AngleData const & angle_data);
   bool setAngle(AngleDataVect const & angle_data_vect);

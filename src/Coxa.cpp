@@ -57,12 +57,7 @@ void Coxa::set(Leg const leg, float const angle_deg)
 std::optional<float> Coxa::get(Leg const leg)
 {
   driver::Dynamixel::Id const id = COXA_MAP.at(leg);
-  std::optional<driver::MX28::AngleData> const opt_angle_data = _mx28->getAngle(id);
-  if (!opt_angle_data)
-    return std::nullopt;
-
-  auto [i,angle_deg] =(*opt_angle_data);
-  return angle_deg;
+  return _mx28->getAngle(id);
 }
 
 /**************************************************************************************

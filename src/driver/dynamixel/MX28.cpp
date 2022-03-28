@@ -110,14 +110,15 @@ void MX28::turnLedOff(Dynamixel::IdVect const & id_vect)
   _dyn_ctrl->syncWrite(static_cast<int>(MX28ControlTable::LED), sizeof(led_off), led_off_data);
 }
 
-std::optional<MX28::AngleData> MX28::getAngle(Dynamixel::Id const id)
+std::optional<float> MX28::getAngle(Dynamixel::Id const id)
 {
   MX28::AngleDataVect const angle_data_vect = getAngle(Dynamixel::IdVect{id});
 
-  if(angle_data_vect.size())
-    return angle_data_vect.front();
-  else
+  if (!angle_data_vect.size())
     return std::nullopt;
+
+  auto [rx_id, rx_angle_deg] = angle_data_vect.front();
+  return rx_angle_deg;   
 }
 
 MX28::AngleDataVect MX28::getAngle(Dynamixel::IdVect const & id_vect)
