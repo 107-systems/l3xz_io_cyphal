@@ -177,6 +177,7 @@ add_subdirectory(tooling/orocos)
 add_subdirectory(tooling/pumpctrl)
 add_subdirectory(tooling/ssc32ctrl)
 add_subdirectory(tooling/sweepctrl)
+add_subdirectory(tooling/valvectrl)
 
 #############
 ## Install ##
