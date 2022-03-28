@@ -28,9 +28,9 @@ namespace l3xz
 class Valve
 {
 public:
-   Valve(driver::SharedSSC32 & ssc32);
+  Valve(driver::SharedSSC32 & ssc32);
 
-   void set(Leg const leg, Joint const joint, uint16_t const pulse_width_us);
+  void set(Leg const leg, Joint const joint, uint16_t const pulse_width_us);
 
 private:
   driver::SharedSSC32 _ssc32;

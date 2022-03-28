@@ -27,9 +27,9 @@ namespace l3xz
 class Pump
 {
 public:
-   Pump(driver::SharedSSC32 & ssc32);
+  Pump(driver::SharedSSC32 & ssc32);
 
-   void set(uint16_t const pulse_width_us);
+  void set(uint16_t const pulse_width_us);
 
 private:
   driver::SharedSSC32 _ssc32;
