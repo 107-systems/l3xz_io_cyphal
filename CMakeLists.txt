@@ -144,6 +144,7 @@ add_executable(${PROJECT_NAME}_node
   src/phy/serial/AsyncSerial.cpp
   src/driver/ssc32/SSC32.cpp
   src/driver/sweep/SweepThread.cpp
+  src/Coxa.cpp
   src/l3xz_node.cpp
   src/Pump.cpp
   src/Valve.cpp
