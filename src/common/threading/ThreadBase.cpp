@@ -64,13 +64,13 @@ void ThreadBase::threadFunc()
 
 void ThreadBase::stopThread()
 {
-  _stats.remove(_thread_name);
-
   if (_thd.joinable())
   {
     _thread_running = false;
     _thd.join();
   }
+
+  _stats.remove(_thread_name);
 }
 
 /**************************************************************************************
