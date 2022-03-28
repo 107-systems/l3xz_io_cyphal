@@ -34,7 +34,6 @@ int main(int argc, char **argv)
   {
     std::string param_device_name;
     int param_baudrate;
-    int param_channel;
     int param_pulse_width_us;
 
     options_description desc("Allowed options");
