@@ -145,6 +145,7 @@ add_executable(${PROJECT_NAME}_node
   src/driver/ssc32/SSC32.cpp
   src/driver/sweep/SweepThread.cpp
   src/l3xz_node.cpp
+  src/Pump.cpp
   src/Valve.cpp
 )
 

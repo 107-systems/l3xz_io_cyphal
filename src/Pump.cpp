@@ -4,15 +4,11 @@
  * Contributors: https://github.com/107-systems/107-Arduino-UAVCAN/graphs/contributors.
  */
 
-#ifndef VALVE_H_
-#define VALVE_H_
-
 /**************************************************************************************
  * INCLUDES
  **************************************************************************************/
 
-#include <l3xz/Const.h>
-#include <l3xz/driver/ssc32/SSC32.h>
+#include <l3xz/Pump.h>
 
 /**************************************************************************************
  * NAMESPACE
@@ -22,24 +18,26 @@ namespace l3xz
 {
 
 /**************************************************************************************
- * CLASS DECLARATION
+ * CTOR/DTOR
  **************************************************************************************/
 
-class Valve
+Pump::Pump(driver::SharedSSC32 & ssc32)
+: _ssc32{ssc32}
 {
-public:
-   Valve(driver::SharedSSC32 & ssc32);
 
-   void set(Leg const leg, Joint const joint, uint16_t const pulse_width_us);
+}
 
-private:
-  driver::SharedSSC32 _ssc32;
-};
+/**************************************************************************************
+ * PUBLIC MEMBER FUNCTIONS
+ **************************************************************************************/
+
+void Pump::set(uint16_t const pulse_width_us)
+{
+  _ssc32->setPulseWidth(PUMP_CHANNEL, pulse_width_us, 0);
+}
 
 /**************************************************************************************
  * NAMESPACE
  **************************************************************************************/
 
 } /* l3xz */
-
-#endif /* VALVE_H_ */
