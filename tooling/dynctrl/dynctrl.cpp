@@ -150,9 +150,7 @@ int main(int argc, char **argv)
 
       mx28_ctrl->torqueOn(param_id);
 
-      MX28::AngleData const angle_data = std::make_tuple(param_id, param_target_angle);
-
-      if (!mx28_ctrl->setAngle(angle_data)) {
+      if (!mx28_ctrl->setAngle(param_id, param_target_angle)) {
         std::cerr << "Error setting target angle." << std::endl;
         return EXIT_FAILURE;
       }

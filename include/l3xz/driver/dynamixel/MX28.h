@@ -48,7 +48,7 @@ public:
   std::optional<float> getAngle(Dynamixel::Id const id);
   AngleDataVect        getAngle(Dynamixel::IdVect const & id_vect);
 
-  bool setAngle(AngleData const & angle_data);
+  bool setAngle(Dynamixel::Id const id, float const angle_deg);
   bool setAngle(AngleDataVect const & angle_data_vect);
 
 

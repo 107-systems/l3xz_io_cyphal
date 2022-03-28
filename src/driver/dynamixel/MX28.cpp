@@ -140,9 +140,9 @@ MX28::AngleDataVect MX28::getAngle(Dynamixel::IdVect const & id_vect)
   return angle_data_vect;
 }
 
-bool MX28::setAngle(AngleData const & angle_data)
+bool MX28::setAngle(Dynamixel::Id const id, float const angle_deg)
 {
-  return setAngle(AngleDataVect{angle_data});
+  return setAngle(AngleDataVect{AngleData{id, angle_deg}});
 }
 
 bool MX28::setAngle(AngleDataVect const & angle_data_vect)
