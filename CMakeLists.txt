@@ -10,6 +10,7 @@ project(l3xz)
 find_package(catkin REQUIRED COMPONENTS
   roscpp
   std_msgs
+  sensor_msgs
 )
 
 ## System dependencies are found with CMake's conventions
@@ -172,6 +173,19 @@ target_link_libraries(${PROJECT_NAME}_node
 )
 
 target_compile_options(${PROJECT_NAME}_node PRIVATE -std=c++17 -Wall -Werror -pedantic)
+
+#######################################################################################
+set(LASER_SCANNER_TARGET "l3xz_sweep_node")
+add_executable(${LASER_SCANNER_TARGET}
+  src/l3xz_sweep_node.cpp
+)
+target_link_libraries(${LASER_SCANNER_TARGET}
+  ${catkin_LIBRARIES}
+  pthread
+  sweep
+)
+target_compile_options(${LASER_SCANNER_TARGET} PRIVATE -std=c++17 -Wall -Werror -pedantic)
+#######################################################################################
 
 add_subdirectory(tooling/coxactrl)
 add_subdirectory(tooling/dynctrl)
