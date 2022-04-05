@@ -144,7 +144,6 @@ add_executable(${PROJECT_NAME}_node
   src/driver/dynamixel/MX28.cpp
   src/phy/serial/AsyncSerial.cpp
   src/driver/ssc32/SSC32.cpp
-  src/driver/sweep/SweepThread.cpp
   src/Coxa.cpp
   src/l3xz_node.cpp
   src/Pump.cpp
@@ -192,7 +191,6 @@ add_subdirectory(tooling/dynctrl)
 add_subdirectory(tooling/orocos)
 add_subdirectory(tooling/pumpctrl)
 add_subdirectory(tooling/ssc32ctrl)
-add_subdirectory(tooling/sweepctrl)
 add_subdirectory(tooling/valvectrl)
 
 #############
