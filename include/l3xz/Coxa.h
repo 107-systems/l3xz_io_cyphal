@@ -33,7 +33,7 @@ class Coxa
 public:
   Coxa(driver::SharedMX28 & mx28);
 
-  void                 set(Leg const leg, float const angle_deg);
+  bool                 set(Leg const leg, float const angle_deg);
   std::optional<float> get(Leg const leg);
 
 private:

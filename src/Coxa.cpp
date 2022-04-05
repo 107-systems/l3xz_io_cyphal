@@ -47,10 +47,10 @@ Coxa::Coxa(driver::SharedMX28 & mx28)
  * PUBLIC MEMBER FUNCTIONS
  **************************************************************************************/
 
-void Coxa::set(Leg const leg, float const angle_deg)
+bool Coxa::set(Leg const leg, float const angle_deg)
 {
   driver::Dynamixel::Id const id = COXA_MAP.at(leg);
-  _mx28->setAngle(id, angle_deg);
+  return _mx28->setAngle(id, angle_deg);
 }
 
 std::optional<float> Coxa::get(Leg const leg)

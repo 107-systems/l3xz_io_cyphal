@@ -173,6 +173,7 @@ target_link_libraries(${PROJECT_NAME}_node
 
 target_compile_options(${PROJECT_NAME}_node PRIVATE -std=c++17 -Wall -Werror -pedantic)
 
+add_subdirectory(tooling/coxactrl)
 add_subdirectory(tooling/dynctrl)
 add_subdirectory(tooling/orocos)
 add_subdirectory(tooling/pumpctrl)
