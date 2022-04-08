@@ -115,7 +115,6 @@ catkin_package(
 add_subdirectory(external/libcanard/current)
 add_subdirectory(external/libdynamixel/current)
 add_subdirectory(external/liborocos-kdl/current)
-add_subdirectory(external/libsweep/current)
 
 ## Specify additional locations of header files
 ## Your package locations should be listed before other locations
@@ -144,7 +143,6 @@ add_executable(${PROJECT_NAME}_node
   src/driver/dynamixel/MX28.cpp
   src/phy/serial/AsyncSerial.cpp
   src/driver/ssc32/SSC32.cpp
-  src/driver/sweep/SweepThread.cpp
   src/Coxa.cpp
   src/l3xz_node.cpp
   src/Pump.cpp
@@ -169,22 +167,10 @@ target_link_libraries(${PROJECT_NAME}_node
   boost_system
   boost_thread
   pthread
-  sweep
 )
 
 target_compile_options(${PROJECT_NAME}_node PRIVATE -std=c++17 -Wall -Werror -pedantic)
 
-#######################################################################################
-set(LASER_SCANNER_TARGET "l3xz_sweep_node")
-add_executable(${LASER_SCANNER_TARGET}
-  src/l3xz_sweep_node.cpp
-)
-target_link_libraries(${LASER_SCANNER_TARGET}
-  ${catkin_LIBRARIES}
-  pthread
-  sweep
-)
-target_compile_options(${LASER_SCANNER_TARGET} PRIVATE -std=c++17 -Wall -Werror -pedantic)
 #######################################################################################
 
 add_subdirectory(tooling/coxactrl)
@@ -192,7 +178,6 @@ add_subdirectory(tooling/dynctrl)
 add_subdirectory(tooling/orocos)
 add_subdirectory(tooling/pumpctrl)
 add_subdirectory(tooling/ssc32ctrl)
-add_subdirectory(tooling/sweepctrl)
 add_subdirectory(tooling/valvectrl)
 
 #############

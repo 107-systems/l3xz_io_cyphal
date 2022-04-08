@@ -20,11 +20,3 @@ cd src && git clone https://github.com/107-systems/l3x-z && cd ..
 # Invoke catkin_make from the catkin workspace root.
 catkin_make
 ```
-
-### Scanse Sweep 2D Laser Scanner
-```bash
-source devel/setup.bash
-roslaunch l3xz laser.launch
-rviz --display-config src/l3xz/rviz/laser.rviz
-```
-**Note**: Possible you need to configure the right USB port in `launch`/[`laser.launch`](launch/laser.launch).
