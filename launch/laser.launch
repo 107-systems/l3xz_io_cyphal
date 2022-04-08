@@ -1,9 +1,0 @@
-<launch>
-  <node name="sweep_node" pkg="l3xz" type="l3xz_sweep_node" output="screen" ns="l3xz">
-    <param name="serial_port"     type="string" value="/dev/ttyUSB0"/>
-    <param name="rotation_speed"  type="int"    value="1"/>
-    <param name="sample_rate"     type="int"    value="500"/>
-    <param name="frame_id"        type="string" value="laser_link"/>
-  </node>
-  <node pkg="tf" type="static_transform_publisher" name="base_link_to_laser_link" ns="l3xz" args="0.06 0 0.08 0 0 0 base_link laser_link 100"/>
-</launch>
