@@ -43,13 +43,13 @@ public:
   void torqueOff(Dynamixel::IdVect const & id_vect);
 
   typedef std::tuple<Dynamixel::Id, float> AngleData;
-  typedef std::vector<AngleData> AngleDataVect;
+  typedef std::map<Dynamixel::Id, float> AngleDataSet;
 
   std::optional<float> getAngle(Dynamixel::Id const id);
-  AngleDataVect        getAngle(Dynamixel::IdVect const & id_vect);
+  AngleDataSet         getAngle(Dynamixel::IdVect const & id_vect);
 
   bool setAngle(Dynamixel::Id const id, float const angle_deg);
-  bool setAngle(AngleDataVect const & angle_data_vect);
+  bool setAngle(AngleDataSet const & angle_data_set);
 
 
 private:

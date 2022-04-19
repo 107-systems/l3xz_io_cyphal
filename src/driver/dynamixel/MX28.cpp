@@ -112,20 +112,19 @@ void MX28::turnLedOff(Dynamixel::IdVect const & id_vect)
 
 std::optional<float> MX28::getAngle(Dynamixel::Id const id)
 {
-  MX28::AngleDataVect const angle_data_vect = getAngle(Dynamixel::IdVect{id});
+  MX28::AngleDataSet const angle_data_set = getAngle(Dynamixel::IdVect{id});
 
-  if (!angle_data_vect.size())
+  if (!angle_data_set.count(id))
     return std::nullopt;
 
-  auto [rx_id, rx_angle_deg] = angle_data_vect.front();
-  return rx_angle_deg;   
+  return angle_data_set.at(id);
 }
 
-MX28::AngleDataVect MX28::getAngle(Dynamixel::IdVect const & id_vect)
+MX28::AngleDataSet MX28::getAngle(Dynamixel::IdVect const & id_vect)
 {
   assert(id_vect.size() > 0);
 
-  AngleDataVect angle_data_vect;
+  AngleDataSet angle_data_set;
 
   if (auto [err, position_vect] = _dyn_ctrl->syncRead(static_cast<int>(MX28ControlTable::PresentPosition), 4, id_vect); err == Dynamixel::Error::None)
   {
@@ -133,27 +132,29 @@ MX28::AngleDataVect MX28::getAngle(Dynamixel::IdVect const & id_vect)
       if (position_raw)
       {
         float const position_deg = static_cast<float>(position_raw.value()) * 360.0f / 4096;
-        angle_data_vect.push_back(std::make_tuple(id, position_deg));
+        angle_data_set[id] = position_deg;
       }
   }
 
-  return angle_data_vect;
+  return angle_data_set;
 }
 
 bool MX28::setAngle(Dynamixel::Id const id, float const angle_deg)
 {
-  return setAngle(AngleDataVect{AngleData{id, angle_deg}});
+  AngleDataSet angle_data_set;
+  angle_data_set[id] = angle_deg;
+  return setAngle(angle_data_set);
 }
 
-bool MX28::setAngle(AngleDataVect const & angle_data_vect)
+bool MX28::setAngle(AngleDataSet const & angle_data_set)
 {
-  assert(angle_data_vect.size() > 0);
+  assert(angle_data_set.size() > 0);
 
-  std::vector<uint32_t> position_raw_arr(angle_data_vect.size());
+  std::vector<uint32_t> position_raw_arr(angle_data_set.size());
   Dynamixel::SyncWriteDataVect sync_write_data_vect;
 
   size_t arr_idx = 0;
-  for (auto [id, position_deg] : angle_data_vect)
+  for (auto [id, position_deg] : angle_data_set)
   {
     uint32_t const position_raw = static_cast<uint32_t>(position_deg * 4096.0f/360.0f);
     position_raw_arr[arr_idx] = position_raw;
