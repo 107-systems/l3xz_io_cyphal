@@ -58,6 +58,12 @@ static l3xz::driver::MX28::AngleDataVect const L3XZ_INITIAL_ANGLE_DATA_VECT =
 };
 
 /**************************************************************************************
+ * GLOBAL FUCKING VARIABLES (NEED TO BE FUCKING ENCAPSULATE - no time now)
+ **************************************************************************************/
+
+static l3xz::driver::MX28::AngleDataVect l3xz_mx28_angle_vect_target = L3XZ_INITIAL_ANGLE_DATA_VECT;
+
+/**************************************************************************************
  * MAIN
  **************************************************************************************/
 
@@ -78,11 +84,13 @@ int main(int argc, char **argv) try
 
   ros::Subscriber sensor_head_pose_sub = node_hdl.subscribe("/l3xz/cmd_head_pose", 10, sensor_head_pose_callback);
 
-  //mx28_ctrl->torqueOn(opt_id_vect.value());
-
-  ros::Rate loop_rate(1);
-  while (ros::ok())
+  for (ros::Rate loop_rate(50);
+       ros::ok();
+       loop_rate.sleep())
   {
+    if (!mx28_ctrl->setAngle(l3xz_mx28_angle_vect_target))
+      ROS_ERROR("failed to set target angles for all dynamixel servos");
+
     ros::spinOnce();
 /*
     mx28_ctrl->turnLedOn(opt_id_vect.value());
@@ -215,6 +223,15 @@ void sensor_head_pose_callback(const geometry_msgs::Quaternion::ConstPtr & msg)
   tf2Scalar yaw, pitch, roll;
   tf2::Matrix3x3 mat(pose_quat_tf);
   mat.getRPY(roll, pitch, yaw);
+
+  pitch = std::max(pitch, -1.0);
+  pitch = std::min(pitch,  1.0);
+
+  yaw = std::max(yaw, -1.0);
+  yaw = std::min(yaw,  1.0);
+
+  l3xz_mx28_angle_vect_target[6] = std::make_tuple<l3xz::driver::Dynamixel::Id, float>(7, 180.0f + pitch * 90.0f);
+  l3xz_mx28_angle_vect_target[7] = std::make_tuple<l3xz::driver::Dynamixel::Id, float>(8, 180.0f + yaw * 90.0f);
 
   ROS_INFO("roll = %.2f, pitch = %0.2f, yaw = %.2f", roll, pitch, yaw);
 }
