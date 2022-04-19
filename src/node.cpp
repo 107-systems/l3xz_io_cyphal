@@ -16,10 +16,7 @@
 #include <ros/ros.h>
 #include <ros/console.h>
 
-#include <geometry_msgs/Quaternion.h>
-
-#include <tf2/LinearMath/Quaternion.h>
-#include <tf2_geometry_msgs/tf2_geometry_msgs.h>
+#include <geometry_msgs/Twist.h>
 
 #include <dynamixel_sdk.h>
 
@@ -33,7 +30,7 @@
 bool init_dynamixel  (l3xz::driver::SharedMX28 & mx28_ctrl);
 void deinit_dynamixel(l3xz::driver::SharedMX28 & mx28_ctrl);
 
-void sensor_head_pose_callback(const geometry_msgs::Quaternion::ConstPtr & msg);
+void cmd_vel_callback(const geometry_msgs::Twist::ConstPtr & msg);
 
 /**************************************************************************************
  * CONSTANT
@@ -82,7 +79,7 @@ int main(int argc, char **argv) try
   ROS_INFO("init_dynamixel successfully completed.");
 
 
-  ros::Subscriber sensor_head_pose_sub = node_hdl.subscribe("/l3xz/cmd_head_pose", 10, sensor_head_pose_callback);
+  ros::Subscriber cmd_vel_sub = node_hdl.subscribe("/l3xz/cmd_vel", 10, cmd_vel_callback);
 
   for (ros::Rate loop_rate(50);
        ros::ok();
@@ -209,25 +206,13 @@ void deinit_dynamixel(l3xz::driver::SharedMX28 & mx28_ctrl)
   mx28_ctrl->torqueOff(DYNAMIXEL_ID_VECT);
 }
 
-void sensor_head_pose_callback(const geometry_msgs::Quaternion::ConstPtr & msg)
+void cmd_vel_callback(const geometry_msgs::Twist::ConstPtr & msg)
 {
-  geometry_msgs::Quaternion pose_quat_msg = *msg;
-  tf2::Quaternion pose_quat_tf;
+  float const pitch = msg->angular.x;
+  float const yaw   = msg->angular.y;
 
-  tf2::convert(pose_quat_msg, pose_quat_tf);
+  l3xz_mx28_target_angle[7] = 180.0f + pitch;
+  l3xz_mx28_target_angle[8] = 180.0f + yaw;
 
-  tf2Scalar yaw, pitch, roll;
-  tf2::Matrix3x3 mat(pose_quat_tf);
-  mat.getRPY(roll, pitch, yaw);
-
-  pitch = std::max(pitch, -1.0);
-  pitch = std::min(pitch,  1.0);
-
-  yaw = std::max(yaw, -1.0);
-  yaw = std::min(yaw,  1.0);
-
-  l3xz_mx28_target_angle[7] = 180.0f + pitch * 90.0f;
-  l3xz_mx28_target_angle[8] = 180.0f + yaw * 90.0f;
-
-  ROS_INFO("roll = %.2f, pitch = %0.2f, yaw = %.2f", roll, pitch, yaw);
+  ROS_INFO("pitch = %0.2f, yaw = %.2f", pitch, yaw);
 }
