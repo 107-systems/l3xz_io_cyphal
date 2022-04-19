@@ -54,7 +54,7 @@ static l3xz::driver::MX28::AngleDataVect const L3XZ_INITIAL_ANGLE_DATA_VECT =
  * MAIN
  **************************************************************************************/
 
-int main(int argc, char **argv)
+int main(int argc, char **argv) try
 {
   ros::init(argc, argv, "l3xz");
 
@@ -108,6 +108,11 @@ int main(int argc, char **argv)
   deinit_dynamixel(mx28_ctrl);
 
   return EXIT_SUCCESS;
+}
+catch (std::runtime_error const & err)
+{
+  ROS_ERROR("Exception caught: %s\nTerminating ...", err.what());
+  return EXIT_FAILURE;
 }
 
 /**************************************************************************************
