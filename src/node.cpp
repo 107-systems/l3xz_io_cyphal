@@ -9,6 +9,8 @@
  **************************************************************************************/
 
 #include <string>
+#include <thread>
+#include <chrono>
 #include <sstream>
 
 #include <ros/ros.h>
@@ -33,6 +35,20 @@ static std::string const DYNAMIXEL_DEVICE_NAME = "/dev/ttyUSB0";
 static float       const DYNAMIXEL_PROTOCOL_VERSION = 2.0f;
 static int         const DYNAMIXEL_BAUD_RATE = 115200;
 
+static l3xz::driver::Dynamixel::IdVect const DYNAMIXEL_ID_VECT{1,2,3,4,5,6,7,8};
+
+static l3xz::driver::MX28::AngleDataVect const L3XZ_INITIAL_ANGLE_DATA_VECT =
+{
+  std::make_tuple<l3xz::driver::Dynamixel::Id, float>(1, 180.0f),
+  std::make_tuple<l3xz::driver::Dynamixel::Id, float>(2, 180.0f),
+  std::make_tuple<l3xz::driver::Dynamixel::Id, float>(3, 180.0f),
+  std::make_tuple<l3xz::driver::Dynamixel::Id, float>(4, 180.0f),
+  std::make_tuple<l3xz::driver::Dynamixel::Id, float>(5, 180.0f),
+  std::make_tuple<l3xz::driver::Dynamixel::Id, float>(6, 180.0f),
+  std::make_tuple<l3xz::driver::Dynamixel::Id, float>(7, 180.0f),
+  std::make_tuple<l3xz::driver::Dynamixel::Id, float>(8, 180.0f),
+};
+
 /**************************************************************************************
  * MAIN
  **************************************************************************************/
@@ -48,6 +64,7 @@ int main(int argc, char **argv)
 
   if (!init_dynamixel(mx28_ctrl))
     ROS_ERROR("init_dynamixel failed.");
+  ROS_INFO("init_dynamixel successfully completed.");
 
   //mx28_ctrl->torqueOn(opt_id_vect.value());
 
@@ -109,8 +126,7 @@ bool init_dynamixel(l3xz::driver::SharedMX28 & mx28_ctrl)
   ROS_INFO("Detected Dynamixel MX-28: { %s}", act_id_list.str().c_str());
 
   bool all_req_id_found = true;
-  l3xz::driver::Dynamixel::IdVect const REQUIRED_ID_VECT{1,2,3,4,5,6,7,8};
-  for (auto req_id : REQUIRED_ID_VECT)
+  for (auto req_id : DYNAMIXEL_ID_VECT)
   {
     bool const req_id_found = std::count(opt_act_id_vect.value().begin(),
                                          opt_act_id_vect.value().end(),
@@ -122,6 +138,45 @@ bool init_dynamixel(l3xz::driver::SharedMX28 & mx28_ctrl)
   }
   if (!all_req_id_found)
     return false;
+
+  auto isInitialTargetAngleReached = [](l3xz::driver::MX28::AngleDataVect const & current_angle)
+  {
+    for (auto [actual_id, actual_angle_deg] : current_angle)
+    {
+      auto set_angle_iter = std::find_if(L3XZ_INITIAL_ANGLE_DATA_VECT.cbegin(),
+                                         L3XZ_INITIAL_ANGLE_DATA_VECT.cend(),
+                                         [actual_id](l3xz::driver::MX28::AngleData const angle_data) -> bool { auto [i,a] = angle_data; return (i == actual_id); });
+
+      if (set_angle_iter == L3XZ_INITIAL_ANGLE_DATA_VECT.cend()) {
+        ROS_ERROR("Could not find ID for angle comparison");
+        return false;
+      }
+
+      float const EPSILON = 1.0f;
+      auto [set_id, set_angle_deg] = *set_angle_iter;
+      float const abs_angle_diff = fabs(actual_angle_deg - set_angle_deg);
+
+      if (abs_angle_diff > EPSILON) {
+        ROS_INFO("Not yet target angle reached for ID %d (set: %.2f, actual: %.2f)", actual_id, set_angle_deg, actual_angle_deg);
+        return false;
+      }
+    }
+    return true;
+  };
+
+  mx28_ctrl->torqueOn(DYNAMIXEL_ID_VECT);
+
+  if (!mx28_ctrl->setAngle(L3XZ_INITIAL_ANGLE_DATA_VECT)) {
+    ROS_ERROR("failed to set initial angles for all dynamixel servos");
+    return false;
+  }
+
+  std::this_thread::sleep_for(std::chrono::seconds(1));
+
+  if (!isInitialTargetAngleReached(mx28_ctrl->getAngle(DYNAMIXEL_ID_VECT))) {
+    ROS_ERROR("failed to set all dynamixel servos to initial position");
+    return false;
+  }
 
   return true;
 }
