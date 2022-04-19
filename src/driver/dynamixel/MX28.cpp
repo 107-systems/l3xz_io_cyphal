@@ -149,14 +149,16 @@ bool MX28::setAngle(AngleDataVect const & angle_data_vect)
 {
   assert(angle_data_vect.size() > 0);
 
-  std::vector<uint32_t> position_raw_vect;
+  std::vector<uint32_t> position_raw_arr(angle_data_vect.size());
   Dynamixel::SyncWriteDataVect sync_write_data_vect;
 
+  size_t arr_idx = 0;
   for (auto [id, position_deg] : angle_data_vect)
   {
-    position_raw_vect.push_back(static_cast<uint32_t>(position_deg * 4096.0f/360.0f));
-    uint8_t * position_raw_data_ptr = reinterpret_cast<uint8_t *>(&position_raw_vect.back());
-    sync_write_data_vect.push_back(std::make_tuple(id, position_raw_data_ptr));
+    uint32_t const position_raw = static_cast<uint32_t>(position_deg * 4096.0f/360.0f);
+    position_raw_arr[arr_idx] = position_raw;
+    sync_write_data_vect.push_back(std::make_tuple(id, reinterpret_cast<uint8_t *>(position_raw_arr.data() + arr_idx)));
+    arr_idx++;
   }
 
   return (_dyn_ctrl->syncWrite(static_cast<int>(MX28ControlTable::GoalPosition), 4, sync_write_data_vect) == Dynamixel::Error::None);
