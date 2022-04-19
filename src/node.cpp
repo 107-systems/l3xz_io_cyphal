@@ -25,7 +25,8 @@
  * FUNCTION DECLARATION
  **************************************************************************************/
 
-bool init_dynamixel(l3xz::driver::SharedMX28 & mx28_ctrl);
+bool init_dynamixel  (l3xz::driver::SharedMX28 & mx28_ctrl);
+void deinit_dynamixel(l3xz::driver::SharedMX28 & mx28_ctrl);
 
 /**************************************************************************************
  * CONSTANT
@@ -104,6 +105,8 @@ int main(int argc, char **argv)
 */
   }
 
+  deinit_dynamixel(mx28_ctrl);
+
   return EXIT_SUCCESS;
 }
 
@@ -179,4 +182,9 @@ bool init_dynamixel(l3xz::driver::SharedMX28 & mx28_ctrl)
   }
 
   return true;
+}
+
+void deinit_dynamixel(l3xz::driver::SharedMX28 & mx28_ctrl)
+{
+  mx28_ctrl->torqueOff(DYNAMIXEL_ID_VECT);
 }
