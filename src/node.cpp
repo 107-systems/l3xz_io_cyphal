@@ -16,6 +16,11 @@
 #include <ros/ros.h>
 #include <ros/console.h>
 
+#include <geometry_msgs/Quaternion.h>
+
+#include <tf2/LinearMath/Quaternion.h>
+#include <tf2_geometry_msgs/tf2_geometry_msgs.h>
+
 #include <dynamixel_sdk.h>
 
 #include <l3xz/driver/dynamixel/MX28.h>
@@ -27,6 +32,8 @@
 
 bool init_dynamixel  (l3xz::driver::SharedMX28 & mx28_ctrl);
 void deinit_dynamixel(l3xz::driver::SharedMX28 & mx28_ctrl);
+
+void sensor_head_pose_callback(const geometry_msgs::Quaternion::ConstPtr & msg);
 
 /**************************************************************************************
  * CONSTANT
@@ -58,7 +65,8 @@ int main(int argc, char **argv) try
 {
   ros::init(argc, argv, "l3xz");
 
-  ros::NodeHandle node_handle;
+  ros::NodeHandle node_hdl;
+
 
   std::shared_ptr<l3xz::driver::Dynamixel> dynamixel_ctrl = std::make_shared<l3xz::driver::Dynamixel>(DYNAMIXEL_DEVICE_NAME, DYNAMIXEL_PROTOCOL_VERSION, DYNAMIXEL_BAUD_RATE);
   l3xz::driver::SharedMX28 mx28_ctrl = std::make_shared<l3xz::driver::MX28>(dynamixel_ctrl);
@@ -66,6 +74,9 @@ int main(int argc, char **argv) try
   if (!init_dynamixel(mx28_ctrl))
     ROS_ERROR("init_dynamixel failed.");
   ROS_INFO("init_dynamixel successfully completed.");
+
+
+  ros::Subscriber sensor_head_pose_sub = node_hdl.subscribe("/l3xz/cmd_head_pose", 10, sensor_head_pose_callback);
 
   //mx28_ctrl->torqueOn(opt_id_vect.value());
 
@@ -192,4 +203,18 @@ bool init_dynamixel(l3xz::driver::SharedMX28 & mx28_ctrl)
 void deinit_dynamixel(l3xz::driver::SharedMX28 & mx28_ctrl)
 {
   mx28_ctrl->torqueOff(DYNAMIXEL_ID_VECT);
+}
+
+void sensor_head_pose_callback(const geometry_msgs::Quaternion::ConstPtr & msg)
+{
+  geometry_msgs::Quaternion pose_quat_msg = *msg;
+  tf2::Quaternion pose_quat_tf;
+
+  tf2::convert(pose_quat_msg, pose_quat_tf);
+
+  tf2Scalar yaw, pitch, roll;
+  tf2::Matrix3x3 mat(pose_quat_tf);
+  mat.getRPY(roll, pitch, yaw);
+
+  ROS_INFO("roll = %.2f, pitch = %0.2f, yaw = %.2f", roll, pitch, yaw);
 }
