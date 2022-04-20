@@ -10,6 +10,8 @@
 
 #include <l3xz/driver/dynamixel/Dynamixel.h>
 
+#include <stdexcept>
+
 /**************************************************************************************
  * NAMESPACE
  **************************************************************************************/
@@ -28,10 +30,10 @@ Dynamixel::Dynamixel(std::string const device_name,
 , _packet_handler{dynamixel::PacketHandler::getPacketHandler(protocol_version)}
 {
   if (!_port_handler->openPort())
-    printf("%s::%s error, 'PortHandler::openPort()' failed.", __FILE__, __FUNCTION__);
+    throw std::runtime_error("'PortHandler::openPort()' failed.");
 
   if (!_port_handler->setBaudRate(baudrate))
-    printf("%s::%s error, 'PortHandler::setBaudRate()' failed.", __FILE__, __FUNCTION__);
+    throw std::runtime_error("'PortHandler::setBaudRate()' failed.");
 }
 
 Dynamixel::~Dynamixel()
@@ -47,11 +49,9 @@ std::tuple<Dynamixel::Error, Dynamixel::IdVect> Dynamixel::broadcastPing()
 {
   IdVect servo_id_vect;
 
-  if (int const res = _packet_handler->broadcastPing(_port_handler.get(), servo_id_vect); res != COMM_SUCCESS)
-  {
-    printf("%s::%s error, 'PacketHandler::broadcastPing()' failed.", __FILE__, __FUNCTION__);
+  if (int const res = _packet_handler->broadcastPing(_port_handler.get(), servo_id_vect);
+      res != COMM_SUCCESS)
     return std::make_tuple(Error::BroadcastPing, servo_id_vect);
-  }
 
   return std::make_tuple(Error::None, servo_id_vect);
 }
@@ -71,11 +71,9 @@ Dynamixel::Error Dynamixel::syncWrite(uint16_t const start_address, uint16_t con
       return Error::AddParam;
   }
 
-  if (int res = group_sync_write.txPacket(); res != COMM_SUCCESS)
-  {
-    printf("%s::%s error, 'GroupSyncWrite::txPacket()' %s", __FILE__, __FUNCTION__, _packet_handler->getTxRxResult(res));
+  if (int res = group_sync_write.txPacket();
+      res != COMM_SUCCESS)
     return Error::TxPacket;
-  }
 
   group_sync_write.clearParam();
 
@@ -100,17 +98,15 @@ std::tuple<Dynamixel::Error, Dynamixel::SyncReadDataVect> Dynamixel::syncRead(ui
       return std::make_tuple(Error::AddParam, data_vect);
   }
 
-  if (int res = group_sync_read.txRxPacket(); res != COMM_SUCCESS)
-  {
-    printf("%s::%s error, 'GroupSyncRead::txRxPacket()' %s", __FILE__, __FUNCTION__, _packet_handler->getTxRxResult(res));
+  if (int res = group_sync_read.txRxPacket();
+      res != COMM_SUCCESS)
     return std::make_tuple(Error::TxRxPacket, data_vect);
-  }
 
   for(auto id : id_vect)
   {
     uint8_t dxl_error = 0;
     if (group_sync_read.getError(id, &dxl_error))
-      printf("%s::%s 'GroupSyncRead::getError(%d)' returns %s", __FILE__, __FUNCTION__, id, _packet_handler->getRxPacketError(dxl_error));
+      throw std::runtime_error("'GroupSyncRead::getError(%d)' returns " + std::string(_packet_handler->getRxPacketError(dxl_error)));
   }
 
   for(auto id : id_vect)
