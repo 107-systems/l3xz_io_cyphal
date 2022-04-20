@@ -8,6 +8,7 @@
  * INCLUDE
  **************************************************************************************/
 
+#include <map>
 #include <string>
 #include <thread>
 #include <chrono>
@@ -22,6 +23,8 @@
 
 #include <l3xz/driver/dynamixel/MX28.h>
 #include <l3xz/driver/dynamixel/Dynamixel.h>
+
+#include <l3xz/common/interface/sensor/AnglePositionSensor.h>
 
 /**************************************************************************************
  * FUNCTION DECLARATION
@@ -81,10 +84,49 @@ int main(int argc, char **argv) try
 
   ros::Subscriber cmd_vel_sub = node_hdl.subscribe("/l3xz/cmd_vel", 10, cmd_vel_callback);
 
+
+  auto coxa_leg_front_left   = std::make_shared<l3xz::common::interface::sensor::AnglePositionSensor>("LEG F/L Coxa");
+  auto coxa_leg_front_right  = std::make_shared<l3xz::common::interface::sensor::AnglePositionSensor>("LEG F/R Coxa");
+  auto coxa_leg_middle_left  = std::make_shared<l3xz::common::interface::sensor::AnglePositionSensor>("LEG M/L Coxa");
+  auto coxa_leg_middle_right = std::make_shared<l3xz::common::interface::sensor::AnglePositionSensor>("LEG M/R Coxa");
+  auto coxa_leg_back_left    = std::make_shared<l3xz::common::interface::sensor::AnglePositionSensor>("LEG B/L Coxa");
+  auto coxa_leg_back_right   = std::make_shared<l3xz::common::interface::sensor::AnglePositionSensor>("LEG B/R Coxa");
+  auto sensor_head_pan       = std::make_shared<l3xz::common::interface::sensor::AnglePositionSensor>("HEAD Pan    ");
+  auto sensor_head_tilt      = std::make_shared<l3xz::common::interface::sensor::AnglePositionSensor>("HEAD Tilt   ");
+
+  static std::map<l3xz::driver::Dynamixel::Id, l3xz::common::interface::sensor::SharedAnglePositionSensor> const DYNAMIXEL_ID_TO_ANGLE_POSITION_SENSOR =
+  {
+    {1, coxa_leg_front_left},
+    {2, coxa_leg_front_right},
+    {3, coxa_leg_middle_left},
+    {4, coxa_leg_middle_right},
+    {5, coxa_leg_back_left},
+    {6, coxa_leg_back_right},
+    {7, sensor_head_pan},
+    {8, sensor_head_tilt},
+  };
+
+
   for (ros::Rate loop_rate(50);
        ros::ok();
        loop_rate.sleep())
   {
+    /* Simultaneously read the current angle from all dynamixel servos and update the angle position sensors. */
+    for (auto [id, angle_deg] : mx28_ctrl->getAngle(DYNAMIXEL_ID_VECT))
+      DYNAMIXEL_ID_TO_ANGLE_POSITION_SENSOR.at(id)->update(angle_deg);
+
+    ROS_INFO("L3XZ Dynamixel Current Angles:\n  %s\n  %s\n  %s\n  %s\n  %s\n  %s\n  %s\n  %s",
+      coxa_leg_front_left->toStr().c_str(),
+      coxa_leg_front_right->toStr().c_str(),
+      coxa_leg_middle_left->toStr().c_str(),
+      coxa_leg_middle_right->toStr().c_str(),
+      coxa_leg_back_left->toStr().c_str(),
+      coxa_leg_back_right->toStr().c_str(),
+      sensor_head_pan->toStr().c_str(),
+      sensor_head_tilt->toStr().c_str());
+
+
+
     if (!mx28_ctrl->setAngle(l3xz_mx28_target_angle))
       ROS_ERROR("failed to set target angles for all dynamixel servos");
 
