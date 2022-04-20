@@ -144,7 +144,6 @@ add_executable(${PROJECT_NAME}_node
   src/driver/dynamixel/MX28.cpp
   src/phy/serial/AsyncSerial.cpp
   src/driver/ssc32/SSC32.cpp
-  src/Coxa.cpp
   src/node.cpp
   src/Pump.cpp
   src/Valve.cpp
@@ -174,7 +173,6 @@ target_compile_options(${PROJECT_NAME}_node PRIVATE -std=c++17 -Wall -Werror -pe
 
 #######################################################################################
 
-add_subdirectory(tooling/coxactrl)
 add_subdirectory(tooling/orocos)
 add_subdirectory(tooling/pumpctrl)
 add_subdirectory(tooling/ssc32ctrl)
