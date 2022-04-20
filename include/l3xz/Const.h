@@ -32,6 +32,15 @@ enum class Leg
   FrontLeft, FrontRight, MiddleLeft, MiddleRight, BackLeft, BackRight
 };
 
+typedef struct
+{
+  float linear_velocity_x;
+  float linear_velocity_y;
+  float angular_velocity_head_tilt;
+  float angular_velocity_head_pan;
+  float angular_velocity_z;
+} TeleopCommandData;
+
 /**************************************************************************************
  * NAMESPACE
  **************************************************************************************/

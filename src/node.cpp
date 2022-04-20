@@ -13,6 +13,7 @@
 #include <thread>
 #include <chrono>
 #include <sstream>
+#include <functional>
 
 #include <ros/ros.h>
 #include <ros/console.h>
@@ -20,6 +21,8 @@
 #include <geometry_msgs/Twist.h>
 
 #include <dynamixel_sdk.h>
+
+#include <l3xz/Const.h>
 
 #include <l3xz/driver/dynamixel/MX28.h>
 #include <l3xz/driver/dynamixel/Dynamixel.h>
@@ -33,7 +36,7 @@
 bool init_dynamixel  (l3xz::driver::SharedMX28 & mx28_ctrl);
 void deinit_dynamixel(l3xz::driver::SharedMX28 & mx28_ctrl);
 
-void cmd_vel_callback(const geometry_msgs::Twist::ConstPtr & msg);
+void cmd_vel_callback(const geometry_msgs::Twist::ConstPtr & msg, l3xz::TeleopCommandData & teleop_cmd_data);
 
 /**************************************************************************************
  * CONSTANT
@@ -58,12 +61,6 @@ static l3xz::driver::MX28::AngleDataSet const L3XZ_INITIAL_ANGLE_DATA_SET =
 };
 
 /**************************************************************************************
- * GLOBAL FUCKING VARIABLES (NEED TO BE FUCKING ENCAPSULATE - no time now)
- **************************************************************************************/
-
-static l3xz::driver::MX28::AngleDataSet l3xz_mx28_target_angle = L3XZ_INITIAL_ANGLE_DATA_SET;
-
-/**************************************************************************************
  * MAIN
  **************************************************************************************/
 
@@ -82,7 +79,8 @@ int main(int argc, char **argv) try
   ROS_INFO("init_dynamixel successfully completed.");
 
 
-  ros::Subscriber cmd_vel_sub = node_hdl.subscribe("/l3xz/cmd_vel", 10, cmd_vel_callback);
+  l3xz::TeleopCommandData teleop_cmd_data;
+  ros::Subscriber cmd_vel_sub = node_hdl.subscribe<geometry_msgs::Twist>("/l3xz/cmd_vel", 10, std::bind(cmd_vel_callback, std::placeholders::_1, std::ref(teleop_cmd_data)));
 
 
   auto coxa_leg_front_left   = std::make_shared<l3xz::common::interface::sensor::AnglePositionSensor>("LEG F/L Coxa");
@@ -106,6 +104,7 @@ int main(int argc, char **argv) try
     {8, sensor_head_tilt},
   };
 
+  l3xz::driver::MX28::AngleDataSet l3xz_mx28_target_angle = L3XZ_INITIAL_ANGLE_DATA_SET;
 
   for (ros::Rate loop_rate(50);
        ros::ok();
@@ -115,7 +114,7 @@ int main(int argc, char **argv) try
     for (auto [id, angle_deg] : mx28_ctrl->getAngle(DYNAMIXEL_ID_VECT))
       DYNAMIXEL_ID_TO_ANGLE_POSITION_SENSOR.at(id)->update(angle_deg);
 
-    ROS_INFO("L3XZ Dynamixel Current Angles:\n  %s\n  %s\n  %s\n  %s\n  %s\n  %s\n  %s\n  %s",
+    ROS_DEBUG("L3XZ Dynamixel Current Angles:\n  %s\n  %s\n  %s\n  %s\n  %s\n  %s\n  %s\n  %s",
       coxa_leg_front_left->toStr().c_str(),
       coxa_leg_front_right->toStr().c_str(),
       coxa_leg_middle_left->toStr().c_str(),
@@ -124,6 +123,21 @@ int main(int argc, char **argv) try
       coxa_leg_back_right->toStr().c_str(),
       sensor_head_pan->toStr().c_str(),
       sensor_head_tilt->toStr().c_str());
+
+    /* Calculate new values for sensor head, both pan and tilt joint
+     * based on the input provided by the teleop node.
+     */
+    static float const MAX_ANGLE_INCREMENT_PER_CYCLE_DEG = 10.0f;
+
+    float const sensor_head_pan_actual = sensor_head_pan->get().value();
+    float const sensor_head_pan_target = sensor_head_pan_actual + (teleop_cmd_data.angular_velocity_head_pan * MAX_ANGLE_INCREMENT_PER_CYCLE_DEG);
+    l3xz_mx28_target_angle.at(7) = sensor_head_pan_target;
+
+    float const sensor_head_tilt_actual = sensor_head_tilt->get().value();
+    float const sensor_head_tilt_target = sensor_head_tilt_actual + (teleop_cmd_data.angular_velocity_head_tilt * MAX_ANGLE_INCREMENT_PER_CYCLE_DEG);
+    l3xz_mx28_target_angle.at(8) = sensor_head_tilt_target;
+
+    ROS_INFO("Head\n  Pan : actual = %.2f, target = %.2f\n  Tilt: actual = %.2f, target = %.2f", sensor_head_pan_actual, sensor_head_pan_target, sensor_head_tilt_actual, sensor_head_tilt_target);
 
 
 
@@ -248,13 +262,13 @@ void deinit_dynamixel(l3xz::driver::SharedMX28 & mx28_ctrl)
   mx28_ctrl->torqueOff(DYNAMIXEL_ID_VECT);
 }
 
-void cmd_vel_callback(const geometry_msgs::Twist::ConstPtr & msg)
+void cmd_vel_callback(const geometry_msgs::Twist::ConstPtr & msg, l3xz::TeleopCommandData & teleop_cmd_data)
 {
-  float const pitch = msg->angular.x;
-  float const yaw   = msg->angular.y;
+  teleop_cmd_data.linear_velocity_x           = msg->linear.x;
+  teleop_cmd_data.linear_velocity_y           = msg->linear.y;
+  teleop_cmd_data.angular_velocity_head_tilt  = msg->angular.x;
+  teleop_cmd_data.angular_velocity_head_pan   = msg->angular.y;
+  teleop_cmd_data.angular_velocity_z          = msg->angular.z;
 
-  l3xz_mx28_target_angle[7] = 180.0f + pitch;
-  l3xz_mx28_target_angle[8] = 180.0f + yaw;
-
-  ROS_INFO("pitch = %0.2f, yaw = %.2f", pitch, yaw);
+  ROS_DEBUG("v_tilt = %.2f, v_pan = %.2f", teleop_cmd_data.angular_velocity_head_tilt, teleop_cmd_data.angular_velocity_head_pan);
 }
