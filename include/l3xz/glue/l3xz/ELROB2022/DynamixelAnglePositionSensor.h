@@ -29,8 +29,8 @@ class DynamixelAnglePositionSensor : public common::sensor::interface::AnglePosi
 public:
   DynamixelAnglePositionSensor(std::string const & name) : AnglePositionSensor(name) { }
 
-  void notify(float const angle_deg) {
-    update(angle_deg);
+  void set(float const angle_deg) {
+    set(angle_deg);
   }
 };
 

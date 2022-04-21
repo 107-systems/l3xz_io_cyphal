@@ -56,7 +56,7 @@ std::string AnglePositionSensor::toStr() const
  * PROTECTED MEMBER FUNCTIONS
  **************************************************************************************/
 
-void AnglePositionSensor::update(float const val)
+void AnglePositionSensor::set(float const val)
 {
   _val = val;
 }

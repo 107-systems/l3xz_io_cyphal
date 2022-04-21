@@ -56,7 +56,7 @@ public:
   void doBulkRead()
   {
     for (auto [id, angle_deg] : _mx28_ctrl->getAngle(DYNAMIXEL_ID_VECT))
-      DYNAMIXEL_ID_TO_ANGLE_POSITION_SENSOR.at(id)->notify(angle_deg);
+      DYNAMIXEL_ID_TO_ANGLE_POSITION_SENSOR.at(id)->set(angle_deg);
   }
 
 private:

@@ -35,7 +35,7 @@ public:
   std::string toStr() const;
 
 protected:
-  void update(float const val);
+  void set(float const val);
 
 private:
   std::string const _name;
