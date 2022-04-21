@@ -25,15 +25,9 @@ namespace common::sensor::interface
 
 AnglePositionSensor::AnglePositionSensor(std::string const & name)
 : _name{name}
-, _val{0.0f}
-, _is_valid{false}
+, _val{std::nullopt}
 {
 
-}
-
-AnglePositionSensor::~AnglePositionSensor()
-{
-  _is_valid = false;
 }
 
 /**************************************************************************************
@@ -42,16 +36,7 @@ AnglePositionSensor::~AnglePositionSensor()
 
 std::optional<float> AnglePositionSensor::get() const
 {
-  if (_is_valid)
-    return _val;
-
-  return std::nullopt;
-}
-
-void AnglePositionSensor::update(float const val)
-{
-  _val = val;
-  _is_valid = true;
+  return _val;
 }
 
 std::string AnglePositionSensor::toStr() const
@@ -59,12 +44,21 @@ std::string AnglePositionSensor::toStr() const
   std::stringstream ss;
   ss << _name << ": ";
   
-  if (_is_valid)
-    ss << _val;
+  if (_val)
+    ss << _val.value();
   else
     ss << "Inv.";
 
   return ss.str();
+}
+
+/**************************************************************************************
+ * PROTECTED MEMBER FUNCTIONS
+ **************************************************************************************/
+
+void AnglePositionSensor::update(float const val)
+{
+  _val = val;
 }
 
 /**************************************************************************************

@@ -64,6 +64,55 @@ static driver::MX28::AngleDataSet const L3XZ_INITIAL_ANGLE_DATA_SET =
  * MAIN
  **************************************************************************************/
 
+class DynamixelAnglePositionSensor : public common::sensor::interface::AnglePositionSensor
+{
+public:
+  DynamixelAnglePositionSensor(std::string const & name) : AnglePositionSensor(name) { }
+
+  void notify(float const angle_deg) {
+    update(angle_deg);
+  }
+};
+typedef std::shared_ptr<DynamixelAnglePositionSensor> SharedDynamixelAnglePositionSensor;
+
+class DynamixelAnglePositionSensorBulkReader
+{
+public:
+  DynamixelAnglePositionSensorBulkReader(driver::SharedMX28 mx28_ctrl,
+                                         SharedDynamixelAnglePositionSensor coxa_leg_front_left,
+                                         SharedDynamixelAnglePositionSensor coxa_leg_front_right,
+                                         SharedDynamixelAnglePositionSensor coxa_leg_middle_left,
+                                         SharedDynamixelAnglePositionSensor coxa_leg_middle_right,
+                                         SharedDynamixelAnglePositionSensor coxa_leg_back_left,
+                                         SharedDynamixelAnglePositionSensor coxa_leg_back_right,
+                                         SharedDynamixelAnglePositionSensor sensor_head_pan,
+                                         SharedDynamixelAnglePositionSensor sensor_head_tilt)
+  : _mx28_ctrl{mx28_ctrl}
+  , DYNAMIXEL_ID_TO_ANGLE_POSITION_SENSOR
+  {
+    {1, coxa_leg_front_left},
+    {2, coxa_leg_front_right},
+    {3, coxa_leg_middle_left},
+    {4, coxa_leg_middle_right},
+    {5, coxa_leg_back_left},
+    {6, coxa_leg_back_right},
+    {7, sensor_head_pan},
+    {8, sensor_head_tilt},
+  }
+  { }
+
+  void do_bulk_read()
+  {
+    for (auto [id, angle_deg] : _mx28_ctrl->getAngle(DYNAMIXEL_ID_VECT))
+      DYNAMIXEL_ID_TO_ANGLE_POSITION_SENSOR.at(id)->notify(angle_deg);
+  }
+
+private:
+  driver::SharedMX28 _mx28_ctrl;
+  std::map<driver::Dynamixel::Id, SharedDynamixelAnglePositionSensor> const DYNAMIXEL_ID_TO_ANGLE_POSITION_SENSOR;
+};
+
+
 int main(int argc, char **argv) try
 {
   ros::init(argc, argv, "l3xz");
@@ -83,26 +132,25 @@ int main(int argc, char **argv) try
   ros::Subscriber cmd_vel_sub = node_hdl.subscribe<geometry_msgs::Twist>("/l3xz/cmd_vel", 10, std::bind(cmd_vel_callback, std::placeholders::_1, std::ref(teleop_cmd_data)));
 
 
-  auto coxa_leg_front_left   = std::make_shared<common::sensor::interface::AnglePositionSensor>("LEG F/L Coxa");
-  auto coxa_leg_front_right  = std::make_shared<common::sensor::interface::AnglePositionSensor>("LEG F/R Coxa");
-  auto coxa_leg_middle_left  = std::make_shared<common::sensor::interface::AnglePositionSensor>("LEG M/L Coxa");
-  auto coxa_leg_middle_right = std::make_shared<common::sensor::interface::AnglePositionSensor>("LEG M/R Coxa");
-  auto coxa_leg_back_left    = std::make_shared<common::sensor::interface::AnglePositionSensor>("LEG B/L Coxa");
-  auto coxa_leg_back_right   = std::make_shared<common::sensor::interface::AnglePositionSensor>("LEG B/R Coxa");
-  auto sensor_head_pan       = std::make_shared<common::sensor::interface::AnglePositionSensor>("HEAD Pan    ");
-  auto sensor_head_tilt      = std::make_shared<common::sensor::interface::AnglePositionSensor>("HEAD Tilt   ");
+  auto coxa_leg_front_left   = std::make_shared<DynamixelAnglePositionSensor>("LEG F/L Coxa");
+  auto coxa_leg_front_right  = std::make_shared<DynamixelAnglePositionSensor>("LEG F/R Coxa");
+  auto coxa_leg_middle_left  = std::make_shared<DynamixelAnglePositionSensor>("LEG M/L Coxa");
+  auto coxa_leg_middle_right = std::make_shared<DynamixelAnglePositionSensor>("LEG M/R Coxa");
+  auto coxa_leg_back_left    = std::make_shared<DynamixelAnglePositionSensor>("LEG B/L Coxa");
+  auto coxa_leg_back_right   = std::make_shared<DynamixelAnglePositionSensor>("LEG B/R Coxa");
+  auto sensor_head_pan       = std::make_shared<DynamixelAnglePositionSensor>("HEAD Pan    ");
+  auto sensor_head_tilt      = std::make_shared<DynamixelAnglePositionSensor>("HEAD Tilt   ");
 
-  static std::map<driver::Dynamixel::Id, common::sensor::interface::SharedAnglePositionSensor> const DYNAMIXEL_ID_TO_ANGLE_POSITION_SENSOR =
-  {
-    {1, coxa_leg_front_left},
-    {2, coxa_leg_front_right},
-    {3, coxa_leg_middle_left},
-    {4, coxa_leg_middle_right},
-    {5, coxa_leg_back_left},
-    {6, coxa_leg_back_right},
-    {7, sensor_head_pan},
-    {8, sensor_head_tilt},
-  };
+  DynamixelAnglePositionSensorBulkReader dynamixel_angle_position_sensor_bulk_reader(mx28_ctrl, 
+                                                                                     coxa_leg_front_left,
+                                                                                     coxa_leg_front_right,
+                                                                                     coxa_leg_middle_left,
+                                                                                     coxa_leg_middle_right,
+                                                                                     coxa_leg_back_left,
+                                                                                     coxa_leg_back_right,
+                                                                                     sensor_head_pan,
+                                                                                     sensor_head_tilt);
+
 
   driver::MX28::AngleDataSet l3xz_mx28_target_angle = L3XZ_INITIAL_ANGLE_DATA_SET;
 
@@ -111,8 +159,7 @@ int main(int argc, char **argv) try
        loop_rate.sleep())
   {
     /* Simultaneously read the current angle from all dynamixel servos and update the angle position sensors. */
-    for (auto [id, angle_deg] : mx28_ctrl->getAngle(DYNAMIXEL_ID_VECT))
-      DYNAMIXEL_ID_TO_ANGLE_POSITION_SENSOR.at(id)->update(angle_deg);
+    dynamixel_angle_position_sensor_bulk_reader.do_bulk_read();
 
     ROS_DEBUG("L3XZ Dynamixel Current Angles:\n  %s\n  %s\n  %s\n  %s\n  %s\n  %s\n  %s\n  %s",
       coxa_leg_front_left->toStr().c_str(),
@@ -137,7 +184,7 @@ int main(int argc, char **argv) try
     float const sensor_head_tilt_target = sensor_head_tilt_actual + (teleop_cmd_data.angular_velocity_head_tilt * MAX_ANGLE_INCREMENT_PER_CYCLE_DEG);
     l3xz_mx28_target_angle.at(8) = sensor_head_tilt_target;
 
-    ROS_INFO("Head\n  Pan : actual = %.2f, target = %.2f\n  Tilt: actual = %.2f, target = %.2f", sensor_head_pan_actual, sensor_head_pan_target, sensor_head_tilt_actual, sensor_head_tilt_target);
+    //ROS_INFO("Head\n  Pan : actual = %.2f, target = %.2f\n  Tilt: actual = %.2f, target = %.2f", sensor_head_pan_actual, sensor_head_pan_target, sensor_head_tilt_actual, sensor_head_tilt_target);
 
 
 

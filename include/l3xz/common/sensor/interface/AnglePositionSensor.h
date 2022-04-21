@@ -29,22 +29,17 @@ namespace common::sensor::interface
 class AnglePositionSensor
 {
 public:
-
-   AnglePositionSensor(std::string const & name);
-  ~AnglePositionSensor();
-
+  AnglePositionSensor(std::string const & name);
 
   std::optional<float> get() const;
-
-  void update(float const val);
-
   std::string toStr() const;
 
+protected:
+  void update(float const val);
 
 private:
   std::string const _name;
-  float _val;
-  bool _is_valid;
+  std::optional<float> _val;
 };
 
 /**************************************************************************************
