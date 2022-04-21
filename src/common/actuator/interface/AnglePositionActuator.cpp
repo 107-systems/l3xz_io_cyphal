@@ -4,69 +4,66 @@
  * Contributors: https://github.com/107-systems/107-Arduino-UAVCAN/graphs/contributors.
  */
 
-#ifndef DYNAMIXEL_MX28_H_
-#define DYNAMIXEL_MX28_H_
-
 /**************************************************************************************
- * INCLUDE
+ * INCLUDES
  **************************************************************************************/
 
-#include <memory>
+#include <l3xz/common/actuator/interface/AnglePositionActuator.h>
 
-#include <l3xz/driver/dynamixel/Dynamixel.h>
+#include <sstream>
 
 /**************************************************************************************
  * NAMESPACE
  **************************************************************************************/
 
-namespace driver
+namespace common::actuator::interface
 {
 
 /**************************************************************************************
- * CLASS DECLARATION
+ * CTOR/DTOR
  **************************************************************************************/
 
-class MX28
+AnglePositionActuator::AnglePositionActuator(std::string const & name)
+: _name{name}
+, _val{std::nullopt}
 {
-public:
 
-  MX28(std::shared_ptr<Dynamixel> dyn_ctrl);
-
-  std::optional<Dynamixel::IdVect> discover();
-
-
-  void turnLedOn (Dynamixel::IdVect const & id_vect);
-  void turnLedOff(Dynamixel::IdVect const & id_vect);
-
-  void torqueOn (Dynamixel::Id const id);
-  void torqueOn (Dynamixel::IdVect const & id_vect);
-  void torqueOff(Dynamixel::IdVect const & id_vect);
-
-  typedef std::tuple<Dynamixel::Id, float> AngleData;
-  typedef std::map<Dynamixel::Id, float> AngleDataSet;
-
-  std::optional<float> getAngle(Dynamixel::Id const id);
-  AngleDataSet         getAngle(Dynamixel::IdVect const & id_vect);
-
-  bool setAngle(Dynamixel::Id const id, float const angle_deg);
-  bool setAngle(AngleDataSet const & angle_data_set);
-
-
-private:
-
-  std::shared_ptr<Dynamixel> _dyn_ctrl;
-};
+}
 
 /**************************************************************************************
- * TYPEDEF
+ * PUBLIC MEMBER FUNCTIONS
  **************************************************************************************/
 
-typedef std::shared_ptr<MX28> SharedMX28;
+void AnglePositionActuator::set(float const val)
+{
+  _val = val;
+}
+
+std::string AnglePositionActuator::toStr() const
+{
+  std::stringstream ss;
+  ss << "[A] "
+     << _name << ": ";
+  
+  if (_val)
+    ss << _val.value();
+  else
+    ss << "Inv.";
+
+  return ss.str();
+}
+
+/**************************************************************************************
+ * PROTECTED MEMBER FUNCTIONS
+ **************************************************************************************/
+
+std::optional<float> AnglePositionActuator::get() const
+{
+  return _val;
+}
 
 /**************************************************************************************
  * NAMESPACE
  **************************************************************************************/
 
-} /* driver */
-
-#endif /* DYNAMIXEL_MX28_H_ */
+} /* common::actuator::interface */

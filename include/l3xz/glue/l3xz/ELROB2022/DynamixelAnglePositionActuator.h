@@ -4,63 +4,50 @@
  * Contributors: https://github.com/107-systems/107-Arduino-UAVCAN/graphs/contributors.
  */
 
+#ifndef GLUE_L3XZ_ELROB2022_DYNAMIXEL_ANGLE_POSITION_ACTUATOR_H_
+#define GLUE_L3XZ_ELROB2022_DYNAMIXEL_ANGLE_POSITION_ACTUATOR_H_
+
 /**************************************************************************************
  * INCLUDES
  **************************************************************************************/
 
-#include <l3xz/Coxa.h>
-
-#include <map>
+#include <l3xz/common/actuator/interface/AnglePositionActuator.h>
 
 /**************************************************************************************
  * NAMESPACE
  **************************************************************************************/
 
-namespace l3xz
+namespace glue::l3xz::ELROB2022
 {
 
 /**************************************************************************************
- * GLOBAL CONSTANTS
+ * CLASS DECLARATION
  **************************************************************************************/
 
-static std::map<Leg, driver::Dynamixel::Id> COXA_MAP =
+class DynamixelAnglePositionActuator : public common::actuator::interface::AnglePositionActuator
 {
-  {Leg::FrontLeft,   1},
-  {Leg::FrontRight,  2},
-  {Leg::MiddleLeft,  3},
-  {Leg::MiddleRight, 4},
-  {Leg::BackLeft,    5},
-  {Leg::BackRight,   6},
+public:
+  DynamixelAnglePositionActuator(std::string const & name, float const initial_value)
+  : AnglePositionActuator(name)
+  {
+    set(initial_value);
+  }
+
+  float getAngleDeg() const {
+    return get().value();
+  }
 };
 
 /**************************************************************************************
- * CTOR/DTOR
+ * TYPEDEF
  **************************************************************************************/
 
-Coxa::Coxa(driver::SharedMX28 & mx28)
-: _mx28{mx28}
-{
-
-}
-
-/**************************************************************************************
- * PUBLIC MEMBER FUNCTIONS
- **************************************************************************************/
-
-bool Coxa::set(Leg const leg, float const angle_deg)
-{
-  driver::Dynamixel::Id const id = COXA_MAP.at(leg);
-  return _mx28->setAngle(id, angle_deg);
-}
-
-std::optional<float> Coxa::get(Leg const leg)
-{
-  driver::Dynamixel::Id const id = COXA_MAP.at(leg);
-  return _mx28->getAngle(id);
-}
+typedef std::shared_ptr<DynamixelAnglePositionActuator> SharedDynamixelAnglePositionActuator;
 
 /**************************************************************************************
  * NAMESPACE
  **************************************************************************************/
 
-} /* l3xz */
+} /* glue::l3xz::ELROB2022 */
+
+#endif /* GLUE_L3XZ_ELROB2022_DYNAMIXEL_ANGLE_POSITION_ACTUATOR_H_ */

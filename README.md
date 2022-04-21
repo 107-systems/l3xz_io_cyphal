@@ -9,14 +9,18 @@ L3X-Z base robot control package (ROS).
 #### Host (Devlopment PC)
 Ubuntu 20.04 LTS, [ROS Noetic Ninjemys](http://wiki.ros.org/noetic/Installation/Ubuntu).
 
-### Build Instruction
+### How-to-build
 ```bash
-source /opt/ros/noetic/setup.bash
-# Prepare catkin workspace (only need to be done once)
-mkdir -p catkin_ws/src && cd catkin_ws
-catkin_make
-# Clone this repository
-cd src && git clone https://github.com/107-systems/l3x-z && cd ..
+
+# Clone this repository into catkin_ws/src.
+git clone https://github.com/107-systems/l3xz
 # Invoke catkin_make from the catkin workspace root.
+source /opt/ros/noetic/setup.bash
 catkin_make
+```
+
+### How-to-run
+```bash
+source devel/setup.bash
+roslaunch l3xz l3xz.launch
 ```

@@ -4,55 +4,46 @@
  * Contributors: https://github.com/107-systems/107-Arduino-UAVCAN/graphs/contributors.
  */
 
+#ifndef GLUE_L3XZ_ELROB2022_DYNAMIXEL_ANGLE_POSITION_SENSOR_H_
+#define GLUE_L3XZ_ELROB2022_DYNAMIXEL_ANGLE_POSITION_SENSOR_H_
+
 /**************************************************************************************
  * INCLUDES
  **************************************************************************************/
 
-#include <l3xz/common/threading/ThreadStats.h>
+#include <l3xz/common/sensor/interface/AnglePositionSensor.h>
 
 /**************************************************************************************
  * NAMESPACE
  **************************************************************************************/
 
-namespace common::threading
+namespace glue::l3xz::ELROB2022
 {
 
 /**************************************************************************************
- * PUBLIC MEMBER FUNCTIONS
+ * CLASS DECLARATION
  **************************************************************************************/
 
-void ThreadStats::add(std::string const & thd_name)
+class DynamixelAnglePositionSensor : public common::sensor::interface::AnglePositionSensor
 {
-  std::lock_guard<std::mutex> lock(_data_mtx);
-  Data thd_data{thd_name};
-  _data.push_back(thd_data);
-}
+public:
+  DynamixelAnglePositionSensor(std::string const & name) : AnglePositionSensor(name) { }
 
-void ThreadStats::remove(std::string const & thd_name)
-{
-  std::lock_guard<std::mutex> lock(_data_mtx);
-  _data.remove_if([thd_name](Data const & d) { return (d.name == thd_name); });
-}
-
-std::ostream & operator << (std::ostream & os, ThreadStats & stats)
-{
-  std::lock_guard<std::mutex> lock(stats._data_mtx);
-
-  os << "L3XZ Thread Statistics:" << std::endl;
-  os << "\tNum Threads: " << stats._data.size() << std::endl;
-
-  for (auto thd_data : stats._data)
-  {
-    os << "\t["
-       << thd_data.name
-       << "] "
-       << std::endl;
+  void set_angle_deg(float const angle_deg) {
+    set(angle_deg);
   }
-  return os;
-}
+};
+
+/**************************************************************************************
+ * TYPEDEF
+ **************************************************************************************/
+
+typedef std::shared_ptr<DynamixelAnglePositionSensor> SharedDynamixelAnglePositionSensor;
 
 /**************************************************************************************
  * NAMESPACE
  **************************************************************************************/
 
-} /* common::threading */
+} /* glue::l3xz::ELROB2022 */
+
+#endif /* GLUE_L3XZ_ELROB2022_DYNAMIXEL_ANGLE_POSITION_SENSOR_H_ */

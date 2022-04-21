@@ -8,51 +8,62 @@
  * INCLUDES
  **************************************************************************************/
 
-#include <l3xz/common/threading/ThreadStats.h>
+#include <l3xz/common/sensor/interface/AnglePositionSensor.h>
+
+#include <sstream>
 
 /**************************************************************************************
  * NAMESPACE
  **************************************************************************************/
 
-namespace common::threading
+namespace common::sensor::interface
 {
+
+/**************************************************************************************
+ * CTOR/DTOR
+ **************************************************************************************/
+
+AnglePositionSensor::AnglePositionSensor(std::string const & name)
+: _name{name}
+, _val{std::nullopt}
+{
+
+}
 
 /**************************************************************************************
  * PUBLIC MEMBER FUNCTIONS
  **************************************************************************************/
 
-void ThreadStats::add(std::string const & thd_name)
+std::optional<float> AnglePositionSensor::get() const
 {
-  std::lock_guard<std::mutex> lock(_data_mtx);
-  Data thd_data{thd_name};
-  _data.push_back(thd_data);
+  return _val;
 }
 
-void ThreadStats::remove(std::string const & thd_name)
+std::string AnglePositionSensor::toStr() const
 {
-  std::lock_guard<std::mutex> lock(_data_mtx);
-  _data.remove_if([thd_name](Data const & d) { return (d.name == thd_name); });
+  std::stringstream ss;
+  ss << "[S] "
+     << _name << ": ";
+  
+  if (_val)
+    ss << _val.value();
+  else
+    ss << "Inv.";
+
+  return ss.str();
 }
 
-std::ostream & operator << (std::ostream & os, ThreadStats & stats)
+/**************************************************************************************
+ * PROTECTED MEMBER FUNCTIONS
+ **************************************************************************************/
+
+void AnglePositionSensor::set(float const val)
 {
-  std::lock_guard<std::mutex> lock(stats._data_mtx);
-
-  os << "L3XZ Thread Statistics:" << std::endl;
-  os << "\tNum Threads: " << stats._data.size() << std::endl;
-
-  for (auto thd_data : stats._data)
-  {
-    os << "\t["
-       << thd_data.name
-       << "] "
-       << std::endl;
-  }
-  return os;
+  _val = val;
 }
 
 /**************************************************************************************
  * NAMESPACE
  **************************************************************************************/
 
-} /* common::threading */
+} /* common::sensor::interface */

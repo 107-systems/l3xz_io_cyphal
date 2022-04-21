@@ -1,0 +1,4 @@
+<launch>
+  <node name="l3xz_node" pkg="l3xz" type="l3xz_node" output="screen" ns="l3xz">
+  </node>
+</launch>

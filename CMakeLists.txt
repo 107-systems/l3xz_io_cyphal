@@ -10,7 +10,7 @@ project(l3xz)
 find_package(catkin REQUIRED COMPONENTS
   roscpp
   std_msgs
-  sensor_msgs
+  geometry_msgs
 )
 
 ## System dependencies are found with CMake's conventions
@@ -137,14 +137,15 @@ include_directories(
 ## With catkin_make all packages are built within a single CMake context
 ## The recommended prefix ensures that target names across packages don't collide
 add_executable(${PROJECT_NAME}_node
+  src/common/actuator/interface/AnglePositionActuator.cpp
+  src/common/sensor/interface/AnglePositionSensor.cpp
   src/common/threading/ThreadBase.cpp
   src/common/threading/ThreadStats.cpp
   src/driver/dynamixel/Dynamixel.cpp
   src/driver/dynamixel/MX28.cpp
   src/phy/serial/AsyncSerial.cpp
   src/driver/ssc32/SSC32.cpp
-  src/Coxa.cpp
-  src/l3xz_node.cpp
+  src/node.cpp
   src/Pump.cpp
   src/Valve.cpp
 )
@@ -173,8 +174,6 @@ target_compile_options(${PROJECT_NAME}_node PRIVATE -std=c++17 -Wall -Werror -pe
 
 #######################################################################################
 
-add_subdirectory(tooling/coxactrl)
-add_subdirectory(tooling/dynctrl)
 add_subdirectory(tooling/orocos)
 add_subdirectory(tooling/pumpctrl)
 add_subdirectory(tooling/ssc32ctrl)

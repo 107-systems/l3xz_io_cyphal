@@ -4,46 +4,47 @@
  * Contributors: https://github.com/107-systems/107-Arduino-UAVCAN/graphs/contributors.
  */
 
-#ifndef COXA_H_
-#define COXA_H_
+#ifndef COMMON_SENSOR_INTERFACE_ANGLE_POSITION_ACTUATOR_H_
+#define COMMON_SENSOR_INTERFACE_ANGLE_POSITION_ACTUATOR_H_
 
 /**************************************************************************************
  * INCLUDES
  **************************************************************************************/
 
+#include <string>
 #include <optional>
-
-#include <l3xz/Const.h>
-
-#include <l3xz/driver/dynamixel/MX28.h>
 
 /**************************************************************************************
  * NAMESPACE
  **************************************************************************************/
 
-namespace l3xz
+namespace common::actuator::interface
 {
 
 /**************************************************************************************
  * CLASS DECLARATION
  **************************************************************************************/
 
-class Coxa
+class AnglePositionActuator
 {
 public:
-  Coxa(driver::SharedMX28 & mx28);
+  AnglePositionActuator(std::string const & name);
 
-  bool                 set(Leg const leg, float const angle_deg);
-  std::optional<float> get(Leg const leg);
+  void set(float const val);
+  std::string toStr() const;
+
+protected:
+  std::optional<float> get() const;
 
 private:
-  driver::SharedMX28 _mx28;
+  std::string const _name;
+  std::optional<float> _val;
 };
 
 /**************************************************************************************
  * NAMESPACE
  **************************************************************************************/
 
-} /* l3xz */
+} /* common::actuator::interface */
 
-#endif /* COXA_H_ */
+#endif /* COMMON_SENSOR_INTERFACE_ANGLE_POSITION_ACTUATOR_H_ */
