@@ -33,8 +33,8 @@
  * FUNCTION DECLARATION
  **************************************************************************************/
 
-bool init_dynamixel  (l3xz::driver::SharedMX28 & mx28_ctrl);
-void deinit_dynamixel(l3xz::driver::SharedMX28 & mx28_ctrl);
+bool init_dynamixel  (driver::SharedMX28 & mx28_ctrl);
+void deinit_dynamixel(driver::SharedMX28 & mx28_ctrl);
 
 void cmd_vel_callback(const geometry_msgs::Twist::ConstPtr & msg, l3xz::TeleopCommandData & teleop_cmd_data);
 
@@ -46,9 +46,9 @@ static std::string const DYNAMIXEL_DEVICE_NAME = "/dev/ttyUSB0";
 static float       const DYNAMIXEL_PROTOCOL_VERSION = 2.0f;
 static int         const DYNAMIXEL_BAUD_RATE = 115200;
 
-static l3xz::driver::Dynamixel::IdVect const DYNAMIXEL_ID_VECT{1,2,3,4,5,6,7,8};
+static driver::Dynamixel::IdVect const DYNAMIXEL_ID_VECT{1,2,3,4,5,6,7,8};
 
-static l3xz::driver::MX28::AngleDataSet const L3XZ_INITIAL_ANGLE_DATA_SET =
+static driver::MX28::AngleDataSet const L3XZ_INITIAL_ANGLE_DATA_SET =
 {
   {1, 180.0f},
   {2, 180.0f},
@@ -71,8 +71,8 @@ int main(int argc, char **argv) try
   ros::NodeHandle node_hdl;
 
 
-  std::shared_ptr<l3xz::driver::Dynamixel> dynamixel_ctrl = std::make_shared<l3xz::driver::Dynamixel>(DYNAMIXEL_DEVICE_NAME, DYNAMIXEL_PROTOCOL_VERSION, DYNAMIXEL_BAUD_RATE);
-  l3xz::driver::SharedMX28 mx28_ctrl = std::make_shared<l3xz::driver::MX28>(dynamixel_ctrl);
+  std::shared_ptr<driver::Dynamixel> dynamixel_ctrl = std::make_shared<driver::Dynamixel>(DYNAMIXEL_DEVICE_NAME, DYNAMIXEL_PROTOCOL_VERSION, DYNAMIXEL_BAUD_RATE);
+  driver::SharedMX28 mx28_ctrl = std::make_shared<driver::MX28>(dynamixel_ctrl);
 
   if (!init_dynamixel(mx28_ctrl))
     ROS_ERROR("init_dynamixel failed.");
@@ -92,7 +92,7 @@ int main(int argc, char **argv) try
   auto sensor_head_pan       = std::make_shared<common::interface::sensor::AnglePositionSensor>("HEAD Pan    ");
   auto sensor_head_tilt      = std::make_shared<common::interface::sensor::AnglePositionSensor>("HEAD Tilt   ");
 
-  static std::map<l3xz::driver::Dynamixel::Id, common::interface::sensor::SharedAnglePositionSensor> const DYNAMIXEL_ID_TO_ANGLE_POSITION_SENSOR =
+  static std::map<driver::Dynamixel::Id, common::interface::sensor::SharedAnglePositionSensor> const DYNAMIXEL_ID_TO_ANGLE_POSITION_SENSOR =
   {
     {1, coxa_leg_front_left},
     {2, coxa_leg_front_right},
@@ -104,7 +104,7 @@ int main(int argc, char **argv) try
     {8, sensor_head_tilt},
   };
 
-  l3xz::driver::MX28::AngleDataSet l3xz_mx28_target_angle = L3XZ_INITIAL_ANGLE_DATA_SET;
+  driver::MX28::AngleDataSet l3xz_mx28_target_angle = L3XZ_INITIAL_ANGLE_DATA_SET;
 
   for (ros::Rate loop_rate(50);
        ros::ok();
@@ -151,11 +151,11 @@ int main(int argc, char **argv) try
     mx28_ctrl->turnLedOff(opt_id_vect.value());
     loop_rate.sleep();
 
-    l3xz::driver::MX28::AngleDataVect angle_vect_act = mx28_ctrl->getAngle(opt_id_vect.value());
+    driver::MX28::AngleDataVect angle_vect_act = mx28_ctrl->getAngle(opt_id_vect.value());
     for (auto [id, angle_deg] : angle_vect_act)
       ROS_INFO("[ID:%03d] Angle Act = %0.02f deg", id, angle_deg);
 
-    l3xz::driver::MX28::AngleDataVect angle_vect_set = angle_vect_act;
+    driver::MX28::AngleDataVect angle_vect_set = angle_vect_act;
     std::transform(angle_vect_act.begin(),
                    angle_vect_act.end(),
                    angle_vect_set.begin(),
@@ -191,9 +191,9 @@ catch (std::runtime_error const & err)
  * FUNCTION DECLARATION
  **************************************************************************************/
 
-bool init_dynamixel(l3xz::driver::SharedMX28 & mx28_ctrl)
+bool init_dynamixel(driver::SharedMX28 & mx28_ctrl)
 {
-  std::optional<l3xz::driver::Dynamixel::IdVect> opt_act_id_vect = mx28_ctrl->discover();
+  std::optional<driver::Dynamixel::IdVect> opt_act_id_vect = mx28_ctrl->discover();
 
   if (!opt_act_id_vect) {
     ROS_ERROR("Zero MX-28 servos detected.");
@@ -219,7 +219,7 @@ bool init_dynamixel(l3xz::driver::SharedMX28 & mx28_ctrl)
   if (!all_req_id_found)
     return false;
 
-  auto isInitialTargetAngleReached = [](l3xz::driver::MX28::AngleDataSet const & current_angle)
+  auto isInitialTargetAngleReached = [](driver::MX28::AngleDataSet const & current_angle)
   {
     for (auto [actual_id, actual_angle_deg] : current_angle)
     {
@@ -257,7 +257,7 @@ bool init_dynamixel(l3xz::driver::SharedMX28 & mx28_ctrl)
   return true;
 }
 
-void deinit_dynamixel(l3xz::driver::SharedMX28 & mx28_ctrl)
+void deinit_dynamixel(driver::SharedMX28 & mx28_ctrl)
 {
   mx28_ctrl->torqueOff(DYNAMIXEL_ID_VECT);
 }
