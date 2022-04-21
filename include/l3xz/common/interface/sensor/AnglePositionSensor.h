@@ -19,7 +19,7 @@
  * NAMESPACE
  **************************************************************************************/
 
-namespace l3xz::common::interface::sensor
+namespace common::interface::sensor
 {
 
 /**************************************************************************************
@@ -57,6 +57,6 @@ typedef std::shared_ptr<AnglePositionSensor> SharedAnglePositionSensor;
  * NAMESPACE
  **************************************************************************************/
 
-} /* l3xz::common::interface::sensor */
+} /* common::interface::sensor */
 
 #endif /* COMMON_INTERFACE_SENSOR_H_ */

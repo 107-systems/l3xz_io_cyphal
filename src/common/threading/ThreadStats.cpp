@@ -14,7 +14,7 @@
  * NAMESPACE
  **************************************************************************************/
 
-namespace l3xz::common::threading
+namespace common::threading
 {
 
 /**************************************************************************************
@@ -55,4 +55,4 @@ std::ostream & operator << (std::ostream & os, ThreadStats & stats)
  * NAMESPACE
  **************************************************************************************/
 
-} /* l3xz::common::threading */
+} /* common::threading */

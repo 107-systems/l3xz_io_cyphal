@@ -16,7 +16,7 @@
  * NAMESPACE
  **************************************************************************************/
 
-namespace l3xz::common::interface::sensor
+namespace common::interface::sensor
 {
 
 /**************************************************************************************
@@ -71,4 +71,4 @@ std::string AnglePositionSensor::toStr() const
  * NAMESPACE
  **************************************************************************************/
 
-} /* l3xz::common::interface::sensor */
+} /* common::interface::sensor */
