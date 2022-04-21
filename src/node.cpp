@@ -93,7 +93,7 @@ int main(int argc, char **argv) try
     sensor_head_tilt
   );
 
-  driver::MX28::AngleDataSet l3xz_mx28_target_angle = glue::l3xz::ELROB2022::L3XZ_INITIAL_ANGLE_DATA_SET;
+  driver::MX28::AngleDataSet l3xz_mx28_target_angle = glue::l3xz::ELROB2022::DYNAMIXEL_INITIAL_ANGLE_DATA_SET;
 
   for (ros::Rate loop_rate(50);
        ros::ok();
@@ -211,13 +211,13 @@ bool init_dynamixel(driver::SharedMX28 & mx28_ctrl)
   {
     for (auto [actual_id, actual_angle_deg] : current_angle)
     {
-      if (!glue::l3xz::ELROB2022::L3XZ_INITIAL_ANGLE_DATA_SET.count(actual_id)) {
+      if (!glue::l3xz::ELROB2022::DYNAMIXEL_INITIAL_ANGLE_DATA_SET.count(actual_id)) {
         ROS_ERROR("Could not find ID for angle comparison");
         return false;
       }
 
       float const EPSILON = 1.0f;
-      float const set_angle_deg = glue::l3xz::ELROB2022::L3XZ_INITIAL_ANGLE_DATA_SET.at(actual_id);
+      float const set_angle_deg = glue::l3xz::ELROB2022::DYNAMIXEL_INITIAL_ANGLE_DATA_SET.at(actual_id);
       float const abs_angle_diff = fabs(actual_angle_deg - set_angle_deg);
 
       if (abs_angle_diff > EPSILON) {
@@ -230,7 +230,7 @@ bool init_dynamixel(driver::SharedMX28 & mx28_ctrl)
 
   mx28_ctrl->torqueOn(glue::l3xz::ELROB2022::DYNAMIXEL_ID_VECT);
 
-  if (!mx28_ctrl->setAngle(glue::l3xz::ELROB2022::L3XZ_INITIAL_ANGLE_DATA_SET)) {
+  if (!mx28_ctrl->setAngle(glue::l3xz::ELROB2022::DYNAMIXEL_INITIAL_ANGLE_DATA_SET)) {
     ROS_ERROR("failed to set initial angles for all dynamixel servos");
     return false;
   }

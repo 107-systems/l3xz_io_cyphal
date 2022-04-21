@@ -27,7 +27,7 @@ namespace glue::l3xz::ELROB2022
 
 static driver::Dynamixel::IdVect const DYNAMIXEL_ID_VECT{1,2,3,4,5,6,7,8};
 
-static driver::MX28::AngleDataSet const L3XZ_INITIAL_ANGLE_DATA_SET =
+static driver::MX28::AngleDataSet const DYNAMIXEL_INITIAL_ANGLE_DATA_SET =
 {
   {1, 180.0f},
   {2, 180.0f},
