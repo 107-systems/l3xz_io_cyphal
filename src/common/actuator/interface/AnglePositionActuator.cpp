@@ -4,46 +4,66 @@
  * Contributors: https://github.com/107-systems/107-Arduino-UAVCAN/graphs/contributors.
  */
 
-#ifndef GLUE_L3XZ_ELROB2022_DYNAMIXEL_ANGLE_POSITION_SENSOR_H_
-#define GLUE_L3XZ_ELROB2022_DYNAMIXEL_ANGLE_POSITION_SENSOR_H_
-
 /**************************************************************************************
  * INCLUDES
  **************************************************************************************/
 
-#include <l3xz/common/sensor/interface/AnglePositionSensor.h>
+#include <l3xz/common/actuator/interface/AnglePositionActuator.h>
+
+#include <sstream>
 
 /**************************************************************************************
  * NAMESPACE
  **************************************************************************************/
 
-namespace glue::l3xz::ELROB2022
+namespace common::actuator::interface
 {
 
 /**************************************************************************************
- * CLASS DECLARATION
+ * CTOR/DTOR
  **************************************************************************************/
 
-class DynamixelAnglePositionSensor : public common::sensor::interface::AnglePositionSensor
+AnglePositionActuator::AnglePositionActuator(std::string const & name)
+: _name{name}
+, _val{std::nullopt}
 {
-public:
-  DynamixelAnglePositionSensor(std::string const & name) : AnglePositionSensor(name) { }
 
-  void set_angle_deg(float const angle_deg) {
-    set(angle_deg);
-  }
-};
+}
 
 /**************************************************************************************
- * TYPEDEF
+ * PUBLIC MEMBER FUNCTIONS
  **************************************************************************************/
 
-typedef std::shared_ptr<DynamixelAnglePositionSensor> SharedDynamixelAnglePositionSensor;
+void AnglePositionActuator::set(float const val)
+{
+  _val = val;
+}
+
+std::string AnglePositionActuator::toStr() const
+{
+  std::stringstream ss;
+  ss << "[A] "
+     << _name << ": ";
+  
+  if (_val)
+    ss << _val.value();
+  else
+    ss << "Inv.";
+
+  return ss.str();
+}
+
+/**************************************************************************************
+ * PROTECTED MEMBER FUNCTIONS
+ **************************************************************************************/
+
+std::optional<float> AnglePositionActuator::get() const
+{
+  return _val;
+}
 
 /**************************************************************************************
  * NAMESPACE
  **************************************************************************************/
 
-} /* glue::l3xz::ELROB2022 */
-
-#endif /* GLUE_L3XZ_ELROB2022_DYNAMIXEL_ANGLE_POSITION_SENSOR_H_ */
+} /* common::actuator::interface */

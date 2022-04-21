@@ -42,7 +42,8 @@ std::optional<float> AnglePositionSensor::get() const
 std::string AnglePositionSensor::toStr() const
 {
   std::stringstream ss;
-  ss << _name << ": ";
+  ss << "[S] "
+     << _name << ": ";
   
   if (_val)
     ss << _val.value();

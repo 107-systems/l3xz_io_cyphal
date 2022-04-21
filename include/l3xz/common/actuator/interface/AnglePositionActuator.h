@@ -4,33 +4,47 @@
  * Contributors: https://github.com/107-systems/107-Arduino-UAVCAN/graphs/contributors.
  */
 
-#ifndef GLUE_L3XZ_ELROB2022_CONST_H_
-#define GLUE_L3XZ_ELROB2022_CONST_H_
+#ifndef COMMON_SENSOR_INTERFACE_ANGLE_POSITION_ACTUATOR_H_
+#define COMMON_SENSOR_INTERFACE_ANGLE_POSITION_ACTUATOR_H_
 
 /**************************************************************************************
  * INCLUDES
  **************************************************************************************/
 
-#include <l3xz/driver/dynamixel/MX28.h>
-#include <l3xz/driver/dynamixel/Dynamixel.h>
+#include <string>
+#include <optional>
 
 /**************************************************************************************
  * NAMESPACE
  **************************************************************************************/
 
-namespace glue::l3xz::ELROB2022
+namespace common::actuator::interface
 {
 
 /**************************************************************************************
- * CONSTANT
+ * CLASS DECLARATION
  **************************************************************************************/
 
-static driver::Dynamixel::IdVect const DYNAMIXEL_ID_VECT{1,2,3,4,5,6,7,8};
+class AnglePositionActuator
+{
+public:
+  AnglePositionActuator(std::string const & name);
+
+  void set(float const val);
+  std::string toStr() const;
+
+protected:
+  std::optional<float> get() const;
+
+private:
+  std::string const _name;
+  std::optional<float> _val;
+};
 
 /**************************************************************************************
  * NAMESPACE
  **************************************************************************************/
 
-} /* glue::l3xz::ELROB2022 */
+} /* common::actuator::interface */
 
-#endif /* GLUE_L3XZ_ELROB2022_CONST_H_ */
+#endif /* COMMON_SENSOR_INTERFACE_ANGLE_POSITION_ACTUATOR_H_ */

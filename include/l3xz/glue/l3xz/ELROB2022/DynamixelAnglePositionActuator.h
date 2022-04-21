@@ -4,15 +4,14 @@
  * Contributors: https://github.com/107-systems/107-Arduino-UAVCAN/graphs/contributors.
  */
 
-#ifndef GLUE_L3XZ_ELROB2022_CONST_H_
-#define GLUE_L3XZ_ELROB2022_CONST_H_
+#ifndef GLUE_L3XZ_ELROB2022_DYNAMIXEL_ANGLE_POSITION_ACTUATOR_H_
+#define GLUE_L3XZ_ELROB2022_DYNAMIXEL_ANGLE_POSITION_ACTUATOR_H_
 
 /**************************************************************************************
  * INCLUDES
  **************************************************************************************/
 
-#include <l3xz/driver/dynamixel/MX28.h>
-#include <l3xz/driver/dynamixel/Dynamixel.h>
+#include <l3xz/common/actuator/interface/AnglePositionActuator.h>
 
 /**************************************************************************************
  * NAMESPACE
@@ -22,10 +21,28 @@ namespace glue::l3xz::ELROB2022
 {
 
 /**************************************************************************************
- * CONSTANT
+ * CLASS DECLARATION
  **************************************************************************************/
 
-static driver::Dynamixel::IdVect const DYNAMIXEL_ID_VECT{1,2,3,4,5,6,7,8};
+class DynamixelAnglePositionActuator : public common::actuator::interface::AnglePositionActuator
+{
+public:
+  DynamixelAnglePositionActuator(std::string const & name, float const initial_value)
+  : AnglePositionActuator(name)
+  {
+    set(initial_value);
+  }
+
+  float getAngleDeg() const {
+    return get().value();
+  }
+};
+
+/**************************************************************************************
+ * TYPEDEF
+ **************************************************************************************/
+
+typedef std::shared_ptr<DynamixelAnglePositionActuator> SharedDynamixelAnglePositionActuator;
 
 /**************************************************************************************
  * NAMESPACE
@@ -33,4 +50,4 @@ static driver::Dynamixel::IdVect const DYNAMIXEL_ID_VECT{1,2,3,4,5,6,7,8};
 
 } /* glue::l3xz::ELROB2022 */
 
-#endif /* GLUE_L3XZ_ELROB2022_CONST_H_ */
+#endif /* GLUE_L3XZ_ELROB2022_DYNAMIXEL_ANGLE_POSITION_ACTUATOR_H_ */

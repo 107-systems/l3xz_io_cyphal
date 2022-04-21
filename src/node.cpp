@@ -30,6 +30,8 @@
 #include <l3xz/glue/l3xz/ELROB2022/Const.h>
 #include <l3xz/glue/l3xz/ELROB2022/DynamixelAnglePositionSensor.h>
 #include <l3xz/glue/l3xz/ELROB2022/DynamixelAnglePositionSensorBulkReader.h>
+#include <l3xz/glue/l3xz/ELROB2022/DynamixelAnglePositionActuator.h>
+#include <l3xz/glue/l3xz/ELROB2022/DynamixelAnglePositionActuatorBulkWriter.h>
 
 /**************************************************************************************
  * FUNCTION DECLARATION
@@ -71,29 +73,49 @@ int main(int argc, char **argv) try
   ros::Subscriber cmd_vel_sub = node_hdl.subscribe<geometry_msgs::Twist>("/l3xz/cmd_vel", 10, std::bind(cmd_vel_callback, std::placeholders::_1, std::ref(teleop_cmd_data)));
 
 
-  auto coxa_leg_front_left   = std::make_shared<glue::l3xz::ELROB2022::DynamixelAnglePositionSensor>("LEG F/L Coxa");
-  auto coxa_leg_front_right  = std::make_shared<glue::l3xz::ELROB2022::DynamixelAnglePositionSensor>("LEG F/R Coxa");
-  auto coxa_leg_middle_left  = std::make_shared<glue::l3xz::ELROB2022::DynamixelAnglePositionSensor>("LEG M/L Coxa");
-  auto coxa_leg_middle_right = std::make_shared<glue::l3xz::ELROB2022::DynamixelAnglePositionSensor>("LEG M/R Coxa");
-  auto coxa_leg_back_left    = std::make_shared<glue::l3xz::ELROB2022::DynamixelAnglePositionSensor>("LEG B/L Coxa");
-  auto coxa_leg_back_right   = std::make_shared<glue::l3xz::ELROB2022::DynamixelAnglePositionSensor>("LEG B/R Coxa");
-  auto sensor_head_pan       = std::make_shared<glue::l3xz::ELROB2022::DynamixelAnglePositionSensor>("HEAD Pan    ");
-  auto sensor_head_tilt      = std::make_shared<glue::l3xz::ELROB2022::DynamixelAnglePositionSensor>("HEAD Tilt   ");
+  auto angle_sensor_coxa_leg_front_left   = std::make_shared<glue::l3xz::ELROB2022::DynamixelAnglePositionSensor>("LEG F/L Coxa");
+  auto angle_sensor_coxa_leg_front_right  = std::make_shared<glue::l3xz::ELROB2022::DynamixelAnglePositionSensor>("LEG F/R Coxa");
+  auto angle_sensor_coxa_leg_middle_left  = std::make_shared<glue::l3xz::ELROB2022::DynamixelAnglePositionSensor>("LEG M/L Coxa");
+  auto angle_sensor_coxa_leg_middle_right = std::make_shared<glue::l3xz::ELROB2022::DynamixelAnglePositionSensor>("LEG M/R Coxa");
+  auto angle_sensor_coxa_leg_back_left    = std::make_shared<glue::l3xz::ELROB2022::DynamixelAnglePositionSensor>("LEG B/L Coxa");
+  auto angle_sensor_coxa_leg_back_right   = std::make_shared<glue::l3xz::ELROB2022::DynamixelAnglePositionSensor>("LEG B/R Coxa");
+  auto angle_sensor_sensor_head_pan       = std::make_shared<glue::l3xz::ELROB2022::DynamixelAnglePositionSensor>("HEAD Pan    ");
+  auto angle_sensor_sensor_head_tilt      = std::make_shared<glue::l3xz::ELROB2022::DynamixelAnglePositionSensor>("HEAD Tilt   ");
 
   glue::l3xz::ELROB2022::DynamixelAnglePositionSensorBulkReader dynamixel_angle_position_sensor_bulk_reader
   (
     mx28_ctrl,
-    coxa_leg_front_left,
-    coxa_leg_front_right,
-    coxa_leg_middle_left,
-    coxa_leg_middle_right,
-    coxa_leg_back_left,
-    coxa_leg_back_right,
-    sensor_head_pan,
-    sensor_head_tilt
+    angle_sensor_coxa_leg_front_left,
+    angle_sensor_coxa_leg_front_right,
+    angle_sensor_coxa_leg_middle_left,
+    angle_sensor_coxa_leg_middle_right,
+    angle_sensor_coxa_leg_back_left,
+    angle_sensor_coxa_leg_back_right,
+    angle_sensor_sensor_head_pan,
+    angle_sensor_sensor_head_tilt
   );
 
-  driver::MX28::AngleDataSet l3xz_mx28_target_angle = glue::l3xz::ELROB2022::DYNAMIXEL_INITIAL_ANGLE_DATA_SET;
+  auto angle_actuator_coxa_leg_front_left   = std::make_shared<glue::l3xz::ELROB2022::DynamixelAnglePositionActuator>("LEG F/L Coxa", 180.0f);
+  auto angle_actuator_coxa_leg_front_right  = std::make_shared<glue::l3xz::ELROB2022::DynamixelAnglePositionActuator>("LEG F/R Coxa", 180.0f);
+  auto angle_actuator_coxa_leg_middle_left  = std::make_shared<glue::l3xz::ELROB2022::DynamixelAnglePositionActuator>("LEG M/L Coxa", 180.0f);
+  auto angle_actuator_coxa_leg_middle_right = std::make_shared<glue::l3xz::ELROB2022::DynamixelAnglePositionActuator>("LEG M/R Coxa", 180.0f);
+  auto angle_actuator_coxa_leg_back_left    = std::make_shared<glue::l3xz::ELROB2022::DynamixelAnglePositionActuator>("LEG B/L Coxa", 180.0f);
+  auto angle_actuator_coxa_leg_back_right   = std::make_shared<glue::l3xz::ELROB2022::DynamixelAnglePositionActuator>("LEG B/R Coxa", 180.0f);
+  auto angle_actuator_sensor_head_pan       = std::make_shared<glue::l3xz::ELROB2022::DynamixelAnglePositionActuator>("HEAD Pan    ", 180.0f);
+  auto angle_actuator_sensor_head_tilt      = std::make_shared<glue::l3xz::ELROB2022::DynamixelAnglePositionActuator>("HEAD Tilt   ", 180.0f);
+
+  glue::l3xz::ELROB2022::DynamixelAnglePositionActuatorBulkWriter dynamixel_angle_position_actuator_bulk_writer
+  (
+    mx28_ctrl,
+    angle_actuator_coxa_leg_front_left,
+    angle_actuator_coxa_leg_front_right,
+    angle_actuator_coxa_leg_middle_left,
+    angle_actuator_coxa_leg_middle_right,
+    angle_actuator_coxa_leg_back_left,
+    angle_actuator_coxa_leg_back_right,
+    angle_actuator_sensor_head_pan,
+    angle_actuator_sensor_head_tilt
+  );
 
   for (ros::Rate loop_rate(50);
        ros::ok();
@@ -102,67 +124,35 @@ int main(int argc, char **argv) try
     /* Simultaneously read the current angle from all dynamixel servos and update the angle position sensors. */
     dynamixel_angle_position_sensor_bulk_reader.doBulkRead();
 
-    ROS_DEBUG("L3XZ Dynamixel Current Angles:\n  %s\n  %s\n  %s\n  %s\n  %s\n  %s\n  %s\n  %s",
-      coxa_leg_front_left->toStr().c_str(),
-      coxa_leg_front_right->toStr().c_str(),
-      coxa_leg_middle_left->toStr().c_str(),
-      coxa_leg_middle_right->toStr().c_str(),
-      coxa_leg_back_left->toStr().c_str(),
-      coxa_leg_back_right->toStr().c_str(),
-      sensor_head_pan->toStr().c_str(),
-      sensor_head_tilt->toStr().c_str());
+    ROS_INFO("L3XZ Dynamixel Current Angles:\n  %s\n  %s\n  %s\n  %s\n  %s\n  %s\n  %s\n  %s",
+      angle_sensor_coxa_leg_front_left->toStr().c_str(),
+      angle_sensor_coxa_leg_front_right->toStr().c_str(),
+      angle_sensor_coxa_leg_middle_left->toStr().c_str(),
+      angle_sensor_coxa_leg_middle_right->toStr().c_str(),
+      angle_sensor_coxa_leg_back_left->toStr().c_str(),
+      angle_sensor_coxa_leg_back_right->toStr().c_str(),
+      angle_sensor_sensor_head_pan->toStr().c_str(),
+      angle_sensor_sensor_head_tilt->toStr().c_str());
 
     /* Calculate new values for sensor head, both pan and tilt joint
      * based on the input provided by the teleop node.
      */
     static float const MAX_ANGLE_INCREMENT_PER_CYCLE_DEG = 10.0f;
 
-    float const sensor_head_pan_actual = sensor_head_pan->get().value();
+    float const sensor_head_pan_actual = angle_sensor_sensor_head_pan->get().value();
     float const sensor_head_pan_target = sensor_head_pan_actual + (teleop_cmd_data.angular_velocity_head_pan * MAX_ANGLE_INCREMENT_PER_CYCLE_DEG);
-    l3xz_mx28_target_angle.at(7) = sensor_head_pan_target;
+    angle_actuator_sensor_head_pan->set(sensor_head_pan_target);
 
-    float const sensor_head_tilt_actual = sensor_head_tilt->get().value();
+    float const sensor_head_tilt_actual = angle_sensor_sensor_head_tilt->get().value();
     float const sensor_head_tilt_target = sensor_head_tilt_actual + (teleop_cmd_data.angular_velocity_head_tilt * MAX_ANGLE_INCREMENT_PER_CYCLE_DEG);
-    l3xz_mx28_target_angle.at(8) = sensor_head_tilt_target;
+    angle_actuator_sensor_head_tilt->set(sensor_head_tilt_target);
 
     //ROS_INFO("Head\n  Pan : actual = %.2f, target = %.2f\n  Tilt: actual = %.2f, target = %.2f", sensor_head_pan_actual, sensor_head_pan_target, sensor_head_tilt_actual, sensor_head_tilt_target);
 
-
-
-    if (!mx28_ctrl->setAngle(l3xz_mx28_target_angle))
+    if (!dynamixel_angle_position_actuator_bulk_writer.doBulkWrite())
       ROS_ERROR("failed to set target angles for all dynamixel servos");
 
     ros::spinOnce();
-/*
-    mx28_ctrl->turnLedOn(opt_id_vect.value());
-    loop_rate.sleep();
-    mx28_ctrl->turnLedOff(opt_id_vect.value());
-    loop_rate.sleep();
-
-    driver::MX28::AngleDataVect angle_vect_act = mx28_ctrl->getAngle(opt_id_vect.value());
-    for (auto [id, angle_deg] : angle_vect_act)
-      ROS_INFO("[ID:%03d] Angle Act = %0.02f deg", id, angle_deg);
-
-    driver::MX28::AngleDataVect angle_vect_set = angle_vect_act;
-    std::transform(angle_vect_act.begin(),
-                   angle_vect_act.end(),
-                   angle_vect_set.begin(),
-                   [](std::tuple<uint8_t, float> const & in) -> std::tuple<uint8_t, float>
-                   {
-                     auto [id, angle_set] = in;
-                     angle_set += 10.0f;
-                     while (angle_set > 360.0f)
-                      angle_set -= 360.0f;
-                     return std::make_tuple(id, angle_set);
-                   });
-
-    for (auto [id, angle_deg] : angle_vect_set)
-      ROS_INFO("[ID:%03d] Angle Set = %0.02f deg", id, angle_deg);
-
-
-    if (!mx28_ctrl->setAngle(angle_vect_set))
-      ROS_ERROR("setAngle() failed");
-*/
   }
 
   deinit_dynamixel(mx28_ctrl);
@@ -207,40 +197,7 @@ bool init_dynamixel(driver::SharedMX28 & mx28_ctrl)
   if (!all_req_id_found)
     return false;
 
-  auto isInitialTargetAngleReached = [](driver::MX28::AngleDataSet const & current_angle)
-  {
-    for (auto [actual_id, actual_angle_deg] : current_angle)
-    {
-      if (!glue::l3xz::ELROB2022::DYNAMIXEL_INITIAL_ANGLE_DATA_SET.count(actual_id)) {
-        ROS_ERROR("Could not find ID for angle comparison");
-        return false;
-      }
-
-      float const EPSILON = 1.0f;
-      float const set_angle_deg = glue::l3xz::ELROB2022::DYNAMIXEL_INITIAL_ANGLE_DATA_SET.at(actual_id);
-      float const abs_angle_diff = fabs(actual_angle_deg - set_angle_deg);
-
-      if (abs_angle_diff > EPSILON) {
-        ROS_INFO("Not yet target angle reached for ID %d (set: %.2f, actual: %.2f)", actual_id, set_angle_deg, actual_angle_deg);
-        return false;
-      }
-    }
-    return true;
-  };
-
   mx28_ctrl->torqueOn(glue::l3xz::ELROB2022::DYNAMIXEL_ID_VECT);
-
-  if (!mx28_ctrl->setAngle(glue::l3xz::ELROB2022::DYNAMIXEL_INITIAL_ANGLE_DATA_SET)) {
-    ROS_ERROR("failed to set initial angles for all dynamixel servos");
-    return false;
-  }
-
-  std::this_thread::sleep_for(std::chrono::seconds(1));
-
-  if (!isInitialTargetAngleReached(mx28_ctrl->getAngle(glue::l3xz::ELROB2022::DYNAMIXEL_ID_VECT))) {
-    ROS_ERROR("failed to set all dynamixel servos to initial position");
-    return false;
-  }
 
   return true;
 }

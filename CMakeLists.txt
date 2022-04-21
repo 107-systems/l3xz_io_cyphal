@@ -137,6 +137,7 @@ include_directories(
 ## With catkin_make all packages are built within a single CMake context
 ## The recommended prefix ensures that target names across packages don't collide
 add_executable(${PROJECT_NAME}_node
+  src/common/actuator/interface/AnglePositionActuator.cpp
   src/common/sensor/interface/AnglePositionSensor.cpp
   src/common/threading/ThreadBase.cpp
   src/common/threading/ThreadStats.cpp

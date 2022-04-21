@@ -55,8 +55,12 @@ public:
 
   void doBulkRead()
   {
-    for (auto [id, angle_deg] : _mx28_ctrl->getAngle(DYNAMIXEL_ID_VECT))
-      DYNAMIXEL_ID_TO_ANGLE_POSITION_SENSOR.at(id)->set(angle_deg);
+    driver::MX28::AngleDataSet const angle_data_set = _mx28_ctrl->getAngle(DYNAMIXEL_ID_VECT);
+
+    for (auto [id, angle_deg] : angle_data_set) {
+      ROS_INFO("id %d = %.2f", id, angle_deg);
+      DYNAMIXEL_ID_TO_ANGLE_POSITION_SENSOR.at(id)->set_angle_deg(angle_deg);
+    }
   }
 
 private:
