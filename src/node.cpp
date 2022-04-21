@@ -27,7 +27,7 @@
 #include <l3xz/driver/dynamixel/MX28.h>
 #include <l3xz/driver/dynamixel/Dynamixel.h>
 
-#include <l3xz/common/interface/sensor/AnglePositionSensor.h>
+#include <l3xz/common/sensor/interface/AnglePositionSensor.h>
 
 /**************************************************************************************
  * FUNCTION DECLARATION
@@ -83,16 +83,16 @@ int main(int argc, char **argv) try
   ros::Subscriber cmd_vel_sub = node_hdl.subscribe<geometry_msgs::Twist>("/l3xz/cmd_vel", 10, std::bind(cmd_vel_callback, std::placeholders::_1, std::ref(teleop_cmd_data)));
 
 
-  auto coxa_leg_front_left   = std::make_shared<common::interface::sensor::AnglePositionSensor>("LEG F/L Coxa");
-  auto coxa_leg_front_right  = std::make_shared<common::interface::sensor::AnglePositionSensor>("LEG F/R Coxa");
-  auto coxa_leg_middle_left  = std::make_shared<common::interface::sensor::AnglePositionSensor>("LEG M/L Coxa");
-  auto coxa_leg_middle_right = std::make_shared<common::interface::sensor::AnglePositionSensor>("LEG M/R Coxa");
-  auto coxa_leg_back_left    = std::make_shared<common::interface::sensor::AnglePositionSensor>("LEG B/L Coxa");
-  auto coxa_leg_back_right   = std::make_shared<common::interface::sensor::AnglePositionSensor>("LEG B/R Coxa");
-  auto sensor_head_pan       = std::make_shared<common::interface::sensor::AnglePositionSensor>("HEAD Pan    ");
-  auto sensor_head_tilt      = std::make_shared<common::interface::sensor::AnglePositionSensor>("HEAD Tilt   ");
+  auto coxa_leg_front_left   = std::make_shared<common::sensor::interface::AnglePositionSensor>("LEG F/L Coxa");
+  auto coxa_leg_front_right  = std::make_shared<common::sensor::interface::AnglePositionSensor>("LEG F/R Coxa");
+  auto coxa_leg_middle_left  = std::make_shared<common::sensor::interface::AnglePositionSensor>("LEG M/L Coxa");
+  auto coxa_leg_middle_right = std::make_shared<common::sensor::interface::AnglePositionSensor>("LEG M/R Coxa");
+  auto coxa_leg_back_left    = std::make_shared<common::sensor::interface::AnglePositionSensor>("LEG B/L Coxa");
+  auto coxa_leg_back_right   = std::make_shared<common::sensor::interface::AnglePositionSensor>("LEG B/R Coxa");
+  auto sensor_head_pan       = std::make_shared<common::sensor::interface::AnglePositionSensor>("HEAD Pan    ");
+  auto sensor_head_tilt      = std::make_shared<common::sensor::interface::AnglePositionSensor>("HEAD Tilt   ");
 
-  static std::map<driver::Dynamixel::Id, common::interface::sensor::SharedAnglePositionSensor> const DYNAMIXEL_ID_TO_ANGLE_POSITION_SENSOR =
+  static std::map<driver::Dynamixel::Id, common::sensor::interface::SharedAnglePositionSensor> const DYNAMIXEL_ID_TO_ANGLE_POSITION_SENSOR =
   {
     {1, coxa_leg_front_left},
     {2, coxa_leg_front_right},

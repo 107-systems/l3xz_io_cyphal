@@ -4,59 +4,71 @@
  * Contributors: https://github.com/107-systems/107-Arduino-UAVCAN/graphs/contributors.
  */
 
-#ifndef COMMON_INTERFACE_SENSOR_H_
-#define COMMON_INTERFACE_SENSOR_H_
-
 /**************************************************************************************
  * INCLUDES
  **************************************************************************************/
 
-#include <string>
-#include <memory>
-#include <optional>
+#include <l3xz/common/sensor/interface/AnglePositionSensor.h>
+
+#include <sstream>
 
 /**************************************************************************************
  * NAMESPACE
  **************************************************************************************/
 
-namespace common::interface::sensor
+namespace common::sensor::interface
 {
 
 /**************************************************************************************
- * CLASS DECLARATION
+ * CTOR/DTOR
  **************************************************************************************/
 
-class AnglePositionSensor
+AnglePositionSensor::AnglePositionSensor(std::string const & name)
+: _name{name}
+, _val{0.0f}
+, _is_valid{false}
 {
-public:
 
-   AnglePositionSensor(std::string const & name);
-  ~AnglePositionSensor();
+}
 
-
-  std::optional<float> get() const;
-
-  void update(float const val);
-
-  std::string toStr() const;
-
-
-private:
-  std::string const _name;
-  float _val;
-  bool _is_valid;
-};
+AnglePositionSensor::~AnglePositionSensor()
+{
+  _is_valid = false;
+}
 
 /**************************************************************************************
- * TYPEDEF
+ * PUBLIC MEMBER FUNCTIONS
  **************************************************************************************/
 
-typedef std::shared_ptr<AnglePositionSensor> SharedAnglePositionSensor;
+std::optional<float> AnglePositionSensor::get() const
+{
+  if (_is_valid)
+    return _val;
+
+  return std::nullopt;
+}
+
+void AnglePositionSensor::update(float const val)
+{
+  _val = val;
+  _is_valid = true;
+}
+
+std::string AnglePositionSensor::toStr() const
+{
+  std::stringstream ss;
+  ss << _name << ": ";
+  
+  if (_is_valid)
+    ss << _val;
+  else
+    ss << "Inv.";
+
+  return ss.str();
+}
 
 /**************************************************************************************
  * NAMESPACE
  **************************************************************************************/
 
-} /* common::interface::sensor */
-
-#endif /* COMMON_INTERFACE_SENSOR_H_ */
+} /* common::sensor::interface */
