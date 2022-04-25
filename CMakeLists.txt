@@ -144,6 +144,7 @@ add_executable(${PROJECT_NAME}_node
   src/common/threading/ThreadStats.cpp
   src/driver/dynamixel/Dynamixel.cpp
   src/driver/dynamixel/MX28.cpp
+  src/phy/opencyphal/SocketCAN.cpp
   src/phy/serial/AsyncSerial.cpp
   src/driver/ssc32/SSC32.cpp
   src/node.cpp
