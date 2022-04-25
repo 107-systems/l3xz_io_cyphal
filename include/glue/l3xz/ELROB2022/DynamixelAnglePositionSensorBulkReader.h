@@ -1,7 +1,7 @@
 /**
  * Copyright (c) 2022 LXRobotics GmbH.
  * Author: Alexander Entinger <alexander.entinger@lxrobotics.com>
- * Contributors: https://github.com/107-systems/107-Arduino-UAVCAN/graphs/contributors.
+ * Contributors: https://github.com/107-systems/l3xz/graphs/contributors.
  */
 
 #ifndef GLUE_L3XZ_ELROB2022_DYNAMIXEL_ANGLE_POSITION_SENSOR_BULK_READER_H_

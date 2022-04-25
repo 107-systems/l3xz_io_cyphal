@@ -1,7 +1,7 @@
 /**
  * Copyright (c) 2022 LXRobotics GmbH.
  * Author: Alexander Entinger <alexander.entinger@lxrobotics.com>
- * Contributors: https://github.com/107-systems/107-Arduino-UAVCAN/graphs/contributors.
+ * Contributors: https://github.com/107-systems/l3xz/graphs/contributors.
  */
 
 #ifndef CONST_H_
