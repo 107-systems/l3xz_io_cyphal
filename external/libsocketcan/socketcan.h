@@ -29,7 +29,7 @@
 #ifndef SOCKETCAN_H_INCLUDED
 #define SOCKETCAN_H_INCLUDED
 
-#include "canard.h"
+#include <canard.h>
 #include <stdbool.h>
 #include <stdint.h>
 #include <stdlib.h>
