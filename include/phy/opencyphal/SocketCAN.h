@@ -29,7 +29,8 @@ namespace phy::opencyphal
 class SocketCAN
 {
 public:
-  SocketCAN(std::string const & iface_name, bool const is_can_fd);
+   SocketCAN(std::string const & iface_name, bool const is_can_fd);
+  ~SocketCAN();
 
 
   int16_t filter(const size_t num_configs, const SocketCANFilterConfig * const configs);

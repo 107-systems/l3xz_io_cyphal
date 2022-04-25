@@ -10,6 +10,9 @@
 
 #include <phy/opencyphal/SocketCAN.h>
 
+#include <unistd.h> /* close */
+
+#include <sstream>
 #include <stdexcept>
 
 /**************************************************************************************
@@ -26,8 +29,19 @@ namespace phy::opencyphal
 SocketCAN::SocketCAN(std::string const & iface_name, bool const is_can_fd)
 : _fd{socketcanOpen(iface_name.c_str(), is_can_fd)}
 {
-  if (_fd < 0)
-    throw std::runtime_error("SocketCAN::SocketCAN error opening CAN interface '" + iface_name + std::string("'"));
+  if (_fd < 0) {
+    std::stringstream err_msg;
+    err_msg << "SocketCAN::SocketCAN error opening CAN interface '"
+            << iface_name
+            << "' with error "
+            << _fd;
+    throw std::runtime_error(err_msg.str());
+  }
+}
+
+SocketCAN::~SocketCAN()
+{
+  close(_fd);
 }
 
 /**************************************************************************************
