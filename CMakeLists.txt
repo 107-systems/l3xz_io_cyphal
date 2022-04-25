@@ -114,6 +114,7 @@ catkin_package(
 ###########
 add_subdirectory(external/libcanard/current)
 add_subdirectory(external/libdynamixel/current)
+add_subdirectory(external/libo1heap/current)
 add_subdirectory(external/liborocos-kdl/current)
 
 ## Specify additional locations of header files
@@ -167,6 +168,7 @@ target_link_libraries(${PROJECT_NAME}_node
   dynamixel
   boost_system
   boost_thread
+  o1heap
   pthread
 )
 
