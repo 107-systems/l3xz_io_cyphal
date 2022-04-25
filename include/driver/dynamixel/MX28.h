@@ -4,50 +4,69 @@
  * Contributors: https://github.com/107-systems/107-Arduino-UAVCAN/graphs/contributors.
  */
 
-#ifndef GLUE_L3XZ_ELROB2022_DYNAMIXEL_ANGLE_POSITION_ACTUATOR_H_
-#define GLUE_L3XZ_ELROB2022_DYNAMIXEL_ANGLE_POSITION_ACTUATOR_H_
+#ifndef DYNAMIXEL_MX28_H_
+#define DYNAMIXEL_MX28_H_
 
 /**************************************************************************************
- * INCLUDES
+ * INCLUDE
  **************************************************************************************/
 
-#include <l3xz/common/actuator/interface/AnglePositionActuator.h>
+#include <memory>
+
+#include <driver/dynamixel/Dynamixel.h>
 
 /**************************************************************************************
  * NAMESPACE
  **************************************************************************************/
 
-namespace glue::l3xz::ELROB2022
+namespace driver
 {
 
 /**************************************************************************************
  * CLASS DECLARATION
  **************************************************************************************/
 
-class DynamixelAnglePositionActuator : public common::actuator::interface::AnglePositionActuator
+class MX28
 {
 public:
-  DynamixelAnglePositionActuator(std::string const & name, float const initial_value)
-  : AnglePositionActuator(name)
-  {
-    set(initial_value);
-  }
 
-  float getAngleDeg() const {
-    return get().value();
-  }
+  MX28(std::shared_ptr<Dynamixel> dyn_ctrl);
+
+  std::optional<Dynamixel::IdVect> discover();
+
+
+  void turnLedOn (Dynamixel::IdVect const & id_vect);
+  void turnLedOff(Dynamixel::IdVect const & id_vect);
+
+  void torqueOn (Dynamixel::Id const id);
+  void torqueOn (Dynamixel::IdVect const & id_vect);
+  void torqueOff(Dynamixel::IdVect const & id_vect);
+
+  typedef std::tuple<Dynamixel::Id, float> AngleData;
+  typedef std::map<Dynamixel::Id, float> AngleDataSet;
+
+  std::optional<float> getAngle(Dynamixel::Id const id);
+  AngleDataSet         getAngle(Dynamixel::IdVect const & id_vect);
+
+  bool setAngle(Dynamixel::Id const id, float const angle_deg);
+  bool setAngle(AngleDataSet const & angle_data_set);
+
+
+private:
+
+  std::shared_ptr<Dynamixel> _dyn_ctrl;
 };
 
 /**************************************************************************************
  * TYPEDEF
  **************************************************************************************/
 
-typedef std::shared_ptr<DynamixelAnglePositionActuator> SharedDynamixelAnglePositionActuator;
+typedef std::shared_ptr<MX28> SharedMX28;
 
 /**************************************************************************************
  * NAMESPACE
  **************************************************************************************/
 
-} /* glue::l3xz::ELROB2022 */
+} /* driver */
 
-#endif /* GLUE_L3XZ_ELROB2022_DYNAMIXEL_ANGLE_POSITION_ACTUATOR_H_ */
+#endif /* DYNAMIXEL_MX28_H_ */

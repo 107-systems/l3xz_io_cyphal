@@ -4,33 +4,42 @@
  * Contributors: https://github.com/107-systems/107-Arduino-UAVCAN/graphs/contributors.
  */
 
-#ifndef GLUE_L3XZ_ELROB2022_CONST_H_
-#define GLUE_L3XZ_ELROB2022_CONST_H_
+#ifndef VALVE_H_
+#define VALVE_H_
 
 /**************************************************************************************
  * INCLUDES
  **************************************************************************************/
 
-#include <l3xz/driver/dynamixel/MX28.h>
-#include <l3xz/driver/dynamixel/Dynamixel.h>
+#include <Const.h>
+#include <driver/ssc32/SSC32.h>
 
 /**************************************************************************************
  * NAMESPACE
  **************************************************************************************/
 
-namespace glue::l3xz::ELROB2022
+namespace l3xz
 {
 
 /**************************************************************************************
- * CONSTANT
+ * CLASS DECLARATION
  **************************************************************************************/
 
-static driver::Dynamixel::IdVect const DYNAMIXEL_ID_VECT{1,2,3,4,5,6,7,8};
+class Valve
+{
+public:
+  Valve(driver::SharedSSC32 & ssc32);
+
+  void set(Leg const leg, Joint const joint, uint16_t const pulse_width_us);
+
+private:
+  driver::SharedSSC32 _ssc32;
+};
 
 /**************************************************************************************
  * NAMESPACE
  **************************************************************************************/
 
-} /* glue::l3xz::ELROB2022 */
+} /* l3xz */
 
-#endif /* GLUE_L3XZ_ELROB2022_CONST_H_ */
+#endif /* VALVE_H_ */

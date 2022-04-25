@@ -8,7 +8,7 @@
  * INCLUDES
  **************************************************************************************/
 
-#include <l3xz/common/threading/ThreadStats.h>
+#include <common/threading/ThreadStats.h>
 
 /**************************************************************************************
  * NAMESPACE

@@ -22,16 +22,16 @@
 
 #include <dynamixel_sdk.h>
 
-#include <l3xz/Const.h>
+#include <Const.h>
 
-#include <l3xz/driver/dynamixel/MX28.h>
-#include <l3xz/driver/dynamixel/Dynamixel.h>
+#include <driver/dynamixel/MX28.h>
+#include <driver/dynamixel/Dynamixel.h>
 
-#include <l3xz/glue/l3xz/ELROB2022/Const.h>
-#include <l3xz/glue/l3xz/ELROB2022/DynamixelAnglePositionSensor.h>
-#include <l3xz/glue/l3xz/ELROB2022/DynamixelAnglePositionSensorBulkReader.h>
-#include <l3xz/glue/l3xz/ELROB2022/DynamixelAnglePositionActuator.h>
-#include <l3xz/glue/l3xz/ELROB2022/DynamixelAnglePositionActuatorBulkWriter.h>
+#include <glue/l3xz/ELROB2022/Const.h>
+#include <glue/l3xz/ELROB2022/DynamixelAnglePositionSensor.h>
+#include <glue/l3xz/ELROB2022/DynamixelAnglePositionSensorBulkReader.h>
+#include <glue/l3xz/ELROB2022/DynamixelAnglePositionActuator.h>
+#include <glue/l3xz/ELROB2022/DynamixelAnglePositionActuatorBulkWriter.h>
 
 /**************************************************************************************
  * FUNCTION DECLARATION

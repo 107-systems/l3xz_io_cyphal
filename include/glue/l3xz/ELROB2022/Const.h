@@ -4,43 +4,33 @@
  * Contributors: https://github.com/107-systems/107-Arduino-UAVCAN/graphs/contributors.
  */
 
-#ifndef PUMP_H_
-#define PUMP_H_
+#ifndef GLUE_L3XZ_ELROB2022_CONST_H_
+#define GLUE_L3XZ_ELROB2022_CONST_H_
 
 /**************************************************************************************
  * INCLUDES
  **************************************************************************************/
 
-#include <l3xz/driver/ssc32/SSC32.h>
+#include <driver/dynamixel/MX28.h>
+#include <driver/dynamixel/Dynamixel.h>
 
 /**************************************************************************************
  * NAMESPACE
  **************************************************************************************/
 
-namespace l3xz
+namespace glue::l3xz::ELROB2022
 {
 
 /**************************************************************************************
- * CLASS DECLARATION
+ * CONSTANT
  **************************************************************************************/
 
-class Pump
-{
-public:
-  Pump(driver::SharedSSC32 & ssc32);
-
-  void set(uint16_t const pulse_width_us);
-
-private:
-  driver::SharedSSC32 _ssc32;
-
-  static uint8_t constexpr PUMP_CHANNEL = 15;
-};
+static driver::Dynamixel::IdVect const DYNAMIXEL_ID_VECT{1,2,3,4,5,6,7,8};
 
 /**************************************************************************************
  * NAMESPACE
  **************************************************************************************/
 
-} /* l3xz */
+} /* glue::l3xz::ELROB2022 */
 
-#endif /* PUMP_H_ */
+#endif /* GLUE_L3XZ_ELROB2022_CONST_H_ */

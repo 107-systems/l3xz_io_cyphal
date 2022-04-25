@@ -8,7 +8,7 @@
  * INCLUDES
  **************************************************************************************/
 
-#include <l3xz/common/sensor/interface/AnglePositionSensor.h>
+#include <common/sensor/interface/AnglePositionSensor.h>
 
 #include <sstream>
 

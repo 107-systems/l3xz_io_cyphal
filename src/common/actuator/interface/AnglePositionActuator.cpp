@@ -8,7 +8,7 @@
  * INCLUDES
  **************************************************************************************/
 
-#include <l3xz/common/actuator/interface/AnglePositionActuator.h>
+#include <common/actuator/interface/AnglePositionActuator.h>
 
 #include <sstream>
 

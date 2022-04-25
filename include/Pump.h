@@ -4,46 +4,43 @@
  * Contributors: https://github.com/107-systems/107-Arduino-UAVCAN/graphs/contributors.
  */
 
-#ifndef GLUE_L3XZ_ELROB2022_DYNAMIXEL_ANGLE_POSITION_SENSOR_H_
-#define GLUE_L3XZ_ELROB2022_DYNAMIXEL_ANGLE_POSITION_SENSOR_H_
+#ifndef PUMP_H_
+#define PUMP_H_
 
 /**************************************************************************************
  * INCLUDES
  **************************************************************************************/
 
-#include <l3xz/common/sensor/interface/AnglePositionSensor.h>
+#include <driver/ssc32/SSC32.h>
 
 /**************************************************************************************
  * NAMESPACE
  **************************************************************************************/
 
-namespace glue::l3xz::ELROB2022
+namespace l3xz
 {
 
 /**************************************************************************************
  * CLASS DECLARATION
  **************************************************************************************/
 
-class DynamixelAnglePositionSensor : public common::sensor::interface::AnglePositionSensor
+class Pump
 {
 public:
-  DynamixelAnglePositionSensor(std::string const & name) : AnglePositionSensor(name) { }
+  Pump(driver::SharedSSC32 & ssc32);
 
-  void set_angle_deg(float const angle_deg) {
-    set(angle_deg);
-  }
+  void set(uint16_t const pulse_width_us);
+
+private:
+  driver::SharedSSC32 _ssc32;
+
+  static uint8_t constexpr PUMP_CHANNEL = 15;
 };
-
-/**************************************************************************************
- * TYPEDEF
- **************************************************************************************/
-
-typedef std::shared_ptr<DynamixelAnglePositionSensor> SharedDynamixelAnglePositionSensor;
 
 /**************************************************************************************
  * NAMESPACE
  **************************************************************************************/
 
-} /* glue::l3xz::ELROB2022 */
+} /* l3xz */
 
-#endif /* GLUE_L3XZ_ELROB2022_DYNAMIXEL_ANGLE_POSITION_SENSOR_H_ */
+#endif /* PUMP_H_ */

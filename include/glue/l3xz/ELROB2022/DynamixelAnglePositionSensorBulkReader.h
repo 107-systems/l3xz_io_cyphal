@@ -11,7 +11,7 @@
  * INCLUDES
  **************************************************************************************/
 
-#include <l3xz/driver/dynamixel/MX28.h>
+#include <driver/dynamixel/MX28.h>
 
 #include "Const.h"
 #include "DynamixelAnglePositionSensor.h"

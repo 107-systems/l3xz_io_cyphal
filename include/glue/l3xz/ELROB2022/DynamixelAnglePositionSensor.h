@@ -4,42 +4,46 @@
  * Contributors: https://github.com/107-systems/107-Arduino-UAVCAN/graphs/contributors.
  */
 
-#ifndef VALVE_H_
-#define VALVE_H_
+#ifndef GLUE_L3XZ_ELROB2022_DYNAMIXEL_ANGLE_POSITION_SENSOR_H_
+#define GLUE_L3XZ_ELROB2022_DYNAMIXEL_ANGLE_POSITION_SENSOR_H_
 
 /**************************************************************************************
  * INCLUDES
  **************************************************************************************/
 
-#include <l3xz/Const.h>
-#include <l3xz/driver/ssc32/SSC32.h>
+#include <common/sensor/interface/AnglePositionSensor.h>
 
 /**************************************************************************************
  * NAMESPACE
  **************************************************************************************/
 
-namespace l3xz
+namespace glue::l3xz::ELROB2022
 {
 
 /**************************************************************************************
  * CLASS DECLARATION
  **************************************************************************************/
 
-class Valve
+class DynamixelAnglePositionSensor : public common::sensor::interface::AnglePositionSensor
 {
 public:
-  Valve(driver::SharedSSC32 & ssc32);
+  DynamixelAnglePositionSensor(std::string const & name) : AnglePositionSensor(name) { }
 
-  void set(Leg const leg, Joint const joint, uint16_t const pulse_width_us);
-
-private:
-  driver::SharedSSC32 _ssc32;
+  void set_angle_deg(float const angle_deg) {
+    set(angle_deg);
+  }
 };
+
+/**************************************************************************************
+ * TYPEDEF
+ **************************************************************************************/
+
+typedef std::shared_ptr<DynamixelAnglePositionSensor> SharedDynamixelAnglePositionSensor;
 
 /**************************************************************************************
  * NAMESPACE
  **************************************************************************************/
 
-} /* l3xz */
+} /* glue::l3xz::ELROB2022 */
 
-#endif /* VALVE_H_ */
+#endif /* GLUE_L3XZ_ELROB2022_DYNAMIXEL_ANGLE_POSITION_SENSOR_H_ */

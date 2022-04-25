@@ -14,8 +14,8 @@
 
 #include <boost/program_options.hpp>
 
-#include <l3xz/Valve.h>
-#include <l3xz/driver/ssc32/SSC32.h>
+#include <Valve.h>
+#include <driver/ssc32/SSC32.h>
 
 /**************************************************************************************
  * NAMESPACE
