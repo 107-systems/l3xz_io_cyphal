@@ -61,7 +61,7 @@ int main(int argc, char **argv) try
   ros::NodeHandle node_hdl;
 
 
-  std::shared_ptr<driver::Dynamixel> dynamixel_ctrl = std::make_shared<driver::Dynamixel>(DYNAMIXEL_DEVICE_NAME, DYNAMIXEL_PROTOCOL_VERSION, DYNAMIXEL_BAUD_RATE);
+  driver::SharedDynamixel dynamixel_ctrl = std::make_shared<driver::Dynamixel>(DYNAMIXEL_DEVICE_NAME, DYNAMIXEL_PROTOCOL_VERSION, DYNAMIXEL_BAUD_RATE);
   driver::SharedMX28 mx28_ctrl = std::make_shared<driver::MX28>(dynamixel_ctrl);
 
   if (!init_dynamixel(mx28_ctrl))
