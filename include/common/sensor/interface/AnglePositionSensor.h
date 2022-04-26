@@ -4,13 +4,15 @@
  * Contributors: https://github.com/107-systems/l3xz/graphs/contributors.
  */
 
+#ifndef COMMON_SENSOR_INTERFACE_ANGLE_POSITION_SENSOR_H_
+#define COMMON_SENSOR_INTERFACE_ANGLE_POSITION_SENSOR_H_
+
 /**************************************************************************************
  * INCLUDES
  **************************************************************************************/
 
-#include <common/sensor/interface/AnglePositionSensor.h>
-
-#include <sstream>
+#include <string>
+#include <optional>
 
 /**************************************************************************************
  * NAMESPACE
@@ -20,50 +22,29 @@ namespace common::sensor::interface
 {
 
 /**************************************************************************************
- * CTOR/DTOR
+ * CLASS DECLARATION
  **************************************************************************************/
 
-AnglePositionSensor::AnglePositionSensor(std::string const & name)
-: _name{name}
-, _val{std::nullopt}
+class AnglePositionSensor
 {
+public:
+  AnglePositionSensor(std::string const & name);
 
-}
+  std::optional<float> get() const;
+  std::string toStr() const;
 
-/**************************************************************************************
- * PUBLIC MEMBER FUNCTIONS
- **************************************************************************************/
+protected:
+  void set(float const val);
 
-std::optional<float> AnglePositionSensor::get() const
-{
-  return _val;
-}
-
-std::string AnglePositionSensor::toStr() const
-{
-  std::stringstream ss;
-  ss << "[S] "
-     << _name << ": ";
-  
-  if (_val)
-    ss << _val.value();
-  else
-    ss << "Inv.";
-
-  return ss.str();
-}
-
-/**************************************************************************************
- * PROTECTED MEMBER FUNCTIONS
- **************************************************************************************/
-
-void AnglePositionSensor::set(float const val)
-{
-  _val = val;
-}
+private:
+  std::string const _name;
+  std::optional<float> _val;
+};
 
 /**************************************************************************************
  * NAMESPACE
  **************************************************************************************/
 
 } /* common::sensor::interface */
+
+#endif /* COMMON_SENSOR_INTERFACE_ANGLE_POSITION_SENSOR_H_ */

@@ -4,66 +4,46 @@
  * Contributors: https://github.com/107-systems/l3xz/graphs/contributors.
  */
 
+#ifndef GLUE_L3XZ_ELROB2022_DYNAMIXEL_ANGLE_POSITION_SENSOR_H_
+#define GLUE_L3XZ_ELROB2022_DYNAMIXEL_ANGLE_POSITION_SENSOR_H_
+
 /**************************************************************************************
  * INCLUDES
  **************************************************************************************/
 
 #include <common/sensor/interface/AnglePositionSensor.h>
 
-#include <sstream>
+/**************************************************************************************
+ * NAMESPACE
+ **************************************************************************************/
+
+namespace glue::l3xz::ELROB2022
+{
+
+/**************************************************************************************
+ * CLASS DECLARATION
+ **************************************************************************************/
+
+class DynamixelAnglePositionSensor : public common::sensor::interface::AnglePositionSensor
+{
+public:
+  DynamixelAnglePositionSensor(std::string const & name) : AnglePositionSensor(name) { }
+
+  void set_angle_deg(float const angle_deg) {
+    set(angle_deg);
+  }
+};
+
+/**************************************************************************************
+ * TYPEDEF
+ **************************************************************************************/
+
+typedef std::shared_ptr<DynamixelAnglePositionSensor> SharedDynamixelAnglePositionSensor;
 
 /**************************************************************************************
  * NAMESPACE
  **************************************************************************************/
 
-namespace common::sensor::interface
-{
+} /* glue::l3xz::ELROB2022 */
 
-/**************************************************************************************
- * CTOR/DTOR
- **************************************************************************************/
-
-AnglePositionSensor::AnglePositionSensor(std::string const & name)
-: _name{name}
-, _val{std::nullopt}
-{
-
-}
-
-/**************************************************************************************
- * PUBLIC MEMBER FUNCTIONS
- **************************************************************************************/
-
-std::optional<float> AnglePositionSensor::get() const
-{
-  return _val;
-}
-
-std::string AnglePositionSensor::toStr() const
-{
-  std::stringstream ss;
-  ss << "[S] "
-     << _name << ": ";
-  
-  if (_val)
-    ss << _val.value();
-  else
-    ss << "Inv.";
-
-  return ss.str();
-}
-
-/**************************************************************************************
- * PROTECTED MEMBER FUNCTIONS
- **************************************************************************************/
-
-void AnglePositionSensor::set(float const val)
-{
-  _val = val;
-}
-
-/**************************************************************************************
- * NAMESPACE
- **************************************************************************************/
-
-} /* common::sensor::interface */
+#endif /* GLUE_L3XZ_ELROB2022_DYNAMIXEL_ANGLE_POSITION_SENSOR_H_ */

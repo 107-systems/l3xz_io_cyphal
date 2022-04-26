@@ -1,14 +1,14 @@
 /**
  * Copyright (c) 2022 LXRobotics GmbH.
  * Author: Alexander Entinger <alexander.entinger@lxrobotics.com>
- * Contributors: https://github.com/107-systems/107-Arduino-UAVCAN/graphs/contributors.
+ * Contributors: https://github.com/107-systems/l3xz/graphs/contributors.
  */
 
 /**************************************************************************************
  * INCLUDE
  **************************************************************************************/
 
-#include <l3xz/driver/dynamixel/MX28.h>
+#include <driver/dynamixel/MX28.h>
 
 #include <cassert>
 

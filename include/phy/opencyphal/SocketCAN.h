@@ -4,55 +4,52 @@
  * Contributors: https://github.com/107-systems/l3xz/graphs/contributors.
  */
 
+#ifndef PHY_OPENCYPHAL_SOCKETCAN_H_
+#define PHY_OPENCYPHAL_SOCKETCAN_H_
+
 /**************************************************************************************
  * INCLUDES
  **************************************************************************************/
 
-#include <common/threading/ThreadStats.h>
+#include <string>
+
+#include <socketcan.h>
 
 /**************************************************************************************
  * NAMESPACE
  **************************************************************************************/
 
-namespace common::threading
+namespace phy::opencyphal
 {
 
 /**************************************************************************************
- * PUBLIC MEMBER FUNCTIONS
+ * CLASS DECLARATION
  **************************************************************************************/
 
-void ThreadStats::add(std::string const & thd_name)
+class SocketCAN
 {
-  std::lock_guard<std::mutex> lock(_data_mtx);
-  Data thd_data{thd_name};
-  _data.push_back(thd_data);
-}
+public:
+   SocketCAN(std::string const & iface_name, bool const is_can_fd);
+  ~SocketCAN();
 
-void ThreadStats::remove(std::string const & thd_name)
-{
-  std::lock_guard<std::mutex> lock(_data_mtx);
-  _data.remove_if([thd_name](Data const & d) { return (d.name == thd_name); });
-}
 
-std::ostream & operator << (std::ostream & os, ThreadStats & stats)
-{
-  std::lock_guard<std::mutex> lock(stats._data_mtx);
+  int16_t filter(const size_t num_configs, const SocketCANFilterConfig * const configs);
 
-  os << "L3XZ Thread Statistics:" << std::endl;
-  os << "\tNum Threads: " << stats._data.size() << std::endl;
+  int16_t push(const CanardFrame * const frame, const CanardMicrosecond timeout_usec);
+  int16_t pop (CanardFrame * const      out_frame,
+               const  size_t            payload_buffer_size,
+               void * const             payload_buffer,
+               const  CanardMicrosecond timeout_usec,
+               bool * const             loopback);
 
-  for (auto thd_data : stats._data)
-  {
-    os << "\t["
-       << thd_data.name
-       << "] "
-       << std::endl;
-  }
-  return os;
-}
+private:
+  SocketCANFD _fd;
+};
 
 /**************************************************************************************
  * NAMESPACE
  **************************************************************************************/
 
-} /* common::threading */
+} /* phy::opencyphal */
+
+#endif /* PHY_OPENCYPHAL_SOCKETCAN_H_ */

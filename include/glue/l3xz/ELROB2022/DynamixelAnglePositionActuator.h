@@ -4,66 +4,50 @@
  * Contributors: https://github.com/107-systems/l3xz/graphs/contributors.
  */
 
+#ifndef GLUE_L3XZ_ELROB2022_DYNAMIXEL_ANGLE_POSITION_ACTUATOR_H_
+#define GLUE_L3XZ_ELROB2022_DYNAMIXEL_ANGLE_POSITION_ACTUATOR_H_
+
 /**************************************************************************************
  * INCLUDES
  **************************************************************************************/
 
-#include <common/sensor/interface/AnglePositionSensor.h>
-
-#include <sstream>
+#include <common/actuator/interface/AnglePositionActuator.h>
 
 /**************************************************************************************
  * NAMESPACE
  **************************************************************************************/
 
-namespace common::sensor::interface
+namespace glue::l3xz::ELROB2022
 {
 
 /**************************************************************************************
- * CTOR/DTOR
+ * CLASS DECLARATION
  **************************************************************************************/
 
-AnglePositionSensor::AnglePositionSensor(std::string const & name)
-: _name{name}
-, _val{std::nullopt}
+class DynamixelAnglePositionActuator : public common::actuator::interface::AnglePositionActuator
 {
+public:
+  DynamixelAnglePositionActuator(std::string const & name, float const initial_value)
+  : AnglePositionActuator(name)
+  {
+    set(initial_value);
+  }
 
-}
+  float getAngleDeg() const {
+    return get().value();
+  }
+};
 
 /**************************************************************************************
- * PUBLIC MEMBER FUNCTIONS
+ * TYPEDEF
  **************************************************************************************/
 
-std::optional<float> AnglePositionSensor::get() const
-{
-  return _val;
-}
-
-std::string AnglePositionSensor::toStr() const
-{
-  std::stringstream ss;
-  ss << "[S] "
-     << _name << ": ";
-  
-  if (_val)
-    ss << _val.value();
-  else
-    ss << "Inv.";
-
-  return ss.str();
-}
-
-/**************************************************************************************
- * PROTECTED MEMBER FUNCTIONS
- **************************************************************************************/
-
-void AnglePositionSensor::set(float const val)
-{
-  _val = val;
-}
+typedef std::shared_ptr<DynamixelAnglePositionActuator> SharedDynamixelAnglePositionActuator;
 
 /**************************************************************************************
  * NAMESPACE
  **************************************************************************************/
 
-} /* common::sensor::interface */
+} /* glue::l3xz::ELROB2022 */
+
+#endif /* GLUE_L3XZ_ELROB2022_DYNAMIXEL_ANGLE_POSITION_ACTUATOR_H_ */

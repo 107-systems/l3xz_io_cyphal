@@ -114,7 +114,9 @@ catkin_package(
 ###########
 add_subdirectory(external/libcanard/current)
 add_subdirectory(external/libdynamixel/current)
+add_subdirectory(external/libo1heap/current)
 add_subdirectory(external/liborocos-kdl/current)
+add_subdirectory(external/libsocketcan)
 
 ## Specify additional locations of header files
 ## Your package locations should be listed before other locations
@@ -143,6 +145,8 @@ add_executable(${PROJECT_NAME}_node
   src/common/threading/ThreadStats.cpp
   src/driver/dynamixel/Dynamixel.cpp
   src/driver/dynamixel/MX28.cpp
+  src/phy/opencyphal/Node.cpp
+  src/phy/opencyphal/SocketCAN.cpp
   src/phy/serial/AsyncSerial.cpp
   src/driver/ssc32/SSC32.cpp
   src/node.cpp
@@ -167,7 +171,9 @@ target_link_libraries(${PROJECT_NAME}_node
   dynamixel
   boost_system
   boost_thread
+  o1heap
   pthread
+  socketcan
 )
 
 target_compile_options(${PROJECT_NAME}_node PRIVATE -std=c++17 -Wall -Werror -pedantic)

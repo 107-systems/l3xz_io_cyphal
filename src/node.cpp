@@ -1,7 +1,7 @@
 /**
  * Copyright (c) 2022 LXRobotics GmbH.
  * Author: Alexander Entinger <alexander.entinger@lxrobotics.com>
- * Contributors: https://github.com/107-systems/107-Arduino-UAVCAN/graphs/contributors.
+ * Contributors: https://github.com/107-systems/l3xz/graphs/contributors.
  */
 
 /**************************************************************************************
@@ -22,16 +22,16 @@
 
 #include <dynamixel_sdk.h>
 
-#include <l3xz/Const.h>
+#include <Const.h>
 
-#include <l3xz/driver/dynamixel/MX28.h>
-#include <l3xz/driver/dynamixel/Dynamixel.h>
+#include <driver/dynamixel/MX28.h>
+#include <driver/dynamixel/Dynamixel.h>
 
-#include <l3xz/glue/l3xz/ELROB2022/Const.h>
-#include <l3xz/glue/l3xz/ELROB2022/DynamixelAnglePositionSensor.h>
-#include <l3xz/glue/l3xz/ELROB2022/DynamixelAnglePositionSensorBulkReader.h>
-#include <l3xz/glue/l3xz/ELROB2022/DynamixelAnglePositionActuator.h>
-#include <l3xz/glue/l3xz/ELROB2022/DynamixelAnglePositionActuatorBulkWriter.h>
+#include <glue/l3xz/ELROB2022/Const.h>
+#include <glue/l3xz/ELROB2022/DynamixelAnglePositionSensor.h>
+#include <glue/l3xz/ELROB2022/DynamixelAnglePositionSensorBulkReader.h>
+#include <glue/l3xz/ELROB2022/DynamixelAnglePositionActuator.h>
+#include <glue/l3xz/ELROB2022/DynamixelAnglePositionActuatorBulkWriter.h>
 
 /**************************************************************************************
  * FUNCTION DECLARATION
@@ -61,7 +61,7 @@ int main(int argc, char **argv) try
   ros::NodeHandle node_hdl;
 
 
-  std::shared_ptr<driver::Dynamixel> dynamixel_ctrl = std::make_shared<driver::Dynamixel>(DYNAMIXEL_DEVICE_NAME, DYNAMIXEL_PROTOCOL_VERSION, DYNAMIXEL_BAUD_RATE);
+  driver::SharedDynamixel dynamixel_ctrl = std::make_shared<driver::Dynamixel>(DYNAMIXEL_DEVICE_NAME, DYNAMIXEL_PROTOCOL_VERSION, DYNAMIXEL_BAUD_RATE);
   driver::SharedMX28 mx28_ctrl = std::make_shared<driver::MX28>(dynamixel_ctrl);
 
   if (!init_dynamixel(mx28_ctrl))

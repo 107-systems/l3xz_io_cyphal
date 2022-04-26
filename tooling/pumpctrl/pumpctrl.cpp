@@ -1,7 +1,7 @@
 /**
  * Copyright (c) 2022 LXRobotics GmbH.
  * Author: Alexander Entinger <alexander.entinger@lxrobotics.com>
- * Contributors: https://github.com/107-systems/107-Arduino-UAVCAN/graphs/contributors.
+ * Contributors: https://github.com/107-systems/l3xz/graphs/contributors.
  */
 
 /**************************************************************************************
@@ -14,8 +14,8 @@
 
 #include <boost/program_options.hpp>
 
-#include <l3xz/Pump.h>
-#include <l3xz/driver/ssc32/SSC32.h>
+#include <Pump.h>
+#include <driver/ssc32/SSC32.h>
 
 /**************************************************************************************
  * NAMESPACE

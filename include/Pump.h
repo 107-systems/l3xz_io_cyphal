@@ -4,55 +4,43 @@
  * Contributors: https://github.com/107-systems/l3xz/graphs/contributors.
  */
 
+#ifndef PUMP_H_
+#define PUMP_H_
+
 /**************************************************************************************
  * INCLUDES
  **************************************************************************************/
 
-#include <common/threading/ThreadStats.h>
+#include <driver/ssc32/SSC32.h>
 
 /**************************************************************************************
  * NAMESPACE
  **************************************************************************************/
 
-namespace common::threading
+namespace l3xz
 {
 
 /**************************************************************************************
- * PUBLIC MEMBER FUNCTIONS
+ * CLASS DECLARATION
  **************************************************************************************/
 
-void ThreadStats::add(std::string const & thd_name)
+class Pump
 {
-  std::lock_guard<std::mutex> lock(_data_mtx);
-  Data thd_data{thd_name};
-  _data.push_back(thd_data);
-}
+public:
+  Pump(driver::SharedSSC32 & ssc32);
 
-void ThreadStats::remove(std::string const & thd_name)
-{
-  std::lock_guard<std::mutex> lock(_data_mtx);
-  _data.remove_if([thd_name](Data const & d) { return (d.name == thd_name); });
-}
+  void set(uint16_t const pulse_width_us);
 
-std::ostream & operator << (std::ostream & os, ThreadStats & stats)
-{
-  std::lock_guard<std::mutex> lock(stats._data_mtx);
+private:
+  driver::SharedSSC32 _ssc32;
 
-  os << "L3XZ Thread Statistics:" << std::endl;
-  os << "\tNum Threads: " << stats._data.size() << std::endl;
-
-  for (auto thd_data : stats._data)
-  {
-    os << "\t["
-       << thd_data.name
-       << "] "
-       << std::endl;
-  }
-  return os;
-}
+  static uint8_t constexpr PUMP_CHANNEL = 15;
+};
 
 /**************************************************************************************
  * NAMESPACE
  **************************************************************************************/
 
-} /* common::threading */
+} /* l3xz */
+
+#endif /* PUMP_H_ */

@@ -4,66 +4,60 @@
  * Contributors: https://github.com/107-systems/l3xz/graphs/contributors.
  */
 
-/**************************************************************************************
- * INCLUDES
- **************************************************************************************/
-
-#include <common/sensor/interface/AnglePositionSensor.h>
-
-#include <sstream>
+#ifndef DRIVER_SSC32_SSC32_H_
+#define DRIVER_SSC32_SSC32_H_
 
 /**************************************************************************************
- * NAMESPACE
+ * INCLUDE
  **************************************************************************************/
 
-namespace common::sensor::interface
-{
+#include <stdint.h>
 
-/**************************************************************************************
- * CTOR/DTOR
- **************************************************************************************/
+#include <string>
+#include <memory>
 
-AnglePositionSensor::AnglePositionSensor(std::string const & name)
-: _name{name}
-, _val{std::nullopt}
-{
-
-}
-
-/**************************************************************************************
- * PUBLIC MEMBER FUNCTIONS
- **************************************************************************************/
-
-std::optional<float> AnglePositionSensor::get() const
-{
-  return _val;
-}
-
-std::string AnglePositionSensor::toStr() const
-{
-  std::stringstream ss;
-  ss << "[S] "
-     << _name << ": ";
-  
-  if (_val)
-    ss << _val.value();
-  else
-    ss << "Inv.";
-
-  return ss.str();
-}
-
-/**************************************************************************************
- * PROTECTED MEMBER FUNCTIONS
- **************************************************************************************/
-
-void AnglePositionSensor::set(float const val)
-{
-  _val = val;
-}
+#include <phy/serial/AsyncSerial.h>
 
 /**************************************************************************************
  * NAMESPACE
  **************************************************************************************/
 
-} /* common::sensor::interface */
+namespace driver
+{
+
+/**************************************************************************************
+ * CLASS DECLARATION
+ **************************************************************************************/
+
+class SSC32
+{
+public:
+   SSC32(std::string const device_name, size_t const baudrate);
+  ~SSC32();
+
+  enum class Error : int
+  {
+    None                =  0,
+    InvParam_Channel    = -1,
+    InvParam_PulseWidth = -2,
+  };
+
+  Error setPulseWidth(uint8_t const channel, uint16_t const pulse_width_us, uint16_t const move_time_ms);
+
+private:
+  phy::serial::AsyncSerial _serial;
+};
+
+/**************************************************************************************
+ * TYPEDEF
+ **************************************************************************************/
+
+typedef std::shared_ptr<SSC32> SharedSSC32;
+
+/**************************************************************************************
+ * NAMESPACE
+ **************************************************************************************/
+
+} /* driver */
+
+#endif /* DRIVER_SSC32_SSC32_H_ */

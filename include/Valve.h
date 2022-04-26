@@ -4,55 +4,42 @@
  * Contributors: https://github.com/107-systems/l3xz/graphs/contributors.
  */
 
+#ifndef VALVE_H_
+#define VALVE_H_
+
 /**************************************************************************************
  * INCLUDES
  **************************************************************************************/
 
-#include <common/threading/ThreadStats.h>
+#include <Const.h>
+#include <driver/ssc32/SSC32.h>
 
 /**************************************************************************************
  * NAMESPACE
  **************************************************************************************/
 
-namespace common::threading
+namespace l3xz
 {
 
 /**************************************************************************************
- * PUBLIC MEMBER FUNCTIONS
+ * CLASS DECLARATION
  **************************************************************************************/
 
-void ThreadStats::add(std::string const & thd_name)
+class Valve
 {
-  std::lock_guard<std::mutex> lock(_data_mtx);
-  Data thd_data{thd_name};
-  _data.push_back(thd_data);
-}
+public:
+  Valve(driver::SharedSSC32 & ssc32);
 
-void ThreadStats::remove(std::string const & thd_name)
-{
-  std::lock_guard<std::mutex> lock(_data_mtx);
-  _data.remove_if([thd_name](Data const & d) { return (d.name == thd_name); });
-}
+  void set(Leg const leg, Joint const joint, uint16_t const pulse_width_us);
 
-std::ostream & operator << (std::ostream & os, ThreadStats & stats)
-{
-  std::lock_guard<std::mutex> lock(stats._data_mtx);
-
-  os << "L3XZ Thread Statistics:" << std::endl;
-  os << "\tNum Threads: " << stats._data.size() << std::endl;
-
-  for (auto thd_data : stats._data)
-  {
-    os << "\t["
-       << thd_data.name
-       << "] "
-       << std::endl;
-  }
-  return os;
-}
+private:
+  driver::SharedSSC32 _ssc32;
+};
 
 /**************************************************************************************
  * NAMESPACE
  **************************************************************************************/
 
-} /* common::threading */
+} /* l3xz */
+
+#endif /* VALVE_H_ */

@@ -4,55 +4,46 @@
  * Contributors: https://github.com/107-systems/l3xz/graphs/contributors.
  */
 
-/**************************************************************************************
- * INCLUDES
- **************************************************************************************/
-
-#include <common/threading/ThreadStats.h>
+#ifndef PHY_OPENCYPHAL_O1HEAP_HPP_
+#define PHY_OPENCYPHAL_O1HEAP_HPP_
 
 /**************************************************************************************
- * NAMESPACE
+ * INCLUDE
  **************************************************************************************/
 
-namespace common::threading
-{
-
-/**************************************************************************************
- * PUBLIC MEMBER FUNCTIONS
- **************************************************************************************/
-
-void ThreadStats::add(std::string const & thd_name)
-{
-  std::lock_guard<std::mutex> lock(_data_mtx);
-  Data thd_data{thd_name};
-  _data.push_back(thd_data);
-}
-
-void ThreadStats::remove(std::string const & thd_name)
-{
-  std::lock_guard<std::mutex> lock(_data_mtx);
-  _data.remove_if([thd_name](Data const & d) { return (d.name == thd_name); });
-}
-
-std::ostream & operator << (std::ostream & os, ThreadStats & stats)
-{
-  std::lock_guard<std::mutex> lock(stats._data_mtx);
-
-  os << "L3XZ Thread Statistics:" << std::endl;
-  os << "\tNum Threads: " << stats._data.size() << std::endl;
-
-  for (auto thd_data : stats._data)
-  {
-    os << "\t["
-       << thd_data.name
-       << "] "
-       << std::endl;
-  }
-  return os;
-}
+#include <o1heap.h>
 
 /**************************************************************************************
  * NAMESPACE
  **************************************************************************************/
 
-} /* common::threading */
+namespace phy::opencyphal
+{
+
+/**************************************************************************************
+ * CLASS DECLARATION
+ **************************************************************************************/
+
+template <size_t HEAP_SIZE>
+class O1Heap
+{
+public:
+  O1Heap() : _o1heap_ins{o1heapInit(_base, HEAP_SIZE)}
+  { }
+
+  inline void * allocate(size_t const amount) { return o1heapAllocate(_o1heap_ins, amount); }
+  inline void   free    (void * const pointer) { return o1heapFree(_o1heap_ins, pointer); }
+
+
+private:
+  uint8_t _base[HEAP_SIZE] __attribute__ ((aligned (O1HEAP_ALIGNMENT)));
+  O1HeapInstance * _o1heap_ins;
+};
+
+/**************************************************************************************
+ * NAMESPACE
+ **************************************************************************************/
+
+} /* phy::opencyphal */
+
+#endif /* PHY_OPENCYPHAL_O1HEAP_HPP_ */
