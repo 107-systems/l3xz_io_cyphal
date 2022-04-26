@@ -22,6 +22,7 @@
 
 #include <dynamixel_sdk.h>
 
+#include <Robot.h>
 #include <Const.h>
 
 #include <driver/dynamixel/MX28.h>
@@ -117,6 +118,8 @@ int main(int argc, char **argv) try
     angle_actuator_sensor_head_tilt
   );
 
+  Robot robot_ctrl;
+
   for (ros::Rate loop_rate(50);
        ros::ok();
        loop_rate.sleep())
@@ -124,7 +127,7 @@ int main(int argc, char **argv) try
     /* Simultaneously read the current angle from all dynamixel servos and update the angle position sensors. */
     dynamixel_angle_position_sensor_bulk_reader.doBulkRead();
 
-    ROS_INFO("L3XZ Dynamixel Current Angles:\n  %s\n  %s\n  %s\n  %s\n  %s\n  %s\n  %s\n  %s",
+    ROS_DEBUG("L3XZ Dynamixel Current Angles:\n  %s\n  %s\n  %s\n  %s\n  %s\n  %s\n  %s\n  %s",
       angle_sensor_coxa_leg_front_left->toStr().c_str(),
       angle_sensor_coxa_leg_front_right->toStr().c_str(),
       angle_sensor_coxa_leg_middle_left->toStr().c_str(),
@@ -148,6 +151,8 @@ int main(int argc, char **argv) try
     angle_actuator_sensor_head_tilt->set(sensor_head_tilt_target);
 
     //ROS_INFO("Head\n  Pan : actual = %.2f, target = %.2f\n  Tilt: actual = %.2f, target = %.2f", sensor_head_pan_actual, sensor_head_pan_target, sensor_head_tilt_actual, sensor_head_tilt_target);
+
+    robot_ctrl.update(teleop_cmd_data);
 
     if (!dynamixel_angle_position_actuator_bulk_writer.doBulkWrite())
       ROS_ERROR("failed to set target angles for all dynamixel servos");

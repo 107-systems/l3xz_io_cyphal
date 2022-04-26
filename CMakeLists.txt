@@ -145,12 +145,17 @@ add_executable(${PROJECT_NAME}_node
   src/common/threading/ThreadStats.cpp
   src/driver/dynamixel/Dynamixel.cpp
   src/driver/dynamixel/MX28.cpp
+  src/driver/ssc32/SSC32.cpp
   src/phy/opencyphal/Node.cpp
   src/phy/opencyphal/SocketCAN.cpp
   src/phy/serial/AsyncSerial.cpp
-  src/driver/ssc32/SSC32.cpp
+  src/state/BackwardWalking.cpp
+  src/state/ForwardWalking.cpp
+  src/state/InitState.cpp
+  src/state/StandingState.cpp
   src/node.cpp
   src/Pump.cpp
+  src/Robot.cpp
   src/Valve.cpp
 )
 
