@@ -25,6 +25,8 @@
 #include <Robot.h>
 #include <Const.h>
 
+#include <state/RobotStateInput.h>
+
 #include <driver/dynamixel/MX28.h>
 #include <driver/dynamixel/Dynamixel.h>
 
@@ -118,7 +120,15 @@ int main(int argc, char **argv) try
     angle_actuator_sensor_head_tilt
   );
 
+  RobotStateInput robot_state_input(angle_sensor_coxa_leg_front_left,
+                                    angle_sensor_coxa_leg_front_right,
+                                    angle_sensor_coxa_leg_middle_left,
+                                    angle_sensor_coxa_leg_middle_right,
+                                    angle_sensor_coxa_leg_back_left,
+                                    angle_sensor_coxa_leg_back_right);
+
   Robot robot_ctrl;
+
 
   for (ros::Rate loop_rate(50);
        ros::ok();
@@ -152,7 +162,7 @@ int main(int argc, char **argv) try
 
     //ROS_INFO("Head\n  Pan : actual = %.2f, target = %.2f\n  Tilt: actual = %.2f, target = %.2f", sensor_head_pan_actual, sensor_head_pan_target, sensor_head_tilt_actual, sensor_head_tilt_target);
 
-    robot_ctrl.update(teleop_cmd_data);
+    robot_ctrl.update(teleop_cmd_data, robot_state_input);
 
     if (!dynamixel_angle_position_actuator_bulk_writer.doBulkWrite())
       ROS_ERROR("failed to set target angles for all dynamixel servos");

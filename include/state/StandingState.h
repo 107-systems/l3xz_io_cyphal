@@ -23,7 +23,7 @@ public:
   virtual ~StandingState() { }
   virtual void onEnter() override;
   virtual void onExit() override;
-  virtual RobotState * update(l3xz::TeleopCommandData const cmd) override;
+  virtual RobotState * update(l3xz::TeleopCommandData const cmd, RobotStateInput & input) override;
 };
 
 #endif /* STANDING_STATE_H_ */

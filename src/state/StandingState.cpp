@@ -29,7 +29,7 @@ void StandingState::onExit()
   ROS_INFO("StandingState EXIT");
 }
 
-RobotState * StandingState::update(l3xz::TeleopCommandData const cmd)
+RobotState * StandingState::update(l3xz::TeleopCommandData const cmd, RobotStateInput & input)
 {
   if (cmd.linear_velocity_x > 0.2)
     return new ForwardWalking();

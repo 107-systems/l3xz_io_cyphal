@@ -28,7 +28,7 @@ void InitState::onExit()
   ROS_INFO("InitState EXIT");
 }
 
-RobotState * InitState::update(l3xz::TeleopCommandData const cmd)
+RobotState * InitState::update(l3xz::TeleopCommandData const cmd, RobotStateInput & input)
 {
   /* TODO: Drive to initial position. */
   return new StandingState();

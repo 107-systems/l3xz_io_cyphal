@@ -23,7 +23,7 @@ public:
    Robot();
   ~Robot();
 
-  void update(l3xz::TeleopCommandData const cmd);
+  void update(l3xz::TeleopCommandData const cmd, RobotStateInput & input);
 
 private:
   RobotState * _robot_state;

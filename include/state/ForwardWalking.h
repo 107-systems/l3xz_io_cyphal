@@ -23,7 +23,7 @@ public:
   virtual ~ForwardWalking() { }
   virtual void onEnter() override;
   virtual void onExit() override;
-  virtual RobotState * update(l3xz::TeleopCommandData const cmd) override;
+  virtual RobotState * update(l3xz::TeleopCommandData const cmd, RobotStateInput & input) override;
 };
 
 #endif /* FORWARD_WALKING_H_ */
