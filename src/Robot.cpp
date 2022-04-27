@@ -31,9 +31,9 @@ Robot::~Robot()
  * PUBLIC MEMBER FUNCTIONS
  **************************************************************************************/
 
-void Robot::update(l3xz::TeleopCommandData const cmd, RobotStateInput & input)
+void Robot::update(l3xz::TeleopCommandData const cmd, RobotStateInput & input, RobotStateOutput & output)
 {
-  RobotState * next_robot_state = _robot_state->update(cmd, input);
+  RobotState * next_robot_state = _robot_state->update(cmd, input, output);
     
   if (next_robot_state != _robot_state)
   {

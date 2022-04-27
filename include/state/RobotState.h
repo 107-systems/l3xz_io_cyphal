@@ -14,6 +14,7 @@
 #include <Const.h>
 
 #include "RobotStateInput.h"
+#include "RobotStateOutput.h"
 
 /**************************************************************************************
  * CLASS DECLARATION
@@ -25,7 +26,7 @@ public:
   virtual ~RobotState() { }
   virtual void onEnter() { }
   virtual void onExit() { }
-  virtual RobotState * update(l3xz::TeleopCommandData const cmd, RobotStateInput & input) = 0;
+  virtual RobotState * update(l3xz::TeleopCommandData const cmd, RobotStateInput & input, RobotStateOutput & output) = 0;
 };
 
 #endif /* ROBOT_STATE_H_ */
