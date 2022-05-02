@@ -153,6 +153,8 @@ add_executable(${PROJECT_NAME}_node
   src/state/ForwardWalking.cpp
   src/state/InitState.cpp
   src/state/StandingState.cpp
+  src/state/TurningLeft.cpp
+  src/state/TurningRight.cpp
   src/node.cpp
   src/Pump.cpp
   src/Robot.cpp

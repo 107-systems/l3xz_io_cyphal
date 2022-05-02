@@ -12,6 +12,8 @@
 
 #include <ros/console.h>
 
+#include <state/TurningLeft.h>
+#include <state/TurningRight.h>
 #include <state/ForwardWalking.h>
 #include <state/BackwardWalking.h>
 
@@ -31,10 +33,14 @@ void StandingState::onExit()
 
 RobotState * StandingState::update(TeleopCommandData const cmd, RobotStateInput & input, RobotStateOutput & output)
 {
-  if (cmd.linear_velocity_x > 0.2)
+  if (cmd.linear_velocity_x > 0.2f)
     return new ForwardWalking();
-  else if (cmd.linear_velocity_x < -0.2)
+  else if (cmd.linear_velocity_x < -0.2f)
     return new BackwardWalking();
+  else if (cmd.angular_velocity_z > 0.2f)
+    return new TurningRight();
+  else if (cmd.angular_velocity_z < -0.2f)
+    return new TurningLeft();
   else
     return this;
 }
