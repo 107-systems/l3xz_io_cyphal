@@ -13,6 +13,49 @@
 
 #include "RobotState.h"
 
+#include <map>
+#include <list>
+
+/**************************************************************************************
+ * TYPEDEF
+ **************************************************************************************/
+
+enum class LegState {Ground, Air};
+typedef std::map<Leg, LegState> LegStateMap;
+
+typedef std::list<LegStateMap> GaitSequence;
+
+static GaitSequence const RIPPLE_GAIT =
+{
+  /* 1st gait sequence. */
+  {
+    {Leg::FrontLeft,   LegState::Ground},
+    {Leg::FrontRight,  LegState::Air},
+    {Leg::MiddleLeft,  LegState::Air},
+    {Leg::MiddleRight, LegState::Ground},
+    {Leg::BackLeft,    LegState::Ground},
+    {Leg::BackRight,   LegState::Ground},
+  },
+  /* 2nd gait sequence. */
+  {
+    {Leg::FrontLeft,   LegState::Ground},
+    {Leg::FrontRight,  LegState::Ground},
+    {Leg::MiddleLeft,  LegState::Ground},
+    {Leg::MiddleRight, LegState::Air},
+    {Leg::BackLeft,    LegState::Air},
+    {Leg::BackRight,   LegState::Ground},
+  },
+  /* 3rd gait sequence. */
+  {
+    {Leg::FrontLeft,   LegState::Air},
+    {Leg::FrontRight,  LegState::Ground},
+    {Leg::MiddleLeft,  LegState::Ground},
+    {Leg::MiddleRight, LegState::Ground},
+    {Leg::BackLeft,    LegState::Ground},
+    {Leg::BackRight,   LegState::Air},
+  },
+};
+
 /**************************************************************************************
  * CLASS DECLARATION
  **************************************************************************************/
@@ -20,10 +63,17 @@
 class ForwardWalking : public RobotState
 {
 public:
+           ForwardWalking();
   virtual ~ForwardWalking() { }
   virtual void onEnter() override;
   virtual void onExit() override;
-  virtual RobotState * update(l3xz::TeleopCommandData const cmd, RobotStateInput & input, RobotStateOutput & output) override;
+  virtual RobotState * update(TeleopCommandData const cmd, RobotStateInput & input, RobotStateOutput & output) override;
+
+private:
+  GaitSequence::const_iterator _current_leg_state;
+  float _gait_cycle;
+
+  static float constexpr GAIT_CYCLE_INCREMENT = 0.05f;
 };
 
 #endif /* FORWARD_WALKING_H_ */

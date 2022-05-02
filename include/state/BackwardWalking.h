@@ -23,7 +23,7 @@ public:
   virtual ~BackwardWalking() { }
   virtual void onEnter() override;
   virtual void onExit() override;
-  virtual RobotState * update(l3xz::TeleopCommandData const cmd, RobotStateInput & input, RobotStateOutput & output) override;
+  virtual RobotState * update(TeleopCommandData const cmd, RobotStateInput & input, RobotStateOutput & output) override;
 };
 
 #endif /* BACKWARD_WALKING_H_ */

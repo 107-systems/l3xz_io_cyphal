@@ -85,20 +85,20 @@ int main(int argc, char **argv)
     SharedSSC32 ssc32_ctrl = std::make_shared<SSC32>(param_device_name, param_baudrate);
     l3xz::Valve valve_ctrl(ssc32_ctrl);
   
-    std::map<std::string, l3xz::Leg> const LEG_MAP =
+    std::map<std::string, Leg> const LEG_MAP =
     {
-      {std::string("fr"), l3xz::Leg::FrontRight},
-      {std::string("fl"), l3xz::Leg::FrontLeft},
-      {std::string("mr"), l3xz::Leg::MiddleRight},
-      {std::string("ml"), l3xz::Leg::MiddleLeft},
-      {std::string("br"), l3xz::Leg::BackRight},
-      {std::string("bl"), l3xz::Leg::BackLeft},
+      {std::string("fr"), Leg::FrontRight},
+      {std::string("fl"), Leg::FrontLeft},
+      {std::string("mr"), Leg::MiddleRight},
+      {std::string("ml"), Leg::MiddleLeft},
+      {std::string("br"), Leg::BackRight},
+      {std::string("bl"), Leg::BackLeft},
     };
 
-    std::map<std::string, l3xz::Joint> const JOINT_MAP =
+    std::map<std::string, Joint> const JOINT_MAP =
     {
-      {std::string("femur"), l3xz::Joint::Femur},
-      {std::string("tibia"), l3xz::Joint::Tibia},
+      {std::string("femur"), Joint::Femur},
+      {std::string("tibia"), Joint::Tibia},
     };
 
     valve_ctrl.set(LEG_MAP.at(param_leg), JOINT_MAP.at(param_joint), param_pulse_width_us);

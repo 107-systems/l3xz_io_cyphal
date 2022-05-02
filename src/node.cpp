@@ -44,7 +44,7 @@
 bool init_dynamixel  (driver::SharedMX28 & mx28_ctrl);
 void deinit_dynamixel(driver::SharedMX28 & mx28_ctrl);
 
-void cmd_vel_callback(const geometry_msgs::Twist::ConstPtr & msg, l3xz::TeleopCommandData & teleop_cmd_data);
+void cmd_vel_callback(const geometry_msgs::Twist::ConstPtr & msg, TeleopCommandData & teleop_cmd_data);
 
 /**************************************************************************************
  * CONSTANT
@@ -73,7 +73,7 @@ int main(int argc, char **argv) try
   ROS_INFO("init_dynamixel successfully completed.");
 
 
-  l3xz::TeleopCommandData teleop_cmd_data;
+  TeleopCommandData teleop_cmd_data;
   ros::Subscriber cmd_vel_sub = node_hdl.subscribe<geometry_msgs::Twist>("/l3xz/cmd_vel", 10, std::bind(cmd_vel_callback, std::placeholders::_1, std::ref(teleop_cmd_data)));
 
 
@@ -230,7 +230,7 @@ void deinit_dynamixel(driver::SharedMX28 & mx28_ctrl)
   mx28_ctrl->torqueOff(glue::l3xz::ELROB2022::DYNAMIXEL_ID_VECT);
 }
 
-void cmd_vel_callback(const geometry_msgs::Twist::ConstPtr & msg, l3xz::TeleopCommandData & teleop_cmd_data)
+void cmd_vel_callback(const geometry_msgs::Twist::ConstPtr & msg, TeleopCommandData & teleop_cmd_data)
 {
   teleop_cmd_data.linear_velocity_x           = msg->linear.x;
   teleop_cmd_data.linear_velocity_y           = msg->linear.y;
