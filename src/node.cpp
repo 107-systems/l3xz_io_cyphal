@@ -28,10 +28,12 @@
 #include <state/RobotStateInput.h>
 #include <state/RobotStateOutput.h>
 
+#include <driver/ssc32/SSC32.h>
 #include <driver/dynamixel/MX28.h>
 #include <driver/dynamixel/Dynamixel.h>
 
 #include <glue/l3xz/ELROB2022/Const.h>
+#include <glue/l3xz/ELROB2022/SSC32ValveActuator.h>
 #include <glue/l3xz/ELROB2022/DynamixelAnglePositionSensor.h>
 #include <glue/l3xz/ELROB2022/DynamixelAnglePositionSensorBulkReader.h>
 #include <glue/l3xz/ELROB2022/DynamixelAnglePositionActuator.h>
@@ -64,18 +66,16 @@ int main(int argc, char **argv) try
 
   ros::NodeHandle node_hdl;
 
+  /**************************************************************************************
+   * DYNAMIXEL
+   **************************************************************************************/
 
-  driver::SharedDynamixel dynamixel_ctrl = std::make_shared<driver::Dynamixel>(DYNAMIXEL_DEVICE_NAME, DYNAMIXEL_PROTOCOL_VERSION, DYNAMIXEL_BAUD_RATE);
-  driver::SharedMX28 mx28_ctrl = std::make_shared<driver::MX28>(dynamixel_ctrl);
+  auto dynamixel_ctrl = std::make_shared<driver::Dynamixel>(DYNAMIXEL_DEVICE_NAME, DYNAMIXEL_PROTOCOL_VERSION, DYNAMIXEL_BAUD_RATE);
+  auto mx28_ctrl = std::make_shared<driver::MX28>(dynamixel_ctrl);
 
   if (!init_dynamixel(mx28_ctrl))
     ROS_ERROR("init_dynamixel failed.");
   ROS_INFO("init_dynamixel successfully completed.");
-
-
-  TeleopCommandData teleop_cmd_data;
-  ros::Subscriber cmd_vel_sub = node_hdl.subscribe<geometry_msgs::Twist>("/l3xz/cmd_vel", 10, std::bind(cmd_vel_callback, std::placeholders::_1, std::ref(teleop_cmd_data)));
-
 
   auto angle_sensor_coxa_leg_front_left   = std::make_shared<glue::l3xz::ELROB2022::DynamixelAnglePositionSensor>("LEG F/L Coxa");
   auto angle_sensor_coxa_leg_front_right  = std::make_shared<glue::l3xz::ELROB2022::DynamixelAnglePositionSensor>("LEG F/R Coxa");
@@ -120,6 +120,34 @@ int main(int argc, char **argv) try
     angle_actuator_sensor_head_pan,
     angle_actuator_sensor_head_tilt
   );
+
+  /**************************************************************************************
+   * SSC32
+   **************************************************************************************/
+
+  auto ssc32_ctrl = std::make_shared<driver::SSC32>("/dev/ttyUSB0", 115200);
+
+  auto valve_actuator_front_left_femur  = std::make_shared<glue::l3xz::ELROB2022::SSC32ValveActuator>("LEG F/L Femur", ssc32_ctrl, 0, 0.0);
+  auto valve_actuator_front_left_tibia  = std::make_shared<glue::l3xz::ELROB2022::SSC32ValveActuator>("LEG F/L Tibia", ssc32_ctrl, 1, 0.0);
+  auto valve_actuator_middle_left_femur = std::make_shared<glue::l3xz::ELROB2022::SSC32ValveActuator>("LEG M/L Femur", ssc32_ctrl, 2, 0.0);
+  auto valve_actuator_middle_left_tibia = std::make_shared<glue::l3xz::ELROB2022::SSC32ValveActuator>("LEG M/L Tibia", ssc32_ctrl, 3, 0.0);
+  auto valve_actuator_back_left_femur   = std::make_shared<glue::l3xz::ELROB2022::SSC32ValveActuator>("LEG B/L Femur", ssc32_ctrl, 4, 0.0);
+  auto valve_actuator_back_left_tibia   = std::make_shared<glue::l3xz::ELROB2022::SSC32ValveActuator>("LEG B/L Tibia", ssc32_ctrl, 5, 0.0);
+
+  auto valve_actuator_front_right_femur  = std::make_shared<glue::l3xz::ELROB2022::SSC32ValveActuator>("LEG F/R Femur", ssc32_ctrl, 15, 0.0);
+  auto valve_actuator_front_right_tibia  = std::make_shared<glue::l3xz::ELROB2022::SSC32ValveActuator>("LEG F/R Tibia", ssc32_ctrl, 16, 0.0);
+  auto valve_actuator_middle_right_femur = std::make_shared<glue::l3xz::ELROB2022::SSC32ValveActuator>("LEG M/R Femur", ssc32_ctrl, 17, 0.0);
+  auto valve_actuator_middle_right_tibia = std::make_shared<glue::l3xz::ELROB2022::SSC32ValveActuator>("LEG M/R Tibia", ssc32_ctrl, 18, 0.0);
+  auto valve_actuator_back_right_femur   = std::make_shared<glue::l3xz::ELROB2022::SSC32ValveActuator>("LEG B/R Femur", ssc32_ctrl, 19, 0.0);
+  auto valve_actuator_back_right_tibia   = std::make_shared<glue::l3xz::ELROB2022::SSC32ValveActuator>("LEG B/R Tibia", ssc32_ctrl, 20, 0.0);
+
+  /**************************************************************************************
+   * STATE
+   **************************************************************************************/
+
+  TeleopCommandData teleop_cmd_data;
+  ros::Subscriber cmd_vel_sub = node_hdl.subscribe<geometry_msgs::Twist>("/l3xz/cmd_vel", 10, std::bind(cmd_vel_callback, std::placeholders::_1, std::ref(teleop_cmd_data)));
+
 
   RobotStateInput robot_state_input   (angle_sensor_coxa_leg_front_left,
                                        angle_sensor_coxa_leg_front_right,
