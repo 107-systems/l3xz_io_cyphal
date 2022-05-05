@@ -31,7 +31,7 @@ Robot::~Robot()
  * PUBLIC MEMBER FUNCTIONS
  **************************************************************************************/
 
-void Robot::update(RobotStateInput & input, RobotStateOutput & output)
+void Robot::update(RobotStateInput const & input, RobotStateOutput & output)
 {
   RobotState * next_robot_state = _robot_state->update(input, output);
     

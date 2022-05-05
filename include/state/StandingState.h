@@ -24,7 +24,7 @@ public:
   virtual Name name() const override { return RobotState::Name::StandingState; }
   virtual void onEnter() override;
   virtual void onExit() override;
-  virtual RobotState * update(RobotStateInput & input, RobotStateOutput & output) override;
+  virtual RobotState * update(RobotStateInput const & input, RobotStateOutput & output) override;
 };
 
 #endif /* STANDING_STATE_H_ */

@@ -28,7 +28,7 @@ void InitState::onExit()
   ROS_INFO("InitState EXIT");
 }
 
-RobotState * InitState::update(RobotStateInput & input, RobotStateOutput & output)
+RobotState * InitState::update(RobotStateInput const & input, RobotStateOutput & output)
 {
   /* TODO: Drive to initial position. */
   return new StandingState();

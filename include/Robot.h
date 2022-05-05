@@ -23,7 +23,7 @@ public:
    Robot();
   ~Robot();
 
-  void update(RobotStateInput & input, RobotStateOutput & output);
+  void update(RobotStateInput const & input, RobotStateOutput & output);
 
 private:
   RobotState * _robot_state;

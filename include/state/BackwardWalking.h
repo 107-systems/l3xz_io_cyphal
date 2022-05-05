@@ -24,7 +24,7 @@ public:
   virtual Name name() const override { return RobotState::Name::BackwardWalking; }
   virtual void onEnter() override;
   virtual void onExit() override;
-  virtual RobotState * update(RobotStateInput & input, RobotStateOutput & output) override;
+  virtual RobotState * update(RobotStateInput const & input, RobotStateOutput & output) override;
 };
 
 #endif /* BACKWARD_WALKING_H_ */

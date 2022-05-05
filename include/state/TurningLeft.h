@@ -24,7 +24,7 @@ public:
   virtual Name name() const override { return RobotState::Name::TurningLeft; }
   virtual void onEnter() override;
   virtual void onExit() override;
-  virtual RobotState * update(RobotStateInput & input, RobotStateOutput & output) override;
+  virtual RobotState * update(RobotStateInput const & input, RobotStateOutput & output) override;
 };
 
 #endif /* TURNING_LEFT_H_ */
