@@ -31,9 +31,9 @@ Robot::~Robot()
  * PUBLIC MEMBER FUNCTIONS
  **************************************************************************************/
 
-void Robot::update(TeleopCommandData const cmd, RobotStateInput & input, RobotStateOutput & output)
+void Robot::update(RobotStateInput & input, RobotStateOutput & output)
 {
-  RobotState * next_robot_state = _robot_state->update(cmd, input, output);
+  RobotState * next_robot_state = _robot_state->update(input, output);
     
   if (next_robot_state->name() != _robot_state->name())
   {

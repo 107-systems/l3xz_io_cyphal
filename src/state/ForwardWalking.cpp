@@ -39,7 +39,7 @@ void ForwardWalking::onExit()
   ROS_INFO("ForwardWalking EXIT");
 }
 
-RobotState * ForwardWalking::update(TeleopCommandData const cmd, RobotStateInput & input, RobotStateOutput & output)
+RobotState * ForwardWalking::update(RobotStateInput & input, RobotStateOutput & output)
 {
   /* TODO: Walk one gait cycle forward. */
 

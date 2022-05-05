@@ -28,7 +28,7 @@ void BackwardWalking::onExit()
   ROS_INFO("BackwardWalking EXIT");
 }
 
-RobotState * BackwardWalking::update(TeleopCommandData const cmd, RobotStateInput & input, RobotStateOutput & output)
+RobotState * BackwardWalking::update(RobotStateInput & input, RobotStateOutput & output)
 {
   /* TODO: Walk one gait cycle Backward. */
   return new StandingState();

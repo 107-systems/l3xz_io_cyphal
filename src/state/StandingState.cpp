@@ -31,15 +31,15 @@ void StandingState::onExit()
   ROS_INFO("StandingState EXIT");
 }
 
-RobotState * StandingState::update(TeleopCommandData const cmd, RobotStateInput & input, RobotStateOutput & output)
+RobotState * StandingState::update(RobotStateInput & input, RobotStateOutput & output)
 {
-  if (cmd.linear_velocity_x > 0.2f)
+  if      (input._teleop_cmd.linear_velocity_x > 0.2f)
     return new ForwardWalking();
-  else if (cmd.linear_velocity_x < -0.2f)
+  else if (input._teleop_cmd.linear_velocity_x < -0.2f)
     return new BackwardWalking();
-  else if (cmd.angular_velocity_z > 0.2f)
+  else if (input._teleop_cmd.angular_velocity_z > 0.2f)
     return new TurningRight();
-  else if (cmd.angular_velocity_z < -0.2f)
+  else if (input._teleop_cmd.angular_velocity_z < -0.2f)
     return new TurningLeft();
   else
     return this;

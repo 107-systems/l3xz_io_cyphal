@@ -24,7 +24,7 @@ public:
   virtual Name name() const override { return RobotState::Name::InitState; }
   virtual void onEnter() override;
   virtual void onExit() override;
-  virtual RobotState * update(TeleopCommandData const cmd, RobotStateInput & input, RobotStateOutput & output) override;
+  virtual RobotState * update(RobotStateInput & input, RobotStateOutput & output) override;
 };
 
 #endif /* INIT_STATE_H_ */

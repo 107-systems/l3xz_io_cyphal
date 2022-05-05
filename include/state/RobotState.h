@@ -11,8 +11,6 @@
  * INCLUDES
  **************************************************************************************/
 
-#include <Const.h>
-
 #include "RobotStateInput.h"
 #include "RobotStateOutput.h"
 
@@ -37,7 +35,7 @@ public:
   virtual Name name() const = 0;
   virtual void onEnter() { }
   virtual void onExit() { }
-  virtual RobotState * update(TeleopCommandData const cmd, RobotStateInput & input, RobotStateOutput & output) = 0;
+  virtual RobotState * update(RobotStateInput & input, RobotStateOutput & output) = 0;
 };
 
 #endif /* ROBOT_STATE_H_ */
