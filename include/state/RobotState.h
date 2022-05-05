@@ -23,7 +23,18 @@
 class RobotState
 {
 public:
+  enum class Name
+  {
+    BackwardWalking,
+    ForwardWalking,
+    InitState,
+    StandingState,
+    TurningLeft,
+    TurningRight
+  };
+
   virtual ~RobotState() { }
+  virtual Name name() const = 0;
   virtual void onEnter() { }
   virtual void onExit() { }
   virtual RobotState * update(TeleopCommandData const cmd, RobotStateInput & input, RobotStateOutput & output) = 0;

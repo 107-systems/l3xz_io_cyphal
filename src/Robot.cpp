@@ -35,7 +35,7 @@ void Robot::update(TeleopCommandData const cmd, RobotStateInput & input, RobotSt
 {
   RobotState * next_robot_state = _robot_state->update(cmd, input, output);
     
-  if (next_robot_state != _robot_state)
+  if (next_robot_state->name() != _robot_state->name())
   {
     _robot_state->onExit();
 
