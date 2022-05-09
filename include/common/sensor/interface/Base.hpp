@@ -35,8 +35,6 @@ public:
   virtual std::optional<T> get() const = 0;
   std::string toStr() const;
 
-protected:
-  inline std::string name() const { return _name; }
 
 private:
   std::string const _name;
