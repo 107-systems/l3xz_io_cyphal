@@ -34,6 +34,8 @@ public:
   virtual void set(T const & val) = 0;
   std::string toStr() const;
 
+protected:
+  virtual std::optional<T> get() const = 0;
 
 private:
   std::string const _name;

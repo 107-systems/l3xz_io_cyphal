@@ -29,6 +29,11 @@ std::string Base<T>::toStr() const
   ss << "[A] "
       << _name << ": ";
 
+  if (get().has_value())
+    ss << get().value();
+  else
+    ss << "Inv.";
+
   return ss.str();
 }
 

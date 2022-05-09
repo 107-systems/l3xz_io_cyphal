@@ -29,7 +29,7 @@ namespace common::actuator::interface
 class ValveActuator : public Base<float>
 {
 public:
-           ValveActuator(std::string const & name) : Base{name} { }
+           ValveActuator(std::string const & name) : Base{std::string("[Valve Actuator] \"") + name + std::string("\"")} { }
   virtual ~ValveActuator() { }
 };
 

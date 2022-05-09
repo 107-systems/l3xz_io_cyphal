@@ -30,16 +30,8 @@ class AnglePositionActuator : public Base<float>
 
 {
 public:
-           AnglePositionActuator(std::string const & name) : Base(name), _val{std::nullopt} { }
+           AnglePositionActuator(std::string const & name) : Base(std::string("[Angle Position Actuator] \"") + name + std::string("\"")) { }
   virtual ~AnglePositionActuator() { }
-
-  virtual void set(float const & val) override { _val = val; }
-
-protected:
-  std::optional<float> get() const { return _val; }
-
-private:
-  std::optional<float> _val;
 };
 
 /**************************************************************************************

@@ -29,13 +29,26 @@ class DynamixelAnglePositionActuator : public common::actuator::interface::Angle
 public:
   DynamixelAnglePositionActuator(std::string const & name, float const initial_value)
   : AnglePositionActuator(name)
+  , _val{std::nullopt}
   {
     set(initial_value);
+  }
+
+  virtual void set(float const & val) override {
+    _val = val;
   }
 
   float getAngleDeg() const {
     return get().value();
   }
+
+protected:
+  virtual std::optional<float> get() const override {
+    return _val;
+  }
+
+private:
+  std::optional<float> _val;
 };
 
 /**************************************************************************************

@@ -52,6 +52,12 @@ public:
     _ssc32->setPulseWidth(_channel, static_cast<uint16_t>(pulse_width_us), 0);
   }
 
+protected:
+  virtual std::optional<float> get() const override {
+    return _val;
+  }
+
+
 private:
   driver::SharedSSC32 _ssc32;
   uint8_t const _channel;
