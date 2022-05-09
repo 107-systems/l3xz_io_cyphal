@@ -25,8 +25,15 @@ template <typename T>
 std::string Base<T>::toStr() const
 {
   std::stringstream ss;
+
   ss << "[S] "
       << name() << ": ";
+
+  if (get().has_value())
+    ss << get().value();
+  else
+    ss << "Inv.";
+
   return ss.str();
 }
 

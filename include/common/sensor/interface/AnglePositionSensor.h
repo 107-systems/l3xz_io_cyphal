@@ -34,7 +34,6 @@ public:
   virtual ~AnglePositionSensor() { }
 
   virtual std::optional<float> get() const override;
-  virtual std::string toStr() const override;
 
 protected:
   void set(float const val);

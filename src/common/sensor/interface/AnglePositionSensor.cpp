@@ -39,19 +39,6 @@ std::optional<float> AnglePositionSensor::get() const
   return _val;
 }
 
-std::string AnglePositionSensor::toStr() const
-{
-  std::stringstream ss;
-  ss << Base::toStr();
-  
-  if (_val)
-    ss << _val.value();
-  else
-    ss << "Inv.";
-
-  return ss.str();
-}
-
 /**************************************************************************************
  * PROTECTED MEMBER FUNCTIONS
  **************************************************************************************/

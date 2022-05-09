@@ -33,7 +33,7 @@ public:
   virtual ~Base() { }
 
   virtual std::optional<T> get() const = 0;
-  virtual std::string toStr() const;
+  std::string toStr() const;
 
 protected:
   inline std::string name() const { return _name; }
