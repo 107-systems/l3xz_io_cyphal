@@ -29,42 +29,28 @@ namespace glue::l3xz::ELROB2022
 class DynamixelAnglePositionActuatorBulkWriter
 {
 public:
-  DynamixelAnglePositionActuatorBulkWriter(driver::SharedMX28 mx28_ctrl,
-                                           SharedDynamixelAnglePositionActuator coxa_leg_front_left,
-                                           SharedDynamixelAnglePositionActuator coxa_leg_front_right,
-                                           SharedDynamixelAnglePositionActuator coxa_leg_middle_left,
-                                           SharedDynamixelAnglePositionActuator coxa_leg_middle_right,
-                                           SharedDynamixelAnglePositionActuator coxa_leg_back_left,
-                                           SharedDynamixelAnglePositionActuator coxa_leg_back_right,
-                                           SharedDynamixelAnglePositionActuator sensor_head_pan,
-                                           SharedDynamixelAnglePositionActuator sensor_head_tilt)
+  DynamixelAnglePositionActuatorBulkWriter(driver::SharedMX28 mx28_ctrl)
   : _mx28_ctrl{mx28_ctrl}
-  , DYNAMIXEL_ID_TO_ANGLE_POSITION_ACTUATOR
-  {
-    {1, coxa_leg_front_left},
-    {2, coxa_leg_front_right},
-    {3, coxa_leg_middle_left},
-    {4, coxa_leg_middle_right},
-    {5, coxa_leg_back_left},
-    {6, coxa_leg_back_right},
-    {7, sensor_head_pan},
-    {8, sensor_head_tilt},
-  }
   { }
+
+  void update(driver::Dynamixel::Id const id, float const angle_deg)
+  {
+    _dynamixel_angle_map[id] = angle_deg;
+  }
 
   bool doBulkWrite()
   {
     driver::MX28::AngleDataSet angle_data_set;
 
-    for (auto [id, angle_pos_actuator] : DYNAMIXEL_ID_TO_ANGLE_POSITION_ACTUATOR)
-      angle_data_set[id] = angle_pos_actuator->getAngleDeg();
+    for (auto [id, angle_deg] : _dynamixel_angle_map)
+      angle_data_set[id] = angle_deg;
 
     return _mx28_ctrl->setAngle(angle_data_set);
   }
 
 private:
   driver::SharedMX28 _mx28_ctrl;
-  std::map<driver::Dynamixel::Id, SharedDynamixelAnglePositionActuator> const DYNAMIXEL_ID_TO_ANGLE_POSITION_ACTUATOR;
+  std::map<driver::Dynamixel::Id, float> _dynamixel_angle_map;
 };
 
 /**************************************************************************************

@@ -53,7 +53,8 @@ public:
   }
 
 protected:
-  virtual std::optional<float> get() const override {
+  virtual std::optional<float> get() const override
+  {
     return _val;
   }
 

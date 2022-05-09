@@ -99,27 +99,16 @@ int main(int argc, char **argv) try
     angle_sensor_sensor_head_tilt
   );
 
-  auto angle_actuator_coxa_leg_front_left   = std::make_shared<glue::l3xz::ELROB2022::DynamixelAnglePositionActuator>("LEG F/L Coxa", 180.0f);
-  auto angle_actuator_coxa_leg_front_right  = std::make_shared<glue::l3xz::ELROB2022::DynamixelAnglePositionActuator>("LEG F/R Coxa", 180.0f);
-  auto angle_actuator_coxa_leg_middle_left  = std::make_shared<glue::l3xz::ELROB2022::DynamixelAnglePositionActuator>("LEG M/L Coxa", 180.0f);
-  auto angle_actuator_coxa_leg_middle_right = std::make_shared<glue::l3xz::ELROB2022::DynamixelAnglePositionActuator>("LEG M/R Coxa", 180.0f);
-  auto angle_actuator_coxa_leg_back_left    = std::make_shared<glue::l3xz::ELROB2022::DynamixelAnglePositionActuator>("LEG B/L Coxa", 180.0f);
-  auto angle_actuator_coxa_leg_back_right   = std::make_shared<glue::l3xz::ELROB2022::DynamixelAnglePositionActuator>("LEG B/R Coxa", 180.0f);
-  auto angle_actuator_sensor_head_pan       = std::make_shared<glue::l3xz::ELROB2022::DynamixelAnglePositionActuator>("HEAD Pan    ", 180.0f);
-  auto angle_actuator_sensor_head_tilt      = std::make_shared<glue::l3xz::ELROB2022::DynamixelAnglePositionActuator>("HEAD Tilt   ", 180.0f);
+  glue::l3xz::ELROB2022::DynamixelAnglePositionActuatorBulkWriter dynamixel_angle_position_actuator_bulk_writer(mx28_ctrl);
 
-  glue::l3xz::ELROB2022::DynamixelAnglePositionActuatorBulkWriter dynamixel_angle_position_actuator_bulk_writer
-  (
-    mx28_ctrl,
-    angle_actuator_coxa_leg_front_left,
-    angle_actuator_coxa_leg_front_right,
-    angle_actuator_coxa_leg_middle_left,
-    angle_actuator_coxa_leg_middle_right,
-    angle_actuator_coxa_leg_back_left,
-    angle_actuator_coxa_leg_back_right,
-    angle_actuator_sensor_head_pan,
-    angle_actuator_sensor_head_tilt
-  );
+  auto angle_actuator_coxa_leg_front_left   = std::make_shared<glue::l3xz::ELROB2022::DynamixelAnglePositionActuator>("LEG F/L Coxa", 1, [&dynamixel_angle_position_actuator_bulk_writer](driver::Dynamixel::Id const id, float const angle_deg) { dynamixel_angle_position_actuator_bulk_writer.update(id, angle_deg); }, 180.0f);
+  auto angle_actuator_coxa_leg_front_right  = std::make_shared<glue::l3xz::ELROB2022::DynamixelAnglePositionActuator>("LEG F/R Coxa", 2, [&dynamixel_angle_position_actuator_bulk_writer](driver::Dynamixel::Id const id, float const angle_deg) { dynamixel_angle_position_actuator_bulk_writer.update(id, angle_deg); },180.0f);
+  auto angle_actuator_coxa_leg_middle_left  = std::make_shared<glue::l3xz::ELROB2022::DynamixelAnglePositionActuator>("LEG M/L Coxa", 3, [&dynamixel_angle_position_actuator_bulk_writer](driver::Dynamixel::Id const id, float const angle_deg) { dynamixel_angle_position_actuator_bulk_writer.update(id, angle_deg); },180.0f);
+  auto angle_actuator_coxa_leg_middle_right = std::make_shared<glue::l3xz::ELROB2022::DynamixelAnglePositionActuator>("LEG M/R Coxa", 4, [&dynamixel_angle_position_actuator_bulk_writer](driver::Dynamixel::Id const id, float const angle_deg) { dynamixel_angle_position_actuator_bulk_writer.update(id, angle_deg); },180.0f);
+  auto angle_actuator_coxa_leg_back_left    = std::make_shared<glue::l3xz::ELROB2022::DynamixelAnglePositionActuator>("LEG B/L Coxa", 5, [&dynamixel_angle_position_actuator_bulk_writer](driver::Dynamixel::Id const id, float const angle_deg) { dynamixel_angle_position_actuator_bulk_writer.update(id, angle_deg); },180.0f);
+  auto angle_actuator_coxa_leg_back_right   = std::make_shared<glue::l3xz::ELROB2022::DynamixelAnglePositionActuator>("LEG B/R Coxa", 6, [&dynamixel_angle_position_actuator_bulk_writer](driver::Dynamixel::Id const id, float const angle_deg) { dynamixel_angle_position_actuator_bulk_writer.update(id, angle_deg); },180.0f);
+  auto angle_actuator_sensor_head_pan       = std::make_shared<glue::l3xz::ELROB2022::DynamixelAnglePositionActuator>("HEAD Pan    ", 7, [&dynamixel_angle_position_actuator_bulk_writer](driver::Dynamixel::Id const id, float const angle_deg) { dynamixel_angle_position_actuator_bulk_writer.update(id, angle_deg); },180.0f);
+  auto angle_actuator_sensor_head_tilt      = std::make_shared<glue::l3xz::ELROB2022::DynamixelAnglePositionActuator>("HEAD Tilt   ", 8, [&dynamixel_angle_position_actuator_bulk_writer](driver::Dynamixel::Id const id, float const angle_deg) { dynamixel_angle_position_actuator_bulk_writer.update(id, angle_deg); },180.0f);
 
   /**************************************************************************************
    * SSC32

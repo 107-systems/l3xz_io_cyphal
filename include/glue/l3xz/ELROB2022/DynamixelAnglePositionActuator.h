@@ -13,6 +13,8 @@
 
 #include <common/actuator/interface/AnglePositionActuator.h>
 
+#include <functional>
+
 /**************************************************************************************
  * NAMESPACE
  **************************************************************************************/
@@ -27,28 +29,33 @@ namespace glue::l3xz::ELROB2022
 class DynamixelAnglePositionActuator : public common::actuator::interface::AnglePositionActuator
 {
 public:
-  DynamixelAnglePositionActuator(std::string const & name, float const initial_value)
+
+  typedef std::function<void(driver::Dynamixel::Id const, float const)> OnChangeFunc;
+
+  DynamixelAnglePositionActuator(std::string const & name, driver::Dynamixel::Id const id, OnChangeFunc func, float const initial_value)
   : AnglePositionActuator(name)
-  , _val{std::nullopt}
+  , _id{id}
+  , _on_change_func{func}
   {
     set(initial_value);
   }
 
-  virtual void set(float const & val) override {
-    _val = val;
-  }
-
-  float getAngleDeg() const {
-    return get().value();
+  virtual void set(float const & angle_deg) override
+  {
+    _angle_deg = angle_deg;
+    _on_change_func(_id, _angle_deg);
   }
 
 protected:
-  virtual std::optional<float> get() const override {
-    return _val;
+  virtual std::optional<float> get() const override
+  {
+    return _angle_deg;
   }
 
 private:
-  std::optional<float> _val;
+  driver::Dynamixel::Id _id;
+  OnChangeFunc _on_change_func;
+  float _angle_deg;
 };
 
 /**************************************************************************************
