@@ -38,7 +38,7 @@ static uint8_t const THIS_NODE_ID = 0;
 
 int main(int argc, char **argv) try
 {
-  SocketCAN can_if("/dev/can0", false);
+  SocketCAN can_if("can0", false);
   Node node(THIS_NODE_ID,
             [&can_if](CanardFrame const & tx_frame) -> bool
             {
