@@ -55,12 +55,12 @@ void Node::onCanFrameReceived(CanardFrame const & frame)
       if (transfer.transfer_kind == CanardTransferKindResponse) {
         if ((_tx_transfer_map.count(transfer.port_id) > 0) && (_tx_transfer_map[transfer.port_id] == transfer.transfer_id))
         {
-          transfer_received_func(transfer, *this);
+          transfer_received_func(transfer);
           unsubscribe(CanardTransferKindResponse, transfer.port_id);
         }
       }
       else
-        transfer_received_func(transfer, *this);
+        transfer_received_func(transfer);
     }
     _o1heap.free(const_cast<void *>(transfer.payload));
   }

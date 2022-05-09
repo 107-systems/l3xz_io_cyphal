@@ -187,6 +187,7 @@ target_compile_options(${PROJECT_NAME}_node PRIVATE -std=c++17 -Wall -Werror -pe
 
 #######################################################################################
 
+add_subdirectory(tooling/fwlegctrl)
 add_subdirectory(tooling/orocos)
 add_subdirectory(tooling/ssc32ctrl)
 

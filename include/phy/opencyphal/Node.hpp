@@ -34,7 +34,7 @@ namespace phy::opencyphal
  **************************************************************************************/
 
 class Node;
-typedef std::function<void(CanardTransfer const &, Node &)> OnTransferReceivedFunc;
+typedef std::function<void(CanardTransfer const &)> OnTransferReceivedFunc;
 typedef std::function<bool(CanardFrame const &)> CanFrameTransmitFunc;
 
 /**************************************************************************************
