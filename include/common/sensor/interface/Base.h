@@ -4,17 +4,15 @@
  * Contributors: https://github.com/107-systems/l3xz/graphs/contributors.
  */
 
-#ifndef COMMON_SENSOR_INTERFACE_ANGLE_POSITION_SENSOR_H_
-#define COMMON_SENSOR_INTERFACE_ANGLE_POSITION_SENSOR_H_
+#ifndef COMMON_SENSOR_INTERFACE_BASE_H_
+#define COMMON_SENSOR_INTERFACE_BASE_H_
 
 /**************************************************************************************
  * INCLUDES
  **************************************************************************************/
 
-#include "Base.h"
-
-#include <memory>
-#include <optional>
+#include <string>
+#include <sstream>
 
 /**************************************************************************************
  * NAMESPACE
@@ -27,27 +25,26 @@ namespace common::sensor::interface
  * CLASS DECLARATION
  **************************************************************************************/
 
-class AnglePositionSensor : public Base
+class Base
 {
 public:
-           AnglePositionSensor(std::string const & name);
-  virtual ~AnglePositionSensor() { }
+           Base(std::string const & name) : _name{name} { }
+  virtual ~Base() { }
 
-  std::optional<float> get() const;
-  virtual std::string toStr() const override;
+  virtual std::string toStr() const
+  {
+    std::stringstream ss;
+    ss << "[S] "
+        << name() << ": ";
+    return ss.str();
+  }
 
 protected:
-  void set(float const val);
+  inline std::string name() const { return _name; }
 
 private:
-  std::optional<float> _val;
+  std::string const _name;
 };
-
-/**************************************************************************************
- * TYPEDEF
- **************************************************************************************/
-
-typedef std::shared_ptr<AnglePositionSensor> SharedAnglePositionSensor;
 
 /**************************************************************************************
  * NAMESPACE
@@ -55,4 +52,4 @@ typedef std::shared_ptr<AnglePositionSensor> SharedAnglePositionSensor;
 
 } /* common::sensor::interface */
 
-#endif /* COMMON_SENSOR_INTERFACE_ANGLE_POSITION_SENSOR_H_ */
+#endif /* COMMON_SENSOR_INTERFACE_BASE_H_ */

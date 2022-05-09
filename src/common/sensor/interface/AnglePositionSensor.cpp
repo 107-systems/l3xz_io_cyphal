@@ -24,7 +24,7 @@ namespace common::sensor::interface
  **************************************************************************************/
 
 AnglePositionSensor::AnglePositionSensor(std::string const & name)
-: _name{name}
+: Base(name)
 , _val{std::nullopt}
 {
 
@@ -42,8 +42,7 @@ std::optional<float> AnglePositionSensor::get() const
 std::string AnglePositionSensor::toStr() const
 {
   std::stringstream ss;
-  ss << "[S] "
-     << _name << ": ";
+  ss << Base::toStr();
   
   if (_val)
     ss << _val.value();
