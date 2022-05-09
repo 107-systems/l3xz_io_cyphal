@@ -55,7 +55,7 @@ public:
   virtual std::string toStr() const override
   {
     std::stringstream ss;
-    ss << "[A] " << name() << ": " << _val;
+    ss << common::actuator::interface::Base::toStr() << _val;
     return ss.str();
   }
 

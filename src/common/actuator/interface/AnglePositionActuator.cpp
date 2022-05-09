@@ -24,7 +24,7 @@ namespace common::actuator::interface
  **************************************************************************************/
 
 AnglePositionActuator::AnglePositionActuator(std::string const & name)
-: _name{name}
+: Base(name)
 , _val{std::nullopt}
 {
 
@@ -42,8 +42,7 @@ void AnglePositionActuator::set(float const val)
 std::string AnglePositionActuator::toStr() const
 {
   std::stringstream ss;
-  ss << "[A] "
-     << _name << ": ";
+  ss << Base::toStr();
   
   if (_val)
     ss << _val.value();

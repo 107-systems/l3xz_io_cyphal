@@ -4,17 +4,15 @@
  * Contributors: https://github.com/107-systems/l3xz/graphs/contributors.
  */
 
-#ifndef COMMON_SENSOR_INTERFACE_ANGLE_POSITION_ACTUATOR_H_
-#define COMMON_SENSOR_INTERFACE_ANGLE_POSITION_ACTUATOR_H_
+#ifndef COMMON_ACTUATOR_INTERFACE_BASE_H_
+#define COMMON_ACTUATOR_INTERFACE_BASE_H_
 
 /**************************************************************************************
  * INCLUDES
  **************************************************************************************/
 
-#include "Base.h"
-
-#include <memory>
-#include <optional>
+#include <string>
+#include <sstream>
 
 /**************************************************************************************
  * NAMESPACE
@@ -27,28 +25,26 @@ namespace common::actuator::interface
  * CLASS DECLARATION
  **************************************************************************************/
 
-class AnglePositionActuator : public Base
-
+class Base
 {
 public:
-           AnglePositionActuator(std::string const & name);
-  virtual ~AnglePositionActuator() { }
+           Base(std::string const & name) : _name{name} { }
+  virtual ~Base() { }
 
-  void set(float const val);
-  virtual std::string toStr() const override;
+  virtual std::string toStr() const
+  {
+    std::stringstream ss;
+    ss << "[A] "
+        << name() << ": ";
+    return ss.str();
+  }
 
 protected:
-  std::optional<float> get() const;
+  inline std::string name() const { return _name; }
 
 private:
-  std::optional<float> _val;
+  std::string const _name;
 };
-
-/**************************************************************************************
- * NAMESPACE
- **************************************************************************************/
-
-typedef std::shared_ptr<AnglePositionActuator> SharedAnglePositionActuator;
 
 /**************************************************************************************
  * NAMESPACE
@@ -56,4 +52,4 @@ typedef std::shared_ptr<AnglePositionActuator> SharedAnglePositionActuator;
 
 } /* common::actuator::interface */
 
-#endif /* COMMON_SENSOR_INTERFACE_ANGLE_POSITION_ACTUATOR_H_ */
+#endif /* COMMON_ACTUATOR_INTERFACE_BASE_H_ */
