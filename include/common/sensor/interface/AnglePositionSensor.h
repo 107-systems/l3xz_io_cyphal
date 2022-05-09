@@ -29,16 +29,8 @@ namespace common::sensor::interface
 class AnglePositionSensor : public Base<float>
 {
 public:
-           AnglePositionSensor(std::string const & name) : Base(name), _val{std::nullopt} { }
+           AnglePositionSensor(std::string const & name) : Base(std::string("[Angle Position Sensor] \"") + name + std::string("\"")) { }
   virtual ~AnglePositionSensor() { }
-
-  virtual std::optional<float> get() const override { return _val; }
-
-protected:
-  void set(float const val) { _val = val;}
-
-private:
-  std::optional<float> _val;
 };
 
 /**************************************************************************************

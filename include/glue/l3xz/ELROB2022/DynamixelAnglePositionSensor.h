@@ -27,11 +27,14 @@ namespace glue::l3xz::ELROB2022
 class DynamixelAnglePositionSensor : public common::sensor::interface::AnglePositionSensor
 {
 public:
-  DynamixelAnglePositionSensor(std::string const & name) : AnglePositionSensor(name) { }
+  DynamixelAnglePositionSensor(std::string const & name) : AnglePositionSensor(name), _angle_deg{std::nullopt} { }
 
-  void set_angle_deg(float const angle_deg) {
-    set(angle_deg);
-  }
+  virtual std::optional<float> get() const override { return _angle_deg; }
+
+  void update(float const angle_deg) { _angle_deg = angle_deg; }
+
+private:
+  std::optional<float> _angle_deg;
 };
 
 /**************************************************************************************

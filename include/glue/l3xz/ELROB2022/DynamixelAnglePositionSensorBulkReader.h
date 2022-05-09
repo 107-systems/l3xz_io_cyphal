@@ -59,7 +59,7 @@ public:
 
     for (auto [id, angle_deg] : angle_data_set) {
       ROS_DEBUG("id %d = %.2f", id, angle_deg);
-      DYNAMIXEL_ID_TO_ANGLE_POSITION_SENSOR.at(id)->set_angle_deg(angle_deg);
+      DYNAMIXEL_ID_TO_ANGLE_POSITION_SENSOR.at(id)->update(angle_deg);
     }
   }
 
