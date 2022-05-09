@@ -4,14 +4,10 @@
  * Contributors: https://github.com/107-systems/l3xz/graphs/contributors.
  */
 
-#ifndef COMMON_SENSOR_INTERFACE_BASE_H_
-#define COMMON_SENSOR_INTERFACE_BASE_H_
-
 /**************************************************************************************
  * INCLUDES
  **************************************************************************************/
 
-#include <string>
 #include <sstream>
 
 /**************************************************************************************
@@ -22,34 +18,20 @@ namespace common::sensor::interface
 {
 
 /**************************************************************************************
- * CLASS DECLARATION
+ * PUBLIC MEMBER FUNCTIONS
  **************************************************************************************/
 
-class Base
+template <typename T>
+std::string Base<T>::toStr() const
 {
-public:
-           Base(std::string const & name) : _name{name} { }
-  virtual ~Base() { }
-
-  virtual std::string toStr() const
-  {
-    std::stringstream ss;
-    ss << "[S] "
-        << name() << ": ";
-    return ss.str();
-  }
-
-protected:
-  inline std::string name() const { return _name; }
-
-private:
-  std::string const _name;
-};
+  std::stringstream ss;
+  ss << "[S] "
+      << name() << ": ";
+  return ss.str();
+}
 
 /**************************************************************************************
  * NAMESPACE
  **************************************************************************************/
 
 } /* common::sensor::interface */
-
-#endif /* COMMON_SENSOR_INTERFACE_BASE_H_ */

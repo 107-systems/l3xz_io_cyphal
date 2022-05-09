@@ -4,16 +4,14 @@
  * Contributors: https://github.com/107-systems/l3xz/graphs/contributors.
  */
 
-#ifndef COMMON_SENSOR_INTERFACE_ANGLE_POSITION_SENSOR_H_
-#define COMMON_SENSOR_INTERFACE_ANGLE_POSITION_SENSOR_H_
+#ifndef COMMON_SENSOR_INTERFACE_BASE_HPP_
+#define COMMON_SENSOR_INTERFACE_BASE_HPP_
 
 /**************************************************************************************
  * INCLUDES
  **************************************************************************************/
 
-#include "Base.hpp"
-
-#include <memory>
+#include <string>
 #include <optional>
 
 /**************************************************************************************
@@ -27,27 +25,22 @@ namespace common::sensor::interface
  * CLASS DECLARATION
  **************************************************************************************/
 
-class AnglePositionSensor : public Base<float>
+template <typename T>
+class Base
 {
 public:
-           AnglePositionSensor(std::string const & name);
-  virtual ~AnglePositionSensor() { }
+           Base(std::string const & name) : _name{name} { }
+  virtual ~Base() { }
 
-  virtual std::optional<float> get() const override;
-  virtual std::string toStr() const override;
+  virtual std::optional<T> get() const = 0;
+  virtual std::string toStr() const;
 
 protected:
-  void set(float const val);
+  inline std::string name() const { return _name; }
 
 private:
-  std::optional<float> _val;
+  std::string const _name;
 };
-
-/**************************************************************************************
- * TYPEDEF
- **************************************************************************************/
-
-typedef std::shared_ptr<AnglePositionSensor> SharedAnglePositionSensor;
 
 /**************************************************************************************
  * NAMESPACE
@@ -55,4 +48,10 @@ typedef std::shared_ptr<AnglePositionSensor> SharedAnglePositionSensor;
 
 } /* common::sensor::interface */
 
-#endif /* COMMON_SENSOR_INTERFACE_ANGLE_POSITION_SENSOR_H_ */
+/**************************************************************************************
+ * TEMPLATE IMPLEMENTATION
+ **************************************************************************************/
+
+#include "Base.ipp"
+
+#endif /* COMMON_SENSOR_INTERFACE_BASE_HPP_ */
