@@ -14,7 +14,6 @@
 #include "Base.hpp"
 
 #include <memory>
-#include <optional>
 
 /**************************************************************************************
  * NAMESPACE
@@ -30,13 +29,13 @@ namespace common::sensor::interface
 class AnglePositionSensor : public Base<float>
 {
 public:
-           AnglePositionSensor(std::string const & name);
+           AnglePositionSensor(std::string const & name) : Base(name), _val{std::nullopt} { }
   virtual ~AnglePositionSensor() { }
 
-  virtual std::optional<float> get() const override;
+  virtual std::optional<float> get() const override { return _val; }
 
 protected:
-  void set(float const val);
+  void set(float const val) { _val = val;}
 
 private:
   std::optional<float> _val;
