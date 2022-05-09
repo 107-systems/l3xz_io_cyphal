@@ -11,7 +11,7 @@
  * INCLUDES
  **************************************************************************************/
 
-#include "Base.h"
+#include "Base.hpp"
 
 #include <memory>
 
@@ -26,13 +26,11 @@ namespace common::actuator::interface
  * CLASS DECLARATION
  **************************************************************************************/
 
-class ValveActuator : public Base
+class ValveActuator : public Base<float>
 {
 public:
            ValveActuator(std::string const & name) : Base{name} { }
   virtual ~ValveActuator() { }
-
-  virtual void set(float const val) = 0;
 };
 
 /**************************************************************************************

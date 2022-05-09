@@ -8,8 +8,6 @@
  * INCLUDES
  **************************************************************************************/
 
-#include <common/actuator/interface/AnglePositionActuator.h>
-
 #include <sstream>
 
 /**************************************************************************************
@@ -20,45 +18,18 @@ namespace common::actuator::interface
 {
 
 /**************************************************************************************
- * CTOR/DTOR
- **************************************************************************************/
-
-AnglePositionActuator::AnglePositionActuator(std::string const & name)
-: Base(name)
-, _val{std::nullopt}
-{
-
-}
-
-/**************************************************************************************
  * PUBLIC MEMBER FUNCTIONS
  **************************************************************************************/
 
-void AnglePositionActuator::set(float const val)
-{
-  _val = val;
-}
-
-std::string AnglePositionActuator::toStr() const
+template <typename T>
+std::string Base<T>::toStr() const
 {
   std::stringstream ss;
-  ss << Base::toStr();
-  
-  if (_val)
-    ss << _val.value();
-  else
-    ss << "Inv.";
+
+  ss << "[A] "
+      << _name << ": ";
 
   return ss.str();
-}
-
-/**************************************************************************************
- * PROTECTED MEMBER FUNCTIONS
- **************************************************************************************/
-
-std::optional<float> AnglePositionActuator::get() const
-{
-  return _val;
 }
 
 /**************************************************************************************

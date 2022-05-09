@@ -39,7 +39,7 @@ public:
   virtual ~SSC32ValveActuator()
   { }
 
-  virtual void set(float const val) override
+  virtual void set(float const & val) override
   {
     float limited_val = val;
     if (limited_val >  1.0f) limited_val =  1.0f;
@@ -50,13 +50,6 @@ public:
     float const pulse_width_us = (limited_val * 500) + 1500;
 
     _ssc32->setPulseWidth(_channel, static_cast<uint16_t>(pulse_width_us), 0);
-  }
-
-  virtual std::string toStr() const override
-  {
-    std::stringstream ss;
-    ss << common::actuator::interface::Base::toStr() << _val;
-    return ss.str();
   }
 
 private:

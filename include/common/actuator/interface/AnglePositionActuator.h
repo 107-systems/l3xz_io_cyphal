@@ -11,10 +11,9 @@
  * INCLUDES
  **************************************************************************************/
 
-#include "Base.h"
+#include "Base.hpp"
 
 #include <memory>
-#include <optional>
 
 /**************************************************************************************
  * NAMESPACE
@@ -27,18 +26,17 @@ namespace common::actuator::interface
  * CLASS DECLARATION
  **************************************************************************************/
 
-class AnglePositionActuator : public Base
+class AnglePositionActuator : public Base<float>
 
 {
 public:
-           AnglePositionActuator(std::string const & name);
+           AnglePositionActuator(std::string const & name) : Base(name), _val{std::nullopt} { }
   virtual ~AnglePositionActuator() { }
 
-  void set(float const val);
-  virtual std::string toStr() const override;
+  virtual void set(float const & val) override { _val = val; }
 
 protected:
-  std::optional<float> get() const;
+  std::optional<float> get() const { return _val; }
 
 private:
   std::optional<float> _val;
