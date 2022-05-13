@@ -153,14 +153,14 @@ int main(int argc, char **argv) try
   TeleopCommandData teleop_cmd_data;
   ros::Subscriber cmd_vel_sub = node_hdl.subscribe<geometry_msgs::Twist>("/l3xz/cmd_vel", 10, std::bind(cmd_vel_callback, std::placeholders::_1, std::ref(teleop_cmd_data)));
 
-  GaitControllerOutput gait_ctrl_state_output(angle_actuator_coxa_leg_front_left,
-                                                   angle_actuator_coxa_leg_front_right,
-                                                   angle_actuator_coxa_leg_middle_left,
-                                                   angle_actuator_coxa_leg_middle_right,
-                                                   angle_actuator_coxa_leg_back_left,
-                                                   angle_actuator_coxa_leg_back_right);
+  gait::GaitControllerOutput gait_ctrl_state_output(angle_actuator_coxa_leg_front_left,
+                                                    angle_actuator_coxa_leg_front_right,
+                                                    angle_actuator_coxa_leg_middle_left,
+                                                    angle_actuator_coxa_leg_middle_right,
+                                                    angle_actuator_coxa_leg_back_left,
+                                                    angle_actuator_coxa_leg_back_right);
 
-  GaitController gait_ctrl;
+  gait::GaitController gait_ctrl;
 
 
   for (ros::Rate loop_rate(50);
@@ -195,13 +195,13 @@ int main(int argc, char **argv) try
 
     //ROS_INFO("Head\n  Pan : actual = %.2f, target = %.2f\n  Tilt: actual = %.2f, target = %.2f", sensor_head_pan_actual, sensor_head_pan_target, sensor_head_tilt_actual, sensor_head_tilt_target);
 
-    GaitControllerInput gait_ctrl_state_input(teleop_cmd_data, 
-                                                   angle_sensor_coxa_leg_front_left,
-                                                   angle_sensor_coxa_leg_front_right,
-                                                   angle_sensor_coxa_leg_middle_left,
-                                                   angle_sensor_coxa_leg_middle_right,
-                                                   angle_sensor_coxa_leg_back_left,
-                                                   angle_sensor_coxa_leg_back_right);
+    gait::GaitControllerInput gait_ctrl_state_input(teleop_cmd_data,
+                                                    angle_sensor_coxa_leg_front_left,
+                                                    angle_sensor_coxa_leg_front_right,
+                                                    angle_sensor_coxa_leg_middle_left,
+                                                    angle_sensor_coxa_leg_middle_right,
+                                                    angle_sensor_coxa_leg_back_left,
+                                                    angle_sensor_coxa_leg_back_right);
 
     gait_ctrl.update(gait_ctrl_state_input, gait_ctrl_state_output);
 
