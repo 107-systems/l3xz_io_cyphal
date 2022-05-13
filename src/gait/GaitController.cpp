@@ -10,7 +10,7 @@
 
 #include <gait/GaitController.h>
 
-#include <gait/state/InitState.h>
+#include <gait/state/Init.h>
 
 /**************************************************************************************
  * NAMESPACE
@@ -24,7 +24,7 @@ namespace gait
  **************************************************************************************/
 
 GaitController::GaitController()
-: _robot_state{new state::InitState()}
+: _robot_state{new state::Init()}
 {
   _robot_state->onEnter();
 }

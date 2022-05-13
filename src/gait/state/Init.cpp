@@ -8,11 +8,11 @@
  * INCLUDES
  **************************************************************************************/
 
-#include <gait/state/InitState.h>
+#include <gait/state/Init.h>
 
 #include <ros/console.h>
 
-#include <gait/state/StandingState.h>
+#include <gait/state/Standing.h>
 
 /**************************************************************************************
  * NAMESPACE
@@ -25,20 +25,20 @@ namespace gait::state
  * PUBLIC MEMBER FUNCTIONS
  **************************************************************************************/
 
-void InitState::onEnter()
+void Init::onEnter()
 {
-  ROS_INFO("InitState ENTER");
+  ROS_INFO("Init ENTER");
 }
 
-void InitState::onExit()
+void Init::onExit()
 {
-  ROS_INFO("InitState EXIT");
+  ROS_INFO("Init EXIT");
 }
 
-StateBase * InitState::update(GaitControllerInput const & input, GaitControllerOutput & output)
+StateBase * Init::update(GaitControllerInput const & input, GaitControllerOutput & output)
 {
   /* TODO: Drive to initial position. */
-  return new StandingState();
+  return new Standing();
 }
 
 /**************************************************************************************

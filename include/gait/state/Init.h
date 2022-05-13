@@ -24,10 +24,10 @@ namespace gait::state
  * CLASS DECLARATION
  **************************************************************************************/
 
-class InitState : public StateBase
+class Init : public StateBase
 {
 public:
-  virtual ~InitState() { }
+  virtual ~Init() { }
   virtual void onEnter() override;
   virtual void onExit() override;
   virtual StateBase * update(GaitControllerInput const & input, GaitControllerOutput & output) override;

@@ -8,7 +8,7 @@
  * INCLUDES
  **************************************************************************************/
 
-#include <gait/state/StandingState.h>
+#include <gait/state/Standing.h>
 
 #include <ros/console.h>
 
@@ -28,17 +28,17 @@ namespace gait::state
  * PUBLIC MEMBER FUNCTIONS
  **************************************************************************************/
 
-void StandingState::onEnter()
+void Standing::onEnter()
 {
-  ROS_INFO("StandingState ENTER");
+  ROS_INFO("Standing ENTER");
 }
 
-void StandingState::onExit()
+void Standing::onExit()
 {
-  ROS_INFO("StandingState EXIT");
+  ROS_INFO("Standing EXIT");
 }
 
-StateBase * StandingState::update(GaitControllerInput const & input, GaitControllerOutput & output)
+StateBase * Standing::update(GaitControllerInput const & input, GaitControllerOutput & output)
 {
   if      (input._teleop_cmd.linear_velocity_x > 0.2f)
     return new ForwardWalking();

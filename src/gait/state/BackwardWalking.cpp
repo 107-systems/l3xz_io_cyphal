@@ -12,7 +12,7 @@
 
 #include <ros/console.h>
 
-#include <gait/state/StandingState.h>
+#include <gait/state/Standing.h>
 
 /**************************************************************************************
  * NAMESPACE
@@ -38,7 +38,7 @@ void BackwardWalking::onExit()
 StateBase * BackwardWalking::update(GaitControllerInput const & input, GaitControllerOutput & output)
 {
   /* TODO: Walk one gait::state cycle Backward. */
-  return new StandingState();
+  return new Standing();
 }
 
 /**************************************************************************************

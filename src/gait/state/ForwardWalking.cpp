@@ -12,7 +12,7 @@
 
 #include <ros/console.h>
 
-#include <gait/state/StandingState.h>
+#include <gait/state/Standing.h>
 
 /**************************************************************************************
  * NAMESPACE
@@ -88,7 +88,7 @@ StateBase * ForwardWalking::update(GaitControllerInput const & input, GaitContro
     _current_leg_state = std::next(_current_leg_state);
     if (_current_leg_state == RIPPLE_GAIT.cend()) {
       /* Now the one complete cycle of walking forward has been completed, return to the the default state. */
-      return new StandingState;
+      return new Standing;
     }
   }
 
