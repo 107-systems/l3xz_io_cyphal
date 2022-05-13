@@ -35,7 +35,7 @@ void Robot::update(RobotStateInput const & input, RobotStateOutput & output)
 {
   RobotState * next_robot_state = _robot_state->update(input, output);
     
-  if (next_robot_state->name() != _robot_state->name())
+  if (next_robot_state != _robot_state)
   {
     _robot_state->onExit();
 

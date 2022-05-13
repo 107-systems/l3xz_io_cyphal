@@ -65,7 +65,6 @@ class ForwardWalking : public RobotState
 public:
            ForwardWalking();
   virtual ~ForwardWalking() { }
-  virtual Name name() const override { return RobotState::Name::ForwardWalking; }
   virtual void onEnter() override;
   virtual void onExit() override;
   virtual RobotState * update(RobotStateInput const & input, RobotStateOutput & output) override;
