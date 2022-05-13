@@ -8,11 +8,11 @@
  * INCLUDES
  **************************************************************************************/
 
-#include <state/ForwardWalking.h>
+#include <gait/state/ForwardWalking.h>
 
 #include <ros/console.h>
 
-#include <state/StandingState.h>
+#include <gait/state/StandingState.h>
 
 /**************************************************************************************
  * CTOR/DTOR

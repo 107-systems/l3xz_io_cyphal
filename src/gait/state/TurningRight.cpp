@@ -4,29 +4,32 @@
  * Contributors: https://github.com/107-systems/l3xz/graphs/contributors.
  */
 
-#ifndef GAIT_CONTROLLER_H_
-#define GAIT_CONTROLLER_H_
-
 /**************************************************************************************
  * INCLUDES
  **************************************************************************************/
 
-#include "state/GaitControllerState.h"
+#include <gait/state/TurningRight.h>
+
+#include <ros/console.h>
+
+#include <gait/state/StandingState.h>
 
 /**************************************************************************************
- * CLASS DECLARATION
+ * PUBLIC MEMBER FUNCTIONS
  **************************************************************************************/
 
-class GaitController
+void TurningRight::onEnter()
 {
-public:
-   GaitController();
-  ~GaitController();
+  ROS_INFO("TurningRight ENTER");
+}
 
-  void update(GaitControllerStateInput const & input, GaitControllerStateOutput & output);
+void TurningRight::onExit()
+{
+  ROS_INFO("TurningRight EXIT");
+}
 
-private:
-  GaitControllerState * _robot_state;
-};
-
-#endif /* GAIT_CONTROLLER_H_ */
+GaitControllerState * TurningRight::update(GaitControllerStateInput const & input, GaitControllerStateOutput & output)
+{
+  /* TODO: Walk one gait cycle Backward. */
+  return new StandingState();
+}

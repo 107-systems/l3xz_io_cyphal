@@ -8,14 +8,14 @@
  * INCLUDES
  **************************************************************************************/
 
-#include <state/StandingState.h>
+#include <gait/state/StandingState.h>
 
 #include <ros/console.h>
 
-#include <state/TurningLeft.h>
-#include <state/TurningRight.h>
-#include <state/ForwardWalking.h>
-#include <state/BackwardWalking.h>
+#include <gait/state/TurningLeft.h>
+#include <gait/state/TurningRight.h>
+#include <gait/state/ForwardWalking.h>
+#include <gait/state/BackwardWalking.h>
 
 /**************************************************************************************
  * PUBLIC MEMBER FUNCTIONS

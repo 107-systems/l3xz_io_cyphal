@@ -8,11 +8,11 @@
  * INCLUDES
  **************************************************************************************/
 
-#include <state/BackwardWalking.h>
+#include <gait/state/BackwardWalking.h>
 
 #include <ros/console.h>
 
-#include <state/StandingState.h>
+#include <gait/state/StandingState.h>
 
 /**************************************************************************************
  * PUBLIC MEMBER FUNCTIONS

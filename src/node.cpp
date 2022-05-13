@@ -24,9 +24,9 @@
 
 #include <Const.h>
 
-#include <GaitController.h>
-#include <state/GaitControllerStateInput.h>
-#include <state/GaitControllerStateOutput.h>
+#include <gait/GaitController.h>
+#include <gait/state/GaitControllerStateInput.h>
+#include <gait/state/GaitControllerStateOutput.h>
 
 #include <driver/ssc32/SSC32.h>
 #include <driver/dynamixel/MX28.h>

@@ -147,15 +147,15 @@ add_executable(${PROJECT_NAME}_node
   src/phy/opencyphal/Node.cpp
   src/phy/opencyphal/SocketCAN.cpp
   src/phy/serial/AsyncSerial.cpp
-  src/state/BackwardWalking.cpp
-  src/state/ForwardWalking.cpp
-  src/state/InitState.cpp
-  src/state/StandingState.cpp
-  src/state/TurningLeft.cpp
-  src/state/TurningRight.cpp
+  src/gait/state/BackwardWalking.cpp
+  src/gait/state/ForwardWalking.cpp
+  src/gait/state/InitState.cpp
+  src/gait/state/StandingState.cpp
+  src/gait/state/TurningLeft.cpp
+  src/gait/state/TurningRight.cpp
+  src/gait/GaitController.cpp
   src/node.cpp
   src/Pump.cpp
-  src/GaitController.cpp
   src/Valve.cpp
 )
 

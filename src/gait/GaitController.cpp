@@ -8,9 +8,9 @@
  * INCLUDES
  **************************************************************************************/
 
-#include <GaitController.h>
+#include <gait/GaitController.h>
 
-#include <state/InitState.h>
+#include <gait/state/InitState.h>
 
 /**************************************************************************************
  * CTOR/DTOR

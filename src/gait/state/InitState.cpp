@@ -8,28 +8,28 @@
  * INCLUDES
  **************************************************************************************/
 
-#include <state/TurningRight.h>
+#include <gait/state/InitState.h>
 
 #include <ros/console.h>
 
-#include <state/StandingState.h>
+#include <gait/state/StandingState.h>
 
 /**************************************************************************************
  * PUBLIC MEMBER FUNCTIONS
  **************************************************************************************/
 
-void TurningRight::onEnter()
+void InitState::onEnter()
 {
-  ROS_INFO("TurningRight ENTER");
+  ROS_INFO("InitState ENTER");
 }
 
-void TurningRight::onExit()
+void InitState::onExit()
 {
-  ROS_INFO("TurningRight EXIT");
+  ROS_INFO("InitState EXIT");
 }
 
-GaitControllerState * TurningRight::update(GaitControllerStateInput const & input, GaitControllerStateOutput & output)
+GaitControllerState * InitState::update(GaitControllerStateInput const & input, GaitControllerStateOutput & output)
 {
-  /* TODO: Walk one gait cycle Backward. */
+  /* TODO: Drive to initial position. */
   return new StandingState();
 }
