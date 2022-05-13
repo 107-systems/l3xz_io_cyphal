@@ -155,7 +155,6 @@ add_executable(${PROJECT_NAME}_node
   src/gait/state/TurningRight.cpp
   src/gait/GaitController.cpp
   src/node.cpp
-  src/Pump.cpp
   src/Valve.cpp
 )
 
