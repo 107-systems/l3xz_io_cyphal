@@ -35,7 +35,7 @@ void TurningRight::onExit()
   ROS_INFO("TurningRight EXIT");
 }
 
-GaitControllerState * TurningRight::update(GaitControllerInput const & input, GaitControllerOutput & output)
+StateBase * TurningRight::update(GaitControllerInput const & input, GaitControllerOutput & output)
 {
   /* TODO: Walk one gait::state cycle Backward. */
   return new StandingState();

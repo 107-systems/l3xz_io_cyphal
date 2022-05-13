@@ -25,13 +25,13 @@ namespace gait::state
  * CLASS DECLARATION
  **************************************************************************************/
 
-class GaitControllerState
+class StateBase
 {
 public:
-  virtual ~GaitControllerState() { }
+  virtual ~StateBase() { }
   virtual void onEnter() { }
   virtual void onExit() { }
-  virtual GaitControllerState * update(GaitControllerInput const & input, GaitControllerOutput & output) = 0;
+  virtual StateBase * update(GaitControllerInput const & input, GaitControllerOutput & output) = 0;
 };
 
 /**************************************************************************************

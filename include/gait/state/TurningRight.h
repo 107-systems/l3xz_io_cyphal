@@ -11,7 +11,7 @@
  * INCLUDES
  **************************************************************************************/
 
-#include "GaitControllerState.h"
+#include "StateBase.h"
 
 /**************************************************************************************
  * NAMESPACE
@@ -24,13 +24,13 @@ namespace gait::state
  * CLASS DECLARATION
  **************************************************************************************/
 
-class TurningRight : public GaitControllerState
+class TurningRight : public StateBase
 {
 public:
   virtual ~TurningRight() { }
   virtual void onEnter() override;
   virtual void onExit() override;
-  virtual GaitControllerState * update(GaitControllerInput const & input, GaitControllerOutput & output) override;
+  virtual StateBase * update(GaitControllerInput const & input, GaitControllerOutput & output) override;
 };
 
 /**************************************************************************************

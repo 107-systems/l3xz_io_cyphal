@@ -40,7 +40,7 @@ GaitController::~GaitController()
 
 void GaitController::update(GaitControllerInput const & input, GaitControllerOutput & output)
 {
-  state::GaitControllerState * next_robot_state = _robot_state->update(input, output);
+  state::StateBase * next_robot_state = _robot_state->update(input, output);
     
   if (next_robot_state != _robot_state)
   {

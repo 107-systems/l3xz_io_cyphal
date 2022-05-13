@@ -11,7 +11,7 @@
  * INCLUDES
  **************************************************************************************/
 
-#include "GaitControllerState.h"
+#include "StateBase.h"
 
 #include <map>
 #include <list>
@@ -67,14 +67,14 @@ static GaitSequence const RIPPLE_GAIT =
  * CLASS DECLARATION
  **************************************************************************************/
 
-class ForwardWalking : public GaitControllerState
+class ForwardWalking : public StateBase
 {
 public:
            ForwardWalking();
   virtual ~ForwardWalking() { }
   virtual void onEnter() override;
   virtual void onExit() override;
-  virtual GaitControllerState * update(GaitControllerInput const & input, GaitControllerOutput & output) override;
+  virtual StateBase * update(GaitControllerInput const & input, GaitControllerOutput & output) override;
 
 private:
   GaitSequence::const_iterator _current_leg_state;

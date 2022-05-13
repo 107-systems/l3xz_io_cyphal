@@ -11,7 +11,7 @@
  * INCLUDES
  **************************************************************************************/
 
-#include "state/GaitControllerState.h"
+#include "state/StateBase.h"
 #include "GaitControllerInput.h"
 #include "GaitControllerOutput.h"
 
@@ -35,7 +35,7 @@ public:
   void update(GaitControllerInput const & input, GaitControllerOutput & output);
 
 private:
-  state::GaitControllerState * _robot_state;
+  state::StateBase * _robot_state;
 };
 
 /**************************************************************************************
