@@ -4,16 +4,16 @@
  * Contributors: https://github.com/107-systems/l3xz/graphs/contributors.
  */
 
-#ifndef GLUE_L3XZ_ELROB2022_SSC32_VALVE_ACTUATOR_H_
-#define GLUE_L3XZ_ELROB2022_SSC32_VALVE_ACTUATOR_H_
+#ifndef GLUE_L3XZ_ELROB2022_SSC32_PWM_ACTUATOR_H_
+#define GLUE_L3XZ_ELROB2022_SSC32_PWM_ACTUATOR_H_
 
 /**************************************************************************************
  * INCLUDES
  **************************************************************************************/
 
-#include <common/actuator/interface/ValveActuator.h>
-
 #include <common/actuator/interface/PWMActuator.h>
+
+#include <driver/ssc32/SSC32.h>
 
 /**************************************************************************************
  * NAMESPACE
@@ -26,41 +26,44 @@ namespace glue::l3xz::ELROB2022
  * CLASS DECLARATION
  **************************************************************************************/
 
-class SSC32ValveActuator : public common::actuator::interface::ValveActuator
+class SSC32PWMActuator : public common::actuator::interface::PWMActuator
 {
 public:
-  SSC32ValveActuator(std::string const & name, common::actuator::interface::SharedPWMActuator pwm_actuator, float const initial_val)
-  : ValveActuator(name)
-  , _pwm_actuator{pwm_actuator}
+  SSC32PWMActuator(std::string const & name, driver::SharedSSC32 ssc32, uint8_t const channel, uint16_t const initial_pulse_width_us)
+  : PWMActuator(name)
+  , _ssc32{ssc32}
+  , _channel{channel}
   {
-    set(initial_val);
+    set(initial_pulse_width_us);
   }
-  virtual ~SSC32ValveActuator()
+  virtual ~SSC32PWMActuator()
   { }
 
-  virtual void set(float const & val) override
+  virtual void set(uint16_t const & val) override
   {
-    float limited_val = val;
-    if (limited_val >  1.0f) limited_val =  1.0f;
-    if (limited_val < -1.0f) limited_val = -1.0f;
+    uint16_t pulse_width_us;
 
-    _val = limited_val;
+    if (val > 2000) pulse_width_us = 2000;
+    if (val < 1000) pulse_width_us = 1000;
+    else            pulse_width_us = val;
 
-    float const pulse_width_us = (_val * 500) + 1500;
+    _val = pulse_width_us;
 
-    _pwm_actuator->set(pulse_width_us);
+    _ssc32->setPulseWidth(_channel, _val, 0);
   }
 
+
 protected:
-  virtual std::optional<float> get() const override
+  virtual std::optional<uint16_t> get() const override
   {
     return _val;
   }
 
 
 private:
-  common::actuator::interface::SharedPWMActuator _pwm_actuator;
-  float _val;
+  driver::SharedSSC32 _ssc32;
+  uint8_t const _channel;
+  uint16_t _val;
 };
 
 /**************************************************************************************
@@ -69,4 +72,4 @@ private:
 
 } /* glue::l3xz::ELROB2022 */
 
-#endif /* GLUE_L3XZ_ELROB2022_SSC32_VALVE_ACTUATOR_H_ */
+#endif /* GLUE_L3XZ_ELROB2022_SSC32_PWM_ACTUATOR_H_ */
