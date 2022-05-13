@@ -11,8 +11,8 @@
  * INCLUDES
  **************************************************************************************/
 
-#include "GaitControllerStateInput.h"
-#include "GaitControllerStateOutput.h"
+#include "../GaitControllerInput.h"
+#include "../GaitControllerOutput.h"
 
 /**************************************************************************************
  * CLASS DECLARATION
@@ -24,7 +24,7 @@ public:
   virtual ~GaitControllerState() { }
   virtual void onEnter() { }
   virtual void onExit() { }
-  virtual GaitControllerState * update(GaitControllerStateInput const & input, GaitControllerStateOutput & output) = 0;
+  virtual GaitControllerState * update(GaitControllerInput const & input, GaitControllerOutput & output) = 0;
 };
 
 #endif /* GAIT_CONTROLLER_STATE_H_ */

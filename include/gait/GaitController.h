@@ -12,8 +12,8 @@
  **************************************************************************************/
 
 #include "state/GaitControllerState.h"
-#include "state/GaitControllerStateInput.h"
-#include "state/GaitControllerStateOutput.h"
+#include "GaitControllerInput.h"
+#include "GaitControllerOutput.h"
 
 /**************************************************************************************
  * CLASS DECLARATION
@@ -25,7 +25,7 @@ public:
    GaitController();
   ~GaitController();
 
-  void update(GaitControllerStateInput const & input, GaitControllerStateOutput & output);
+  void update(GaitControllerInput const & input, GaitControllerOutput & output);
 
 private:
   GaitControllerState * _robot_state;

@@ -17,15 +17,15 @@
  * CLASS DECLARATION
  **************************************************************************************/
 
-class GaitControllerStateOutput
+class GaitControllerOutput
 {
 public:
-  GaitControllerStateOutput(common::actuator::interface::SharedAnglePositionActuator angle_actuator_coxa_leg_front_left,
-                            common::actuator::interface::SharedAnglePositionActuator angle_actuator_coxa_leg_front_right,
-                            common::actuator::interface::SharedAnglePositionActuator angle_actuator_coxa_leg_middle_left,
-                            common::actuator::interface::SharedAnglePositionActuator angle_actuator_coxa_leg_middle_right,
-                            common::actuator::interface::SharedAnglePositionActuator angle_actuator_coxa_leg_back_left,
-                            common::actuator::interface::SharedAnglePositionActuator angle_actuator_coxa_leg_back_right)
+  GaitControllerOutput(common::actuator::interface::SharedAnglePositionActuator angle_actuator_coxa_leg_front_left,
+                       common::actuator::interface::SharedAnglePositionActuator angle_actuator_coxa_leg_front_right,
+                       common::actuator::interface::SharedAnglePositionActuator angle_actuator_coxa_leg_middle_left,
+                       common::actuator::interface::SharedAnglePositionActuator angle_actuator_coxa_leg_middle_right,
+                       common::actuator::interface::SharedAnglePositionActuator angle_actuator_coxa_leg_back_left,
+                       common::actuator::interface::SharedAnglePositionActuator angle_actuator_coxa_leg_back_right)
   : _angle_actuator_coxa_leg_front_left  {angle_actuator_coxa_leg_front_left}
   , _angle_actuator_coxa_leg_front_right {angle_actuator_coxa_leg_front_right}
   , _angle_actuator_coxa_leg_middle_left {angle_actuator_coxa_leg_middle_left}

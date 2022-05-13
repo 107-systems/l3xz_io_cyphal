@@ -23,7 +23,7 @@ public:
   virtual ~TurningLeft() { }
   virtual void onEnter() override;
   virtual void onExit() override;
-  virtual GaitControllerState * update(GaitControllerStateInput const & input, GaitControllerStateOutput & output) override;
+  virtual GaitControllerState * update(GaitControllerInput const & input, GaitControllerOutput & output) override;
 };
 
 #endif /* TURNING_LEFT_H_ */

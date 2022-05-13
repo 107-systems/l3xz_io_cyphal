@@ -28,7 +28,7 @@ void InitState::onExit()
   ROS_INFO("InitState EXIT");
 }
 
-GaitControllerState * InitState::update(GaitControllerStateInput const & input, GaitControllerStateOutput & output)
+GaitControllerState * InitState::update(GaitControllerInput const & input, GaitControllerOutput & output)
 {
   /* TODO: Drive to initial position. */
   return new StandingState();

@@ -12,23 +12,22 @@
  **************************************************************************************/
 
 #include <Const.h>
-
 #include <common/sensor/interface/AnglePositionSensor.h>
 
 /**************************************************************************************
  * CLASS DECLARATION
  **************************************************************************************/
 
-class GaitControllerStateInput
+class GaitControllerInput
 {
 public:
-  GaitControllerStateInput(TeleopCommandData const teleop_cmd,
-                           common::sensor::interface::SharedAnglePositionSensor angle_sensor_coxa_leg_front_left,
-                           common::sensor::interface::SharedAnglePositionSensor angle_sensor_coxa_leg_front_right,
-                           common::sensor::interface::SharedAnglePositionSensor angle_sensor_coxa_leg_middle_left,
-                           common::sensor::interface::SharedAnglePositionSensor angle_sensor_coxa_leg_middle_right,
-                           common::sensor::interface::SharedAnglePositionSensor angle_sensor_coxa_leg_back_left,
-                           common::sensor::interface::SharedAnglePositionSensor angle_sensor_coxa_leg_back_right)
+  GaitControllerInput(TeleopCommandData const teleop_cmd,
+                      common::sensor::interface::SharedAnglePositionSensor angle_sensor_coxa_leg_front_left,
+                      common::sensor::interface::SharedAnglePositionSensor angle_sensor_coxa_leg_front_right,
+                      common::sensor::interface::SharedAnglePositionSensor angle_sensor_coxa_leg_middle_left,
+                      common::sensor::interface::SharedAnglePositionSensor angle_sensor_coxa_leg_middle_right,
+                      common::sensor::interface::SharedAnglePositionSensor angle_sensor_coxa_leg_back_left,
+                      common::sensor::interface::SharedAnglePositionSensor angle_sensor_coxa_leg_back_right)
   : _teleop_cmd{teleop_cmd}
   , _angle_sensor_coxa_leg_front_left  {angle_sensor_coxa_leg_front_left}
   , _angle_sensor_coxa_leg_front_right {angle_sensor_coxa_leg_front_right}

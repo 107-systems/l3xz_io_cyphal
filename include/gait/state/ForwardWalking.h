@@ -67,7 +67,7 @@ public:
   virtual ~ForwardWalking() { }
   virtual void onEnter() override;
   virtual void onExit() override;
-  virtual GaitControllerState * update(GaitControllerStateInput const & input, GaitControllerStateOutput & output) override;
+  virtual GaitControllerState * update(GaitControllerInput const & input, GaitControllerOutput & output) override;
 
 private:
   GaitSequence::const_iterator _current_leg_state;

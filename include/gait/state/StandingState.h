@@ -23,7 +23,7 @@ public:
   virtual ~StandingState() { }
   virtual void onEnter() override;
   virtual void onExit() override;
-  virtual GaitControllerState * update(GaitControllerStateInput const & input, GaitControllerStateOutput & output) override;
+  virtual GaitControllerState * update(GaitControllerInput const & input, GaitControllerOutput & output) override;
 };
 
 #endif /* STANDING_STATE_H_ */
