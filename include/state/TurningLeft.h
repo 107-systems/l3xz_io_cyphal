@@ -11,19 +11,19 @@
  * INCLUDES
  **************************************************************************************/
 
-#include "RobotState.h"
+#include "GaitControllerState.h"
 
 /**************************************************************************************
  * CLASS DECLARATION
  **************************************************************************************/
 
-class TurningLeft : public RobotState
+class TurningLeft : public GaitControllerState
 {
 public:
   virtual ~TurningLeft() { }
   virtual void onEnter() override;
   virtual void onExit() override;
-  virtual RobotState * update(RobotStateInput const & input, RobotStateOutput & output) override;
+  virtual GaitControllerState * update(GaitControllerStateInput const & input, GaitControllerStateOutput & output) override;
 };
 
 #endif /* TURNING_LEFT_H_ */

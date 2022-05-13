@@ -11,19 +11,19 @@
  * INCLUDES
  **************************************************************************************/
 
-#include "RobotState.h"
+#include "GaitControllerState.h"
 
 /**************************************************************************************
  * CLASS DECLARATION
  **************************************************************************************/
 
-class InitState : public RobotState
+class InitState : public GaitControllerState
 {
 public:
   virtual ~InitState() { }
   virtual void onEnter() override;
   virtual void onExit() override;
-  virtual RobotState * update(RobotStateInput const & input, RobotStateOutput & output) override;
+  virtual GaitControllerState * update(GaitControllerStateInput const & input, GaitControllerStateOutput & output) override;
 };
 
 #endif /* INIT_STATE_H_ */

@@ -22,11 +22,11 @@
 
 #include <dynamixel_sdk.h>
 
-#include <Robot.h>
 #include <Const.h>
 
-#include <state/RobotStateInput.h>
-#include <state/RobotStateOutput.h>
+#include <GaitController.h>
+#include <state/GaitControllerStateInput.h>
+#include <state/GaitControllerStateOutput.h>
 
 #include <driver/ssc32/SSC32.h>
 #include <driver/dynamixel/MX28.h>
@@ -153,14 +153,14 @@ int main(int argc, char **argv) try
   TeleopCommandData teleop_cmd_data;
   ros::Subscriber cmd_vel_sub = node_hdl.subscribe<geometry_msgs::Twist>("/l3xz/cmd_vel", 10, std::bind(cmd_vel_callback, std::placeholders::_1, std::ref(teleop_cmd_data)));
 
-  RobotStateOutput robot_state_output (angle_actuator_coxa_leg_front_left,
-                                       angle_actuator_coxa_leg_front_right,
-                                       angle_actuator_coxa_leg_middle_left,
-                                       angle_actuator_coxa_leg_middle_right,
-                                       angle_actuator_coxa_leg_back_left,
-                                       angle_actuator_coxa_leg_back_right);
+  GaitControllerStateOutput gait_ctrl_state_output(angle_actuator_coxa_leg_front_left,
+                                                   angle_actuator_coxa_leg_front_right,
+                                                   angle_actuator_coxa_leg_middle_left,
+                                                   angle_actuator_coxa_leg_middle_right,
+                                                   angle_actuator_coxa_leg_back_left,
+                                                   angle_actuator_coxa_leg_back_right);
 
-  Robot robot_ctrl;
+  GaitController gait_ctrl;
 
 
   for (ros::Rate loop_rate(50);
@@ -195,15 +195,15 @@ int main(int argc, char **argv) try
 
     //ROS_INFO("Head\n  Pan : actual = %.2f, target = %.2f\n  Tilt: actual = %.2f, target = %.2f", sensor_head_pan_actual, sensor_head_pan_target, sensor_head_tilt_actual, sensor_head_tilt_target);
 
-    RobotStateInput robot_state_input(teleop_cmd_data, 
-                                      angle_sensor_coxa_leg_front_left,
-                                      angle_sensor_coxa_leg_front_right,
-                                      angle_sensor_coxa_leg_middle_left,
-                                      angle_sensor_coxa_leg_middle_right,
-                                      angle_sensor_coxa_leg_back_left,
-                                      angle_sensor_coxa_leg_back_right);
+    GaitControllerStateInput gait_ctrl_state_input(teleop_cmd_data, 
+                                                   angle_sensor_coxa_leg_front_left,
+                                                   angle_sensor_coxa_leg_front_right,
+                                                   angle_sensor_coxa_leg_middle_left,
+                                                   angle_sensor_coxa_leg_middle_right,
+                                                   angle_sensor_coxa_leg_back_left,
+                                                   angle_sensor_coxa_leg_back_right);
 
-    robot_ctrl.update(robot_state_input, robot_state_output);
+    gait_ctrl.update(gait_ctrl_state_input, gait_ctrl_state_output);
 
     if (!dynamixel_angle_position_actuator_bulk_writer.doBulkWrite())
       ROS_ERROR("failed to set target angles for all dynamixel servos");

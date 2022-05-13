@@ -4,27 +4,27 @@
  * Contributors: https://github.com/107-systems/l3xz/graphs/contributors.
  */
 
-#ifndef ROBOT_STATE_H_
-#define ROBOT_STATE_H_
+#ifndef GAIT_CONTROLLER_STATE_H_
+#define GAIT_CONTROLLER_STATE_H_
 
 /**************************************************************************************
  * INCLUDES
  **************************************************************************************/
 
-#include "RobotStateInput.h"
-#include "RobotStateOutput.h"
+#include "GaitControllerStateInput.h"
+#include "GaitControllerStateOutput.h"
 
 /**************************************************************************************
  * CLASS DECLARATION
  **************************************************************************************/
 
-class RobotState
+class GaitControllerState
 {
 public:
-  virtual ~RobotState() { }
+  virtual ~GaitControllerState() { }
   virtual void onEnter() { }
   virtual void onExit() { }
-  virtual RobotState * update(RobotStateInput const & input, RobotStateOutput & output) = 0;
+  virtual GaitControllerState * update(GaitControllerStateInput const & input, GaitControllerStateOutput & output) = 0;
 };
 
-#endif /* ROBOT_STATE_H_ */
+#endif /* GAIT_CONTROLLER_STATE_H_ */

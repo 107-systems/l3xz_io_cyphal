@@ -11,19 +11,19 @@
  * INCLUDES
  **************************************************************************************/
 
-#include "RobotState.h"
+#include "GaitControllerState.h"
 
 /**************************************************************************************
  * CLASS DECLARATION
  **************************************************************************************/
 
-class BackwardWalking : public RobotState
+class BackwardWalking : public GaitControllerState
 {
 public:
   virtual ~BackwardWalking() { }
   virtual void onEnter() override;
   virtual void onExit() override;
-  virtual RobotState * update(RobotStateInput const & input, RobotStateOutput & output) override;
+  virtual GaitControllerState * update(GaitControllerStateInput const & input, GaitControllerStateOutput & output) override;
 };
 
 #endif /* BACKWARD_WALKING_H_ */

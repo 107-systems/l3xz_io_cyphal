@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2022 LXRobotics GmbH.
+ * Copyright (c) 2022 LXGaitControllerics GmbH.
  * Author: Alexander Entinger <alexander.entinger@lxrobotics.com>
  * Contributors: https://github.com/107-systems/l3xz/graphs/contributors.
  */
@@ -8,7 +8,7 @@
  * INCLUDES
  **************************************************************************************/
 
-#include <Robot.h>
+#include <GaitController.h>
 
 #include <state/InitState.h>
 
@@ -16,13 +16,13 @@
  * CTOR/DTOR
  **************************************************************************************/
 
-Robot::Robot()
+GaitController::GaitController()
 : _robot_state{new InitState()}
 {
   _robot_state->onEnter();
 }
 
-Robot::~Robot()
+GaitController::~GaitController()
 {
   delete _robot_state;
 }
@@ -31,9 +31,9 @@ Robot::~Robot()
  * PUBLIC MEMBER FUNCTIONS
  **************************************************************************************/
 
-void Robot::update(RobotStateInput const & input, RobotStateOutput & output)
+void GaitController::update(GaitControllerStateInput const & input, GaitControllerStateOutput & output)
 {
-  RobotState * next_robot_state = _robot_state->update(input, output);
+  GaitControllerState * next_robot_state = _robot_state->update(input, output);
     
   if (next_robot_state != _robot_state)
   {

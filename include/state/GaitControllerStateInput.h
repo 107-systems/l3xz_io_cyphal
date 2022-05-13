@@ -4,8 +4,8 @@
  * Contributors: https://github.com/107-systems/l3xz/graphs/contributors.
  */
 
-#ifndef ROBOT_STATE_INPUT_H_
-#define ROBOT_STATE_INPUT_H_
+#ifndef GAIT_CONTROLLER_STATE_INPUT_H_
+#define GAIT_CONTROLLER_STATE_INPUT_H_
 
 /**************************************************************************************
  * INCLUDES
@@ -19,16 +19,16 @@
  * CLASS DECLARATION
  **************************************************************************************/
 
-class RobotStateInput
+class GaitControllerStateInput
 {
 public:
-  RobotStateInput(TeleopCommandData const teleop_cmd,
-                  common::sensor::interface::SharedAnglePositionSensor angle_sensor_coxa_leg_front_left,
-                  common::sensor::interface::SharedAnglePositionSensor angle_sensor_coxa_leg_front_right,
-                  common::sensor::interface::SharedAnglePositionSensor angle_sensor_coxa_leg_middle_left,
-                  common::sensor::interface::SharedAnglePositionSensor angle_sensor_coxa_leg_middle_right,
-                  common::sensor::interface::SharedAnglePositionSensor angle_sensor_coxa_leg_back_left,
-                  common::sensor::interface::SharedAnglePositionSensor angle_sensor_coxa_leg_back_right)
+  GaitControllerStateInput(TeleopCommandData const teleop_cmd,
+                           common::sensor::interface::SharedAnglePositionSensor angle_sensor_coxa_leg_front_left,
+                           common::sensor::interface::SharedAnglePositionSensor angle_sensor_coxa_leg_front_right,
+                           common::sensor::interface::SharedAnglePositionSensor angle_sensor_coxa_leg_middle_left,
+                           common::sensor::interface::SharedAnglePositionSensor angle_sensor_coxa_leg_middle_right,
+                           common::sensor::interface::SharedAnglePositionSensor angle_sensor_coxa_leg_back_left,
+                           common::sensor::interface::SharedAnglePositionSensor angle_sensor_coxa_leg_back_right)
   : _teleop_cmd{teleop_cmd}
   , _angle_sensor_coxa_leg_front_left  {angle_sensor_coxa_leg_front_left}
   , _angle_sensor_coxa_leg_front_right {angle_sensor_coxa_leg_front_right}
@@ -47,4 +47,4 @@ public:
                                                        _angle_sensor_coxa_leg_back_right;
 };
 
-#endif /* ROBOT_STATE_INPUT_H_ */
+#endif /* GAIT_CONTROLLER_STATE_INPUT_H_ */

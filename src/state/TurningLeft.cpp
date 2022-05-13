@@ -28,7 +28,7 @@ void TurningLeft::onExit()
   ROS_INFO("TurningLeft EXIT");
 }
 
-RobotState * TurningLeft::update(RobotStateInput const & input, RobotStateOutput & output)
+GaitControllerState * TurningLeft::update(GaitControllerStateInput const & input, GaitControllerStateOutput & output)
 {
   /* TODO: Walk one gait cycle Backward. */
   return new StandingState();
