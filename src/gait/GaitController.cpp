@@ -24,7 +24,7 @@ namespace gait
  **************************************************************************************/
 
 GaitController::GaitController()
-: _robot_state{new InitState()}
+: _robot_state{new state::InitState()}
 {
   _robot_state->onEnter();
 }
@@ -40,7 +40,7 @@ GaitController::~GaitController()
 
 void GaitController::update(GaitControllerInput const & input, GaitControllerOutput & output)
 {
-  GaitControllerState * next_robot_state = _robot_state->update(input, output);
+  state::GaitControllerState * next_robot_state = _robot_state->update(input, output);
     
   if (next_robot_state != _robot_state)
   {

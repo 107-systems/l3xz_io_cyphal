@@ -18,7 +18,7 @@
  * NAMESPACE
  **************************************************************************************/
 
-namespace gait
+namespace gait::state
 {
 
 /**************************************************************************************
@@ -37,7 +37,7 @@ void BackwardWalking::onExit()
 
 GaitControllerState * BackwardWalking::update(GaitControllerInput const & input, GaitControllerOutput & output)
 {
-  /* TODO: Walk one gait cycle Backward. */
+  /* TODO: Walk one gait::state cycle Backward. */
   return new StandingState();
 }
 
@@ -45,4 +45,4 @@ GaitControllerState * BackwardWalking::update(GaitControllerInput const & input,
  * NAMESPACE
  **************************************************************************************/
 
-} /* gait */
+} /* gait::state */

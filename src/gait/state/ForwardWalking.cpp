@@ -18,7 +18,7 @@
  * NAMESPACE
  **************************************************************************************/
 
-namespace gait
+namespace gait::state
 {
 
 /**************************************************************************************
@@ -48,11 +48,11 @@ void ForwardWalking::onExit()
 
 GaitControllerState * ForwardWalking::update(GaitControllerInput const & input, GaitControllerOutput & output)
 {
-  /* TODO: Walk one gait cycle forward. */
+  /* TODO: Walk one gait::state cycle forward. */
 
   /* TODO:
    *  - calc trajectory for each leg on entry.
-   *  - determine current target position dependent on progress within gait cycle.
+   *  - determine current target position dependent on progress within gait::state cycle.
    *  - determine target joint angles via IK from target position.
    *  - compare target vs current angle and set angle actuators accordingly.
    */
@@ -74,17 +74,17 @@ GaitControllerState * ForwardWalking::update(GaitControllerInput const & input, 
     }
   }
 
-  /* The gait cycle variable tells us where we
+  /* The gait::state cycle variable tells us where we
    * are within a single cycle of the complete
-   * gait sequence.
+   * gait::state sequence.
    */
   _gait_cycle += GAIT_CYCLE_INCREMENT;
 
   if (_gait_cycle >= 1.0f)
   {
-    /* Reset the gait cycle. */
+    /* Reset the gait::state cycle. */
     _gait_cycle = 0;
-    /* One full gait cycle has been completed, advance to the next one. */
+    /* One full gait::state cycle has been completed, advance to the next one. */
     _current_leg_state = std::next(_current_leg_state);
     if (_current_leg_state == RIPPLE_GAIT.cend()) {
       /* Now the one complete cycle of walking forward has been completed, return to the the default state. */
@@ -99,4 +99,4 @@ GaitControllerState * ForwardWalking::update(GaitControllerInput const & input, 
  * NAMESPACE
  **************************************************************************************/
 
-} /* gait */
+} /* gait::state */

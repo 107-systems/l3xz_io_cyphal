@@ -20,7 +20,7 @@
  * NAMESPACE
  **************************************************************************************/
 
-namespace gait
+namespace gait::state
 {
 
 /**************************************************************************************
@@ -34,7 +34,7 @@ typedef std::list<LegStateMap> GaitSequence;
 
 static GaitSequence const RIPPLE_GAIT =
 {
-  /* 1st gait sequence. */
+  /* 1st gait::state sequence. */
   {
     {Leg::FrontLeft,   LegState::Ground},
     {Leg::FrontRight,  LegState::Air},
@@ -43,7 +43,7 @@ static GaitSequence const RIPPLE_GAIT =
     {Leg::BackLeft,    LegState::Ground},
     {Leg::BackRight,   LegState::Ground},
   },
-  /* 2nd gait sequence. */
+  /* 2nd gait::state sequence. */
   {
     {Leg::FrontLeft,   LegState::Ground},
     {Leg::FrontRight,  LegState::Ground},
@@ -52,7 +52,7 @@ static GaitSequence const RIPPLE_GAIT =
     {Leg::BackLeft,    LegState::Air},
     {Leg::BackRight,   LegState::Ground},
   },
-  /* 3rd gait sequence. */
+  /* 3rd gait::state sequence. */
   {
     {Leg::FrontLeft,   LegState::Air},
     {Leg::FrontRight,  LegState::Ground},
@@ -87,6 +87,6 @@ private:
  * NAMESPACE
  **************************************************************************************/
 
-} /* gait */
+} /* gait::state */
 
 #endif /* FORWARD_WALKING_H_ */

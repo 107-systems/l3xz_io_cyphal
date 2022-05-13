@@ -35,7 +35,7 @@ public:
   void update(GaitControllerInput const & input, GaitControllerOutput & output);
 
 private:
-  GaitControllerState * _robot_state;
+  state::GaitControllerState * _robot_state;
 };
 
 /**************************************************************************************
