@@ -33,6 +33,7 @@
 
 #include <glue/l3xz/ELROB2022/Const.h>
 #include <glue/l3xz/ELROB2022/SSC32PWMActuator.h>
+#include <glue/l3xz/ELROB2022/SSC32PWMActuatorBulkwriter.h>
 #include <glue/l3xz/ELROB2022/SSC32ValveActuator.h>
 #include <glue/l3xz/ELROB2022/DynamixelAnglePositionSensor.h>
 #include <glue/l3xz/ELROB2022/DynamixelAnglePositionSensorBulkReader.h>
@@ -121,19 +122,21 @@ int main(int argc, char **argv) try
 
   auto ssc32_ctrl = std::make_shared<driver::SSC32>(SSC32_DEVICE_NAME, SSC32_BAUDRATE);
 
-  auto pwm_actuator_valve_front_left_femur   = std::make_shared<glue::l3xz::ELROB2022::SSC32PWMActuator>("LEG F/L Femur", ssc32_ctrl, 0, 1500);
-  auto pwm_actuator_valve_front_left_tibia   = std::make_shared<glue::l3xz::ELROB2022::SSC32PWMActuator>("LEG F/L Tibia", ssc32_ctrl, 1, 1500);
-  auto pwm_actuator_valve_middle_left_femur  = std::make_shared<glue::l3xz::ELROB2022::SSC32PWMActuator>("LEG M/L Femur", ssc32_ctrl, 2, 1500);
-  auto pwm_actuator_valve_middle_left_tibia  = std::make_shared<glue::l3xz::ELROB2022::SSC32PWMActuator>("LEG M/L Tibia", ssc32_ctrl, 3, 1500);
-  auto pwm_actuator_valve_back_left_femur    = std::make_shared<glue::l3xz::ELROB2022::SSC32PWMActuator>("LEG B/L Femur", ssc32_ctrl, 4, 1500);
-  auto pwm_actuator_valve_back_left_tibia    = std::make_shared<glue::l3xz::ELROB2022::SSC32PWMActuator>("LEG B/L Tibia", ssc32_ctrl, 5, 1500);
+  glue::l3xz::ELROB2022::SSC32PWMActuatorBulkwriter ssc32_pwm_actuator_bulk_driver(ssc32_ctrl);
 
-  auto pwm_actuator_valve_front_right_femur  = std::make_shared<glue::l3xz::ELROB2022::SSC32PWMActuator>("LEG F/R Femur", ssc32_ctrl, 15, 1500);
-  auto pwm_actuator_valve_front_right_tibia  = std::make_shared<glue::l3xz::ELROB2022::SSC32PWMActuator>("LEG F/R Tibia", ssc32_ctrl, 16, 1500);
-  auto pwm_actuator_valve_middle_right_femur = std::make_shared<glue::l3xz::ELROB2022::SSC32PWMActuator>("LEG M/R Femur", ssc32_ctrl, 17, 1500);
-  auto pwm_actuator_valve_middle_right_tibia = std::make_shared<glue::l3xz::ELROB2022::SSC32PWMActuator>("LEG M/R Tibia", ssc32_ctrl, 18, 1500);
-  auto pwm_actuator_valve_back_right_femur   = std::make_shared<glue::l3xz::ELROB2022::SSC32PWMActuator>("LEG B/R Femur", ssc32_ctrl, 19, 1500);
-  auto pwm_actuator_valve_back_right_tibia   = std::make_shared<glue::l3xz::ELROB2022::SSC32PWMActuator>("LEG B/R Tibia", ssc32_ctrl, 20, 1500);
+  auto pwm_actuator_valve_front_left_femur   = std::make_shared<glue::l3xz::ELROB2022::SSC32PWMActuator>("LEG F/L Femur",  0, [&ssc32_pwm_actuator_bulk_driver](uint8_t const channel, uint16_t const pulse_width_us) { ssc32_pwm_actuator_bulk_driver.update(channel, pulse_width_us); });
+  auto pwm_actuator_valve_front_left_tibia   = std::make_shared<glue::l3xz::ELROB2022::SSC32PWMActuator>("LEG F/L Tibia",  1, [&ssc32_pwm_actuator_bulk_driver](uint8_t const channel, uint16_t const pulse_width_us) { ssc32_pwm_actuator_bulk_driver.update(channel, pulse_width_us); });
+  auto pwm_actuator_valve_middle_left_femur  = std::make_shared<glue::l3xz::ELROB2022::SSC32PWMActuator>("LEG M/L Femur",  2, [&ssc32_pwm_actuator_bulk_driver](uint8_t const channel, uint16_t const pulse_width_us) { ssc32_pwm_actuator_bulk_driver.update(channel, pulse_width_us); });
+  auto pwm_actuator_valve_middle_left_tibia  = std::make_shared<glue::l3xz::ELROB2022::SSC32PWMActuator>("LEG M/L Tibia",  3, [&ssc32_pwm_actuator_bulk_driver](uint8_t const channel, uint16_t const pulse_width_us) { ssc32_pwm_actuator_bulk_driver.update(channel, pulse_width_us); });
+  auto pwm_actuator_valve_back_left_femur    = std::make_shared<glue::l3xz::ELROB2022::SSC32PWMActuator>("LEG B/L Femur",  4, [&ssc32_pwm_actuator_bulk_driver](uint8_t const channel, uint16_t const pulse_width_us) { ssc32_pwm_actuator_bulk_driver.update(channel, pulse_width_us); });
+  auto pwm_actuator_valve_back_left_tibia    = std::make_shared<glue::l3xz::ELROB2022::SSC32PWMActuator>("LEG B/L Tibia",  5, [&ssc32_pwm_actuator_bulk_driver](uint8_t const channel, uint16_t const pulse_width_us) { ssc32_pwm_actuator_bulk_driver.update(channel, pulse_width_us); });
+
+  auto pwm_actuator_valve_front_right_femur  = std::make_shared<glue::l3xz::ELROB2022::SSC32PWMActuator>("LEG F/R Femur", 15, [&ssc32_pwm_actuator_bulk_driver](uint8_t const channel, uint16_t const pulse_width_us) { ssc32_pwm_actuator_bulk_driver.update(channel, pulse_width_us); });
+  auto pwm_actuator_valve_front_right_tibia  = std::make_shared<glue::l3xz::ELROB2022::SSC32PWMActuator>("LEG F/R Tibia", 16, [&ssc32_pwm_actuator_bulk_driver](uint8_t const channel, uint16_t const pulse_width_us) { ssc32_pwm_actuator_bulk_driver.update(channel, pulse_width_us); });
+  auto pwm_actuator_valve_middle_right_femur = std::make_shared<glue::l3xz::ELROB2022::SSC32PWMActuator>("LEG M/R Femur", 17, [&ssc32_pwm_actuator_bulk_driver](uint8_t const channel, uint16_t const pulse_width_us) { ssc32_pwm_actuator_bulk_driver.update(channel, pulse_width_us); });
+  auto pwm_actuator_valve_middle_right_tibia = std::make_shared<glue::l3xz::ELROB2022::SSC32PWMActuator>("LEG M/R Tibia", 18, [&ssc32_pwm_actuator_bulk_driver](uint8_t const channel, uint16_t const pulse_width_us) { ssc32_pwm_actuator_bulk_driver.update(channel, pulse_width_us); });
+  auto pwm_actuator_valve_back_right_femur   = std::make_shared<glue::l3xz::ELROB2022::SSC32PWMActuator>("LEG B/R Femur", 19, [&ssc32_pwm_actuator_bulk_driver](uint8_t const channel, uint16_t const pulse_width_us) { ssc32_pwm_actuator_bulk_driver.update(channel, pulse_width_us); });
+  auto pwm_actuator_valve_back_right_tibia   = std::make_shared<glue::l3xz::ELROB2022::SSC32PWMActuator>("LEG B/R Tibia", 20, [&ssc32_pwm_actuator_bulk_driver](uint8_t const channel, uint16_t const pulse_width_us) { ssc32_pwm_actuator_bulk_driver.update(channel, pulse_width_us); });
 
 
   auto valve_actuator_front_left_femur       = std::make_shared<glue::l3xz::ELROB2022::SSC32ValveActuator>("LEG F/L Femur", pwm_actuator_valve_front_left_femur,   0.0);
@@ -227,6 +230,8 @@ int main(int argc, char **argv) try
 
     if (!dynamixel_angle_position_actuator_bulk_writer.doBulkWrite())
       ROS_ERROR("failed to set target angles for all dynamixel servos");
+
+    ssc32_pwm_actuator_bulk_driver.doBulkWrite();
 
     /**************************************************************************************
      * ROS
