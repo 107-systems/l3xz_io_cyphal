@@ -9,5 +9,5 @@ add_executable(${FWLEGCTRL_TARGET}
     fwlegctrl.cpp
 )
 target_compile_options(${FWLEGCTRL_TARGET} PRIVATE -std=c++17 -Wall -Werror -pedantic)
-target_link_libraries(${FWLEGCTRL_TARGET} pthread canard o1heap socketcan)
+target_link_libraries(${FWLEGCTRL_TARGET} pthread canard o1heap socketcan ${catkin_LIBRARIES})
 ##########################################################################

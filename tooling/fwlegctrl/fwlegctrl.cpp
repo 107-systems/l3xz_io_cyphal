@@ -39,15 +39,7 @@ static uint8_t const THIS_NODE_ID = 0;
 int main(int argc, char **argv) try
 {
   SocketCAN can_if("can0", false);
-  Node node(THIS_NODE_ID,
-            [&can_if](CanardFrame const & tx_frame) -> bool
-            {
-              if (int16_t const rc = can_if.push(&tx_frame, CANARD_DEFAULT_TRANSFER_ID_TIMEOUT_USEC); rc <= 0) {
-                std::cerr << "socketcanPush failed with error " << rc << std::endl;
-                return false;
-              }
-              return true;
-            });
+  Node node(THIS_NODE_ID, can_if);
 
   node.subscribe<uavcan::node::Heartbeat_1_0<>>([](CanardTransfer const & transfer)
   {
@@ -82,25 +74,7 @@ int main(int argc, char **argv) try
               << std::endl;
   });
 
-  for (;;)
-  {
-    /* Receive and process received frames. 
-     */
-    CanardFrame rx_frame;
-    uint8_t payload_buffer[64] = {0};
-    
-    int16_t const rc = can_if.pop(&rx_frame, sizeof(payload_buffer), payload_buffer, CANARD_DEFAULT_TRANSFER_ID_TIMEOUT_USEC, nullptr);
-    if (rc < 0) {
-      std::cerr << "socketcanPop failed with error " << strerror(abs(rc)) << std::endl;
-    }
-    else if (rc == 0) {
-      std::cerr << "socketcanPop timeout while receiving." << std::endl;
-    }
-    else {
-      node.onCanFrameReceived(rx_frame);
-    }
-  }
-
+  for (;;) { }
 
   return EXIT_SUCCESS;
 }
