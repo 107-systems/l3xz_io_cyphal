@@ -56,6 +56,9 @@ static std::string const DYNAMIXEL_DEVICE_NAME = "/dev/serial/by-id/usb-FTDI_USB
 static float       const DYNAMIXEL_PROTOCOL_VERSION = 2.0f;
 static int         const DYNAMIXEL_BAUD_RATE = 115200;
 
+static std::string const SSC32_DEVICE_NAME = "/dev/serial/by-id/usb-FTDI_FT232R_USB_UART_AH05FOBL-if00-port0";
+static size_t      const SSC32_BAUDRATE = 115200;
+
 /**************************************************************************************
  * MAIN
  **************************************************************************************/
@@ -114,7 +117,7 @@ int main(int argc, char **argv) try
    * SSC32
    **************************************************************************************/
 
-  auto ssc32_ctrl = std::make_shared<driver::SSC32>("/dev/ttyUSB0", 115200);
+  auto ssc32_ctrl = std::make_shared<driver::SSC32>(SSC32_DEVICE_NAME, SSC32_BAUDRATE);
 
   auto pwm_actuator_valve_front_left_femur   = std::make_shared<glue::l3xz::ELROB2022::SSC32PWMActuator>("LEG F/L Femur", ssc32_ctrl, 0, 1500);
   auto pwm_actuator_valve_front_left_tibia   = std::make_shared<glue::l3xz::ELROB2022::SSC32PWMActuator>("LEG F/L Tibia", ssc32_ctrl, 1, 1500);
