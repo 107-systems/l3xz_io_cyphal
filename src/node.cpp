@@ -59,6 +59,8 @@ static int         const DYNAMIXEL_BAUD_RATE = 115200;
 static std::string const SSC32_DEVICE_NAME = "/dev/serial/by-id/usb-FTDI_FT232R_USB_UART_AH05FOBL-if00-port0";
 static size_t      const SSC32_BAUDRATE = 115200;
 
+static std::string const ZUBAX_BABEL_OREL20_DEVICE_NAME = "/dev/serial/by-id/usb-Zubax_Robotics_Zubax_Babel_26003A000B5150423339302000000000-if00";
+
 /**************************************************************************************
  * MAIN
  **************************************************************************************/
