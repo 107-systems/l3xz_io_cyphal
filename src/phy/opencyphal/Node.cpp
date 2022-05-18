@@ -10,6 +10,11 @@
 
 #include <phy/opencyphal/Node.hpp>
 
+#include <cstring>
+
+#include <ros/ros.h>
+#include <ros/console.h>
+
 /**************************************************************************************
  * NAMESPACE
  **************************************************************************************/
@@ -22,49 +27,31 @@ namespace phy::opencyphal
  **************************************************************************************/
 
 Node::Node(uint8_t const node_id,
-           CanFrameTransmitFunc transmit_func)
+           CanFrameTransmitFunc transmit_func,
+           SocketCAN & socket_can)
 : _mtx{}
 , _canard_ins{canardInit(Node::o1heap_allocate, Node::o1heap_free)}
 , _transmit_func{transmit_func}
+, _socket_can{socket_can}
+, _rx_thread{}
+, _rx_thread_active{false}
 {
   _canard_ins.node_id = node_id;
   _canard_ins.mtu_bytes = CANARD_MTU_CAN_CLASSIC;
   _canard_ins.user_reference = reinterpret_cast<void *>(&_o1heap);
+
+  _rx_thread = std::thread([this]() { this->rxThreadFunc(); });
+}
+
+Node::~Node()
+{
+  _rx_thread_active = false;
+  _rx_thread.join();
 }
 
 /**************************************************************************************
  * PUBLIC MEMBER FUNCTIONS
  **************************************************************************************/
-
-void Node::onCanFrameReceived(CanardFrame const & frame)
-{
-  std::lock_guard<std::mutex> lock(_mtx);
-
-  CanardTransfer transfer;
-  int8_t const result = canardRxAccept(&_canard_ins,
-                                       &frame,
-                                       0,
-                                       &transfer);
-
-  if(result == 1)
-  {
-    if (_rx_transfer_map.count(transfer.port_id) > 0)
-    {
-      OnTransferReceivedFunc transfer_received_func = _rx_transfer_map[transfer.port_id].transfer_complete_callback;
-
-      if (transfer.transfer_kind == CanardTransferKindResponse) {
-        if ((_tx_transfer_map.count(transfer.port_id) > 0) && (_tx_transfer_map[transfer.port_id] == transfer.transfer_id))
-        {
-          transfer_received_func(transfer);
-          unsubscribe(CanardTransferKindResponse, transfer.port_id);
-        }
-      }
-      else
-        transfer_received_func(transfer);
-    }
-    _o1heap.free(const_cast<void *>(transfer.payload));
-  }
-}
 
 bool Node::transmitCanFrame()
 {
@@ -155,6 +142,62 @@ bool Node::enqeueTransfer(CanardNodeID const remote_node_id, CanardTransferKind 
   int32_t result = canardTxPush(&_canard_ins, &transfer);
   bool const success = (result >= 0);
   return success;
+}
+
+void Node::rxThreadFunc()
+{
+  _rx_thread_active = true;
+
+  ROS_INFO("Node::rxThreadFunc starting  ...");
+
+  while (_rx_thread_active)
+  {
+    CanardFrame rx_frame;
+    uint8_t payload_buffer[64] = {0};
+
+    int16_t const rc = _socket_can.pop(&rx_frame, sizeof(payload_buffer), payload_buffer, CANARD_DEFAULT_TRANSFER_ID_TIMEOUT_USEC, nullptr);
+    if (rc < 0) {
+      ROS_ERROR("socketcanPop failed with error %s ", strerror(abs(rc)));
+    }
+    else if (rc == 0) {
+      ROS_INFO("socketcanPop timeout while receiving.");
+    }
+    else {
+      onCanFrameReceived(rx_frame);
+    }
+  }
+
+  ROS_INFO("Node::rxThreadFunc stopping  ...");
+}
+
+void Node::onCanFrameReceived(CanardFrame const & frame)
+{
+  std::lock_guard<std::mutex> lock(_mtx);
+
+  CanardTransfer transfer;
+  int8_t const result = canardRxAccept(&_canard_ins,
+                                       &frame,
+                                       0,
+                                       &transfer);
+
+  if(result == 1)
+  {
+    if (_rx_transfer_map.count(transfer.port_id) > 0)
+    {
+      OnTransferReceivedFunc transfer_received_func = _rx_transfer_map[transfer.port_id].transfer_complete_callback;
+
+      if (transfer.transfer_kind == CanardTransferKindResponse) {
+        if ((_tx_transfer_map.count(transfer.port_id) > 0) && (_tx_transfer_map[transfer.port_id] == transfer.transfer_id))
+        {
+          transfer_received_func(transfer);
+          unsubscribe(CanardTransferKindResponse, transfer.port_id);
+        }
+      }
+      else
+        transfer_received_func(transfer);
+    }
+    _o1heap.free(const_cast<void *>(transfer.payload));
+  }
 }
 
 /**************************************************************************************

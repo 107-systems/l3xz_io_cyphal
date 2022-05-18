@@ -15,12 +15,15 @@
 
 #include <map>
 #include <mutex>
+#include <thread>
 #include <memory>
+#include <atomic>
 #include <functional>
 
 #include <canard.h>
 
 #include "O1Heap.hpp"
+#include "SocketCAN.h"
 
 /**************************************************************************************
  * NAMESPACE
@@ -46,13 +49,11 @@ class Node
 public:
 
   Node(uint8_t const node_id,
-       CanFrameTransmitFunc transmit_func);
+       CanFrameTransmitFunc transmit_func,
+       SocketCAN & socket_can);
 
+  ~Node();
 
-  /* Must be called from the application upon the
-   * reception of a can frame.
-   */
-  void onCanFrameReceived(CanardFrame const & frame);
   /* Must be called regularly from within the application
    * in order to transmit all CAN pushed on the internal
    * stack via publish/request.
@@ -86,8 +87,13 @@ private:
   O1HeapLibcanard _o1heap;
   CanardInstance _canard_ins;
   CanFrameTransmitFunc _transmit_func;
+  SocketCAN & _socket_can;
   std::map<CanardPortID, RxTransferData> _rx_transfer_map;
   std::map<CanardPortID, CanardTransferID> _tx_transfer_map;
+
+  std::thread _rx_thread;
+  std::atomic<bool> _rx_thread_active;
+
 
   static void * o1heap_allocate(CanardInstance * const ins, size_t const amount);
   static void   o1heap_free    (CanardInstance * const ins, void * const pointer);
@@ -97,6 +103,8 @@ private:
   bool             unsubscribe      (CanardTransferKind const transfer_kind, CanardPortID const port_id);
   bool             enqeueTransfer   (CanardNodeID const remote_node_id, CanardTransferKind const transfer_kind, CanardPortID const port_id, size_t const payload_size, void * payload, CanardTransferID const transfer_id);
 
+  void rxThreadFunc();
+  void onCanFrameReceived(CanardFrame const & frame);
 };
 
 /**************************************************************************************
