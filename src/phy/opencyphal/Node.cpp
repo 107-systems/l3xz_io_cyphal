@@ -35,42 +35,24 @@ Node::Node(uint8_t const node_id,
 , _socket_can{socket_can}
 , _rx_thread{}
 , _rx_thread_active{false}
+, _tx_thread{}
+, _tx_thread_active{false}
 {
   _canard_ins.node_id = node_id;
   _canard_ins.mtu_bytes = CANARD_MTU_CAN_CLASSIC;
   _canard_ins.user_reference = reinterpret_cast<void *>(&_o1heap);
 
   _rx_thread = std::thread([this]() { this->rxThreadFunc(); });
+  _tx_thread = std::thread([this]() { this->txThreadFunc(); });
 }
 
 Node::~Node()
 {
   _rx_thread_active = false;
   _rx_thread.join();
-}
 
-/**************************************************************************************
- * PUBLIC MEMBER FUNCTIONS
- **************************************************************************************/
-
-bool Node::transmitCanFrame()
-{
-  std::lock_guard<std::mutex> lock(_mtx);
-
-  if (!_transmit_func)
-    return false;
-
-  CanardFrame const * txf = canardTxPeek(&_canard_ins);
-
-  if (txf == nullptr)
-    return false;
-
-  if (!_transmit_func(*txf))
-    return false;
-
-  canardTxPop(&_canard_ins);
-  _o1heap.free((void *)(txf));
-  return true;
+  _tx_thread_active = false;
+  _tx_thread.join();
 }
 
 /**************************************************************************************
@@ -198,6 +180,39 @@ void Node::onCanFrameReceived(CanardFrame const & frame)
     }
     _o1heap.free(const_cast<void *>(transfer.payload));
   }
+}
+
+void Node::txThreadFunc()
+{
+  _tx_thread_active = true;
+
+  ROS_INFO("Node::txThreadFunc starting  ...");
+
+  while (_tx_thread_active)
+  {
+    std::lock_guard<std::mutex> lock(_mtx);
+
+    /* Obtain CAN frame of data yet to be transferred. */
+    CanardFrame const * tx_frame = canardTxPeek(&_canard_ins);
+
+    /* Nothing to transmit. */
+    if (tx_frame == nullptr) {
+      std::this_thread::yield();
+    }
+
+    /* Transmit CAN frame. */
+    if (int16_t const rc = _socket_can.push(tx_frame, CANARD_DEFAULT_TRANSFER_ID_TIMEOUT_USEC); rc <= 0) {
+      ROS_ERROR("socketcanPush failed with error %d", abs(rc));
+    }
+    else
+    {
+      /* Remove from both canard and o1heap. */
+      canardTxPop(&_canard_ins);
+      _o1heap.free((void *)(tx_frame));
+    }
+  }
+
+  ROS_INFO("Node::txThreadFunc stopping  ...");
 }
 
 /**************************************************************************************

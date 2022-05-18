@@ -54,12 +54,6 @@ public:
 
   ~Node();
 
-  /* Must be called regularly from within the application
-   * in order to transmit all CAN pushed on the internal
-   * stack via publish/request.
-   */
-  bool transmitCanFrame();
-
 
   template <typename T>                     bool subscribe  (OnTransferReceivedFunc func);
   template <typename T>                     bool unsubscribe();
@@ -94,6 +88,9 @@ private:
   std::thread _rx_thread;
   std::atomic<bool> _rx_thread_active;
 
+  std::thread _tx_thread;
+  std::atomic<bool> _tx_thread_active;
+
 
   static void * o1heap_allocate(CanardInstance * const ins, size_t const amount);
   static void   o1heap_free    (CanardInstance * const ins, void * const pointer);
@@ -105,6 +102,7 @@ private:
 
   void rxThreadFunc();
   void onCanFrameReceived(CanardFrame const & frame);
+  void txThreadFunc();
 };
 
 /**************************************************************************************
