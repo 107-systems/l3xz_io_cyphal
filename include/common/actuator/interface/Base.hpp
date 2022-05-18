@@ -34,6 +34,7 @@ public:
 
   virtual void set(T const & val) = 0;
   std::string toStr() const;
+  inline std::string name() const { return _name; }
 
 protected:
   virtual std::optional<T> get() const = 0;
