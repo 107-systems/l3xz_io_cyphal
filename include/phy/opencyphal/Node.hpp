@@ -36,9 +36,7 @@ namespace phy::opencyphal
  * TYPEDEF
  **************************************************************************************/
 
-class Node;
 typedef std::function<void(CanardTransfer const &)> OnTransferReceivedFunc;
-typedef std::function<bool(CanardFrame const &)> CanFrameTransmitFunc;
 
 /**************************************************************************************
  * CLASS DECLARATION
@@ -49,7 +47,6 @@ class Node
 public:
 
   Node(uint8_t const node_id,
-       CanFrameTransmitFunc transmit_func,
        SocketCAN & socket_can);
 
   ~Node();
@@ -80,7 +77,6 @@ private:
   std::mutex _mtx;
   O1HeapLibcanard _o1heap;
   CanardInstance _canard_ins;
-  CanFrameTransmitFunc _transmit_func;
   SocketCAN & _socket_can;
   std::map<CanardPortID, RxTransferData> _rx_transfer_map;
   std::map<CanardPortID, CanardTransferID> _tx_transfer_map;

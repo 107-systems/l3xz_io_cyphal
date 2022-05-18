@@ -27,11 +27,9 @@ namespace phy::opencyphal
  **************************************************************************************/
 
 Node::Node(uint8_t const node_id,
-           CanFrameTransmitFunc transmit_func,
            SocketCAN & socket_can)
 : _mtx{}
 , _canard_ins{canardInit(Node::o1heap_allocate, Node::o1heap_free)}
-, _transmit_func{transmit_func}
 , _socket_can{socket_can}
 , _rx_thread{}
 , _rx_thread_active{false}
