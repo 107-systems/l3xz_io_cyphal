@@ -25,8 +25,7 @@
 #include <Const.h>
 
 #include <gait/GaitController.h>
-#include <gait/GaitControllerInput.h>
-#include <gait/GaitControllerOutput.h>
+#include <head/HeadController.h>
 
 #include <driver/ssc32/SSC32.h>
 #include <driver/dynamixel/MX28.h>
@@ -53,7 +52,7 @@ void cmd_vel_callback(const geometry_msgs::Twist::ConstPtr & msg, TeleopCommandD
  * CONSTANT
  **************************************************************************************/
 
-static std::string const DYNAMIXEL_DEVICE_NAME = "/dev/ttyUSB0";
+static std::string const DYNAMIXEL_DEVICE_NAME = "/dev/serial/by-id/usb-FTDI_USB__-__Serial_Converter_FT4NNZ55-if00-port0";
 static float       const DYNAMIXEL_PROTOCOL_VERSION = 2.0f;
 static int         const DYNAMIXEL_BAUD_RATE = 115200;
 
@@ -103,13 +102,13 @@ int main(int argc, char **argv) try
   glue::l3xz::ELROB2022::DynamixelAnglePositionActuatorBulkWriter dynamixel_angle_position_actuator_bulk_writer(mx28_ctrl);
 
   auto angle_actuator_coxa_leg_front_left   = std::make_shared<glue::l3xz::ELROB2022::DynamixelAnglePositionActuator>("LEG F/L Coxa", 1, [&dynamixel_angle_position_actuator_bulk_writer](driver::Dynamixel::Id const id, float const angle_deg) { dynamixel_angle_position_actuator_bulk_writer.update(id, angle_deg); }, 180.0f);
-  auto angle_actuator_coxa_leg_front_right  = std::make_shared<glue::l3xz::ELROB2022::DynamixelAnglePositionActuator>("LEG F/R Coxa", 2, [&dynamixel_angle_position_actuator_bulk_writer](driver::Dynamixel::Id const id, float const angle_deg) { dynamixel_angle_position_actuator_bulk_writer.update(id, angle_deg); },180.0f);
-  auto angle_actuator_coxa_leg_middle_left  = std::make_shared<glue::l3xz::ELROB2022::DynamixelAnglePositionActuator>("LEG M/L Coxa", 3, [&dynamixel_angle_position_actuator_bulk_writer](driver::Dynamixel::Id const id, float const angle_deg) { dynamixel_angle_position_actuator_bulk_writer.update(id, angle_deg); },180.0f);
-  auto angle_actuator_coxa_leg_middle_right = std::make_shared<glue::l3xz::ELROB2022::DynamixelAnglePositionActuator>("LEG M/R Coxa", 4, [&dynamixel_angle_position_actuator_bulk_writer](driver::Dynamixel::Id const id, float const angle_deg) { dynamixel_angle_position_actuator_bulk_writer.update(id, angle_deg); },180.0f);
-  auto angle_actuator_coxa_leg_back_left    = std::make_shared<glue::l3xz::ELROB2022::DynamixelAnglePositionActuator>("LEG B/L Coxa", 5, [&dynamixel_angle_position_actuator_bulk_writer](driver::Dynamixel::Id const id, float const angle_deg) { dynamixel_angle_position_actuator_bulk_writer.update(id, angle_deg); },180.0f);
-  auto angle_actuator_coxa_leg_back_right   = std::make_shared<glue::l3xz::ELROB2022::DynamixelAnglePositionActuator>("LEG B/R Coxa", 6, [&dynamixel_angle_position_actuator_bulk_writer](driver::Dynamixel::Id const id, float const angle_deg) { dynamixel_angle_position_actuator_bulk_writer.update(id, angle_deg); },180.0f);
-  auto angle_actuator_sensor_head_pan       = std::make_shared<glue::l3xz::ELROB2022::DynamixelAnglePositionActuator>("HEAD Pan    ", 7, [&dynamixel_angle_position_actuator_bulk_writer](driver::Dynamixel::Id const id, float const angle_deg) { dynamixel_angle_position_actuator_bulk_writer.update(id, angle_deg); },180.0f);
-  auto angle_actuator_sensor_head_tilt      = std::make_shared<glue::l3xz::ELROB2022::DynamixelAnglePositionActuator>("HEAD Tilt   ", 8, [&dynamixel_angle_position_actuator_bulk_writer](driver::Dynamixel::Id const id, float const angle_deg) { dynamixel_angle_position_actuator_bulk_writer.update(id, angle_deg); },180.0f);
+  auto angle_actuator_coxa_leg_front_right  = std::make_shared<glue::l3xz::ELROB2022::DynamixelAnglePositionActuator>("LEG F/R Coxa", 2, [&dynamixel_angle_position_actuator_bulk_writer](driver::Dynamixel::Id const id, float const angle_deg) { dynamixel_angle_position_actuator_bulk_writer.update(id, angle_deg); }, 180.0f);
+  auto angle_actuator_coxa_leg_middle_left  = std::make_shared<glue::l3xz::ELROB2022::DynamixelAnglePositionActuator>("LEG M/L Coxa", 3, [&dynamixel_angle_position_actuator_bulk_writer](driver::Dynamixel::Id const id, float const angle_deg) { dynamixel_angle_position_actuator_bulk_writer.update(id, angle_deg); }, 180.0f);
+  auto angle_actuator_coxa_leg_middle_right = std::make_shared<glue::l3xz::ELROB2022::DynamixelAnglePositionActuator>("LEG M/R Coxa", 4, [&dynamixel_angle_position_actuator_bulk_writer](driver::Dynamixel::Id const id, float const angle_deg) { dynamixel_angle_position_actuator_bulk_writer.update(id, angle_deg); }, 180.0f);
+  auto angle_actuator_coxa_leg_back_left    = std::make_shared<glue::l3xz::ELROB2022::DynamixelAnglePositionActuator>("LEG B/L Coxa", 5, [&dynamixel_angle_position_actuator_bulk_writer](driver::Dynamixel::Id const id, float const angle_deg) { dynamixel_angle_position_actuator_bulk_writer.update(id, angle_deg); }, 180.0f);
+  auto angle_actuator_coxa_leg_back_right   = std::make_shared<glue::l3xz::ELROB2022::DynamixelAnglePositionActuator>("LEG B/R Coxa", 6, [&dynamixel_angle_position_actuator_bulk_writer](driver::Dynamixel::Id const id, float const angle_deg) { dynamixel_angle_position_actuator_bulk_writer.update(id, angle_deg); }, 180.0f);
+  auto angle_actuator_sensor_head_pan       = std::make_shared<glue::l3xz::ELROB2022::DynamixelAnglePositionActuator>("HEAD Pan    ", 7, [&dynamixel_angle_position_actuator_bulk_writer](driver::Dynamixel::Id const id, float const angle_deg) { dynamixel_angle_position_actuator_bulk_writer.update(id, angle_deg); }, 180.0f);
+  auto angle_actuator_sensor_head_tilt      = std::make_shared<glue::l3xz::ELROB2022::DynamixelAnglePositionActuator>("HEAD Tilt   ", 8, [&dynamixel_angle_position_actuator_bulk_writer](driver::Dynamixel::Id const id, float const angle_deg) { dynamixel_angle_position_actuator_bulk_writer.update(id, angle_deg); }, 180.0f);
 
   /**************************************************************************************
    * SSC32
@@ -153,14 +152,18 @@ int main(int argc, char **argv) try
   TeleopCommandData teleop_cmd_data;
   ros::Subscriber cmd_vel_sub = node_hdl.subscribe<geometry_msgs::Twist>("/l3xz/cmd_vel", 10, std::bind(cmd_vel_callback, std::placeholders::_1, std::ref(teleop_cmd_data)));
 
-  gait::GaitControllerOutput gait_ctrl_state_output(angle_actuator_coxa_leg_front_left,
-                                                    angle_actuator_coxa_leg_front_right,
-                                                    angle_actuator_coxa_leg_middle_left,
-                                                    angle_actuator_coxa_leg_middle_right,
-                                                    angle_actuator_coxa_leg_back_left,
-                                                    angle_actuator_coxa_leg_back_right);
-
   gait::GaitController gait_ctrl;
+  gait::GaitControllerOutput gait_ctrl_output(angle_actuator_coxa_leg_front_left,
+                                              angle_actuator_coxa_leg_front_right,
+                                              angle_actuator_coxa_leg_middle_left,
+                                              angle_actuator_coxa_leg_middle_right,
+                                              angle_actuator_coxa_leg_back_left,
+                                              angle_actuator_coxa_leg_back_right);
+
+
+  head::HeadController head_ctrl;
+  head::HeadControllerOutput head_ctrl_output(angle_actuator_sensor_head_pan,
+                                              angle_actuator_sensor_head_tilt);
 
   /**************************************************************************************
    * MAIN LOOP
@@ -170,6 +173,10 @@ int main(int argc, char **argv) try
        ros::ok();
        loop_rate.sleep())
   {
+    /**************************************************************************************
+     * READ FROM PERIPHERALS
+     **************************************************************************************/
+
     /* Simultaneously read the current angle from all dynamixel servos and update the angle position sensors. */
     dynamixel_angle_position_sensor_bulk_reader.doBulkRead();
 
@@ -183,30 +190,33 @@ int main(int argc, char **argv) try
       angle_sensor_sensor_head_pan->toStr().c_str(),
       angle_sensor_sensor_head_tilt->toStr().c_str());
 
-    /* Calculate new values for sensor head, both pan and tilt joint
-     * based on the input provided by the teleop node.
-     */
-    static float const MAX_ANGLE_INCREMENT_PER_CYCLE_DEG = 10.0f;
+    /**************************************************************************************
+     * GAIT CONTROL
+     **************************************************************************************/
 
-    float const sensor_head_pan_actual = angle_sensor_sensor_head_pan->get().value();
-    float const sensor_head_pan_target = sensor_head_pan_actual + (teleop_cmd_data.angular_velocity_head_pan * MAX_ANGLE_INCREMENT_PER_CYCLE_DEG);
-    angle_actuator_sensor_head_pan->set(sensor_head_pan_target);
+    gait::GaitControllerInput gait_ctrl_input(teleop_cmd_data,
+                                              angle_sensor_coxa_leg_front_left,
+                                              angle_sensor_coxa_leg_front_right,
+                                              angle_sensor_coxa_leg_middle_left,
+                                              angle_sensor_coxa_leg_middle_right,
+                                              angle_sensor_coxa_leg_back_left,
+                                              angle_sensor_coxa_leg_back_right);
 
-    float const sensor_head_tilt_actual = angle_sensor_sensor_head_tilt->get().value();
-    float const sensor_head_tilt_target = sensor_head_tilt_actual + (teleop_cmd_data.angular_velocity_head_tilt * MAX_ANGLE_INCREMENT_PER_CYCLE_DEG);
-    angle_actuator_sensor_head_tilt->set(sensor_head_tilt_target);
+    gait_ctrl.update(gait_ctrl_input, gait_ctrl_output);
 
-    //ROS_INFO("Head\n  Pan : actual = %.2f, target = %.2f\n  Tilt: actual = %.2f, target = %.2f", sensor_head_pan_actual, sensor_head_pan_target, sensor_head_tilt_actual, sensor_head_tilt_target);
+    /**************************************************************************************
+     * HEAD CONTROL
+     **************************************************************************************/
 
-    gait::GaitControllerInput gait_ctrl_state_input(teleop_cmd_data,
-                                                    angle_sensor_coxa_leg_front_left,
-                                                    angle_sensor_coxa_leg_front_right,
-                                                    angle_sensor_coxa_leg_middle_left,
-                                                    angle_sensor_coxa_leg_middle_right,
-                                                    angle_sensor_coxa_leg_back_left,
-                                                    angle_sensor_coxa_leg_back_right);
+    head::HeadControllerInput head_ctrl_input(teleop_cmd_data,
+                                              angle_sensor_sensor_head_pan,
+                                              angle_sensor_sensor_head_tilt);
 
-    gait_ctrl.update(gait_ctrl_state_input, gait_ctrl_state_output);
+    head_ctrl.update(head_ctrl_input, head_ctrl_output);
+
+    /**************************************************************************************
+     * WRITE TO PERIPHERALS
+     **************************************************************************************/
 
     if (!dynamixel_angle_position_actuator_bulk_writer.doBulkWrite())
       ROS_ERROR("failed to set target angles for all dynamixel servos");

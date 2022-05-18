@@ -4,53 +4,47 @@
  * Contributors: https://github.com/107-systems/l3xz/graphs/contributors.
  */
 
-#ifndef COMMON_SENSOR_INTERFACE_BASE_HPP_
-#define COMMON_SENSOR_INTERFACE_BASE_HPP_
+#ifndef HEAD_CONTROLLER_INPUT_H_
+#define HEAD_CONTROLLER_INPUT_H_
 
 /**************************************************************************************
  * INCLUDES
  **************************************************************************************/
 
-#include <string>
-#include <optional>
+#include <Const.h>
+#include <common/sensor/interface/AnglePositionSensor.h>
 
 /**************************************************************************************
  * NAMESPACE
  **************************************************************************************/
 
-namespace common::sensor::interface
+namespace head
 {
 
 /**************************************************************************************
  * CLASS DECLARATION
  **************************************************************************************/
 
-template <typename T>
-class Base
+class HeadControllerInput
 {
 public:
-           Base(std::string const & name) : _name{name} { }
-  virtual ~Base() { }
+  HeadControllerInput(TeleopCommandData const teleop_cmd,
+                      common::sensor::interface::SharedAnglePositionSensor angle_sensor_sensor_head_pan,
+                      common::sensor::interface::SharedAnglePositionSensor angle_sensor_sensor_head_tilt)
+  : _teleop_cmd                     {teleop_cmd}
+  , _angle_sensor_sensor_head_pan {angle_sensor_sensor_head_pan}
+  , _angle_sensor_sensor_head_tilt{angle_sensor_sensor_head_tilt}
+  { }
 
-  virtual std::optional<T> get() const = 0;
-  std::string toStr() const;
-  inline std::string name() const { return _name; }
-
-
-private:
-  std::string const _name;
+  TeleopCommandData const _teleop_cmd;
+  common::sensor::interface::SharedAnglePositionSensor _angle_sensor_sensor_head_pan,
+                                                       _angle_sensor_sensor_head_tilt;
 };
 
 /**************************************************************************************
  * NAMESPACE
  **************************************************************************************/
 
-} /* common::sensor::interface */
+} /* head */
 
-/**************************************************************************************
- * TEMPLATE IMPLEMENTATION
- **************************************************************************************/
-
-#include "Base.ipp"
-
-#endif /* COMMON_SENSOR_INTERFACE_BASE_HPP_ */
+#endif /* HEAD_CONTROLLER_INPUT_H_ */

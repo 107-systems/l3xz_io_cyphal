@@ -4,53 +4,44 @@
  * Contributors: https://github.com/107-systems/l3xz/graphs/contributors.
  */
 
-#ifndef COMMON_SENSOR_INTERFACE_BASE_HPP_
-#define COMMON_SENSOR_INTERFACE_BASE_HPP_
+#ifndef HEAD_CONTROLLER_H_
+#define HEAD_CONTROLLER_H_
 
 /**************************************************************************************
  * INCLUDES
  **************************************************************************************/
 
-#include <string>
-#include <optional>
+#include "state/StateBase.h"
+#include "HeadControllerInput.h"
+#include "HeadControllerOutput.h"
 
 /**************************************************************************************
  * NAMESPACE
  **************************************************************************************/
 
-namespace common::sensor::interface
+namespace head
 {
 
 /**************************************************************************************
  * CLASS DECLARATION
  **************************************************************************************/
 
-template <typename T>
-class Base
+class HeadController
 {
 public:
-           Base(std::string const & name) : _name{name} { }
-  virtual ~Base() { }
+   HeadController();
+  ~HeadController();
 
-  virtual std::optional<T> get() const = 0;
-  std::string toStr() const;
-  inline std::string name() const { return _name; }
-
+  void update(HeadControllerInput const & input, HeadControllerOutput & output);
 
 private:
-  std::string const _name;
+  state::StateBase * _head_state;
 };
 
 /**************************************************************************************
  * NAMESPACE
  **************************************************************************************/
 
-} /* common::sensor::interface */
+} /* head */
 
-/**************************************************************************************
- * TEMPLATE IMPLEMENTATION
- **************************************************************************************/
-
-#include "Base.ipp"
-
-#endif /* COMMON_SENSOR_INTERFACE_BASE_HPP_ */
+#endif /* HEAD_CONTROLLER_H_ */

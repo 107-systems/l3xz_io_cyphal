@@ -1,56 +1,60 @@
 /**
- * Copyright (c) 2022 LXRobotics GmbH.
+ * Copyright (c) 2022 LXHeadControllerics GmbH.
  * Author: Alexander Entinger <alexander.entinger@lxrobotics.com>
  * Contributors: https://github.com/107-systems/l3xz/graphs/contributors.
  */
-
-#ifndef COMMON_SENSOR_INTERFACE_BASE_HPP_
-#define COMMON_SENSOR_INTERFACE_BASE_HPP_
 
 /**************************************************************************************
  * INCLUDES
  **************************************************************************************/
 
-#include <string>
-#include <optional>
+#include <head/HeadController.h>
+
+#include <head/state/Init.h>
 
 /**************************************************************************************
  * NAMESPACE
  **************************************************************************************/
 
-namespace common::sensor::interface
+namespace head
 {
 
 /**************************************************************************************
- * CLASS DECLARATION
+ * CTOR/DTOR
  **************************************************************************************/
 
-template <typename T>
-class Base
+HeadController::HeadController()
+: _head_state{new state::Init()}
 {
-public:
-           Base(std::string const & name) : _name{name} { }
-  virtual ~Base() { }
+  _head_state->onEnter();
+}
 
-  virtual std::optional<T> get() const = 0;
-  std::string toStr() const;
-  inline std::string name() const { return _name; }
+HeadController::~HeadController()
+{
+  delete _head_state;
+}
 
+/**************************************************************************************
+ * PUBLIC MEMBER FUNCTIONS
+ **************************************************************************************/
 
-private:
-  std::string const _name;
-};
+void HeadController::update(HeadControllerInput const & input, HeadControllerOutput & output)
+{
+  state::StateBase * next_head_state = _head_state->update(input, output);
+    
+  if (next_head_state != _head_state)
+  {
+    _head_state->onExit();
+
+    delete _head_state;
+    _head_state = next_head_state;
+    
+    _head_state->onEnter();
+  }
+}
 
 /**************************************************************************************
  * NAMESPACE
  **************************************************************************************/
 
-} /* common::sensor::interface */
-
-/**************************************************************************************
- * TEMPLATE IMPLEMENTATION
- **************************************************************************************/
-
-#include "Base.ipp"
-
-#endif /* COMMON_SENSOR_INTERFACE_BASE_HPP_ */
+} /* head */
