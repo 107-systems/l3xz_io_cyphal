@@ -178,6 +178,8 @@ int main(int argc, char **argv) try
        ros::ok();
        loop_rate.sleep())
   {
+    auto const start = std::chrono::high_resolution_clock::now();
+
     /**************************************************************************************
      * READ FROM PERIPHERALS
      **************************************************************************************/
@@ -226,7 +228,16 @@ int main(int argc, char **argv) try
     if (!dynamixel_angle_position_actuator_bulk_writer.doBulkWrite())
       ROS_ERROR("failed to set target angles for all dynamixel servos");
 
+    /**************************************************************************************
+     * ROS
+     **************************************************************************************/
+
     ros::spinOnce();
+
+    auto const stop = std::chrono::high_resolution_clock::now();
+    auto const duration = std::chrono::duration_cast<std::chrono::milliseconds>(stop - start);
+    if (duration.count() > 25)
+      ROS_WARN("main loop duration (%ld ms) exceeds limit", duration.count());
   }
 
   deinit_dynamixel(mx28_ctrl);
