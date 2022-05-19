@@ -354,52 +354,50 @@ void deinit_dynamixel(driver::SharedMX28 & mx28_ctrl)
 
 bool init_open_cyphal(phy::opencyphal::Node & open_cyphal_node, glue::l3xz::ELROB2022::OpenCyphalAnglePositionSensorBulkReader & open_cyphal_angle_position_sensor_bulk_reader)
 {
-  bool success = false;
-
-  success = open_cyphal_node.subscribe<uavcan::node::Heartbeat_1_0<>>([](CanardTransfer const & transfer)
+  if (!open_cyphal_node.subscribe<uavcan::node::Heartbeat_1_0<>>([](CanardTransfer const & transfer)
   {
     uavcan::node::Heartbeat_1_0<> const hb = uavcan::node::Heartbeat_1_0<>::deserialize(transfer);
     ROS_INFO("[%d] Heartbeat received\n\tMode = %d", transfer.remote_node_id, hb.data.mode.value);
-  });
-  if (!success) {
+  }))
+  {
     ROS_ERROR("init_open_cyphal failed to subscribe to 'uavcan::node::Heartbeat_1_0'");
     return false;
   }
 
 
-  success = open_cyphal_node.subscribe<uavcan::primitive::scalar::Real32_1_0<1001>>([](CanardTransfer const & transfer)
+  if (!open_cyphal_node.subscribe<uavcan::primitive::scalar::Real32_1_0<1001>>([](CanardTransfer const & transfer)
   {
     uavcan::primitive::scalar::Real32_1_0<1001> const input_voltage = uavcan::primitive::scalar::Real32_1_0<1001>::deserialize(transfer);
     ROS_INFO("[%d] Battery Voltage = %f", transfer.remote_node_id, input_voltage.data.value);
-  });
-  if (!success) {
+  }))
+  {
     ROS_ERROR("init_open_cyphal failed to subscribe to 'uavcan::primitive::scalar::Real32_1_0<1001>'");
     return false;
   }
 
-  open_cyphal_node.subscribe<uavcan::primitive::scalar::Real32_1_0<1002>>([&open_cyphal_angle_position_sensor_bulk_reader](CanardTransfer const & transfer)
+  if (!open_cyphal_node.subscribe<uavcan::primitive::scalar::Real32_1_0<1002>>([&open_cyphal_angle_position_sensor_bulk_reader](CanardTransfer const & transfer)
   {
     uavcan::primitive::scalar::Real32_1_0<1002> const as5048_a_angle = uavcan::primitive::scalar::Real32_1_0<1002>::deserialize(transfer);
     open_cyphal_angle_position_sensor_bulk_reader.update_femur_angle(transfer.remote_node_id, as5048_a_angle.data.value);
     ROS_INFO("[%d] Angle[AS5048 A] = %f", transfer.remote_node_id, as5048_a_angle.data.value);
-  });
-  if (!success) {
+  }))
+  {
     ROS_ERROR("init_open_cyphal failed to subscribe to 'uavcan::primitive::scalar::Real32_1_0<1002>'");
     return false;
   }
 
-  open_cyphal_node.subscribe<uavcan::primitive::scalar::Real32_1_0<1003>>([&open_cyphal_angle_position_sensor_bulk_reader](CanardTransfer const & transfer)
+  if (!open_cyphal_node.subscribe<uavcan::primitive::scalar::Real32_1_0<1003>>([&open_cyphal_angle_position_sensor_bulk_reader](CanardTransfer const & transfer)
   {
     uavcan::primitive::scalar::Real32_1_0<1003> const as5048_b_angle = uavcan::primitive::scalar::Real32_1_0<1003>::deserialize(transfer);
     open_cyphal_angle_position_sensor_bulk_reader.update_tibia_angle(transfer.remote_node_id, as5048_b_angle.data.value);
     ROS_INFO("[%d] Angle[AS5048 B] = %f", transfer.remote_node_id, as5048_b_angle.data.value);
-  });
-  if (!success) {
+  }))
+  {
     ROS_ERROR("init_open_cyphal failed to subscribe to 'uavcan::primitive::scalar::Real32_1_0<1003>'");
     return false;
   }
 
-  return success;
+  return true;
 }
 
 void cmd_vel_callback(const geometry_msgs::Twist::ConstPtr & msg, TeleopCommandData & teleop_cmd_data)
