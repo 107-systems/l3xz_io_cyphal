@@ -43,6 +43,7 @@
 #include <glue/l3xz/ELROB2022/DynamixelAnglePositionSensorBulkReader.h>
 #include <glue/l3xz/ELROB2022/DynamixelAnglePositionActuator.h>
 #include <glue/l3xz/ELROB2022/DynamixelAnglePositionActuatorBulkWriter.h>
+#include <glue/l3xz/ELROB2022/OpenCyphalAnglePositionSensor.h>
 
 /**************************************************************************************
  * FUNCTION DECLARATION
@@ -171,6 +172,8 @@ int main(int argc, char **argv) try
   if (!init_open_cyphal(open_cyphal_node))
     ROS_ERROR("init_open_cyphal failed.");
   ROS_INFO("init_open_cyphal successfully completed.");
+
+  auto angle_sensor_femur_leg_front_left = std::make_shared<glue::l3xz::ELROB2022::OpenCyphalAnglePositionSensor>("LEG F/L Femur");
 
   /**************************************************************************************
    * STATE
