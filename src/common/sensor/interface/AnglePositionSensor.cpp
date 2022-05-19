@@ -4,16 +4,14 @@
  * Contributors: https://github.com/107-systems/l3xz/graphs/contributors.
  */
 
-#ifndef COMMON_SENSOR_INTERFACE_ANGLE_POSITION_SENSOR_H_
-#define COMMON_SENSOR_INTERFACE_ANGLE_POSITION_SENSOR_H_
-
 /**************************************************************************************
  * INCLUDES
  **************************************************************************************/
 
-#include "Base.hpp"
+#include <common/sensor/interface/AnglePositionSensor.h>
 
-#include <memory>
+#include <sstream>
+#include <iomanip>
 
 /**************************************************************************************
  * NAMESPACE
@@ -26,25 +24,24 @@ namespace common::sensor::interface
  * CLASS DECLARATION
  **************************************************************************************/
 
-class AnglePositionSensor : public Base<float>
+std::string AnglePositionSensor::toStr() const
 {
-public:
-           AnglePositionSensor(std::string const & name) : Base(std::string("[Angle Position Sensor] \"") + name + std::string("\"")) { }
-  virtual ~AnglePositionSensor() { }
+  std::stringstream ss;
 
-  virtual std::string toStr() const override;
-};
+  if (get().has_value())
+    ss << std::fixed
+       << std::setprecision(2) 
+       << std::setfill(' ')
+       << std::setw(6)
+       << get().value();
+  else
+    ss << "  Inv.";
 
-/**************************************************************************************
- * TYPEDEF
- **************************************************************************************/
-
-typedef std::shared_ptr<AnglePositionSensor> SharedAnglePositionSensor;
+  return ss.str();
+}
 
 /**************************************************************************************
  * NAMESPACE
  **************************************************************************************/
 
 } /* common::sensor::interface */
-
-#endif /* COMMON_SENSOR_INTERFACE_ANGLE_POSITION_SENSOR_H_ */

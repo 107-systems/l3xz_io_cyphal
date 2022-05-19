@@ -109,6 +109,46 @@ common::sensor::interface::SharedAnglePositionSensor GaitControllerInput::operat
   return _map.at(make_key(leg, joint));
 }
 
+std::string GaitControllerInput::toStr()
+{
+  std::stringstream msg;
+
+  msg << "\n"
+      << "Left\n"
+      << "  Front :"
+      << "  Coxa: "   << _map[make_key(Leg::FrontLeft, Joint::Coxa)]->toStr()
+      << "  Femur: "  << _map[make_key(Leg::FrontLeft, Joint::Femur)]->toStr()
+      << "  Tibia: "  << _map[make_key(Leg::FrontLeft, Joint::Tibia)]->toStr()
+      << "\n"
+      << "  Middle:"
+      << "  Coxa: "   << _map[make_key(Leg::MiddleLeft, Joint::Coxa)]->toStr()
+      << "  Femur: "  << _map[make_key(Leg::MiddleLeft, Joint::Femur)]->toStr()
+      << "  Tibia: "  << _map[make_key(Leg::MiddleLeft, Joint::Tibia)]->toStr()
+      << "\n"
+      << "  Back  :"
+      << "  Coxa: "   << _map[make_key(Leg::BackLeft, Joint::Coxa)]->toStr()
+      << "  Femur: "  << _map[make_key(Leg::BackLeft, Joint::Femur)]->toStr()
+      << "  Tibia: "  << _map[make_key(Leg::BackLeft, Joint::Tibia)]->toStr()
+      << "\n"
+      << "Right\n"
+      << "  Front :"
+      << "  Coxa: "   << _map[make_key(Leg::FrontRight, Joint::Coxa)]->toStr()
+      << "  Femur: "  << _map[make_key(Leg::FrontRight, Joint::Femur)]->toStr()
+      << "  Tibia: "  << _map[make_key(Leg::FrontRight, Joint::Tibia)]->toStr()
+      << "\n"
+      << "  Middle:"
+      << "  Coxa: "   << _map[make_key(Leg::MiddleRight, Joint::Coxa)]->toStr()
+      << "  Femur: "  << _map[make_key(Leg::MiddleRight, Joint::Femur)]->toStr()
+      << "  Tibia: "  << _map[make_key(Leg::MiddleRight, Joint::Tibia)]->toStr()
+      << "\n"
+      << "  Back  :"
+      << "  Coxa: "   << _map[make_key(Leg::BackRight, Joint::Coxa)]->toStr()
+      << "  Femur: "  << _map[make_key(Leg::BackRight, Joint::Femur)]->toStr()
+      << "  Tibia: "  << _map[make_key(Leg::BackRight, Joint::Tibia)]->toStr();
+
+  return msg.str();
+}
+
 /**************************************************************************************
  * NAMESPACE
  **************************************************************************************/

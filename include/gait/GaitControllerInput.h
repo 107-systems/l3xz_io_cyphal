@@ -13,6 +13,7 @@
 
 #include <map>
 #include <tuple>
+#include <string>
 
 #include <Const.h>
 #include <common/sensor/interface/AnglePositionSensor.h>
@@ -54,6 +55,8 @@ public:
   TeleopCommandData const _teleop_cmd;
 
   common::sensor::interface::SharedAnglePositionSensor operator()(Leg const leg, Joint const joint);
+
+  std::string toStr();
 
   typedef std::tuple<Leg, Joint> AngleSensorMapKey;
   typedef common::sensor::interface::SharedAnglePositionSensor AngleSensorMapValue;

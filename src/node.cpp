@@ -275,6 +275,8 @@ int main(int argc, char **argv) try
                                               angle_sensor_femur_leg_back_right,
                                               angle_sensor_tibia_leg_back_right);
 
+    ROS_INFO("%s", gait_ctrl_input.toStr().c_str());
+
     gait_ctrl.update(gait_ctrl_input, gait_ctrl_output);
 
     /**************************************************************************************
@@ -369,7 +371,7 @@ bool init_open_cyphal(phy::opencyphal::Node & open_cyphal_node, glue::l3xz::ELRO
   if (!open_cyphal_node.subscribe<uavcan::node::Heartbeat_1_0<>>([](CanardTransfer const & transfer)
   {
     uavcan::node::Heartbeat_1_0<> const hb = uavcan::node::Heartbeat_1_0<>::deserialize(transfer);
-    ROS_INFO("[%d] Heartbeat received\n\tMode = %d", transfer.remote_node_id, hb.data.mode.value);
+    ROS_DEBUG("[%d] Heartbeat received\n\tMode = %d", transfer.remote_node_id, hb.data.mode.value);
   }))
   {
     ROS_ERROR("init_open_cyphal failed to subscribe to 'uavcan::node::Heartbeat_1_0'");
@@ -380,7 +382,7 @@ bool init_open_cyphal(phy::opencyphal::Node & open_cyphal_node, glue::l3xz::ELRO
   if (!open_cyphal_node.subscribe<uavcan::primitive::scalar::Real32_1_0<1001>>([](CanardTransfer const & transfer)
   {
     uavcan::primitive::scalar::Real32_1_0<1001> const input_voltage = uavcan::primitive::scalar::Real32_1_0<1001>::deserialize(transfer);
-    ROS_INFO("[%d] Battery Voltage = %f", transfer.remote_node_id, input_voltage.data.value);
+    ROS_DEBUG("[%d] Battery Voltage = %f", transfer.remote_node_id, input_voltage.data.value);
   }))
   {
     ROS_ERROR("init_open_cyphal failed to subscribe to 'uavcan::primitive::scalar::Real32_1_0<1001>'");
@@ -391,7 +393,7 @@ bool init_open_cyphal(phy::opencyphal::Node & open_cyphal_node, glue::l3xz::ELRO
   {
     uavcan::primitive::scalar::Real32_1_0<1002> const as5048_a_angle = uavcan::primitive::scalar::Real32_1_0<1002>::deserialize(transfer);
     open_cyphal_angle_position_sensor_bulk_reader.update_femur_angle(transfer.remote_node_id, as5048_a_angle.data.value);
-    ROS_INFO("[%d] Angle[AS5048 A] = %f", transfer.remote_node_id, as5048_a_angle.data.value);
+    ROS_DEBUG("[%d] Angle[AS5048 A] = %f", transfer.remote_node_id, as5048_a_angle.data.value);
   }))
   {
     ROS_ERROR("init_open_cyphal failed to subscribe to 'uavcan::primitive::scalar::Real32_1_0<1002>'");
@@ -402,7 +404,7 @@ bool init_open_cyphal(phy::opencyphal::Node & open_cyphal_node, glue::l3xz::ELRO
   {
     uavcan::primitive::scalar::Real32_1_0<1003> const as5048_b_angle = uavcan::primitive::scalar::Real32_1_0<1003>::deserialize(transfer);
     open_cyphal_angle_position_sensor_bulk_reader.update_tibia_angle(transfer.remote_node_id, as5048_b_angle.data.value);
-    ROS_INFO("[%d] Angle[AS5048 B] = %f", transfer.remote_node_id, as5048_b_angle.data.value);
+    ROS_DEBUG("[%d] Angle[AS5048 B] = %f", transfer.remote_node_id, as5048_b_angle.data.value);
   }))
   {
     ROS_ERROR("init_open_cyphal failed to subscribe to 'uavcan::primitive::scalar::Real32_1_0<1003>'");

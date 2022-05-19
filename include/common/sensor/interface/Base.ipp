@@ -26,9 +26,6 @@ std::string Base<T>::toStr() const
 {
   std::stringstream ss;
 
-  ss << "[S] "
-      << _name << ": ";
-
   if (get().has_value())
     ss << get().value();
   else
