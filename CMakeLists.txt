@@ -235,6 +235,12 @@ add_subdirectory(tooling/ssc32ctrl)
 #   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
 # )
 
+install(FILES
+  scripts/setup_slcan_l3xz.sh
+  scripts/setup_slcan.sh
+  DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+)
+
 #############
 ## Testing ##
 #############
