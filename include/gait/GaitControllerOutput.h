@@ -13,6 +13,11 @@
 
 #include <common/actuator/interface/AnglePositionActuator.h>
 
+#include <map>
+#include <tuple>
+
+#include <Const.h>
+
 /**************************************************************************************
  * NAMESPACE
  **************************************************************************************/
@@ -32,21 +37,16 @@ public:
                        common::actuator::interface::SharedAnglePositionActuator angle_actuator_coxa_leg_middle_left,
                        common::actuator::interface::SharedAnglePositionActuator angle_actuator_coxa_leg_middle_right,
                        common::actuator::interface::SharedAnglePositionActuator angle_actuator_coxa_leg_back_left,
-                       common::actuator::interface::SharedAnglePositionActuator angle_actuator_coxa_leg_back_right)
-  : _angle_actuator_coxa_leg_front_left  {angle_actuator_coxa_leg_front_left}
-  , _angle_actuator_coxa_leg_front_right {angle_actuator_coxa_leg_front_right}
-  , _angle_actuator_coxa_leg_middle_left {angle_actuator_coxa_leg_middle_left}
-  , _angle_actuator_coxa_leg_middle_right{angle_actuator_coxa_leg_middle_right}
-  , _angle_actuator_coxa_leg_back_left   {angle_actuator_coxa_leg_back_left}
-  , _angle_actuator_coxa_leg_back_right  {angle_actuator_coxa_leg_back_right}
-  { }
+                       common::actuator::interface::SharedAnglePositionActuator angle_actuator_coxa_leg_back_right);
 
-  common::actuator::interface::SharedAnglePositionActuator _angle_actuator_coxa_leg_front_left,
-                                                           _angle_actuator_coxa_leg_front_right,
-                                                           _angle_actuator_coxa_leg_middle_left,
-                                                           _angle_actuator_coxa_leg_middle_right,
-                                                           _angle_actuator_coxa_leg_back_left,
-                                                           _angle_actuator_coxa_leg_back_right;
+  common::actuator::interface::SharedAnglePositionActuator operator()(Leg const leg, Joint const joint);
+
+  typedef std::tuple<Leg, Joint> AngleActuatorMapKey;
+  typedef common::actuator::interface::SharedAnglePositionActuator AngleActuatorMapValue;
+  typedef std::map<AngleActuatorMapKey, AngleActuatorMapValue> AngleActuatorMap;
+
+private:
+  AngleActuatorMap _map;
 };
 
 /**************************************************************************************
