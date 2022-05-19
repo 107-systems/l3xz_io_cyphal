@@ -193,20 +193,23 @@ void Node::txThreadFunc()
     /* Obtain CAN frame of data yet to be transferred. */
     CanardFrame const * tx_frame = canardTxPeek(&_canard_ins);
 
+    if (tx_frame)
+    {
+      /* Transmit CAN frame. */
+      if (int16_t const rc = _socket_can.push(tx_frame, CANARD_DEFAULT_TRANSFER_ID_TIMEOUT_USEC); rc <= 0) {
+        ROS_ERROR("socketcanPush failed with error %d", abs(rc));
+      }
+      else
+      {
+        /* Remove from both canard and o1heap. */
+        canardTxPop(&_canard_ins);
+        _o1heap.free((void *)(tx_frame));
+      }
+    }
     /* Nothing to transmit. */
-    if (tx_frame == nullptr) {
-      std::this_thread::yield();
-    }
-
-    /* Transmit CAN frame. */
-    if (int16_t const rc = _socket_can.push(tx_frame, CANARD_DEFAULT_TRANSFER_ID_TIMEOUT_USEC); rc <= 0) {
-      ROS_ERROR("socketcanPush failed with error %d", abs(rc));
-    }
     else
     {
-      /* Remove from both canard and o1heap. */
-      canardTxPop(&_canard_ins);
-      _o1heap.free((void *)(tx_frame));
+      std::this_thread::yield();
     }
   }
 
