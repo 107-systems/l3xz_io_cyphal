@@ -44,6 +44,7 @@
 #include <glue/l3xz/ELROB2022/DynamixelAnglePositionActuator.h>
 #include <glue/l3xz/ELROB2022/DynamixelAnglePositionActuatorBulkWriter.h>
 #include <glue/l3xz/ELROB2022/OpenCyphalAnglePositionSensor.h>
+#include <glue/l3xz/ELROB2022/OpenCyphalAnglePositionSensorBulkReader.h>
 
 /**************************************************************************************
  * FUNCTION DECLARATION
@@ -52,7 +53,7 @@
 bool init_dynamixel  (driver::SharedMX28 & mx28_ctrl);
 void deinit_dynamixel(driver::SharedMX28 & mx28_ctrl);
 
-bool init_open_cyphal(phy::opencyphal::Node & open_cyphal_node);
+bool init_open_cyphal(phy::opencyphal::Node & open_cyphal_node, glue::l3xz::ELROB2022::OpenCyphalAnglePositionSensorBulkReader & open_cyphal_angle_position_sensor_bulk_reader);
 
 void cmd_vel_callback(const geometry_msgs::Twist::ConstPtr & msg, TeleopCommandData & teleop_cmd_data);
 
@@ -169,11 +170,39 @@ int main(int argc, char **argv) try
   phy::opencyphal::SocketCAN open_cyphal_can_if("can0", false);
   phy::opencyphal::Node open_cyphal_node(OPEN_CYPHAL_THIS_NODE_ID, open_cyphal_can_if);
 
-  if (!init_open_cyphal(open_cyphal_node))
+  auto angle_sensor_femur_leg_front_left   = std::make_shared<glue::l3xz::ELROB2022::OpenCyphalAnglePositionSensor>("LEG F/L Femur");
+  auto angle_sensor_tibia_leg_front_left   = std::make_shared<glue::l3xz::ELROB2022::OpenCyphalAnglePositionSensor>("LEG F/L Tibia");
+  auto angle_sensor_femur_leg_middle_left  = std::make_shared<glue::l3xz::ELROB2022::OpenCyphalAnglePositionSensor>("LEG M/L Femur");
+  auto angle_sensor_tibia_leg_middle_left  = std::make_shared<glue::l3xz::ELROB2022::OpenCyphalAnglePositionSensor>("LEG M/L Tibia");
+  auto angle_sensor_femur_leg_back_left    = std::make_shared<glue::l3xz::ELROB2022::OpenCyphalAnglePositionSensor>("LEG B/L Femur");
+  auto angle_sensor_tibia_leg_back_left    = std::make_shared<glue::l3xz::ELROB2022::OpenCyphalAnglePositionSensor>("LEG B/L Tibia");
+
+  auto angle_sensor_femur_leg_front_right  = std::make_shared<glue::l3xz::ELROB2022::OpenCyphalAnglePositionSensor>("LEG F/R Femur");
+  auto angle_sensor_tibia_leg_front_right  = std::make_shared<glue::l3xz::ELROB2022::OpenCyphalAnglePositionSensor>("LEG F/R Tibia");
+  auto angle_sensor_femur_leg_middle_right = std::make_shared<glue::l3xz::ELROB2022::OpenCyphalAnglePositionSensor>("LEG M/R Femur");
+  auto angle_sensor_tibia_leg_middle_right = std::make_shared<glue::l3xz::ELROB2022::OpenCyphalAnglePositionSensor>("LEG M/R Tibia");
+  auto angle_sensor_femur_leg_back_right   = std::make_shared<glue::l3xz::ELROB2022::OpenCyphalAnglePositionSensor>("LEG B/R Femur");
+  auto angle_sensor_tibia_leg_back_right   = std::make_shared<glue::l3xz::ELROB2022::OpenCyphalAnglePositionSensor>("LEG B/R Tibia");
+
+  glue::l3xz::ELROB2022::OpenCyphalAnglePositionSensorBulkReader open_cyphal_angle_position_sensor_bulk_reader
+  (
+    angle_sensor_femur_leg_front_left,
+    angle_sensor_tibia_leg_front_left,
+    angle_sensor_femur_leg_middle_left,
+    angle_sensor_tibia_leg_middle_left,
+    angle_sensor_femur_leg_back_left,
+    angle_sensor_tibia_leg_back_left,
+    angle_sensor_femur_leg_front_right,
+    angle_sensor_tibia_leg_front_right,
+    angle_sensor_femur_leg_middle_right,
+    angle_sensor_tibia_leg_middle_right,
+    angle_sensor_femur_leg_back_right,
+    angle_sensor_tibia_leg_back_right
+  );
+
+  if (!init_open_cyphal(open_cyphal_node, open_cyphal_angle_position_sensor_bulk_reader))
     ROS_ERROR("init_open_cyphal failed.");
   ROS_INFO("init_open_cyphal successfully completed.");
-
-  auto angle_sensor_femur_leg_front_left = std::make_shared<glue::l3xz::ELROB2022::OpenCyphalAnglePositionSensor>("LEG F/L Femur");
 
   /**************************************************************************************
    * STATE
@@ -209,8 +238,8 @@ int main(int argc, char **argv) try
      * READ FROM PERIPHERALS
      **************************************************************************************/
 
-    /* Simultaneously read the current angle from all dynamixel servos and update the angle position sensors. */
     dynamixel_angle_position_sensor_bulk_reader.doBulkRead();
+    open_cyphal_angle_position_sensor_bulk_reader.doBulkRead();
 
     ROS_DEBUG("L3XZ Dynamixel Current Angles:\n  %s\n  %s\n  %s\n  %s\n  %s\n  %s\n  %s\n  %s",
       angle_sensor_coxa_leg_front_left->toStr().c_str(),
@@ -323,17 +352,14 @@ void deinit_dynamixel(driver::SharedMX28 & mx28_ctrl)
   mx28_ctrl->torqueOff(glue::l3xz::ELROB2022::DYNAMIXEL_ID_VECT);
 }
 
-bool init_open_cyphal(phy::opencyphal::Node & open_cyphal_node)
+bool init_open_cyphal(phy::opencyphal::Node & open_cyphal_node, glue::l3xz::ELROB2022::OpenCyphalAnglePositionSensorBulkReader & open_cyphal_angle_position_sensor_bulk_reader)
 {
   bool success = false;
 
   success = open_cyphal_node.subscribe<uavcan::node::Heartbeat_1_0<>>([](CanardTransfer const & transfer)
   {
     uavcan::node::Heartbeat_1_0<> const hb = uavcan::node::Heartbeat_1_0<>::deserialize(transfer);
-    std::cout << "Heartbeat received"
-              << "\n\tMode = "
-              << hb.data.mode.value
-              << std::endl;
+    ROS_INFO("[%d] Heartbeat received\n\tMode = %d", transfer.remote_node_id, hb.data.mode.value);
   });
   if (!success) {
     ROS_ERROR("init_open_cyphal failed to subscribe to 'uavcan::node::Heartbeat_1_0'");
@@ -344,33 +370,29 @@ bool init_open_cyphal(phy::opencyphal::Node & open_cyphal_node)
   success = open_cyphal_node.subscribe<uavcan::primitive::scalar::Real32_1_0<1001>>([](CanardTransfer const & transfer)
   {
     uavcan::primitive::scalar::Real32_1_0<1001> const input_voltage = uavcan::primitive::scalar::Real32_1_0<1001>::deserialize(transfer);
-    std::cout << "Battery Voltage = "
-              << input_voltage.data.value
-              << std::endl;
+    ROS_INFO("[%d] Battery Voltage = %f", transfer.remote_node_id, input_voltage.data.value);
   });
   if (!success) {
     ROS_ERROR("init_open_cyphal failed to subscribe to 'uavcan::primitive::scalar::Real32_1_0<1001>'");
     return false;
   }
 
-  open_cyphal_node.subscribe<uavcan::primitive::scalar::Real32_1_0<1002>>([](CanardTransfer const & transfer)
+  open_cyphal_node.subscribe<uavcan::primitive::scalar::Real32_1_0<1002>>([&open_cyphal_angle_position_sensor_bulk_reader](CanardTransfer const & transfer)
   {
     uavcan::primitive::scalar::Real32_1_0<1002> const as5048_a_angle = uavcan::primitive::scalar::Real32_1_0<1002>::deserialize(transfer);
-    std::cout << "Angle[AS5048 A] = "
-              << as5048_a_angle.data.value
-              << std::endl;
+    open_cyphal_angle_position_sensor_bulk_reader.update_femur_angle(transfer.remote_node_id, as5048_a_angle.data.value);
+    ROS_INFO("[%d] Angle[AS5048 A] = %f", transfer.remote_node_id, as5048_a_angle.data.value);
   });
   if (!success) {
     ROS_ERROR("init_open_cyphal failed to subscribe to 'uavcan::primitive::scalar::Real32_1_0<1002>'");
     return false;
   }
 
-  open_cyphal_node.subscribe<uavcan::primitive::scalar::Real32_1_0<1003>>([](CanardTransfer const & transfer)
+  open_cyphal_node.subscribe<uavcan::primitive::scalar::Real32_1_0<1003>>([&open_cyphal_angle_position_sensor_bulk_reader](CanardTransfer const & transfer)
   {
     uavcan::primitive::scalar::Real32_1_0<1003> const as5048_b_angle = uavcan::primitive::scalar::Real32_1_0<1003>::deserialize(transfer);
-    std::cout << "Angle[AS5048 B] = "
-              << as5048_b_angle.data.value
-              << std::endl;
+    open_cyphal_angle_position_sensor_bulk_reader.update_tibia_angle(transfer.remote_node_id, as5048_b_angle.data.value);
+    ROS_INFO("[%d] Angle[AS5048 B] = %f", transfer.remote_node_id, as5048_b_angle.data.value);
   });
   if (!success) {
     ROS_ERROR("init_open_cyphal failed to subscribe to 'uavcan::primitive::scalar::Real32_1_0<1003>'");
