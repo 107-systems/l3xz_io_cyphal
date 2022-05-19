@@ -177,7 +177,7 @@ int main(int argc, char **argv) try
    * MAIN LOOP
    **************************************************************************************/
 
-  for (ros::Rate loop_rate(50);
+  for (ros::Rate loop_rate(20);
        ros::ok();
        loop_rate.sleep())
   {
@@ -239,9 +239,13 @@ int main(int argc, char **argv) try
 
     ros::spinOnce();
 
+    /**************************************************************************************
+     * LOOP RATE
+     **************************************************************************************/
+
     auto const stop = std::chrono::high_resolution_clock::now();
     auto const duration = std::chrono::duration_cast<std::chrono::milliseconds>(stop - start);
-    if (duration.count() > 25)
+    if (duration.count() > 50)
       ROS_WARN("main loop duration (%ld ms) exceeds limit", duration.count());
   }
 
