@@ -30,7 +30,7 @@ public:
   virtual ~BackwardWalking() { }
   virtual void onEnter() override;
   virtual void onExit() override;
-  virtual StateBase * update(GaitControllerInput const & input, GaitControllerOutput & output) override;
+  virtual StateBase * update(GaitControllerInput & input, GaitControllerOutput & output) override;
 };
 
 /**************************************************************************************

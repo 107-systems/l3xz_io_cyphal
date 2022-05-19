@@ -30,7 +30,10 @@ public:
   virtual ~Init() { }
   virtual void onEnter() override;
   virtual void onExit() override;
-  virtual StateBase * update(GaitControllerInput const & input, GaitControllerOutput & output) override;
+  virtual StateBase * update(GaitControllerInput & input, GaitControllerOutput & output) override;
+
+private:
+  static float constexpr INITIAL_COXA_ANGLE = 180.0f;
 };
 
 /**************************************************************************************

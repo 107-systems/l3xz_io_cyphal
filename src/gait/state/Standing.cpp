@@ -38,7 +38,7 @@ void Standing::onExit()
   ROS_INFO("Standing EXIT");
 }
 
-StateBase * Standing::update(GaitControllerInput const & input, GaitControllerOutput & output)
+StateBase * Standing::update(GaitControllerInput & input, GaitControllerOutput & output)
 {
   if      (input._teleop_cmd.linear_velocity_x > 0.2f)
     return new ForwardWalking();

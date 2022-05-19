@@ -31,7 +31,7 @@ public:
   virtual ~StateBase() { }
   virtual void onEnter() { }
   virtual void onExit() { }
-  virtual StateBase * update(GaitControllerInput const & input, GaitControllerOutput & output) = 0;
+  virtual StateBase * update(GaitControllerInput & input, GaitControllerOutput & output) = 0;
 };
 
 /**************************************************************************************

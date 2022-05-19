@@ -32,18 +32,16 @@ public:
 
   typedef std::function<void(driver::Dynamixel::Id const, float const)> OnChangeFunc;
 
-  DynamixelAnglePositionActuator(std::string const & name, driver::Dynamixel::Id const id, OnChangeFunc func, float const initial_value)
+  DynamixelAnglePositionActuator(std::string const & name, driver::Dynamixel::Id const id, OnChangeFunc func)
   : AnglePositionActuator(name)
   , _id{id}
   , _on_change_func{func}
-  {
-    set(initial_value);
-  }
+  { }
 
   virtual void set(float const & angle_deg) override
   {
     _angle_deg = angle_deg;
-    _on_change_func(_id, _angle_deg);
+    _on_change_func(_id, _angle_deg.value());
   }
 
 protected:
@@ -55,7 +53,7 @@ protected:
 private:
   driver::Dynamixel::Id _id;
   OnChangeFunc _on_change_func;
-  float _angle_deg;
+  std::optional<float> _angle_deg;
 };
 
 /**************************************************************************************

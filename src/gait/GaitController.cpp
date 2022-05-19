@@ -38,7 +38,7 @@ GaitController::~GaitController()
  * PUBLIC MEMBER FUNCTIONS
  **************************************************************************************/
 
-void GaitController::update(GaitControllerInput const & input, GaitControllerOutput & output)
+void GaitController::update(GaitControllerInput & input, GaitControllerOutput & output)
 {
   state::StateBase * next_robot_state = _robot_state->update(input, output);
     
