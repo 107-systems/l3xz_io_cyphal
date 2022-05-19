@@ -11,12 +11,11 @@
  * INCLUDES
  **************************************************************************************/
 
-#include <common/actuator/interface/AnglePositionActuator.h>
-
 #include <map>
 #include <tuple>
 
 #include <Const.h>
+#include <common/actuator/interface/AnglePositionActuator.h>
 
 /**************************************************************************************
  * NAMESPACE

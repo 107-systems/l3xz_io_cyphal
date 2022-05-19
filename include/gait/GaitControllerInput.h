@@ -11,6 +11,9 @@
  * INCLUDES
  **************************************************************************************/
 
+#include <map>
+#include <tuple>
+
 #include <Const.h>
 #include <common/sensor/interface/AnglePositionSensor.h>
 
@@ -34,23 +37,18 @@ public:
                       common::sensor::interface::SharedAnglePositionSensor angle_sensor_coxa_leg_middle_left,
                       common::sensor::interface::SharedAnglePositionSensor angle_sensor_coxa_leg_middle_right,
                       common::sensor::interface::SharedAnglePositionSensor angle_sensor_coxa_leg_back_left,
-                      common::sensor::interface::SharedAnglePositionSensor angle_sensor_coxa_leg_back_right)
-  : _teleop_cmd{teleop_cmd}
-  , _angle_sensor_coxa_leg_front_left  {angle_sensor_coxa_leg_front_left}
-  , _angle_sensor_coxa_leg_front_right {angle_sensor_coxa_leg_front_right}
-  , _angle_sensor_coxa_leg_middle_left {angle_sensor_coxa_leg_middle_left}
-  , _angle_sensor_coxa_leg_middle_right{angle_sensor_coxa_leg_middle_right}
-  , _angle_sensor_coxa_leg_back_left   {angle_sensor_coxa_leg_back_left}
-  , _angle_sensor_coxa_leg_back_right  {angle_sensor_coxa_leg_back_right}
-  { }
+                      common::sensor::interface::SharedAnglePositionSensor angle_sensor_coxa_leg_back_right);
 
   TeleopCommandData const _teleop_cmd;
-  common::sensor::interface::SharedAnglePositionSensor _angle_sensor_coxa_leg_front_left,
-                                                       _angle_sensor_coxa_leg_front_right,
-                                                       _angle_sensor_coxa_leg_middle_left,
-                                                       _angle_sensor_coxa_leg_middle_right,
-                                                       _angle_sensor_coxa_leg_back_left,
-                                                       _angle_sensor_coxa_leg_back_right;
+
+  common::sensor::interface::SharedAnglePositionSensor operator()(Leg const leg, Joint const joint);
+
+  typedef std::tuple<Leg, Joint> AngleSensorMapKey;
+  typedef common::sensor::interface::SharedAnglePositionSensor AngleSensorMapValue;
+  typedef std::map<AngleSensorMapKey, AngleSensorMapValue> AngleSensorMap;
+
+private:
+  AngleSensorMap _map;
 };
 
 /**************************************************************************************
