@@ -160,7 +160,6 @@ add_executable(${PROJECT_NAME}_node
   src/head/state/Teleop.cpp
   src/head/HeadController.cpp
   src/node.cpp
-  src/Valve.cpp
 )
 
 ## Rename C++ executable without prefix
