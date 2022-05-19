@@ -261,7 +261,19 @@ int main(int argc, char **argv) try
                                               angle_sensor_coxa_leg_middle_left,
                                               angle_sensor_coxa_leg_middle_right,
                                               angle_sensor_coxa_leg_back_left,
-                                              angle_sensor_coxa_leg_back_right);
+                                              angle_sensor_coxa_leg_back_right,
+                                              angle_sensor_femur_leg_front_left,
+                                              angle_sensor_tibia_leg_front_left,
+                                              angle_sensor_femur_leg_middle_left,
+                                              angle_sensor_tibia_leg_middle_left,
+                                              angle_sensor_femur_leg_back_left,
+                                              angle_sensor_tibia_leg_back_left,
+                                              angle_sensor_femur_leg_front_right,
+                                              angle_sensor_tibia_leg_front_right,
+                                              angle_sensor_femur_leg_middle_right,
+                                              angle_sensor_tibia_leg_middle_right,
+                                              angle_sensor_femur_leg_back_right,
+                                              angle_sensor_tibia_leg_back_right);
 
     gait_ctrl.update(gait_ctrl_input, gait_ctrl_output);
 
