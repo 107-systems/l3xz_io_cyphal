@@ -69,6 +69,7 @@ StateBase * Init::update(GaitControllerInput & input, GaitControllerOutput & out
 
 
   /* Check if we have reached the desired target angle. */
+  bool all_target_angles_reached = true;
   for (auto [leg, joint] : COXA_ANGLE_SENSOR_KEY_LIST)
   {
     float const coxa_angle_actual = input(leg, joint)->get().value();
@@ -77,9 +78,12 @@ StateBase * Init::update(GaitControllerInput & input, GaitControllerOutput & out
 
     if (!coxa_is_initial_angle_reached) {
       ROS_INFO("gait::state::Init::update: target angle not reached for %s", input(leg, joint)->name().c_str());
-      return this;
+      all_target_angles_reached = false;
     }
   }
+
+  if (!all_target_angles_reached)
+    return this;
 
   /* All good, let's transition to the next state. */
   return new Standing();
