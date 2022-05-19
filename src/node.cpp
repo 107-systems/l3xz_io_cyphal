@@ -157,7 +157,7 @@ int main(int argc, char **argv) try
    * STATE
    **************************************************************************************/
 
-  TeleopCommandData teleop_cmd_data;
+  TeleopCommandData teleop_cmd_data = {0.0f, 0.0f, 0.0f, 0.0f, 0.0f};
   ros::Subscriber cmd_vel_sub = node_hdl.subscribe<geometry_msgs::Twist>("/l3xz/cmd_vel", 10, std::bind(cmd_vel_callback, std::placeholders::_1, std::ref(teleop_cmd_data)));
 
   gait::GaitController gait_ctrl;
