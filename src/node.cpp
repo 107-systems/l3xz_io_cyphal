@@ -31,6 +31,10 @@
 #include <driver/dynamixel/MX28.h>
 #include <driver/dynamixel/Dynamixel.h>
 
+#include <phy/opencyphal/Types.h>
+#include <phy/opencyphal/Node.hpp>
+#include <phy/opencyphal/SocketCAN.h>
+
 #include <glue/l3xz/ELROB2022/Const.h>
 #include <glue/l3xz/ELROB2022/SSC32PWMActuator.h>
 #include <glue/l3xz/ELROB2022/SSC32PWMActuatorBulkwriter.h>
@@ -47,6 +51,8 @@
 bool init_dynamixel  (driver::SharedMX28 & mx28_ctrl);
 void deinit_dynamixel(driver::SharedMX28 & mx28_ctrl);
 
+bool init_open_cyphal(phy::opencyphal::Node & open_cyphal_node);
+
 void cmd_vel_callback(const geometry_msgs::Twist::ConstPtr & msg, TeleopCommandData & teleop_cmd_data);
 
 /**************************************************************************************
@@ -61,6 +67,8 @@ static std::string const SSC32_DEVICE_NAME = "/dev/serial/by-id/usb-FTDI_FT232R_
 static size_t      const SSC32_BAUDRATE = 115200;
 
 static std::string const ZUBAX_BABEL_OREL20_DEVICE_NAME = "/dev/serial/by-id/usb-Zubax_Robotics_Zubax_Babel_26003A000B5150423339302000000000-if00";
+
+static uint8_t     const OPEN_CYPHAL_THIS_NODE_ID = 0;
 
 /**************************************************************************************
  * MAIN
@@ -152,6 +160,17 @@ int main(int argc, char **argv) try
   auto valve_actuator_middle_right_tibia     = std::make_shared<glue::l3xz::ELROB2022::SSC32ValveActuator>("LEG M/R Tibia", pwm_actuator_valve_middle_right_tibia, 0.0);
   auto valve_actuator_back_right_femur       = std::make_shared<glue::l3xz::ELROB2022::SSC32ValveActuator>("LEG B/R Femur", pwm_actuator_valve_back_right_femur,   0.0);
   auto valve_actuator_back_right_tibia       = std::make_shared<glue::l3xz::ELROB2022::SSC32ValveActuator>("LEG B/R Tibia", pwm_actuator_valve_back_right_tibia,   0.0);
+
+  /**************************************************************************************
+   * OPENCYPHAL
+   **************************************************************************************/
+
+  phy::opencyphal::SocketCAN open_cyphal_can_if("can0", false);
+  phy::opencyphal::Node open_cyphal_node(OPEN_CYPHAL_THIS_NODE_ID, open_cyphal_can_if);
+
+  if (!init_open_cyphal(open_cyphal_node))
+    ROS_ERROR("init_open_cyphal failed.");
+  ROS_INFO("init_open_cyphal successfully completed.");
 
   /**************************************************************************************
    * STATE
@@ -299,6 +318,63 @@ bool init_dynamixel(driver::SharedMX28 & mx28_ctrl)
 void deinit_dynamixel(driver::SharedMX28 & mx28_ctrl)
 {
   mx28_ctrl->torqueOff(glue::l3xz::ELROB2022::DYNAMIXEL_ID_VECT);
+}
+
+bool init_open_cyphal(phy::opencyphal::Node & open_cyphal_node)
+{
+  bool success = false;
+
+  success = open_cyphal_node.subscribe<uavcan::node::Heartbeat_1_0<>>([](CanardTransfer const & transfer)
+  {
+    uavcan::node::Heartbeat_1_0<> const hb = uavcan::node::Heartbeat_1_0<>::deserialize(transfer);
+    std::cout << "Heartbeat received"
+              << "\n\tMode = "
+              << hb.data.mode.value
+              << std::endl;
+  });
+  if (!success) {
+    ROS_ERROR("init_open_cyphal failed to subscribe to 'uavcan::node::Heartbeat_1_0'");
+    return false;
+  }
+
+
+  success = open_cyphal_node.subscribe<uavcan::primitive::scalar::Real32_1_0<1001>>([](CanardTransfer const & transfer)
+  {
+    uavcan::primitive::scalar::Real32_1_0<1001> const input_voltage = uavcan::primitive::scalar::Real32_1_0<1001>::deserialize(transfer);
+    std::cout << "Battery Voltage = "
+              << input_voltage.data.value
+              << std::endl;
+  });
+  if (!success) {
+    ROS_ERROR("init_open_cyphal failed to subscribe to 'uavcan::primitive::scalar::Real32_1_0<1001>'");
+    return false;
+  }
+
+  open_cyphal_node.subscribe<uavcan::primitive::scalar::Real32_1_0<1002>>([](CanardTransfer const & transfer)
+  {
+    uavcan::primitive::scalar::Real32_1_0<1002> const as5048_a_angle = uavcan::primitive::scalar::Real32_1_0<1002>::deserialize(transfer);
+    std::cout << "Angle[AS5048 A] = "
+              << as5048_a_angle.data.value
+              << std::endl;
+  });
+  if (!success) {
+    ROS_ERROR("init_open_cyphal failed to subscribe to 'uavcan::primitive::scalar::Real32_1_0<1002>'");
+    return false;
+  }
+
+  open_cyphal_node.subscribe<uavcan::primitive::scalar::Real32_1_0<1003>>([](CanardTransfer const & transfer)
+  {
+    uavcan::primitive::scalar::Real32_1_0<1003> const as5048_b_angle = uavcan::primitive::scalar::Real32_1_0<1003>::deserialize(transfer);
+    std::cout << "Angle[AS5048 B] = "
+              << as5048_b_angle.data.value
+              << std::endl;
+  });
+  if (!success) {
+    ROS_ERROR("init_open_cyphal failed to subscribe to 'uavcan::primitive::scalar::Real32_1_0<1003>'");
+    return false;
+  }
+
+  return success;
 }
 
 void cmd_vel_callback(const geometry_msgs::Twist::ConstPtr & msg, TeleopCommandData & teleop_cmd_data)
