@@ -241,16 +241,6 @@ int main(int argc, char **argv) try
     dynamixel_angle_position_sensor_bulk_reader.doBulkRead();
     open_cyphal_angle_position_sensor_bulk_reader.doBulkRead();
 
-    ROS_DEBUG("L3XZ Dynamixel Current Angles:\n  %s\n  %s\n  %s\n  %s\n  %s\n  %s\n  %s\n  %s",
-      angle_sensor_coxa_leg_front_left->toStr().c_str(),
-      angle_sensor_coxa_leg_front_right->toStr().c_str(),
-      angle_sensor_coxa_leg_middle_left->toStr().c_str(),
-      angle_sensor_coxa_leg_middle_right->toStr().c_str(),
-      angle_sensor_coxa_leg_back_left->toStr().c_str(),
-      angle_sensor_coxa_leg_back_right->toStr().c_str(),
-      angle_sensor_sensor_head_pan->toStr().c_str(),
-      angle_sensor_sensor_head_tilt->toStr().c_str());
-
     /**************************************************************************************
      * GAIT CONTROL
      **************************************************************************************/
