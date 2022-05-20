@@ -94,14 +94,14 @@ int main(int argc, char **argv) try
     ROS_ERROR("init_dynamixel failed.");
   ROS_INFO("init_dynamixel successfully completed.");
 
-  auto angle_sensor_left_front_coxa   = std::make_shared<glue::l3xz::ELROB2022::DynamixelAnglePositionSensor>("LEG L/F Coxa");
-  auto angle_sensor_left_middle_coxa  = std::make_shared<glue::l3xz::ELROB2022::DynamixelAnglePositionSensor>("LEG L/M Coxa");
-  auto angle_sensor_left_back_coxa    = std::make_shared<glue::l3xz::ELROB2022::DynamixelAnglePositionSensor>("LEG L/B Coxa");
-  auto angle_sensor_right_back_coxa   = std::make_shared<glue::l3xz::ELROB2022::DynamixelAnglePositionSensor>("LEG R/B Coxa");
-  auto angle_sensor_right_middle_coxa = std::make_shared<glue::l3xz::ELROB2022::DynamixelAnglePositionSensor>("LEG R/M Coxa");
-  auto angle_sensor_right_front_coxa  = std::make_shared<glue::l3xz::ELROB2022::DynamixelAnglePositionSensor>("LEG R/F Coxa");
-  auto angle_sensor_sensor_head_pan   = std::make_shared<glue::l3xz::ELROB2022::DynamixelAnglePositionSensor>("HEAD Pan    ");
-  auto angle_sensor_sensor_head_tilt  = std::make_shared<glue::l3xz::ELROB2022::DynamixelAnglePositionSensor>("HEAD Tilt   ");
+  auto angle_sensor_left_front_coxa   = std::make_shared<glue::l3xz::ELROB2022::DynamixelAnglePositionSensor>("L/F Coxa");
+  auto angle_sensor_left_middle_coxa  = std::make_shared<glue::l3xz::ELROB2022::DynamixelAnglePositionSensor>("L/M Coxa");
+  auto angle_sensor_left_back_coxa    = std::make_shared<glue::l3xz::ELROB2022::DynamixelAnglePositionSensor>("L/B Coxa");
+  auto angle_sensor_right_back_coxa   = std::make_shared<glue::l3xz::ELROB2022::DynamixelAnglePositionSensor>("R/B Coxa");
+  auto angle_sensor_right_middle_coxa = std::make_shared<glue::l3xz::ELROB2022::DynamixelAnglePositionSensor>("R/M Coxa");
+  auto angle_sensor_right_front_coxa  = std::make_shared<glue::l3xz::ELROB2022::DynamixelAnglePositionSensor>("R/F Coxa");
+  auto angle_sensor_sensor_head_pan   = std::make_shared<glue::l3xz::ELROB2022::DynamixelAnglePositionSensor>("HEAD Pan");
+  auto angle_sensor_sensor_head_tilt  = std::make_shared<glue::l3xz::ELROB2022::DynamixelAnglePositionSensor>("HEAD Tilt");
 
   glue::l3xz::ELROB2022::DynamixelAnglePositionSensorBulkReader dynamixel_angle_position_sensor_bulk_reader
   (
@@ -134,19 +134,19 @@ int main(int argc, char **argv) try
   phy::opencyphal::SocketCAN open_cyphal_can_if("can0", false);
   phy::opencyphal::Node open_cyphal_node(OPEN_CYPHAL_THIS_NODE_ID, open_cyphal_can_if);
 
-  auto angle_sensor_left_front_femur   = std::make_shared<glue::l3xz::ELROB2022::OpenCyphalAnglePositionSensor>("LEG L/F Femur");
-  auto angle_sensor_left_front_tibia   = std::make_shared<glue::l3xz::ELROB2022::OpenCyphalAnglePositionSensor>("LEG L/F Tibia");
-  auto angle_sensor_left_middle_femur  = std::make_shared<glue::l3xz::ELROB2022::OpenCyphalAnglePositionSensor>("LEG L/M Femur");
-  auto angle_sensor_left_middle_tibia  = std::make_shared<glue::l3xz::ELROB2022::OpenCyphalAnglePositionSensor>("LEG L/M Tibia");
-  auto angle_sensor_left_back_femur    = std::make_shared<glue::l3xz::ELROB2022::OpenCyphalAnglePositionSensor>("LEG L/B Femur");
-  auto angle_sensor_left_back_tibia    = std::make_shared<glue::l3xz::ELROB2022::OpenCyphalAnglePositionSensor>("LEG L/B Tibia");
+  auto angle_sensor_left_front_femur   = std::make_shared<glue::l3xz::ELROB2022::OpenCyphalAnglePositionSensor>("L/F Femur");
+  auto angle_sensor_left_front_tibia   = std::make_shared<glue::l3xz::ELROB2022::OpenCyphalAnglePositionSensor>("L/F Tibia");
+  auto angle_sensor_left_middle_femur  = std::make_shared<glue::l3xz::ELROB2022::OpenCyphalAnglePositionSensor>("L/M Femur");
+  auto angle_sensor_left_middle_tibia  = std::make_shared<glue::l3xz::ELROB2022::OpenCyphalAnglePositionSensor>("L/M Tibia");
+  auto angle_sensor_left_back_femur    = std::make_shared<glue::l3xz::ELROB2022::OpenCyphalAnglePositionSensor>("L/B Femur");
+  auto angle_sensor_left_back_tibia    = std::make_shared<glue::l3xz::ELROB2022::OpenCyphalAnglePositionSensor>("L/B Tibia");
 
-  auto angle_sensor_right_back_femur   = std::make_shared<glue::l3xz::ELROB2022::OpenCyphalAnglePositionSensor>("LEG R/B Femur");
-  auto angle_sensor_right_back_tibia   = std::make_shared<glue::l3xz::ELROB2022::OpenCyphalAnglePositionSensor>("LEG R/B Tibia");
-  auto angle_sensor_right_middle_femur = std::make_shared<glue::l3xz::ELROB2022::OpenCyphalAnglePositionSensor>("LEG R/M Femur");
-  auto angle_sensor_right_middle_tibia = std::make_shared<glue::l3xz::ELROB2022::OpenCyphalAnglePositionSensor>("LEG R/M Tibia");
-  auto angle_sensor_right_front_femur  = std::make_shared<glue::l3xz::ELROB2022::OpenCyphalAnglePositionSensor>("LEG R/F Femur");
-  auto angle_sensor_right_front_tibia  = std::make_shared<glue::l3xz::ELROB2022::OpenCyphalAnglePositionSensor>("LEG R/F Tibia");
+  auto angle_sensor_right_back_femur   = std::make_shared<glue::l3xz::ELROB2022::OpenCyphalAnglePositionSensor>("R/B Femur");
+  auto angle_sensor_right_back_tibia   = std::make_shared<glue::l3xz::ELROB2022::OpenCyphalAnglePositionSensor>("R/B Tibia");
+  auto angle_sensor_right_middle_femur = std::make_shared<glue::l3xz::ELROB2022::OpenCyphalAnglePositionSensor>("R/M Femur");
+  auto angle_sensor_right_middle_tibia = std::make_shared<glue::l3xz::ELROB2022::OpenCyphalAnglePositionSensor>("R/M Tibia");
+  auto angle_sensor_right_front_femur  = std::make_shared<glue::l3xz::ELROB2022::OpenCyphalAnglePositionSensor>("R/F Femur");
+  auto angle_sensor_right_front_tibia  = std::make_shared<glue::l3xz::ELROB2022::OpenCyphalAnglePositionSensor>("R/F Tibia");
 
   glue::l3xz::ELROB2022::OpenCyphalAnglePositionSensorBulkReader open_cyphal_angle_position_sensor_bulk_reader
   (
