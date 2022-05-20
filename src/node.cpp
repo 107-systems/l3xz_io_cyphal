@@ -292,9 +292,11 @@ int main(int argc, char **argv) try
                                               angle_sensor_right_back_femur,
                                               angle_sensor_right_back_tibia);
 
-    ROS_INFO("%s", gait_ctrl_input.toStr().c_str());
+    ROS_INFO("IN: %s", gait_ctrl_input.toStr().c_str());
 
     gait_ctrl.update(gait_ctrl_input, gait_ctrl_output);
+
+    ROS_INFO("OUT: %s", gait_ctrl_output.toStr().c_str());
 
     /**************************************************************************************
      * HEAD CONTROL

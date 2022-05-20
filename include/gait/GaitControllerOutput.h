@@ -13,6 +13,7 @@
 
 #include <map>
 #include <tuple>
+#include <string>
 
 #include <Const.h>
 #include <common/actuator/interface/AnglePositionActuator.h>
@@ -52,6 +53,8 @@ public:
                        
 
   common::actuator::interface::SharedAnglePositionActuator operator()(Leg const leg, Joint const joint);
+
+  std::string toStr();
 
   typedef std::tuple<Leg, Joint> AngleActuatorMapKey;
   typedef common::actuator::interface::SharedAnglePositionActuator AngleActuatorMapValue;
