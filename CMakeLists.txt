@@ -144,6 +144,7 @@ include_directories(
 add_executable(${PROJECT_NAME}_node
   src/common/actuator/interface/AnglePositionActuator.cpp
   src/common/kinematic/Engine.cpp
+  src/common/kinematic/FK_Output.cpp
   src/common/sensor/interface/AnglePositionSensor.cpp
   src/common/threading/ThreadBase.cpp
   src/common/threading/ThreadStats.cpp

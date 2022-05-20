@@ -4,14 +4,14 @@
  * Contributors: https://github.com/107-systems/l3xz/graphs/contributors.
  */
 
-#ifndef KINEMATIC_FK_OUTPUT_H_
-#define KINEMATIC_FK_OUTPUT_H_
-
 /**************************************************************************************
  * INCLUDE
  **************************************************************************************/
 
-#include <string>
+#include <common/kinematic/FK_Output.h>
+
+#include <sstream>
+#include <iomanip>
 
 /**************************************************************************************
  * NAMESPACE
@@ -21,30 +21,47 @@ namespace common::kinematic
 {
 
 /**************************************************************************************
- * CLASS DECLARATION
+ * CTOR/DTOR
  **************************************************************************************/
 
-class FK_Output
+FK_Output::FK_Output(double const tibia_tip_x, double const tibia_tip_y, double const tibia_tip_z)
+: _tibia_tip_x{tibia_tip_x}
+, _tibia_tip_y{tibia_tip_y}
+, _tibia_tip_z{tibia_tip_z}
+{ }
+
+/**************************************************************************************
+ * PUBLIC MEMBER FUNCTIONS
+ **************************************************************************************/
+
+std::string FK_Output::toStr() const
 {
-public:
-  FK_Output(double const tibia_tip_x, double const tibia_tip_y, double const tibia_tip_z);
+  std::stringstream msg;
 
-  inline double tibia_tip_x() const { return _tibia_tip_x; }
-  inline double tibia_tip_y() const { return _tibia_tip_y; }
-  inline double tibia_tip_z() const { return _tibia_tip_z; }
+  msg << "("
+      << std::fixed
+      << std::setprecision(2) 
+      << std::setfill(' ')
+      << std::setw(6)
+      << _tibia_tip_x
+      << ", "
+      << std::fixed
+      << std::setprecision(2) 
+      << std::setfill(' ')
+      << std::setw(6)
+      << _tibia_tip_y
+      << ", "
+      << std::fixed
+      << std::setprecision(2) 
+      << std::setfill(' ')
+      << std::setw(6)
+      << _tibia_tip_z;
 
-  std::string toStr() const;
-
-private:
-  double const _tibia_tip_x;
-  double const _tibia_tip_y;
-  double const _tibia_tip_z;
-};
+  return msg.str();
+}
 
 /**************************************************************************************
  * NAMESPACE
  **************************************************************************************/
 
 } /* common::kinematic */
-
-#endif /* KINEMATIC_FK_OUTPUT_H_ */
