@@ -12,7 +12,9 @@ find_package(catkin REQUIRED COMPONENTS
   std_msgs
   geometry_msgs
 )
-
+##########################################################################
+find_package(Eigen3)
+##########################################################################
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
 
@@ -123,6 +125,7 @@ add_subdirectory(external/libsocketcan)
 include_directories(
   include
   ${catkin_INCLUDE_DIRS}
+  ${EIGEN3_INCLUDE_DIR}
 )
 
 ## Declare a C++ library
@@ -140,6 +143,7 @@ include_directories(
 ## The recommended prefix ensures that target names across packages don't collide
 add_executable(${PROJECT_NAME}_node
   src/common/actuator/interface/AnglePositionActuator.cpp
+  src/common/kinematic/Engine.cpp
   src/common/sensor/interface/AnglePositionSensor.cpp
   src/common/threading/ThreadBase.cpp
   src/common/threading/ThreadStats.cpp
@@ -182,6 +186,7 @@ target_link_libraries(${PROJECT_NAME}_node
   boost_system
   boost_thread
   o1heap
+  orocos-kdl
   pthread
   socketcan
 )
