@@ -32,6 +32,8 @@ class AnglePositionActuator : public Base<float>
 public:
            AnglePositionActuator(std::string const & name) : Base(std::string("[Angle Position Actuator] \"") + name + std::string("\"")) { }
   virtual ~AnglePositionActuator() { }
+
+  virtual std::string toStr() const override;
 };
 
 /**************************************************************************************

@@ -4,15 +4,14 @@
  * Contributors: https://github.com/107-systems/l3xz/graphs/contributors.
  */
 
-#ifndef COMMON_ACTUATOR_INTERFACE_BASE_HPP_
-#define COMMON_ACTUATOR_INTERFACE_BASE_HPP_
-
 /**************************************************************************************
  * INCLUDES
  **************************************************************************************/
 
-#include <string>
-#include <optional>
+#include <common/actuator/interface/AnglePositionActuator.h>
+
+#include <sstream>
+#include <iomanip>
 
 /**************************************************************************************
  * NAMESPACE
@@ -25,34 +24,24 @@ namespace common::actuator::interface
  * CLASS DECLARATION
  **************************************************************************************/
 
-template <typename T>
-class Base
+std::string AnglePositionActuator::toStr() const
 {
-public:
-           Base(std::string const & name) : _name{name} { }
-  virtual ~Base() { }
+  std::stringstream ss;
 
-  virtual void set(T const & val) = 0;
-  virtual std::string toStr() const;
-  inline std::string name() const { return _name; }
+  if (get().has_value())
+    ss << std::fixed
+       << std::setprecision(2) 
+       << std::setfill(' ')
+       << std::setw(6)
+       << get().value();
+  else
+    ss << "  Inv.";
 
-protected:
-  virtual std::optional<T> get() const = 0;
-
-private:
-  std::string const _name;
-};
+  return ss.str();
+}
 
 /**************************************************************************************
  * NAMESPACE
  **************************************************************************************/
 
 } /* common::actuator::interface */
-
-/**************************************************************************************
- * TEMPLATE IMPLEMENTATION
- **************************************************************************************/
-
-#include "Base.ipp"
-
-#endif /* COMMON_ACTUATOR_INTERFACE_BASE_HPP_ */
