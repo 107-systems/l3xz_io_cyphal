@@ -55,22 +55,22 @@ public:
   }
   {
     /* Prevent mis-wirings by checking assumptions. */
-    assert(angle_sensor_left_front_coxa->LEG     == Leg::FrontLeft);
+    assert(angle_sensor_left_front_coxa->LEG     == Leg::LeftFront);
     assert(angle_sensor_left_front_coxa->JOINT   == Joint::Coxa);
 
-    assert(angle_sensor_left_middle_coxa->LEG    == Leg::MiddleLeft);
+    assert(angle_sensor_left_middle_coxa->LEG    == Leg::LeftMiddle);
     assert(angle_sensor_left_middle_coxa->JOINT  == Joint::Coxa);
 
-    assert(angle_sensor_left_back_coxa->LEG      == Leg::BackLeft);
+    assert(angle_sensor_left_back_coxa->LEG      == Leg::LeftBack);
     assert(angle_sensor_left_back_coxa->JOINT    == Joint::Coxa);
 
-    assert(angle_sensor_right_back_coxa->LEG     == Leg::BackRight);
+    assert(angle_sensor_right_back_coxa->LEG     == Leg::RightBack);
     assert(angle_sensor_right_back_coxa->JOINT   == Joint::Coxa);
 
-    assert(angle_sensor_right_middle_coxa->LEG   == Leg::MiddleRight);
+    assert(angle_sensor_right_middle_coxa->LEG   == Leg::RightMiddle);
     assert(angle_sensor_right_middle_coxa->JOINT == Joint::Coxa);
 
-    assert(angle_sensor_right_front_coxa->LEG    == Leg::FrontRight);
+    assert(angle_sensor_right_front_coxa->LEG    == Leg::RightFront);
     assert(angle_sensor_right_front_coxa->JOINT  == Joint::Coxa);
   }
 

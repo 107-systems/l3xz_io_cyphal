@@ -63,16 +63,16 @@ StateBase * ForwardWalking::update(GaitControllerInput & input, GaitControllerOu
   {
     switch (leg)
     {
-      case Leg::FrontLeft:
+      case Leg::LeftFront:
       {
         /* TODO. */
       }
       break;
-      case Leg::FrontRight:  break;
-      case Leg::MiddleLeft:  break;
-      case Leg::MiddleRight: break;
-      case Leg::BackLeft:    break;
-      case Leg::BackRight:   break;
+      case Leg::RightFront:  break;
+      case Leg::LeftMiddle:  break;
+      case Leg::RightMiddle: break;
+      case Leg::LeftBack:    break;
+      case Leg::RightBack:   break;
       case Leg::Invalid:
       default: break;
     }

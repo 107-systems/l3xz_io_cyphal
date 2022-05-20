@@ -65,29 +65,29 @@ GaitControllerInput::GaitControllerInput(TeleopCommandData const teleop_cmd,
                                          common::sensor::interface::SharedAnglePositionSensor angle_sensor_right_back_tibia)
 : _teleop_cmd{teleop_cmd}
 {
-  _map[make_key(Leg::FrontLeft,   Joint::Coxa)]  = angle_sensor_left_front_coxa;
-  _map[make_key(Leg::FrontLeft,   Joint::Femur)] = angle_sensor_left_front_femur;
-  _map[make_key(Leg::FrontLeft,   Joint::Tibia)] = angle_sensor_left_front_tibia;
+  _map[make_key(Leg::LeftFront,   Joint::Coxa)]  = angle_sensor_left_front_coxa;
+  _map[make_key(Leg::LeftFront,   Joint::Femur)] = angle_sensor_left_front_femur;
+  _map[make_key(Leg::LeftFront,   Joint::Tibia)] = angle_sensor_left_front_tibia;
 
-  _map[make_key(Leg::MiddleLeft,  Joint::Coxa)]  = angle_sensor_left_middle_coxa;
-  _map[make_key(Leg::MiddleLeft,  Joint::Femur)] = angle_sensor_left_middle_femur;
-  _map[make_key(Leg::MiddleLeft,  Joint::Tibia)] = angle_sensor_left_middle_tibia;
+  _map[make_key(Leg::LeftMiddle,  Joint::Coxa)]  = angle_sensor_left_middle_coxa;
+  _map[make_key(Leg::LeftMiddle,  Joint::Femur)] = angle_sensor_left_middle_femur;
+  _map[make_key(Leg::LeftMiddle,  Joint::Tibia)] = angle_sensor_left_middle_tibia;
 
-  _map[make_key(Leg::FrontLeft,   Joint::Coxa)]  = angle_sensor_left_front_coxa;
-  _map[make_key(Leg::FrontLeft,   Joint::Femur)] = angle_sensor_left_front_femur;
-  _map[make_key(Leg::FrontLeft,   Joint::Tibia)] = angle_sensor_left_front_tibia;
+  _map[make_key(Leg::LeftFront,   Joint::Coxa)]  = angle_sensor_left_front_coxa;
+  _map[make_key(Leg::LeftFront,   Joint::Femur)] = angle_sensor_left_front_femur;
+  _map[make_key(Leg::LeftFront,   Joint::Tibia)] = angle_sensor_left_front_tibia;
 
-  _map[make_key(Leg::FrontRight,  Joint::Coxa)]  = angle_sensor_right_front_coxa;
-  _map[make_key(Leg::FrontRight,  Joint::Femur)] = angle_sensor_right_front_femur;
-  _map[make_key(Leg::FrontRight,  Joint::Tibia)] = angle_sensor_right_front_tibia;
+  _map[make_key(Leg::RightFront,  Joint::Coxa)]  = angle_sensor_right_front_coxa;
+  _map[make_key(Leg::RightFront,  Joint::Femur)] = angle_sensor_right_front_femur;
+  _map[make_key(Leg::RightFront,  Joint::Tibia)] = angle_sensor_right_front_tibia;
 
-  _map[make_key(Leg::MiddleRight, Joint::Coxa)]  = angle_sensor_right_middle_coxa;
-  _map[make_key(Leg::MiddleRight, Joint::Femur)] = angle_sensor_right_middle_femur;
-  _map[make_key(Leg::MiddleRight, Joint::Tibia)] = angle_sensor_right_middle_tibia;
+  _map[make_key(Leg::RightMiddle, Joint::Coxa)]  = angle_sensor_right_middle_coxa;
+  _map[make_key(Leg::RightMiddle, Joint::Femur)] = angle_sensor_right_middle_femur;
+  _map[make_key(Leg::RightMiddle, Joint::Tibia)] = angle_sensor_right_middle_tibia;
 
-  _map[make_key(Leg::FrontRight,  Joint::Coxa)]  = angle_sensor_right_front_coxa;
-  _map[make_key(Leg::FrontRight,  Joint::Femur)] = angle_sensor_right_front_femur;
-  _map[make_key(Leg::FrontRight,  Joint::Tibia)] = angle_sensor_right_front_tibia;
+  _map[make_key(Leg::RightFront,  Joint::Coxa)]  = angle_sensor_right_front_coxa;
+  _map[make_key(Leg::RightFront,  Joint::Femur)] = angle_sensor_right_front_femur;
+  _map[make_key(Leg::RightFront,  Joint::Tibia)] = angle_sensor_right_front_tibia;
 }
 
 /**************************************************************************************
@@ -119,35 +119,35 @@ std::string GaitControllerInput::toStr()
   msg << "\n"
       << "Left\n"
       << "  Front :"
-      << "  Coxa: "   << _map[make_key(Leg::FrontLeft, Joint::Coxa)]->toStr()
-      << "  Femur: "  << _map[make_key(Leg::FrontLeft, Joint::Femur)]->toStr()
-      << "  Tibia: "  << _map[make_key(Leg::FrontLeft, Joint::Tibia)]->toStr()
+      << "  Coxa: "   << _map[make_key(Leg::LeftFront, Joint::Coxa)]->toStr()
+      << "  Femur: "  << _map[make_key(Leg::LeftFront, Joint::Femur)]->toStr()
+      << "  Tibia: "  << _map[make_key(Leg::LeftFront, Joint::Tibia)]->toStr()
       << "\n"
       << "  Middle:"
-      << "  Coxa: "   << _map[make_key(Leg::MiddleLeft, Joint::Coxa)]->toStr()
-      << "  Femur: "  << _map[make_key(Leg::MiddleLeft, Joint::Femur)]->toStr()
-      << "  Tibia: "  << _map[make_key(Leg::MiddleLeft, Joint::Tibia)]->toStr()
+      << "  Coxa: "   << _map[make_key(Leg::LeftMiddle, Joint::Coxa)]->toStr()
+      << "  Femur: "  << _map[make_key(Leg::LeftMiddle, Joint::Femur)]->toStr()
+      << "  Tibia: "  << _map[make_key(Leg::LeftMiddle, Joint::Tibia)]->toStr()
       << "\n"
       << "  Back  :"
-      << "  Coxa: "   << _map[make_key(Leg::BackLeft, Joint::Coxa)]->toStr()
-      << "  Femur: "  << _map[make_key(Leg::BackLeft, Joint::Femur)]->toStr()
-      << "  Tibia: "  << _map[make_key(Leg::BackLeft, Joint::Tibia)]->toStr()
+      << "  Coxa: "   << _map[make_key(Leg::LeftBack, Joint::Coxa)]->toStr()
+      << "  Femur: "  << _map[make_key(Leg::LeftBack, Joint::Femur)]->toStr()
+      << "  Tibia: "  << _map[make_key(Leg::LeftBack, Joint::Tibia)]->toStr()
       << "\n"
       << "Right\n"
       << "  Front :"
-      << "  Coxa: "   << _map[make_key(Leg::FrontRight, Joint::Coxa)]->toStr()
-      << "  Femur: "  << _map[make_key(Leg::FrontRight, Joint::Femur)]->toStr()
-      << "  Tibia: "  << _map[make_key(Leg::FrontRight, Joint::Tibia)]->toStr()
+      << "  Coxa: "   << _map[make_key(Leg::RightFront, Joint::Coxa)]->toStr()
+      << "  Femur: "  << _map[make_key(Leg::RightFront, Joint::Femur)]->toStr()
+      << "  Tibia: "  << _map[make_key(Leg::RightFront, Joint::Tibia)]->toStr()
       << "\n"
       << "  Middle:"
-      << "  Coxa: "   << _map[make_key(Leg::MiddleRight, Joint::Coxa)]->toStr()
-      << "  Femur: "  << _map[make_key(Leg::MiddleRight, Joint::Femur)]->toStr()
-      << "  Tibia: "  << _map[make_key(Leg::MiddleRight, Joint::Tibia)]->toStr()
+      << "  Coxa: "   << _map[make_key(Leg::RightMiddle, Joint::Coxa)]->toStr()
+      << "  Femur: "  << _map[make_key(Leg::RightMiddle, Joint::Femur)]->toStr()
+      << "  Tibia: "  << _map[make_key(Leg::RightMiddle, Joint::Tibia)]->toStr()
       << "\n"
       << "  Back  :"
-      << "  Coxa: "   << _map[make_key(Leg::BackRight, Joint::Coxa)]->toStr()
-      << "  Femur: "  << _map[make_key(Leg::BackRight, Joint::Femur)]->toStr()
-      << "  Tibia: "  << _map[make_key(Leg::BackRight, Joint::Tibia)]->toStr();
+      << "  Coxa: "   << _map[make_key(Leg::RightBack, Joint::Coxa)]->toStr()
+      << "  Femur: "  << _map[make_key(Leg::RightBack, Joint::Femur)]->toStr()
+      << "  Tibia: "  << _map[make_key(Leg::RightBack, Joint::Tibia)]->toStr();
 
   return msg.str();
 }

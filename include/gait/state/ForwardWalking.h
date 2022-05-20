@@ -36,30 +36,30 @@ static GaitSequence const RIPPLE_GAIT =
 {
   /* 1st gait::state sequence. */
   {
-    {Leg::FrontLeft,   LegState::Ground},
-    {Leg::FrontRight,  LegState::Air},
-    {Leg::MiddleLeft,  LegState::Air},
-    {Leg::MiddleRight, LegState::Ground},
-    {Leg::BackLeft,    LegState::Ground},
-    {Leg::BackRight,   LegState::Ground},
+    {Leg::LeftFront,   LegState::Ground},
+    {Leg::RightFront,  LegState::Air},
+    {Leg::LeftMiddle,  LegState::Air},
+    {Leg::RightMiddle, LegState::Ground},
+    {Leg::LeftBack,    LegState::Ground},
+    {Leg::RightBack,   LegState::Ground},
   },
   /* 2nd gait::state sequence. */
   {
-    {Leg::FrontLeft,   LegState::Ground},
-    {Leg::FrontRight,  LegState::Ground},
-    {Leg::MiddleLeft,  LegState::Ground},
-    {Leg::MiddleRight, LegState::Air},
-    {Leg::BackLeft,    LegState::Air},
-    {Leg::BackRight,   LegState::Ground},
+    {Leg::LeftFront,   LegState::Ground},
+    {Leg::RightFront,  LegState::Ground},
+    {Leg::LeftMiddle,  LegState::Ground},
+    {Leg::RightMiddle, LegState::Air},
+    {Leg::LeftBack,    LegState::Air},
+    {Leg::RightBack,   LegState::Ground},
   },
   /* 3rd gait::state sequence. */
   {
-    {Leg::FrontLeft,   LegState::Air},
-    {Leg::FrontRight,  LegState::Ground},
-    {Leg::MiddleLeft,  LegState::Ground},
-    {Leg::MiddleRight, LegState::Ground},
-    {Leg::BackLeft,    LegState::Ground},
-    {Leg::BackRight,   LegState::Air},
+    {Leg::LeftFront,   LegState::Air},
+    {Leg::RightFront,  LegState::Ground},
+    {Leg::LeftMiddle,  LegState::Ground},
+    {Leg::RightMiddle, LegState::Ground},
+    {Leg::LeftBack,    LegState::Ground},
+    {Leg::RightBack,   LegState::Air},
   },
 };
 

@@ -40,22 +40,22 @@ StateBase * Init::update(GaitControllerInput & input, GaitControllerOutput & out
 {
   static std::list<GaitControllerInput::AngleSensorMapKey> const COXA_ANGLE_SENSOR_KEY_LIST =
   {
-    std::tuple(Leg::FrontLeft,   Joint::Coxa),
-    std::tuple(Leg::FrontRight,  Joint::Coxa),
-    std::tuple(Leg::MiddleLeft,  Joint::Coxa),
-    std::tuple(Leg::MiddleRight, Joint::Coxa),
-    std::tuple(Leg::MiddleLeft,  Joint::Coxa),
-    std::tuple(Leg::MiddleRight, Joint::Coxa),
+    std::tuple(Leg::LeftFront,   Joint::Coxa),
+    std::tuple(Leg::RightFront,  Joint::Coxa),
+    std::tuple(Leg::LeftMiddle,  Joint::Coxa),
+    std::tuple(Leg::RightMiddle, Joint::Coxa),
+    std::tuple(Leg::LeftMiddle,  Joint::Coxa),
+    std::tuple(Leg::RightMiddle, Joint::Coxa),
   };
 
 
   /* Set the desired target angle. */
-  output(Leg::FrontLeft,   Joint::Coxa)->set(INITIAL_COXA_ANGLE);
-  output(Leg::FrontRight,  Joint::Coxa)->set(INITIAL_COXA_ANGLE);
-  output(Leg::MiddleLeft,  Joint::Coxa)->set(INITIAL_COXA_ANGLE);
-  output(Leg::MiddleRight, Joint::Coxa)->set(INITIAL_COXA_ANGLE);
-  output(Leg::BackLeft,    Joint::Coxa)->set(INITIAL_COXA_ANGLE);
-  output(Leg::BackRight,   Joint::Coxa)->set(INITIAL_COXA_ANGLE);
+  output(Leg::LeftFront,   Joint::Coxa)->set(INITIAL_COXA_ANGLE);
+  output(Leg::RightFront,  Joint::Coxa)->set(INITIAL_COXA_ANGLE);
+  output(Leg::LeftMiddle,  Joint::Coxa)->set(INITIAL_COXA_ANGLE);
+  output(Leg::RightMiddle, Joint::Coxa)->set(INITIAL_COXA_ANGLE);
+  output(Leg::LeftBack,    Joint::Coxa)->set(INITIAL_COXA_ANGLE);
+  output(Leg::RightBack,   Joint::Coxa)->set(INITIAL_COXA_ANGLE);
 
 
   /* Check if we have valid angles. */

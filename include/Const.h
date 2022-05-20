@@ -22,7 +22,13 @@ enum class Joint
 
 enum class Leg
 {
-  FrontLeft, FrontRight, MiddleLeft, MiddleRight, BackLeft, BackRight, Invalid
+  LeftFront,
+  LeftMiddle,
+  LeftBack,
+  RightFront,
+  RightMiddle,
+  RightBack,
+  Invalid
 };
 
 typedef struct
