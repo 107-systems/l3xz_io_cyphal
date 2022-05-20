@@ -103,7 +103,7 @@ public:
     }
 
     for (auto [id, sensor] : NODE_ID_TO_TIBIA_ANGLE_POSITION_SENSOR_MAP) {
-      if (_femur_angle_map.count(id) > 0) {
+      if (_tibia_angle_map.count(id) > 0) {
         NODE_ID_TO_TIBIA_ANGLE_POSITION_SENSOR_MAP.at(id)->update(_tibia_angle_map.at(id));
       }
     }
