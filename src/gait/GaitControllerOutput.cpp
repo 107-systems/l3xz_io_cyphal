@@ -71,9 +71,9 @@ GaitControllerOutput::GaitControllerOutput(common::actuator::interface::SharedAn
   _map[make_key(Leg::LeftMiddle,  Joint::Femur)] = angle_actuator_left_middle_femur;
   _map[make_key(Leg::LeftMiddle,  Joint::Tibia)] = angle_actuator_left_middle_tibia;
 
-  _map[make_key(Leg::LeftFront,   Joint::Coxa)]  = angle_actuator_left_front_coxa;
-  _map[make_key(Leg::LeftFront,   Joint::Femur)] = angle_actuator_left_front_femur;
-  _map[make_key(Leg::LeftFront,   Joint::Tibia)] = angle_actuator_left_front_tibia;
+  _map[make_key(Leg::LeftBack,    Joint::Coxa)]  = angle_actuator_left_back_coxa;
+  _map[make_key(Leg::LeftBack,    Joint::Femur)] = angle_actuator_left_back_femur;
+  _map[make_key(Leg::LeftBack,    Joint::Tibia)] = angle_actuator_left_back_tibia;
 
   _map[make_key(Leg::RightFront,  Joint::Coxa)]  = angle_actuator_right_front_coxa;
   _map[make_key(Leg::RightFront,  Joint::Femur)] = angle_actuator_right_front_femur;
@@ -83,9 +83,9 @@ GaitControllerOutput::GaitControllerOutput(common::actuator::interface::SharedAn
   _map[make_key(Leg::RightMiddle, Joint::Femur)] = angle_actuator_right_middle_femur;
   _map[make_key(Leg::RightMiddle, Joint::Tibia)] = angle_actuator_right_middle_tibia;
 
-  _map[make_key(Leg::RightFront,  Joint::Coxa)]  = angle_actuator_right_front_coxa;
-  _map[make_key(Leg::RightFront,  Joint::Femur)] = angle_actuator_right_front_femur;
-  _map[make_key(Leg::RightFront,  Joint::Tibia)] = angle_actuator_right_front_tibia;
+  _map[make_key(Leg::RightBack,   Joint::Coxa)]  = angle_actuator_right_back_coxa;
+  _map[make_key(Leg::RightBack,   Joint::Femur)] = angle_actuator_right_back_femur;
+  _map[make_key(Leg::RightBack,   Joint::Tibia)] = angle_actuator_right_back_tibia;
 }
 
 /**************************************************************************************

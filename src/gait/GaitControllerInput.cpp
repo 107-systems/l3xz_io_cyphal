@@ -73,9 +73,9 @@ GaitControllerInput::GaitControllerInput(TeleopCommandData const teleop_cmd,
   _map[make_key(Leg::LeftMiddle,  Joint::Femur)] = angle_sensor_left_middle_femur;
   _map[make_key(Leg::LeftMiddle,  Joint::Tibia)] = angle_sensor_left_middle_tibia;
 
-  _map[make_key(Leg::LeftFront,   Joint::Coxa)]  = angle_sensor_left_front_coxa;
-  _map[make_key(Leg::LeftFront,   Joint::Femur)] = angle_sensor_left_front_femur;
-  _map[make_key(Leg::LeftFront,   Joint::Tibia)] = angle_sensor_left_front_tibia;
+  _map[make_key(Leg::LeftBack,    Joint::Coxa)]  = angle_sensor_left_back_coxa;
+  _map[make_key(Leg::LeftBack,    Joint::Femur)] = angle_sensor_left_back_femur;
+  _map[make_key(Leg::LeftBack,    Joint::Tibia)] = angle_sensor_left_back_tibia;
 
   _map[make_key(Leg::RightFront,  Joint::Coxa)]  = angle_sensor_right_front_coxa;
   _map[make_key(Leg::RightFront,  Joint::Femur)] = angle_sensor_right_front_femur;
@@ -85,9 +85,9 @@ GaitControllerInput::GaitControllerInput(TeleopCommandData const teleop_cmd,
   _map[make_key(Leg::RightMiddle, Joint::Femur)] = angle_sensor_right_middle_femur;
   _map[make_key(Leg::RightMiddle, Joint::Tibia)] = angle_sensor_right_middle_tibia;
 
-  _map[make_key(Leg::RightFront,  Joint::Coxa)]  = angle_sensor_right_front_coxa;
-  _map[make_key(Leg::RightFront,  Joint::Femur)] = angle_sensor_right_front_femur;
-  _map[make_key(Leg::RightFront,  Joint::Tibia)] = angle_sensor_right_front_tibia;
+  _map[make_key(Leg::RightBack,   Joint::Coxa)]  = angle_sensor_right_back_coxa;
+  _map[make_key(Leg::RightBack,   Joint::Femur)] = angle_sensor_right_back_femur;
+  _map[make_key(Leg::RightBack,   Joint::Tibia)] = angle_sensor_right_back_tibia;
 }
 
 /**************************************************************************************
