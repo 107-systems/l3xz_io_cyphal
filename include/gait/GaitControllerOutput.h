@@ -31,12 +31,25 @@ namespace gait
 class GaitControllerOutput
 {
 public:
-  GaitControllerOutput(common::actuator::interface::SharedAnglePositionActuator angle_actuator_coxa_leg_front_left,
-                       common::actuator::interface::SharedAnglePositionActuator angle_actuator_coxa_leg_front_right,
-                       common::actuator::interface::SharedAnglePositionActuator angle_actuator_coxa_leg_middle_left,
-                       common::actuator::interface::SharedAnglePositionActuator angle_actuator_coxa_leg_middle_right,
-                       common::actuator::interface::SharedAnglePositionActuator angle_actuator_coxa_leg_back_left,
-                       common::actuator::interface::SharedAnglePositionActuator angle_actuator_coxa_leg_back_right);
+  GaitControllerOutput(common::actuator::interface::SharedAnglePositionActuator angle_actuator_left_front_coxa,
+                       common::actuator::interface::SharedAnglePositionActuator angle_actuator_left_front_femur,
+                       common::actuator::interface::SharedAnglePositionActuator angle_actuator_left_front_tibia,
+                       common::actuator::interface::SharedAnglePositionActuator angle_actuator_left_middle_coxa,
+                       common::actuator::interface::SharedAnglePositionActuator angle_actuator_left_middle_femur,
+                       common::actuator::interface::SharedAnglePositionActuator angle_actuator_left_middle_tibia,
+                       common::actuator::interface::SharedAnglePositionActuator angle_actuator_left_back_coxa,
+                       common::actuator::interface::SharedAnglePositionActuator angle_actuator_left_back_femur,
+                       common::actuator::interface::SharedAnglePositionActuator angle_actuator_left_back_tibia,
+                       common::actuator::interface::SharedAnglePositionActuator angle_actuator_right_front_coxa,
+                       common::actuator::interface::SharedAnglePositionActuator angle_actuator_right_front_femur,
+                       common::actuator::interface::SharedAnglePositionActuator angle_actuator_right_front_tibia,
+                       common::actuator::interface::SharedAnglePositionActuator angle_actuator_right_middle_coxa,
+                       common::actuator::interface::SharedAnglePositionActuator angle_actuator_right_middle_femur,
+                       common::actuator::interface::SharedAnglePositionActuator angle_actuator_right_middle_tibia,
+                       common::actuator::interface::SharedAnglePositionActuator angle_actuator_right_back_coxa,
+                       common::actuator::interface::SharedAnglePositionActuator angle_actuator_right_back_femur,
+                       common::actuator::interface::SharedAnglePositionActuator angle_actuator_right_back_tibia);
+                       
 
   common::actuator::interface::SharedAnglePositionActuator operator()(Leg const leg, Joint const joint);
 

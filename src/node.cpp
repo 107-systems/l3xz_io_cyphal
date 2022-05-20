@@ -118,14 +118,14 @@ int main(int argc, char **argv) try
 
   glue::l3xz::ELROB2022::DynamixelAnglePositionActuatorBulkWriter dynamixel_angle_position_actuator_bulk_writer(mx28_ctrl);
 
-  auto angle_actuator_coxa_leg_front_left   = std::make_shared<glue::l3xz::ELROB2022::DynamixelAnglePositionActuator>("LEG F/L Coxa", 1, [&dynamixel_angle_position_actuator_bulk_writer](driver::Dynamixel::Id const id, float const angle_deg) { dynamixel_angle_position_actuator_bulk_writer.update(id, angle_deg); });
-  auto angle_actuator_coxa_leg_front_right  = std::make_shared<glue::l3xz::ELROB2022::DynamixelAnglePositionActuator>("LEG F/R Coxa", 6, [&dynamixel_angle_position_actuator_bulk_writer](driver::Dynamixel::Id const id, float const angle_deg) { dynamixel_angle_position_actuator_bulk_writer.update(id, angle_deg); });
-  auto angle_actuator_coxa_leg_middle_left  = std::make_shared<glue::l3xz::ELROB2022::DynamixelAnglePositionActuator>("LEG M/L Coxa", 2, [&dynamixel_angle_position_actuator_bulk_writer](driver::Dynamixel::Id const id, float const angle_deg) { dynamixel_angle_position_actuator_bulk_writer.update(id, angle_deg); });
-  auto angle_actuator_coxa_leg_middle_right = std::make_shared<glue::l3xz::ELROB2022::DynamixelAnglePositionActuator>("LEG M/R Coxa", 5, [&dynamixel_angle_position_actuator_bulk_writer](driver::Dynamixel::Id const id, float const angle_deg) { dynamixel_angle_position_actuator_bulk_writer.update(id, angle_deg); });
-  auto angle_actuator_coxa_leg_back_left    = std::make_shared<glue::l3xz::ELROB2022::DynamixelAnglePositionActuator>("LEG B/L Coxa", 3, [&dynamixel_angle_position_actuator_bulk_writer](driver::Dynamixel::Id const id, float const angle_deg) { dynamixel_angle_position_actuator_bulk_writer.update(id, angle_deg); });
-  auto angle_actuator_coxa_leg_back_right   = std::make_shared<glue::l3xz::ELROB2022::DynamixelAnglePositionActuator>("LEG B/R Coxa", 4, [&dynamixel_angle_position_actuator_bulk_writer](driver::Dynamixel::Id const id, float const angle_deg) { dynamixel_angle_position_actuator_bulk_writer.update(id, angle_deg); });
-  auto angle_actuator_sensor_head_pan       = std::make_shared<glue::l3xz::ELROB2022::DynamixelAnglePositionActuator>("HEAD Pan    ", 7, [&dynamixel_angle_position_actuator_bulk_writer](driver::Dynamixel::Id const id, float const angle_deg) { dynamixel_angle_position_actuator_bulk_writer.update(id, angle_deg); });
-  auto angle_actuator_sensor_head_tilt      = std::make_shared<glue::l3xz::ELROB2022::DynamixelAnglePositionActuator>("HEAD Tilt   ", 8, [&dynamixel_angle_position_actuator_bulk_writer](driver::Dynamixel::Id const id, float const angle_deg) { dynamixel_angle_position_actuator_bulk_writer.update(id, angle_deg); });
+  auto angle_actuator_left_front_coxa   = std::make_shared<glue::l3xz::ELROB2022::DynamixelAnglePositionActuator>("LEG F/L Coxa", 1, [&dynamixel_angle_position_actuator_bulk_writer](driver::Dynamixel::Id const id, float const angle_deg) { dynamixel_angle_position_actuator_bulk_writer.update(id, angle_deg); });
+  auto angle_actuator_right_front_coxa  = std::make_shared<glue::l3xz::ELROB2022::DynamixelAnglePositionActuator>("LEG F/R Coxa", 6, [&dynamixel_angle_position_actuator_bulk_writer](driver::Dynamixel::Id const id, float const angle_deg) { dynamixel_angle_position_actuator_bulk_writer.update(id, angle_deg); });
+  auto angle_actuator_left_middle_coxa  = std::make_shared<glue::l3xz::ELROB2022::DynamixelAnglePositionActuator>("LEG M/L Coxa", 2, [&dynamixel_angle_position_actuator_bulk_writer](driver::Dynamixel::Id const id, float const angle_deg) { dynamixel_angle_position_actuator_bulk_writer.update(id, angle_deg); });
+  auto angle_actuator_right_middle_coxa = std::make_shared<glue::l3xz::ELROB2022::DynamixelAnglePositionActuator>("LEG M/R Coxa", 5, [&dynamixel_angle_position_actuator_bulk_writer](driver::Dynamixel::Id const id, float const angle_deg) { dynamixel_angle_position_actuator_bulk_writer.update(id, angle_deg); });
+  auto angle_actuator_left_back_coxa    = std::make_shared<glue::l3xz::ELROB2022::DynamixelAnglePositionActuator>("LEG B/L Coxa", 3, [&dynamixel_angle_position_actuator_bulk_writer](driver::Dynamixel::Id const id, float const angle_deg) { dynamixel_angle_position_actuator_bulk_writer.update(id, angle_deg); });
+  auto angle_actuator_right_back_coxa   = std::make_shared<glue::l3xz::ELROB2022::DynamixelAnglePositionActuator>("LEG B/R Coxa", 4, [&dynamixel_angle_position_actuator_bulk_writer](driver::Dynamixel::Id const id, float const angle_deg) { dynamixel_angle_position_actuator_bulk_writer.update(id, angle_deg); });
+  auto angle_actuator_sensor_head_pan   = std::make_shared<glue::l3xz::ELROB2022::DynamixelAnglePositionActuator>("HEAD Pan    ", 7, [&dynamixel_angle_position_actuator_bulk_writer](driver::Dynamixel::Id const id, float const angle_deg) { dynamixel_angle_position_actuator_bulk_writer.update(id, angle_deg); });
+  auto angle_actuator_sensor_head_tilt  = std::make_shared<glue::l3xz::ELROB2022::DynamixelAnglePositionActuator>("HEAD Tilt   ", 8, [&dynamixel_angle_position_actuator_bulk_writer](driver::Dynamixel::Id const id, float const angle_deg) { dynamixel_angle_position_actuator_bulk_writer.update(id, angle_deg); });
 
   /**************************************************************************************
    * OPENCYPHAL
@@ -206,19 +206,19 @@ int main(int argc, char **argv) try
   auto valve_actuator_back_right_tibia       = std::make_shared<glue::l3xz::ELROB2022::SSC32ValveActuator>("LEG B/R Tibia", pwm_actuator_valve_back_right_tibia);
 
 
-  auto angle_actuator_front_left_femur       = std::make_shared<glue::l3xz::ELROB2022::SSC32AnglePositionActuator>("LEG F/L Femur", valve_actuator_front_left_femur,   angle_sensor_femur_leg_front_left);
-  auto angle_actuator_front_left_tibia       = std::make_shared<glue::l3xz::ELROB2022::SSC32AnglePositionActuator>("LEG F/L Tibia", valve_actuator_front_left_tibia,   angle_sensor_tibia_leg_front_left);
-  auto angle_actuator_middle_left_femur      = std::make_shared<glue::l3xz::ELROB2022::SSC32AnglePositionActuator>("LEG M/L Femur", valve_actuator_middle_left_femur,  angle_sensor_femur_leg_middle_left);
-  auto angle_actuator_middle_left_tibia      = std::make_shared<glue::l3xz::ELROB2022::SSC32AnglePositionActuator>("LEG M/L Tibia", valve_actuator_middle_left_tibia,  angle_sensor_tibia_leg_middle_left);
-  auto angle_actuator_back_left_femur        = std::make_shared<glue::l3xz::ELROB2022::SSC32AnglePositionActuator>("LEG B/L Femur", valve_actuator_back_left_femur,    angle_sensor_femur_leg_back_left);
-  auto angle_actuator_back_left_tibia        = std::make_shared<glue::l3xz::ELROB2022::SSC32AnglePositionActuator>("LEG B/L Tibia", valve_actuator_back_left_tibia,    angle_sensor_tibia_leg_back_left);
+  auto angle_actuator_left_front_femur       = std::make_shared<glue::l3xz::ELROB2022::SSC32AnglePositionActuator>("LEG F/L Femur", valve_actuator_front_left_femur,   angle_sensor_femur_leg_front_left);
+  auto angle_actuator_left_front_tibia       = std::make_shared<glue::l3xz::ELROB2022::SSC32AnglePositionActuator>("LEG F/L Tibia", valve_actuator_front_left_tibia,   angle_sensor_tibia_leg_front_left);
+  auto angle_actuator_left_middle_femur      = std::make_shared<glue::l3xz::ELROB2022::SSC32AnglePositionActuator>("LEG M/L Femur", valve_actuator_middle_left_femur,  angle_sensor_femur_leg_middle_left);
+  auto angle_actuator_left_middle_tibia      = std::make_shared<glue::l3xz::ELROB2022::SSC32AnglePositionActuator>("LEG M/L Tibia", valve_actuator_middle_left_tibia,  angle_sensor_tibia_leg_middle_left);
+  auto angle_actuator_left_back_femur        = std::make_shared<glue::l3xz::ELROB2022::SSC32AnglePositionActuator>("LEG B/L Femur", valve_actuator_back_left_femur,    angle_sensor_femur_leg_back_left);
+  auto angle_actuator_left_back_tibia        = std::make_shared<glue::l3xz::ELROB2022::SSC32AnglePositionActuator>("LEG B/L Tibia", valve_actuator_back_left_tibia,    angle_sensor_tibia_leg_back_left);
 
-  auto angle_actuator_front_right_femur      = std::make_shared<glue::l3xz::ELROB2022::SSC32AnglePositionActuator>("LEG F/R Femur", valve_actuator_front_right_femur,  angle_sensor_femur_leg_front_right);
-  auto angle_actuator_front_right_tibia      = std::make_shared<glue::l3xz::ELROB2022::SSC32AnglePositionActuator>("LEG F/R Tibia", valve_actuator_front_right_tibia,  angle_sensor_tibia_leg_front_right);
-  auto angle_actuator_middle_right_femur     = std::make_shared<glue::l3xz::ELROB2022::SSC32AnglePositionActuator>("LEG M/R Femur", valve_actuator_middle_right_femur, angle_sensor_femur_leg_middle_right);
-  auto angle_actuator_middle_right_tibia     = std::make_shared<glue::l3xz::ELROB2022::SSC32AnglePositionActuator>("LEG M/R Tibia", valve_actuator_middle_right_tibia, angle_sensor_tibia_leg_middle_right);
-  auto angle_actuator_back_right_femur       = std::make_shared<glue::l3xz::ELROB2022::SSC32AnglePositionActuator>("LEG B/R Femur", valve_actuator_back_right_femur,   angle_sensor_femur_leg_back_right);
-  auto angle_actuator_back_right_tibia       = std::make_shared<glue::l3xz::ELROB2022::SSC32AnglePositionActuator>("LEG B/R Tibia", valve_actuator_back_right_tibia,   angle_sensor_tibia_leg_back_right);
+  auto angle_actuator_right_front_femur      = std::make_shared<glue::l3xz::ELROB2022::SSC32AnglePositionActuator>("LEG F/R Femur", valve_actuator_front_right_femur,  angle_sensor_femur_leg_front_right);
+  auto angle_actuator_right_front_tibia      = std::make_shared<glue::l3xz::ELROB2022::SSC32AnglePositionActuator>("LEG F/R Tibia", valve_actuator_front_right_tibia,  angle_sensor_tibia_leg_front_right);
+  auto angle_actuator_right_middle_femur     = std::make_shared<glue::l3xz::ELROB2022::SSC32AnglePositionActuator>("LEG M/R Femur", valve_actuator_middle_right_femur, angle_sensor_femur_leg_middle_right);
+  auto angle_actuator_right_middle_tibia     = std::make_shared<glue::l3xz::ELROB2022::SSC32AnglePositionActuator>("LEG M/R Tibia", valve_actuator_middle_right_tibia, angle_sensor_tibia_leg_middle_right);
+  auto angle_actuator_right_back_femur       = std::make_shared<glue::l3xz::ELROB2022::SSC32AnglePositionActuator>("LEG B/R Femur", valve_actuator_back_right_femur,   angle_sensor_femur_leg_back_right);
+  auto angle_actuator_right_back_tibia       = std::make_shared<glue::l3xz::ELROB2022::SSC32AnglePositionActuator>("LEG B/R Tibia", valve_actuator_back_right_tibia,   angle_sensor_tibia_leg_back_right);
 
   /**************************************************************************************
    * STATE
@@ -228,13 +228,24 @@ int main(int argc, char **argv) try
   ros::Subscriber cmd_vel_sub = node_hdl.subscribe<geometry_msgs::Twist>("/l3xz/cmd_vel", 10, std::bind(cmd_vel_callback, std::placeholders::_1, std::ref(teleop_cmd_data)));
 
   gait::GaitController gait_ctrl;
-  gait::GaitControllerOutput gait_ctrl_output(angle_actuator_coxa_leg_front_left,
-                                              angle_actuator_coxa_leg_front_right,
-                                              angle_actuator_coxa_leg_middle_left,
-                                              angle_actuator_coxa_leg_middle_right,
-                                              angle_actuator_coxa_leg_back_left,
-                                              angle_actuator_coxa_leg_back_right);
-
+  gait::GaitControllerOutput gait_ctrl_output(angle_actuator_left_front_coxa,
+                                              angle_actuator_left_front_femur,
+                                              angle_actuator_left_front_tibia,
+                                              angle_actuator_left_middle_coxa,
+                                              angle_actuator_left_middle_femur,
+                                              angle_actuator_left_middle_tibia,
+                                              angle_actuator_left_back_coxa,
+                                              angle_actuator_left_back_femur,
+                                              angle_actuator_left_back_tibia,
+                                              angle_actuator_right_front_coxa,
+                                              angle_actuator_right_front_femur,
+                                              angle_actuator_right_front_tibia,
+                                              angle_actuator_right_middle_coxa,
+                                              angle_actuator_right_middle_femur,
+                                              angle_actuator_right_middle_tibia,
+                                              angle_actuator_right_back_coxa,
+                                              angle_actuator_right_back_femur,
+                                              angle_actuator_right_back_tibia);
 
   head::HeadController head_ctrl;
   head::HeadControllerOutput head_ctrl_output(angle_actuator_sensor_head_pan,
