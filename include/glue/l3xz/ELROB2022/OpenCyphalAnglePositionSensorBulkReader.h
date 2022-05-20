@@ -44,21 +44,25 @@ public:
                                           SharedOpenCyphalAnglePositionSensor angle_sensor_tibia_leg_middle_right,
                                           SharedOpenCyphalAnglePositionSensor angle_sensor_femur_leg_back_right,
                                           SharedOpenCyphalAnglePositionSensor angle_sensor_tibia_leg_back_right)
-  : _angle_sensor_femur_leg_front_left  {angle_sensor_femur_leg_front_left}
-  , _angle_sensor_tibia_leg_front_left  {angle_sensor_tibia_leg_front_left}
-  , _angle_sensor_femur_leg_middle_left {angle_sensor_femur_leg_middle_left}
-  , _angle_sensor_tibia_leg_middle_left {angle_sensor_tibia_leg_middle_left}
-  , _angle_sensor_femur_leg_back_left   {angle_sensor_femur_leg_back_left}
-  , _angle_sensor_tibia_leg_back_left   {angle_sensor_tibia_leg_back_left}
-  , _angle_sensor_femur_leg_front_right {angle_sensor_femur_leg_front_right}
-  , _angle_sensor_tibia_leg_front_right {angle_sensor_tibia_leg_front_right}
-  , _angle_sensor_femur_leg_middle_right{angle_sensor_femur_leg_middle_right}
-  , _angle_sensor_tibia_leg_middle_right{angle_sensor_tibia_leg_middle_right}
-  , _angle_sensor_femur_leg_back_right  {angle_sensor_femur_leg_back_right}
-  , _angle_sensor_tibia_leg_back_right  {angle_sensor_tibia_leg_back_right}
+  : NODE_ID_TO_FEMUR_ANGLE_POSITION_SENSOR_MAP
   {
-
+    {1, angle_sensor_femur_leg_front_left},
+    {2, angle_sensor_femur_leg_middle_left},
+    {3, angle_sensor_femur_leg_back_left},
+    {4, angle_sensor_femur_leg_back_right},
+    {5, angle_sensor_femur_leg_middle_right},
+    {6, angle_sensor_femur_leg_front_right},
   }
+  , NODE_ID_TO_TIBIA_ANGLE_POSITION_SENSOR_MAP
+  {
+    {1, angle_sensor_tibia_leg_front_left},
+    {2, angle_sensor_tibia_leg_middle_left},
+    {3, angle_sensor_tibia_leg_back_left},
+    {4, angle_sensor_tibia_leg_back_right},
+    {5, angle_sensor_tibia_leg_middle_right},
+    {6, angle_sensor_tibia_leg_front_right},
+  }
+  { }
 
   void update_femur_angle(CanardNodeID const node_id, float const femur_angle_deg)
   {
@@ -78,8 +82,17 @@ public:
   {
     std::lock_guard<std::mutex> lock(_mtx);
 
-    if (_femur_angle_map.count(255) > 0) _angle_sensor_femur_leg_front_left->update(_femur_angle_map.at(255));
-    if (_tibia_angle_map.count(255) > 0) _angle_sensor_tibia_leg_front_left->update(_tibia_angle_map.at(255));
+    for (auto [id, sensor] : NODE_ID_TO_FEMUR_ANGLE_POSITION_SENSOR_MAP) {
+      if (_femur_angle_map.count(id) > 0) {
+        NODE_ID_TO_FEMUR_ANGLE_POSITION_SENSOR_MAP.at(id)->update(_femur_angle_map.at(id));
+      }
+    }
+
+    for (auto [id, sensor] : NODE_ID_TO_TIBIA_ANGLE_POSITION_SENSOR_MAP) {
+      if (_femur_angle_map.count(id) > 0) {
+        NODE_ID_TO_TIBIA_ANGLE_POSITION_SENSOR_MAP.at(id)->update(_tibia_angle_map.at(id));
+      }
+    }
   }
 
 private:
@@ -88,18 +101,8 @@ private:
   std::map<CanardNodeID, float> _femur_angle_map;
   std::map<CanardNodeID, float> _tibia_angle_map;
 
-  SharedOpenCyphalAnglePositionSensor _angle_sensor_femur_leg_front_left,
-                                      _angle_sensor_tibia_leg_front_left,
-                                      _angle_sensor_femur_leg_middle_left,
-                                      _angle_sensor_tibia_leg_middle_left,
-                                      _angle_sensor_femur_leg_back_left,
-                                      _angle_sensor_tibia_leg_back_left,
-                                      _angle_sensor_femur_leg_front_right,
-                                      _angle_sensor_tibia_leg_front_right,
-                                      _angle_sensor_femur_leg_middle_right,
-                                      _angle_sensor_tibia_leg_middle_right,
-                                      _angle_sensor_femur_leg_back_right,
-                                      _angle_sensor_tibia_leg_back_right;
+  std::map<CanardNodeID, SharedOpenCyphalAnglePositionSensor> const NODE_ID_TO_FEMUR_ANGLE_POSITION_SENSOR_MAP;
+  std::map<CanardNodeID, SharedOpenCyphalAnglePositionSensor> const NODE_ID_TO_TIBIA_ANGLE_POSITION_SENSOR_MAP;
 };
 
 /**************************************************************************************
