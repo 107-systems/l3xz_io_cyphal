@@ -33,24 +33,24 @@ class GaitControllerInput
 {
 public:
   GaitControllerInput(TeleopCommandData const teleop_cmd,
-                      common::sensor::interface::SharedAnglePositionSensor angle_sensor_coxa_leg_front_left,
-                      common::sensor::interface::SharedAnglePositionSensor angle_sensor_coxa_leg_front_right,
-                      common::sensor::interface::SharedAnglePositionSensor angle_sensor_coxa_leg_middle_left,
-                      common::sensor::interface::SharedAnglePositionSensor angle_sensor_coxa_leg_middle_right,
-                      common::sensor::interface::SharedAnglePositionSensor angle_sensor_coxa_leg_back_left,
-                      common::sensor::interface::SharedAnglePositionSensor angle_sensor_coxa_leg_back_right,
-                      common::sensor::interface::SharedAnglePositionSensor angle_sensor_femur_leg_front_left,
-                      common::sensor::interface::SharedAnglePositionSensor angle_sensor_tibia_leg_front_left,
-                      common::sensor::interface::SharedAnglePositionSensor angle_sensor_femur_leg_middle_left,
-                      common::sensor::interface::SharedAnglePositionSensor angle_sensor_tibia_leg_middle_left,
-                      common::sensor::interface::SharedAnglePositionSensor angle_sensor_femur_leg_back_left,
-                      common::sensor::interface::SharedAnglePositionSensor angle_sensor_tibia_leg_back_left,
-                      common::sensor::interface::SharedAnglePositionSensor angle_sensor_femur_leg_front_right,
-                      common::sensor::interface::SharedAnglePositionSensor angle_sensor_tibia_leg_front_right,
-                      common::sensor::interface::SharedAnglePositionSensor angle_sensor_femur_leg_middle_right,
-                      common::sensor::interface::SharedAnglePositionSensor angle_sensor_tibia_leg_middle_right,
-                      common::sensor::interface::SharedAnglePositionSensor angle_sensor_femur_leg_back_right,
-                      common::sensor::interface::SharedAnglePositionSensor angle_sensor_tibia_leg_back_right);
+                      common::sensor::interface::SharedAnglePositionSensor angle_sensor_left_front_coxa,
+                      common::sensor::interface::SharedAnglePositionSensor angle_sensor_left_front_femur,
+                      common::sensor::interface::SharedAnglePositionSensor angle_sensor_left_front_tibia,
+                      common::sensor::interface::SharedAnglePositionSensor angle_sensor_left_middle_coxa,
+                      common::sensor::interface::SharedAnglePositionSensor angle_sensor_left_middle_femur,
+                      common::sensor::interface::SharedAnglePositionSensor angle_sensor_left_middle_tibia,
+                      common::sensor::interface::SharedAnglePositionSensor angle_sensor_left_back_coxa,
+                      common::sensor::interface::SharedAnglePositionSensor angle_sensor_left_back_femur,
+                      common::sensor::interface::SharedAnglePositionSensor angle_sensor_left_back_tibia,
+                      common::sensor::interface::SharedAnglePositionSensor angle_sensor_right_front_coxa,
+                      common::sensor::interface::SharedAnglePositionSensor angle_sensor_right_front_femur,
+                      common::sensor::interface::SharedAnglePositionSensor angle_sensor_right_front_tibia,
+                      common::sensor::interface::SharedAnglePositionSensor angle_sensor_right_middle_coxa,
+                      common::sensor::interface::SharedAnglePositionSensor angle_sensor_right_middle_femur,
+                      common::sensor::interface::SharedAnglePositionSensor angle_sensor_right_middle_tibia,
+                      common::sensor::interface::SharedAnglePositionSensor angle_sensor_right_back_coxa,
+                      common::sensor::interface::SharedAnglePositionSensor angle_sensor_right_back_femur,
+                      common::sensor::interface::SharedAnglePositionSensor angle_sensor_right_back_tibia);
 
   TeleopCommandData const _teleop_cmd;
 

@@ -36,35 +36,35 @@ namespace glue::l3xz::ELROB2022
 class OpenCyphalAnglePositionSensorBulkReader
 {
 public:
-  OpenCyphalAnglePositionSensorBulkReader(SharedOpenCyphalAnglePositionSensor angle_sensor_femur_leg_front_left,
-                                          SharedOpenCyphalAnglePositionSensor angle_sensor_tibia_leg_front_left,
-                                          SharedOpenCyphalAnglePositionSensor angle_sensor_femur_leg_middle_left,
-                                          SharedOpenCyphalAnglePositionSensor angle_sensor_tibia_leg_middle_left,
-                                          SharedOpenCyphalAnglePositionSensor angle_sensor_femur_leg_back_left,
-                                          SharedOpenCyphalAnglePositionSensor angle_sensor_tibia_leg_back_left,
-                                          SharedOpenCyphalAnglePositionSensor angle_sensor_femur_leg_front_right,
-                                          SharedOpenCyphalAnglePositionSensor angle_sensor_tibia_leg_front_right,
-                                          SharedOpenCyphalAnglePositionSensor angle_sensor_femur_leg_middle_right,
-                                          SharedOpenCyphalAnglePositionSensor angle_sensor_tibia_leg_middle_right,
-                                          SharedOpenCyphalAnglePositionSensor angle_sensor_femur_leg_back_right,
-                                          SharedOpenCyphalAnglePositionSensor angle_sensor_tibia_leg_back_right)
+  OpenCyphalAnglePositionSensorBulkReader(SharedOpenCyphalAnglePositionSensor angle_sensor_left_front_femur,
+                                          SharedOpenCyphalAnglePositionSensor angle_sensor_left_front_tibia,
+                                          SharedOpenCyphalAnglePositionSensor angle_sensor_left_middle_femur,
+                                          SharedOpenCyphalAnglePositionSensor angle_sensor_left_middle_tibia,
+                                          SharedOpenCyphalAnglePositionSensor angle_sensor_left_back_femur,
+                                          SharedOpenCyphalAnglePositionSensor angle_sensor_left_back_tibia,
+                                          SharedOpenCyphalAnglePositionSensor angle_sensor_right_back_femur,
+                                          SharedOpenCyphalAnglePositionSensor angle_sensor_right_back_tibia,
+                                          SharedOpenCyphalAnglePositionSensor angle_sensor_right_middle_femur,
+                                          SharedOpenCyphalAnglePositionSensor angle_sensor_right_middle_tibia,
+                                          SharedOpenCyphalAnglePositionSensor angle_sensor_right_front_femur,
+                                          SharedOpenCyphalAnglePositionSensor angle_sensor_right_front_tibia)
   : NODE_ID_TO_FEMUR_ANGLE_POSITION_SENSOR_MAP
   {
-    {1, angle_sensor_femur_leg_front_left},
-    {2, angle_sensor_femur_leg_middle_left},
-    {3, angle_sensor_femur_leg_back_left},
-    {4, angle_sensor_femur_leg_back_right},
-    {5, angle_sensor_femur_leg_middle_right},
-    {6, angle_sensor_femur_leg_front_right},
+    {1, angle_sensor_left_front_femur},
+    {2, angle_sensor_left_middle_femur},
+    {3, angle_sensor_left_back_femur},
+    {4, angle_sensor_right_back_femur},
+    {5, angle_sensor_right_middle_femur},
+    {6, angle_sensor_right_front_femur},
   }
   , NODE_ID_TO_TIBIA_ANGLE_POSITION_SENSOR_MAP
   {
-    {1, angle_sensor_tibia_leg_front_left},
-    {2, angle_sensor_tibia_leg_middle_left},
-    {3, angle_sensor_tibia_leg_back_left},
-    {4, angle_sensor_tibia_leg_back_right},
-    {5, angle_sensor_tibia_leg_middle_right},
-    {6, angle_sensor_tibia_leg_front_right},
+    {1, angle_sensor_left_front_tibia},
+    {2, angle_sensor_left_middle_tibia},
+    {3, angle_sensor_left_back_tibia},
+    {4, angle_sensor_right_back_tibia},
+    {5, angle_sensor_right_middle_tibia},
+    {6, angle_sensor_right_front_tibia},
   },
   ALLOWED_NODE_ID_VECT{1,2,3,4,5,6}
   { }
