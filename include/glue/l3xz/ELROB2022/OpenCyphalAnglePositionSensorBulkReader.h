@@ -15,8 +15,12 @@
 
 #include <map>
 #include <mutex>
+#include <vector>
 
 #include <canard.h>
+
+#include <ros/ros.h>
+#include <ros/console.h>
 
 /**************************************************************************************
  * NAMESPACE
@@ -61,16 +65,26 @@ public:
     {4, angle_sensor_tibia_leg_back_right},
     {5, angle_sensor_tibia_leg_middle_right},
     {6, angle_sensor_tibia_leg_front_right},
-  }
+  },
+  ALLOWED_NODE_ID_VECT{1,2,3,4,5,6}
   { }
 
   void update_femur_angle(CanardNodeID const node_id, float const femur_angle_deg)
   {
+    if (!isValidNodeId(node_id)) {
+      ROS_WARN("OpenCyphalAnglePositionSensorBulkReader::update_femur_angle: invalid node id received: %d", node_id);
+      return;
+    }
     std::lock_guard<std::mutex> lock(_mtx);
     _femur_angle_map[node_id] = femur_angle_deg;
   }
+
   void update_tibia_angle(CanardNodeID const node_id, float const tibia_angle_deg)
   {
+    if (!isValidNodeId(node_id)) {
+      ROS_WARN("OpenCyphalAnglePositionSensorBulkReader::update_tibia_angle: invalid node id received: %d", node_id);
+      return;
+    }
     std::lock_guard<std::mutex> lock(_mtx);
     _tibia_angle_map[node_id] = tibia_angle_deg;
   }
@@ -103,6 +117,17 @@ private:
 
   std::map<CanardNodeID, SharedOpenCyphalAnglePositionSensor> const NODE_ID_TO_FEMUR_ANGLE_POSITION_SENSOR_MAP;
   std::map<CanardNodeID, SharedOpenCyphalAnglePositionSensor> const NODE_ID_TO_TIBIA_ANGLE_POSITION_SENSOR_MAP;
+
+  std::vector<CanardNodeID> const ALLOWED_NODE_ID_VECT;
+
+  bool isValidNodeId(CanardNodeID const node_id) const
+  {
+    auto citer = std::find(std::cbegin(ALLOWED_NODE_ID_VECT),
+                           std::cend  (ALLOWED_NODE_ID_VECT),
+                           node_id);
+    bool const node_id_found = (citer != std::cend(ALLOWED_NODE_ID_VECT));
+    return node_id_found;
+  }
 };
 
 /**************************************************************************************
