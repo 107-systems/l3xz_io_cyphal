@@ -13,6 +13,8 @@
 
 #include <driver/dynamixel/MX28.h>
 
+#include <cassert>
+
 #include "Const.h"
 #include "DynamixelAnglePositionSensor.h"
 
@@ -51,7 +53,26 @@ public:
     {7, angle_sensor_sensor_head_pan},
     {8, angle_sensor_sensor_head_tilt},
   }
-  { }
+  {
+    /* Prevent mis-wirings by checking assumptions. */
+    assert(angle_sensor_left_front_coxa->LEG     == Leg::FrontLeft);
+    assert(angle_sensor_left_front_coxa->JOINT   == Joint::Coxa);
+
+    assert(angle_sensor_left_middle_coxa->LEG    == Leg::MiddleLeft);
+    assert(angle_sensor_left_middle_coxa->JOINT  == Joint::Coxa);
+
+    assert(angle_sensor_left_back_coxa->LEG      == Leg::BackLeft);
+    assert(angle_sensor_left_back_coxa->JOINT    == Joint::Coxa);
+
+    assert(angle_sensor_right_back_coxa->LEG     == Leg::BackRight);
+    assert(angle_sensor_right_back_coxa->JOINT   == Joint::Coxa);
+
+    assert(angle_sensor_right_middle_coxa->LEG   == Leg::MiddleRight);
+    assert(angle_sensor_right_middle_coxa->JOINT == Joint::Coxa);
+
+    assert(angle_sensor_right_front_coxa->LEG    == Leg::FrontRight);
+    assert(angle_sensor_right_front_coxa->JOINT  == Joint::Coxa);
+  }
 
   void doBulkRead()
   {

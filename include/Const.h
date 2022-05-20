@@ -17,12 +17,12 @@
 
 enum class Joint
 {
-  Coxa, Femur, Tibia
+  Coxa, Femur, Tibia, Invalid
 };
 
 enum class Leg
 {
-  FrontLeft, FrontRight, MiddleLeft, MiddleRight, BackLeft, BackRight
+  FrontLeft, FrontRight, MiddleLeft, MiddleRight, BackLeft, BackRight, Invalid
 };
 
 typedef struct

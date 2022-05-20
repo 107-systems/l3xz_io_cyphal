@@ -50,6 +50,8 @@ StateBase * ForwardWalking::update(GaitControllerInput & input, GaitControllerOu
 {
   /* TODO: Walk one gait::state cycle forward. */
 
+  /* 1st: Move to start position: by placing F/R, M/L a half step forward. */
+
   /* TODO:
    *  - calc trajectory for each leg on entry.
    *  - determine current target position dependent on progress within gait::state cycle.
@@ -71,6 +73,8 @@ StateBase * ForwardWalking::update(GaitControllerInput & input, GaitControllerOu
       case Leg::MiddleRight: break;
       case Leg::BackLeft:    break;
       case Leg::BackRight:   break;
+      case Leg::Invalid:
+      default: break;
     }
   }
 
