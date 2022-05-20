@@ -32,38 +32,38 @@ class SSC32AnglePositionActuator : public common::actuator::interface::AnglePosi
 public:
 
   SSC32AnglePositionActuator(std::string const & name,
-                             common::actuator::interface::SharedValveActuator valve_ctrl,
-                             common::sensor::interface::SharedAnglePositionSensor angle_pos_sensor)
+                             common::actuator::interface::SharedValveActuator valve_actuator,
+                             common::sensor::interface::SharedAnglePositionSensor angle_sensor)
   : AnglePositionActuator(name)
-  , _valve_ctrl{valve_ctrl}
-  , _angle_pos_sensor{angle_pos_sensor}
+  , _valve_actuator{valve_actuator}
+  , _angle_sensor{angle_sensor}
   { }
 
   virtual void set(float const & target_angle_deg) override
   {
     _target_angle_deg = target_angle_deg;
 
-    if (!_angle_pos_sensor->get().has_value())
+    if (!_angle_sensor->get().has_value())
     {
-      _valve_ctrl->set(0.0);
+      _valve_actuator->set(0.0);
       return;
     }
 
-    float const actual_angle_deg = _angle_pos_sensor->get().value();
+    float const actual_angle_deg = _angle_sensor->get().value();
     float const angle_diff       = (target_angle_deg - actual_angle_deg);
 
     static float const ANGLE_DIFF_EPSILON = 2.0f;
 
     if (angle_diff < ANGLE_DIFF_EPSILON)
     {
-      _valve_ctrl->set(0.0f);
+      _valve_actuator->set(0.0f);
       return;
     }
 
     if (angle_diff < 0.0f)
-      _valve_ctrl->set(0.8f);
+      _valve_actuator->set(0.8f);
     else
-      _valve_ctrl->set(0.8f);
+      _valve_actuator->set(0.8f);
   }
 
 protected:
@@ -73,8 +73,8 @@ protected:
   }
 
 private:
-  common::actuator::interface::SharedValveActuator _valve_ctrl;
-  common::sensor::interface::SharedAnglePositionSensor _angle_pos_sensor;
+  common::actuator::interface::SharedValveActuator _valve_actuator;
+  common::sensor::interface::SharedAnglePositionSensor _angle_sensor;
   std::optional<float> _target_angle_deg;
 };
 
