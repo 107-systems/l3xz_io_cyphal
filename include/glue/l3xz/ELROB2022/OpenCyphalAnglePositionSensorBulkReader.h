@@ -13,6 +13,8 @@
 
 #include "OpenCyphalAnglePositionSensor.h"
 
+#include <cassert>
+
 #include <map>
 #include <mutex>
 #include <vector>
@@ -67,7 +69,34 @@ public:
     {6, angle_sensor_right_front_tibia},
   },
   ALLOWED_NODE_ID_VECT{1,2,3,4,5,6}
-  { }
+  {
+    /* Prevent mis-wirings by checking assumptions. */
+    assert(angle_sensor_left_front_femur->LEG     == Leg::LeftFront);
+    assert(angle_sensor_left_front_femur->JOINT   == Joint::Femur);
+    assert(angle_sensor_left_middle_femur->LEG    == Leg::LeftMiddle);
+    assert(angle_sensor_left_middle_femur->JOINT  == Joint::Femur);
+    assert(angle_sensor_left_back_femur->LEG      == Leg::LeftBack);
+    assert(angle_sensor_left_back_femur->JOINT    == Joint::Femur);
+    assert(angle_sensor_right_back_femur->LEG     == Leg::RightBack);
+    assert(angle_sensor_right_back_femur->JOINT   == Joint::Femur);
+    assert(angle_sensor_right_middle_femur->LEG   == Leg::RightMiddle);
+    assert(angle_sensor_right_middle_femur->JOINT == Joint::Femur);
+    assert(angle_sensor_right_front_femur->LEG    == Leg::RightFront);
+    assert(angle_sensor_right_front_femur->JOINT  == Joint::Femur);
+
+    assert(angle_sensor_left_front_tibia->LEG     == Leg::LeftFront);
+    assert(angle_sensor_left_front_tibia->JOINT   == Joint::Tibia);
+    assert(angle_sensor_left_middle_tibia->LEG    == Leg::LeftMiddle);
+    assert(angle_sensor_left_middle_tibia->JOINT  == Joint::Tibia);
+    assert(angle_sensor_left_back_tibia->LEG      == Leg::LeftBack);
+    assert(angle_sensor_left_back_tibia->JOINT    == Joint::Tibia);
+    assert(angle_sensor_right_back_tibia->LEG     == Leg::RightBack);
+    assert(angle_sensor_right_back_tibia->JOINT   == Joint::Tibia);
+    assert(angle_sensor_right_middle_tibia->LEG   == Leg::RightMiddle);
+    assert(angle_sensor_right_middle_tibia->JOINT == Joint::Tibia);
+    assert(angle_sensor_right_front_tibia->LEG    == Leg::RightFront);
+    assert(angle_sensor_right_front_tibia->JOINT  == Joint::Tibia);
+  }
 
   void update_femur_angle(CanardNodeID const node_id, float const femur_angle_deg)
   {
