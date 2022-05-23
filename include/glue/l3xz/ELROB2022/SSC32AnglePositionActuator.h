@@ -51,13 +51,14 @@ public:
 
     float const actual_angle_deg = _angle_sensor->get().value();
     float const angle_diff       = (target_angle_deg - actual_angle_deg);
+    float const angle_error      = fabs(angle_diff);
 
     /* Check if we are within an acceptable error range,
      * if we are then it is perfectly fine to turn off
      * the valve.
      */
-    static float const ANGLE_DIFF_EPSILON = 2.0f;
-    if (fabs(angle_diff) < ANGLE_DIFF_EPSILON)
+    static float const TARGET_ANGLE_EPSILON = 2.0f;
+    if (angle_error < TARGET_ANGLE_EPSILON)
     {
       _valve_actuator->set(0.0f);
       return;

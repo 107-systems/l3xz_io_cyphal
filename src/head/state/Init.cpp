@@ -60,13 +60,13 @@ StateBase * Init::update(HeadControllerInput const & input, HeadControllerOutput
 
   /* Check if we have reached the initial tilt angle. */
   float const tilt_angle_actual = input._angle_sensor_sensor_head_tilt->get().value();
-  float const tilt_angle_diff = fabs(INITIAL_TILT_ANGLE - tilt_angle_actual);
-  bool  const tilt_is_initial_angle_reached = tilt_angle_diff < INITIAL_ANGLE_EPSILON;
+  float const tilt_angle_error = fabs(INITIAL_TILT_ANGLE - tilt_angle_actual);
+  bool  const tilt_is_initial_angle_reached = tilt_angle_error < INITIAL_ANGLE_EPSILON;
 
   /* Check if we have reached the initial pan angle. */
   float const pan_angle_actual = input._angle_sensor_sensor_head_pan->get().value();
-  float const pan_angle_diff = fabs(INITIAL_PAN_ANGLE - pan_angle_actual);
-  bool  const pan_is_initial_angle_reached = pan_angle_diff < INITIAL_ANGLE_EPSILON;
+  float const pan_angle_error = fabs(INITIAL_PAN_ANGLE - pan_angle_actual);
+  bool  const pan_is_initial_angle_reached = pan_angle_error < INITIAL_ANGLE_EPSILON;
 
   /* If we have reached the initial angles transition
    * into the active state of the header controller.
