@@ -97,6 +97,7 @@ std::optional<IK_Output> Engine::ik_solve(IK_Input const & ik_input)
   ROS_INFO("%s", msg.str().c_str());
 
   IK_Output const ik_output(joint_positions_out(0), joint_positions_out(1), joint_positions_out(2));
+  ROS_INFO("%s", ik_output.toStr().c_str());
   return ik_output;
 }
 
