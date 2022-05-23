@@ -247,7 +247,7 @@ int main(int argc, char **argv) try
                                               angle_actuator_right_back_femur,
                                               angle_actuator_right_back_tibia);
 
-  head::HeadController head_ctrl;
+  head::Controller head_ctrl;
 
   /**************************************************************************************
    * MAIN LOOP
@@ -300,14 +300,14 @@ int main(int argc, char **argv) try
      * HEAD CONTROL
      **************************************************************************************/
 
-    head::HeadControllerInput head_ctrl_input(teleop_cmd_data,
-                                              angle_sensor_sensor_head_pan,
-                                              angle_sensor_sensor_head_tilt);
+    head::ControllerInput head_ctrl_input(teleop_cmd_data,
+                                          angle_sensor_sensor_head_pan,
+                                          angle_sensor_sensor_head_tilt);
 
     auto const head_ctrl_output = head_ctrl.update(head_ctrl_input);
 
-    angle_actuator_sensor_head_pan->set (head_ctrl_output[head::HeadControllerOutput::Angle::Pan]);
-    angle_actuator_sensor_head_tilt->set(head_ctrl_output[head::HeadControllerOutput::Angle::Tilt]);
+    angle_actuator_sensor_head_pan->set (head_ctrl_output[head::ControllerOutput::Angle::Pan]);
+    angle_actuator_sensor_head_tilt->set(head_ctrl_output[head::ControllerOutput::Angle::Tilt]);
 
     /**************************************************************************************
      * WRITE TO PERIPHERALS

@@ -35,14 +35,14 @@ void Init::onExit()
 
 }
 
-StateBase * Init::update(HeadControllerInput const & input, HeadControllerOutput & output)
+StateBase * Init::update(ControllerInput const & input, ControllerOutput & output)
 {
   /* The desired output in this state is always
    * the pre-configured initial angle for pan
    * and tilt element of the head.
    */
-  output[HeadControllerOutput::Angle::Pan]  = INITIAL_PAN_ANGLE;
-  output[HeadControllerOutput::Angle::Tilt] = INITIAL_TILT_ANGLE;
+  output[ControllerOutput::Angle::Pan]  = INITIAL_PAN_ANGLE;
+  output[ControllerOutput::Angle::Tilt] = INITIAL_TILT_ANGLE;
 
   /* No state transition if we do not even have
    * valid input data.

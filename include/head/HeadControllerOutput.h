@@ -26,10 +26,10 @@ namespace head
  * CLASS DECLARATION
  **************************************************************************************/
 
-class HeadControllerOutput
+class ControllerOutput
 {
 public:
-  HeadControllerOutput()
+  ControllerOutput()
   : _pan_angle_target {0.0}
   , _tilt_angle_target{0.0}
   { }
@@ -41,7 +41,7 @@ public:
     {
     case Angle::Pan : return _pan_angle_target; break;
     case Angle::Tilt: return _tilt_angle_target; break;
-    default: throw std::runtime_error("HeadControllerOutput::operator[] error, invalid parameter for 'angle'"); break;
+    default: throw std::runtime_error("ControllerOutput::operator[] error, invalid parameter for 'angle'"); break;
     }
   }
 
@@ -50,7 +50,7 @@ public:
     {
     case Angle::Pan : return _pan_angle_target; break;
     case Angle::Tilt: return _tilt_angle_target; break;
-    default: throw std::runtime_error("HeadControllerOutput::operator[] error, invalid parameter for 'angle'"); break;
+    default: throw std::runtime_error("ControllerOutput::operator[] error, invalid parameter for 'angle'"); break;
     }
   }
 

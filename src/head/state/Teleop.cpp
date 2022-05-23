@@ -33,7 +33,7 @@ void Teleop::onExit()
 
 }
 
-StateBase * Teleop::update(HeadControllerInput const & input, HeadControllerOutput & output)
+StateBase * Teleop::update(ControllerInput const & input, ControllerOutput & output)
 {
   /* No state transition if we do not even have
    * valid input data.
@@ -55,11 +55,11 @@ StateBase * Teleop::update(HeadControllerInput const & input, HeadControllerOutp
 
   float const pan_angle_actual = input._angle_sensor_sensor_head_pan->get().value();
   float const pan_angle_target = pan_angle_actual + (input._teleop_cmd.angular_velocity_head_pan * MAX_ANGLE_INCREMENT_PER_CYCLE_DEG);
-  output[HeadControllerOutput::Angle::Pan] = pan_angle_target;
+  output[ControllerOutput::Angle::Pan] = pan_angle_target;
 
   float const tilt_angle_actual = input._angle_sensor_sensor_head_tilt->get().value();
   float const tilt_angle_target = tilt_angle_actual + (input._teleop_cmd.angular_velocity_head_tilt * MAX_ANGLE_INCREMENT_PER_CYCLE_DEG);
-  output[HeadControllerOutput::Angle::Tilt] = tilt_angle_target;
+  output[ControllerOutput::Angle::Tilt] = tilt_angle_target;
 
   return this;
 }

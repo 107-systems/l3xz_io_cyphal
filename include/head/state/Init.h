@@ -30,7 +30,7 @@ public:
   virtual ~Init() { }
   virtual void onEnter() override;
   virtual void onExit() override;
-  virtual StateBase * update(HeadControllerInput const & input, HeadControllerOutput & output) override;
+  virtual StateBase * update(ControllerInput const & input, ControllerOutput & output) override;
 
 private:
   static float constexpr INITIAL_PAN_ANGLE = 180.0f;

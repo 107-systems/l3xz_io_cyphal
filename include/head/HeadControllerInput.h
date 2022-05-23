@@ -25,12 +25,12 @@ namespace head
  * CLASS DECLARATION
  **************************************************************************************/
 
-class HeadControllerInput
+class ControllerInput
 {
 public:
-  HeadControllerInput(TeleopCommandData const teleop_cmd,
-                      common::sensor::interface::SharedAnglePositionSensor angle_sensor_sensor_head_pan,
-                      common::sensor::interface::SharedAnglePositionSensor angle_sensor_sensor_head_tilt)
+  ControllerInput(TeleopCommandData const teleop_cmd,
+                  common::sensor::interface::SharedAnglePositionSensor angle_sensor_sensor_head_pan,
+                  common::sensor::interface::SharedAnglePositionSensor angle_sensor_sensor_head_tilt)
   : _teleop_cmd                     {teleop_cmd}
   , _angle_sensor_sensor_head_pan {angle_sensor_sensor_head_pan}
   , _angle_sensor_sensor_head_tilt{angle_sensor_sensor_head_tilt}

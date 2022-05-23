@@ -26,13 +26,13 @@ namespace head
  * CLASS DECLARATION
  **************************************************************************************/
 
-class HeadController
+class Controller
 {
 public:
-   HeadController();
-  ~HeadController();
+   Controller();
+  ~Controller();
 
-  HeadControllerOutput update(HeadControllerInput const & input);
+  ControllerOutput update(ControllerInput const & input);
 
 private:
   state::StateBase * _head_state;

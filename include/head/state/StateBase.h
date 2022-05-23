@@ -32,7 +32,7 @@ public:
   virtual ~StateBase() { }
   virtual void onEnter() { }
   virtual void onExit() { }
-  virtual StateBase * update(HeadControllerInput const & input, HeadControllerOutput & output) = 0;
+  virtual StateBase * update(ControllerInput const & input, ControllerOutput & output) = 0;
 };
 
 /**************************************************************************************

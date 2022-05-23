@@ -30,7 +30,7 @@ public:
   virtual ~Teleop() { }
   virtual void onEnter() override;
   virtual void onExit() override;
-  virtual StateBase * update(HeadControllerInput const & input, HeadControllerOutput & output) override;
+  virtual StateBase * update(ControllerInput const & input, ControllerOutput & output) override;
 };
 
 /**************************************************************************************

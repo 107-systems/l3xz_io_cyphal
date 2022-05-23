@@ -23,13 +23,13 @@ namespace head
  * CTOR/DTOR
  **************************************************************************************/
 
-HeadController::HeadController()
+Controller::Controller()
 : _head_state{new state::Init()}
 {
   _head_state->onEnter();
 }
 
-HeadController::~HeadController()
+Controller::~Controller()
 {
   delete _head_state;
 }
@@ -38,9 +38,9 @@ HeadController::~HeadController()
  * PUBLIC MEMBER FUNCTIONS
  **************************************************************************************/
 
-HeadControllerOutput HeadController::update(HeadControllerInput const & input)
+ControllerOutput Controller::update(ControllerInput const & input)
 {
-  HeadControllerOutput output;
+  ControllerOutput output;
 
   state::StateBase * next_head_state = _head_state->update(input, output);
     
