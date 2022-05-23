@@ -25,6 +25,7 @@ namespace gait
 
 GaitController::GaitController()
 : _robot_state{new state::Init()}
+, _kinematic_engine{}
 {
   _robot_state->onEnter();
 }
@@ -40,7 +41,7 @@ GaitController::~GaitController()
 
 void GaitController::update(GaitControllerInput & input, GaitControllerOutput & output)
 {
-  state::StateBase * next_robot_state = _robot_state->update(input, output);
+  state::StateBase * next_robot_state = _robot_state->update(_kinematic_engine, input, output);
     
   if (next_robot_state != _robot_state)
   {

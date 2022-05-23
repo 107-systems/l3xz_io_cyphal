@@ -30,7 +30,7 @@ public:
   virtual ~StandUp() { }
   virtual void onEnter() override;
   virtual void onExit() override;
-  virtual StateBase * update(GaitControllerInput & input, GaitControllerOutput & output) override;
+  virtual StateBase * update(common::kinematic::Engine const & engine, GaitControllerInput & input, GaitControllerOutput & output) override;
 };
 
 /**************************************************************************************

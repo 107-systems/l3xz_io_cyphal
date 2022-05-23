@@ -36,7 +36,7 @@ void StandUp::onExit()
   ROS_INFO("StandUp EXIT");
 }
 
-StateBase * StandUp::update(GaitControllerInput & input, GaitControllerOutput & output)
+StateBase * StandUp::update(common::kinematic::Engine const & engine, GaitControllerInput & input, GaitControllerOutput & output)
 {
   return this;
 }

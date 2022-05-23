@@ -36,7 +36,7 @@ void Init::onExit()
   ROS_INFO("Init EXIT");
 }
 
-StateBase * Init::update(GaitControllerInput & input, GaitControllerOutput & output)
+StateBase * Init::update(common::kinematic::Engine const & engine, GaitControllerInput & input, GaitControllerOutput & output)
 {
   static std::list<GaitControllerInput::AngleSensorMapKey> const COXA_ANGLE_SENSOR_KEY_LIST =
   {

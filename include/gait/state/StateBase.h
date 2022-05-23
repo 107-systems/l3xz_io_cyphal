@@ -11,6 +11,7 @@
  * INCLUDES
  **************************************************************************************/
 
+#include <common/kinematic/Engine.h>
 #include "../GaitControllerInput.h"
 #include "../GaitControllerOutput.h"
 
@@ -31,7 +32,7 @@ public:
   virtual ~StateBase() { }
   virtual void onEnter() { }
   virtual void onExit() { }
-  virtual StateBase * update(GaitControllerInput & input, GaitControllerOutput & output) = 0;
+  virtual StateBase * update(common::kinematic::Engine const & engine, GaitControllerInput & input, GaitControllerOutput & output) = 0;
 };
 
 /**************************************************************************************

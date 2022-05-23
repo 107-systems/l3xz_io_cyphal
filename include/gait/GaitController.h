@@ -15,6 +15,8 @@
 #include "GaitControllerInput.h"
 #include "GaitControllerOutput.h"
 
+#include <common/kinematic/Engine.h>
+
 /**************************************************************************************
  * NAMESPACE
  **************************************************************************************/
@@ -36,6 +38,7 @@ public:
 
 private:
   state::StateBase * _robot_state;
+  common::kinematic::Engine _kinematic_engine;
 };
 
 /**************************************************************************************
