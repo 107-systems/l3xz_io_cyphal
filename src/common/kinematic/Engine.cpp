@@ -58,23 +58,23 @@ Engine::Engine()
  * PUBLIC MEMBER FUNCTIONS
  **************************************************************************************/
 
-FK_Output Engine::fk_solve(FK_Input const & input)
+std::optional<FK_Output> Engine::fk_solve(FK_Input const & fk_input)
 {
   /* Create joint array. */
   auto const number_joints = _leg_chain.getNrOfJoints();
   KDL::JntArray joint_positions = KDL::JntArray(number_joints);
  
   /* Assign current values to the joint array. */
-  joint_positions(0) = input.angle_rad(Joint::Coxa);
-  joint_positions(1) = input.angle_rad(Joint::Femur);
-  joint_positions(2) = input.angle_rad(Joint::Tibia);
+  joint_positions(0) = fk_input.angle_rad(Joint::Coxa);
+  joint_positions(1) = fk_input.angle_rad(Joint::Femur);
+  joint_positions(2) = fk_input.angle_rad(Joint::Tibia);
 
   /* Create the frame that will contain the results */
   KDL::Frame tibia_tip_pos;    
  
   /* Calculate forward position kinematics. */
   if (_fksolver->JntToCart(joint_positions, tibia_tip_pos) < 0)
-    throw std::runtime_error("Engine::fk_solve: could not calculate forward kinematics :(");
+    return std::nullopt;
 
   std::stringstream msg;
   msg << "FK results" << std::endl << tibia_tip_pos;
@@ -84,6 +84,28 @@ FK_Output Engine::fk_solve(FK_Input const & input)
   ROS_INFO("%s", output.toStr().c_str());
   return output;
 }
+
+std::optional<IK_Output> Engine::ik_solve(IK_Input const & ik_input)
+{
+  /* Create joint array. */
+  auto const number_joints = _leg_chain.getNrOfJoints();
+  KDL::JntArray joint_positions_out = KDL::JntArray(number_joints);
+
+  /* Perform IK calculation. */
+  if (_iksolver_pos->CartToJnt(ik_input.joint_positions(), ik_input.tibia_tip_frame(), joint_positions_out) < 0)
+    return std::nullopt;
+
+  /* Print/return results. */
+  std::stringstream msg;
+  msg << "IK results" << std::endl;
+  for (size_t r = 0; r < joint_positions_out.rows(); r++)
+    msg << joint_positions_out(r) << std::endl;
+  ROS_INFO("%s", msg.str().c_str());
+
+  IK_Output const ik_output(joint_positions_out(0), joint_positions_out(1), joint_positions_out(2));
+  return ik_output;
+}
+
 
 /**************************************************************************************
  * NAMESPACE

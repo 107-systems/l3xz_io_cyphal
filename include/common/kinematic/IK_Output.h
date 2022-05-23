@@ -4,8 +4,8 @@
  * Contributors: https://github.com/107-systems/l3xz/graphs/contributors.
  */
 
-#ifndef KINEMATIC_FK_INPUT_H_
-#define KINEMATIC_FK_INPUT_H_
+#ifndef KINEMATIC_IK_OUTPUT_H_
+#define KINEMATIC_IK_OUTPUT_H_
 
 /**************************************************************************************
  * INCLUDES
@@ -28,30 +28,30 @@ namespace common::kinematic
  * CLASS DECLARATION
  **************************************************************************************/
 
-class FK_Input
+class IK_Output
 {
 public:
-  FK_Input(double const coxa_angle_deg, double const femur_angle_deg, double const tibia_angle_deg)
-  : _coxa_angle_rad {coxa_angle_deg  * M_PI / 180.0}
-  , _femur_angle_rad{femur_angle_deg * M_PI / 180.0}
-  , _tibia_angle_rad{tibia_angle_deg * M_PI / 180.0}
+  IK_Output(double const coxa_angle_rad, double const femur_angle_rad, double const tibia_angle_rad)
+  : _coxa_angle_deg {coxa_angle_rad  * 180.0 / M_PI}
+  , _femur_angle_deg{femur_angle_rad * 180.0 / M_PI}
+  , _tibia_angle_deg{tibia_angle_rad * 180.0 / M_PI}
   { }
 
-  double angle_rad(Joint const joint) const
+  double angle_deg(Joint const joint) const
   {
     switch(joint)
     {
-    case Joint::Coxa : return _coxa_angle_rad;  break;
-    case Joint::Femur: return _femur_angle_rad; break;
-    case Joint::Tibia: return _tibia_angle_rad; break;
-    default: throw std::runtime_error("FK_Input::angle_rad() invalid param"); break;
+    case Joint::Coxa : return _coxa_angle_deg;  break;
+    case Joint::Femur: return _femur_angle_deg; break;
+    case Joint::Tibia: return _tibia_angle_deg; break;
+    default: throw std::runtime_error("IK_Output::angle_deg() invalid param"); break;
     }
   }
 
 private:
-  double const _coxa_angle_rad;
-  double const _femur_angle_rad;
-  double const _tibia_angle_rad;
+  double const _coxa_angle_deg;
+  double const _femur_angle_deg;
+  double const _tibia_angle_deg;
 };
 
 /**************************************************************************************
@@ -60,4 +60,4 @@ private:
 
 } /* common::kinematic */
 
-#endif /* KINEMATIC_FK_INPUT_H_ */
+#endif /* KINEMATIC_IK_OUTPUT_H_ */

@@ -12,9 +12,13 @@
  **************************************************************************************/
 
 #include <memory>
+#include <optional>
 
 #include "FK_Input.h"
 #include "FK_Output.h"
+
+#include "IK_Input.h"
+#include "IK_Output.h"
 
 #include <kdl/chain.hpp>
 #include <kdl/chainfksolver.hpp>
@@ -40,7 +44,8 @@ public:
 
   Engine();
 
-  FK_Output fk_solve(FK_Input const & input);
+  std::optional<FK_Output> fk_solve(FK_Input const & fk_input);
+  std::optional<IK_Output> ik_solve(IK_Input const & ik_input);
 
 private:
   KDL::Chain _leg_chain;
