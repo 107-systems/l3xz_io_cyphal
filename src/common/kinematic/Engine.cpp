@@ -63,17 +63,17 @@ std::optional<FK_Output> Engine::fk_solve(FK_Input const & fk_input)
   assert(_leg_chain.getNrOfJoints() == fk_input.joint_positions().rows());
  
   /* Create the frame that will contain the results */
-  KDL::Frame tibia_tip_pos;    
+  KDL::Frame tibia_tip_frame;
  
   /* Calculate forward position kinematics. */
-  if (_fksolver->JntToCart(fk_input.joint_positions(), tibia_tip_pos) < 0)
+  if (_fksolver->JntToCart(fk_input.joint_positions(), tibia_tip_frame) < 0)
     return std::nullopt;
 
   std::stringstream msg;
-  msg << "FK results" << std::endl << tibia_tip_pos;
+  msg << "FK results" << std::endl << tibia_tip_frame;
   ROS_INFO("%s", msg.str().c_str());
   
-  FK_Output const fk_output(tibia_tip_pos(3,0), tibia_tip_pos(3,1), tibia_tip_pos(3,2));
+  FK_Output const fk_output(tibia_tip_frame);
   ROS_INFO("%s", fk_output.toStr().c_str());
   return fk_output;
 }

@@ -13,6 +13,8 @@
 
 #include <string>
 
+#include <kdl/frames.hpp>
+
 /**************************************************************************************
  * NAMESPACE
  **************************************************************************************/
@@ -27,7 +29,7 @@ namespace common::kinematic
 class FK_Output
 {
 public:
-  FK_Output(double const tibia_tip_x, double const tibia_tip_y, double const tibia_tip_z);
+  FK_Output(KDL::Frame const & tibia_tip_frame);
 
   inline double tibia_tip_x() const { return _tibia_tip_x; }
   inline double tibia_tip_y() const { return _tibia_tip_y; }
