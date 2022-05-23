@@ -56,6 +56,9 @@ void deinit_dynamixel(driver::SharedMX28 & mx28_ctrl);
 
 bool init_open_cyphal(phy::opencyphal::Node & open_cyphal_node, glue::l3xz::ELROB2022::OpenCyphalAnglePositionSensorBulkReader & open_cyphal_angle_position_sensor_bulk_reader);
 
+void init_ssc32  (driver::SharedSSC32 & ssc32_ctrl);
+void deinit_ssc32(driver::SharedSSC32 & ssc32_ctrl);
+
 void cmd_vel_callback(const geometry_msgs::Twist::ConstPtr & msg, TeleopCommandData & teleop_cmd_data);
 
 /**************************************************************************************
@@ -173,6 +176,9 @@ int main(int argc, char **argv) try
    **************************************************************************************/
 
   auto ssc32_ctrl = std::make_shared<driver::SSC32>(SSC32_DEVICE_NAME, SSC32_BAUDRATE);
+
+  init_ssc32(ssc32_ctrl);
+  ROS_INFO("init_ssc32 successfully completed.");
 
   glue::l3xz::ELROB2022::SSC32PWMActuatorBulkwriter ssc32_pwm_actuator_bulk_driver(ssc32_ctrl);
 
@@ -336,6 +342,8 @@ int main(int argc, char **argv) try
 
   deinit_dynamixel(mx28_ctrl);
 
+  deinit_ssc32(ssc32_ctrl);
+
   return EXIT_SUCCESS;
 }
 catch (std::runtime_error const & err)
@@ -432,6 +440,20 @@ bool init_open_cyphal(phy::opencyphal::Node & open_cyphal_node, glue::l3xz::ELRO
   }
 
   return true;
+}
+
+void init_ssc32(driver::SharedSSC32 & ssc32_ctrl)
+{
+  /* Set all servos to neutral position, this
+   * means that all valves are turned off.
+   */
+  for (auto ch = driver::SSC32::MIN_CHANNEL; ch <= driver::SSC32::MAX_CHANNEL; ch++)
+    ssc32_ctrl->setPulseWidth(ch, 1500, 0);
+}
+
+void deinit_ssc32(driver::SharedSSC32 & ssc32_ctrl)
+{
+  init_ssc32(ssc32_ctrl);
 }
 
 void cmd_vel_callback(const geometry_msgs::Twist::ConstPtr & msg, TeleopCommandData & teleop_cmd_data)
