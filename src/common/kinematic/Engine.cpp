@@ -60,7 +60,6 @@ Engine::Engine()
 
 std::optional<FK_Output> Engine::fk_solve(FK_Input const & fk_input)
 {
-  /* Create joint array. */
   assert(_leg_chain.getNrOfJoints() == fk_input.joint_positions().rows());
  
   /* Create the frame that will contain the results */
@@ -81,6 +80,8 @@ std::optional<FK_Output> Engine::fk_solve(FK_Input const & fk_input)
 
 std::optional<IK_Output> Engine::ik_solve(IK_Input const & ik_input)
 {
+  assert(_leg_chain.getNrOfJoints() == ik_input.joint_positions().rows());
+
   /* Create joint array. */
   auto const number_joints = _leg_chain.getNrOfJoints();
   KDL::JntArray joint_positions_out = KDL::JntArray(number_joints);
