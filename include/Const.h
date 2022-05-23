@@ -13,33 +13,7 @@
 
 #include <list>
 
-/**************************************************************************************
- * TYPEDEF
- **************************************************************************************/
-
-enum class Joint
-{
-  Coxa, Femur, Tibia
-};
-
-enum class Leg
-{
-  LeftFront,
-  LeftMiddle,
-  LeftBack,
-  RightFront,
-  RightMiddle,
-  RightBack
-};
-
-typedef struct
-{
-  float linear_velocity_x;
-  float linear_velocity_y;
-  float angular_velocity_head_tilt;
-  float angular_velocity_head_pan;
-  float angular_velocity_z;
-} TeleopCommandData;
+#include "Types.h"
 
 /**************************************************************************************
  * TYPEDEF
