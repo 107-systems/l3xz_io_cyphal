@@ -94,6 +94,19 @@ GaitControllerInput::GaitControllerInput(TeleopCommandData const teleop_cmd,
  * PUBLIC MEMBER FUNCTIONS
  **************************************************************************************/
 
+bool GaitControllerInput::isValid() const
+{
+  /* Check if we have valid angles. */
+  for (auto [leg, joint] : LEG_JOINT_LIST)
+  {
+    if (!_map.at(make_key(leg, joint))->get().has_value()) {
+      return false;
+    }
+  }
+
+  return true;
+}
+
 common::sensor::interface::SharedAnglePositionSensor GaitControllerInput::operator()(Leg const leg, Joint const joint)
 {
   if (!_map.count(make_key(leg, joint)))

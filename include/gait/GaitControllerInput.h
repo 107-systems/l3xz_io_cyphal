@@ -52,6 +52,8 @@ public:
                       common::sensor::interface::SharedAnglePositionSensor angle_sensor_right_back_femur,
                       common::sensor::interface::SharedAnglePositionSensor angle_sensor_right_back_tibia);
 
+  bool isValid() const;
+
   TeleopCommandData const _teleop_cmd;
 
   common::sensor::interface::SharedAnglePositionSensor operator()(Leg const leg, Joint const joint);
