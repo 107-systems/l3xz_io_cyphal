@@ -38,6 +38,14 @@ void Init::onExit()
 
 StateBase * Init::update(common::kinematic::Engine const & engine, GaitControllerInput & input, GaitControllerOutput & output)
 {
+  /* Set the desired target angle. */
+  for (auto leg : LEG_LIST)
+  {
+    output(leg, Joint::Coxa )->set(INITIAL_COXA_ANGLE);
+    output(leg, Joint::Femur)->set(INITIAL_FEMUR_ANGLE);
+    output(leg, Joint::Tibia)->set(INITIAL_TIBIA_ANGLE);
+  }
+
   static std::list<GaitControllerInput::AngleSensorMapKey> const COXA_ANGLE_SENSOR_KEY_LIST =
   {
     std::tuple(Leg::LeftFront,   Joint::Coxa),
@@ -47,16 +55,6 @@ StateBase * Init::update(common::kinematic::Engine const & engine, GaitControlle
     std::tuple(Leg::LeftMiddle,  Joint::Coxa),
     std::tuple(Leg::RightMiddle, Joint::Coxa),
   };
-
-
-  /* Set the desired target angle. */
-  output(Leg::LeftFront,   Joint::Coxa)->set(INITIAL_COXA_ANGLE);
-  output(Leg::RightFront,  Joint::Coxa)->set(INITIAL_COXA_ANGLE);
-  output(Leg::LeftMiddle,  Joint::Coxa)->set(INITIAL_COXA_ANGLE);
-  output(Leg::RightMiddle, Joint::Coxa)->set(INITIAL_COXA_ANGLE);
-  output(Leg::LeftBack,    Joint::Coxa)->set(INITIAL_COXA_ANGLE);
-  output(Leg::RightBack,   Joint::Coxa)->set(INITIAL_COXA_ANGLE);
-
 
   /* Check if we have valid angles. */
   for (auto [leg, joint] : COXA_ANGLE_SENSOR_KEY_LIST)
