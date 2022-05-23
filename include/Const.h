@@ -11,6 +11,8 @@
  * INCLUDES
  **************************************************************************************/
 
+#include <list>
+
 /**************************************************************************************
  * TYPEDEF
  **************************************************************************************/
@@ -38,5 +40,14 @@ typedef struct
   float angular_velocity_head_pan;
   float angular_velocity_z;
 } TeleopCommandData;
+
+/**************************************************************************************
+ * TYPEDEF
+ **************************************************************************************/
+
+static std::list<Leg> const LEG_LIST =
+{
+  Leg::LeftFront, Leg::LeftMiddle, Leg::LeftBack, Leg::RightFront, Leg::RightMiddle, Leg::RightBack
+};
 
 #endif /* CONST_H_ */

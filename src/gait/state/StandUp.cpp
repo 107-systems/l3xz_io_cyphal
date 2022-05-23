@@ -42,11 +42,6 @@ StateBase * StandUp::update(common::kinematic::Engine const & engine, GaitContro
   static double const TARGET_TIBIA_TIP_y = 100.0;
   static double const TARGET_TIBIA_TIP_z = 100.0;
 
-  static std::list<Leg> const LEG_LIST =
-  {
-    Leg::LeftFront, Leg::LeftMiddle, Leg::LeftBack, Leg::RightFront, Leg::RightMiddle, Leg::RightBack
-  };
-
   double x = TARGET_TIBIA_TIP_x,
          y = TARGET_TIBIA_TIP_y,
          z = TARGET_TIBIA_TIP_z;
