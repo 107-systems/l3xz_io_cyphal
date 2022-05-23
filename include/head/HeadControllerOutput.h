@@ -13,6 +13,8 @@
 
 #include <common/actuator/interface/AnglePositionActuator.h>
 
+#include <stdexcept>
+
 /**************************************************************************************
  * NAMESPACE
  **************************************************************************************/
@@ -27,14 +29,34 @@ namespace head
 class HeadControllerOutput
 {
 public:
-  HeadControllerOutput(common::actuator::interface::SharedAnglePositionActuator angle_actuator_sensor_head_pan,
-                       common::actuator::interface::SharedAnglePositionActuator angle_actuator_sensor_head_tilt)
-  : _angle_actuator_sensor_head_pan {angle_actuator_sensor_head_pan}
-  , _angle_actuator_sensor_head_tilt{angle_actuator_sensor_head_tilt}
+  HeadControllerOutput()
+  : _pan_angle_target {0.0}
+  , _tilt_angle_target{0.0}
   { }
 
-  common::actuator::interface::SharedAnglePositionActuator _angle_actuator_sensor_head_pan,
-                                                           _angle_actuator_sensor_head_tilt;
+  enum class Angle {Pan, Tilt };
+
+  inline double & operator[](Angle const angle) {
+    switch(angle)
+    {
+    case Angle::Pan : return _pan_angle_target; break;
+    case Angle::Tilt: return _tilt_angle_target; break;
+    default: throw std::runtime_error("HeadControllerOutput::operator[] error, invalid parameter for 'angle'"); break;
+    }
+  }
+
+  inline double const operator[](Angle const angle) const {
+    switch(angle)
+    {
+    case Angle::Pan : return _pan_angle_target; break;
+    case Angle::Tilt: return _tilt_angle_target; break;
+    default: throw std::runtime_error("HeadControllerOutput::operator[] error, invalid parameter for 'angle'"); break;
+    }
+  }
+
+private:
+  double _pan_angle_target,
+         _tilt_angle_target;
 };
 
 /**************************************************************************************

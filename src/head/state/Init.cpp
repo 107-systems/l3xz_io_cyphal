@@ -41,8 +41,8 @@ StateBase * Init::update(HeadControllerInput const & input, HeadControllerOutput
    * the pre-configured initial angle for pan
    * and tilt element of the head.
    */
-  output._angle_actuator_sensor_head_pan->set(INITIAL_PAN_ANGLE);
-  output._angle_actuator_sensor_head_tilt->set(INITIAL_TILT_ANGLE);
+  output[HeadControllerOutput::Angle::Pan]  = INITIAL_PAN_ANGLE;
+  output[HeadControllerOutput::Angle::Tilt] = INITIAL_TILT_ANGLE;
 
   /* No state transition if we do not even have
    * valid input data.

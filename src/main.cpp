@@ -248,8 +248,6 @@ int main(int argc, char **argv) try
                                               angle_actuator_right_back_tibia);
 
   head::HeadController head_ctrl;
-  head::HeadControllerOutput head_ctrl_output(angle_actuator_sensor_head_pan,
-                                              angle_actuator_sensor_head_tilt);
 
   /**************************************************************************************
    * MAIN LOOP
@@ -306,7 +304,10 @@ int main(int argc, char **argv) try
                                               angle_sensor_sensor_head_pan,
                                               angle_sensor_sensor_head_tilt);
 
-    head_ctrl.update(head_ctrl_input, head_ctrl_output);
+    auto const head_ctrl_output = head_ctrl.update(head_ctrl_input);
+
+    angle_actuator_sensor_head_pan->set (head_ctrl_output[head::HeadControllerOutput::Angle::Pan]);
+    angle_actuator_sensor_head_tilt->set(head_ctrl_output[head::HeadControllerOutput::Angle::Tilt]);
 
     /**************************************************************************************
      * WRITE TO PERIPHERALS

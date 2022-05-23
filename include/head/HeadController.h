@@ -32,7 +32,7 @@ public:
    HeadController();
   ~HeadController();
 
-  void update(HeadControllerInput const & input, HeadControllerOutput & output);
+  HeadControllerOutput update(HeadControllerInput const & input);
 
 private:
   state::StateBase * _head_state;

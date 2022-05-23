@@ -38,8 +38,10 @@ HeadController::~HeadController()
  * PUBLIC MEMBER FUNCTIONS
  **************************************************************************************/
 
-void HeadController::update(HeadControllerInput const & input, HeadControllerOutput & output)
+HeadControllerOutput HeadController::update(HeadControllerInput const & input)
 {
+  HeadControllerOutput output;
+
   state::StateBase * next_head_state = _head_state->update(input, output);
     
   if (next_head_state != _head_state)
@@ -51,6 +53,8 @@ void HeadController::update(HeadControllerInput const & input, HeadControllerOut
     
     _head_state->onEnter();
   }
+
+  return output;
 }
 
 /**************************************************************************************
