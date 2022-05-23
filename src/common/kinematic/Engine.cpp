@@ -61,19 +61,13 @@ Engine::Engine()
 std::optional<FK_Output> Engine::fk_solve(FK_Input const & fk_input)
 {
   /* Create joint array. */
-  auto const number_joints = _leg_chain.getNrOfJoints();
-  KDL::JntArray joint_positions = KDL::JntArray(number_joints);
+  assert(_leg_chain.getNrOfJoints() == fk_input.joint_positions().rows());
  
-  /* Assign current values to the joint array. */
-  joint_positions(0) = fk_input.angle_rad(Joint::Coxa);
-  joint_positions(1) = fk_input.angle_rad(Joint::Femur);
-  joint_positions(2) = fk_input.angle_rad(Joint::Tibia);
-
   /* Create the frame that will contain the results */
   KDL::Frame tibia_tip_pos;    
  
   /* Calculate forward position kinematics. */
-  if (_fksolver->JntToCart(joint_positions, tibia_tip_pos) < 0)
+  if (_fksolver->JntToCart(fk_input.joint_positions(), tibia_tip_pos) < 0)
     return std::nullopt;
 
   std::stringstream msg;
