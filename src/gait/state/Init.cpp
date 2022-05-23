@@ -85,6 +85,15 @@ StateBase * Init::update(common::kinematic::Engine const & engine, GaitControlle
   if (!all_target_angles_reached)
     return this;
 
+  /* TODO REMOVE */
+  for (auto [leg, joint] : LEG_JOINT_LIST)
+  {
+    if (!input(leg, joint)->get().has_value()) {
+      ROS_ERROR("gait::state::Init::update: no valid input data for %s", input(leg, joint)->name().c_str());
+      return this;
+    }
+  }
+
   /* All good, let's transition to the next state. */
   return new StandUp();
 }
