@@ -66,8 +66,11 @@ std::optional<FK_Output> Engine::fk_solve(FK_Input const & fk_input) const
   KDL::Frame tibia_tip_frame;
  
   /* Calculate forward position kinematics. */
-  if (_fksolver->JntToCart(fk_input.joint_positions(), tibia_tip_frame) < 0)
+  if (auto const rc = _fksolver->JntToCart(fk_input.joint_positions(), tibia_tip_frame); rc < 0)
+  {
+    ROS_ERROR("Engine::fk_solve, ChainFkSolverPos_recursive::JntToCart failed with %d", rc);
     return std::nullopt;
+  }
 
   std::stringstream msg;
   msg << "FK results" << std::endl << tibia_tip_frame;
@@ -87,8 +90,11 @@ std::optional<IK_Output> Engine::ik_solve(IK_Input const & ik_input) const
   KDL::JntArray joint_positions_out = KDL::JntArray(number_joints);
 
   /* Perform IK calculation. */
-  if (_iksolver_pos->CartToJnt(ik_input.joint_positions(), ik_input.tibia_tip_frame(), joint_positions_out) < 0)
+  if (auto const rc = _iksolver_pos->CartToJnt(ik_input.joint_positions(), ik_input.tibia_tip_frame(), joint_positions_out); rc < 0)
+  {
+    ROS_ERROR("Engine::ik_solve, ChainIkSolverPos_NR::CartToJnt failed with %d", rc);
     return std::nullopt;
+  }
 
   /* Print/return results. */
   std::stringstream msg;
