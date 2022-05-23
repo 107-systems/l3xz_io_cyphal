@@ -43,7 +43,10 @@ public:
     driver::MX28::AngleDataSet angle_data_set;
 
     for (auto [id, angle_deg] : _dynamixel_angle_map)
-      angle_data_set[id] = angle_deg;
+    {
+      float const corrected_angle_deg = (angle_deg + 180.0f);
+      angle_data_set[id] = corrected_angle_deg;
+    }
 
     return _mx28_ctrl->setAngle(angle_data_set);
   }

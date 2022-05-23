@@ -33,9 +33,9 @@ public:
   virtual StateBase * update(ControllerInput const & input, ControllerOutput & output) override;
 
 private:
-  static float constexpr INITIAL_PAN_ANGLE = 180.0f;
-  static float constexpr INITIAL_TILT_ANGLE = 180.0f;
-  static float constexpr INITIAL_ANGLE_EPSILON = 1.0f;
+  static float constexpr INITIAL_PAN_ANGLE     = 0.0f;
+  static float constexpr INITIAL_TILT_ANGLE    = 0.0f;
+  static float constexpr INITIAL_ANGLE_EPSILON = 2.0f;
 };
 
 /**************************************************************************************
