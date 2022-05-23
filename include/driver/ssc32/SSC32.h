@@ -42,6 +42,9 @@ public:
     InvParam_PulseWidth = -2,
   };
 
+  static uint8_t constexpr MIN_CHANNEL =  0;
+  static uint8_t constexpr MAX_CHANNEL = 31;
+
   Error setPulseWidth(uint8_t const channel, uint16_t const pulse_width_us, uint16_t const move_time_ms);
 
 private:
