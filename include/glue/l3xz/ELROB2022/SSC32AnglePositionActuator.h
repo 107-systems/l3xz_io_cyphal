@@ -54,7 +54,7 @@ public:
 
     static float const ANGLE_DIFF_EPSILON = 2.0f;
 
-    if (angle_diff < ANGLE_DIFF_EPSILON)
+    if (fabs(angle_diff) < ANGLE_DIFF_EPSILON)
     {
       _valve_actuator->set(0.0f);
       return;
