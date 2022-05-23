@@ -29,19 +29,14 @@ namespace glue::l3xz::ELROB2022
 class OpenCyphalAnglePositionSensor : public common::sensor::interface::AnglePositionSensor
 {
 public:
-  OpenCyphalAnglePositionSensor(std::string const & name, Leg const leg, Joint const joint)
+  OpenCyphalAnglePositionSensor(std::string const & name)
   : AnglePositionSensor(name)
-  , LEG(leg)
-  , JOINT(joint)
   , _angle_deg{std::nullopt}
   { }
 
   virtual std::optional<float> get() const override { return _angle_deg; }
 
   void update(float const angle_deg) { _angle_deg = angle_deg; }
-
-  Leg const LEG;
-  Joint const JOINT;
 
 private:
   std::optional<float> _angle_deg;

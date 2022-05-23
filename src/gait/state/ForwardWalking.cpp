@@ -73,7 +73,6 @@ StateBase * ForwardWalking::update(GaitControllerInput & input, GaitControllerOu
       case Leg::RightMiddle: break;
       case Leg::LeftBack:    break;
       case Leg::RightBack:   break;
-      case Leg::Invalid:
       default: break;
     }
   }

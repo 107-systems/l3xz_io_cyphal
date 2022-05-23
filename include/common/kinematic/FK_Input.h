@@ -44,7 +44,6 @@ public:
     case Joint::Coxa : return _coxa_angle_rad;  break;
     case Joint::Femur: return _femur_angle_rad; break;
     case Joint::Tibia: return _tibia_angle_rad; break;
-    case Joint::Invalid:
     default: throw std::runtime_error("FK_Input::angle() invalid param"); break;
     }
   }
