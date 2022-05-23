@@ -46,6 +46,16 @@ StateBase * Init::update(common::kinematic::Engine const & engine, GaitControlle
     output(leg, Joint::Tibia)->set(INITIAL_TIBIA_ANGLE);
   }
 
+  /* Check if we have valid angles. */
+  for (auto [leg, joint] : LEG_JOINT_LIST)
+  {
+    if (!input(leg, joint)->get().has_value()) {
+      ROS_ERROR("gait::state::Init::update: no valid input data for %s", input(leg, joint)->name().c_str());
+      return this;
+    }
+  }
+
+  /* Check if we have reached the desired target angle. */
   static std::list<GaitControllerInput::AngleSensorMapKey> const COXA_ANGLE_SENSOR_KEY_LIST =
   {
     std::tuple(Leg::LeftFront,   Joint::Coxa),
@@ -56,17 +66,6 @@ StateBase * Init::update(common::kinematic::Engine const & engine, GaitControlle
     std::tuple(Leg::RightMiddle, Joint::Coxa),
   };
 
-  /* Check if we have valid angles. */
-  for (auto [leg, joint] : COXA_ANGLE_SENSOR_KEY_LIST)
-  {
-    if (!input(leg, joint)->get().has_value()) {
-      ROS_ERROR("gait::state::Init::update: no valid input data for %s", input(leg, joint)->name().c_str());
-      return this;
-    }
-  }
-
-
-  /* Check if we have reached the desired target angle. */
   bool all_target_angles_reached = true;
   for (auto [leg, joint] : COXA_ANGLE_SENSOR_KEY_LIST)
   {
@@ -82,15 +81,6 @@ StateBase * Init::update(common::kinematic::Engine const & engine, GaitControlle
 
   if (!all_target_angles_reached)
     return this;
-
-  /* TODO REMOVE */
-  for (auto [leg, joint] : LEG_JOINT_LIST)
-  {
-    if (!input(leg, joint)->get().has_value()) {
-      ROS_ERROR("gait::state::Init::update: no valid input data for %s", input(leg, joint)->name().c_str());
-      return this;
-    }
-  }
 
   /* All good, let's transition to the next state. */
   return new StandUp();
