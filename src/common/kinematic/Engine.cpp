@@ -73,9 +73,9 @@ std::optional<FK_Output> Engine::fk_solve(FK_Input const & fk_input)
   msg << "FK results" << std::endl << tibia_tip_pos;
   ROS_INFO("%s", msg.str().c_str());
   
-  FK_Output const output(tibia_tip_pos(3,0), tibia_tip_pos(3,1), tibia_tip_pos(3,2));
-  ROS_INFO("%s", output.toStr().c_str());
-  return output;
+  FK_Output const fk_output(tibia_tip_pos(3,0), tibia_tip_pos(3,1), tibia_tip_pos(3,2));
+  ROS_INFO("%s", fk_output.toStr().c_str());
+  return fk_output;
 }
 
 std::optional<IK_Output> Engine::ik_solve(IK_Input const & ik_input)
