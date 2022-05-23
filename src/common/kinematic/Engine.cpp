@@ -58,7 +58,7 @@ Engine::Engine()
  * PUBLIC MEMBER FUNCTIONS
  **************************************************************************************/
 
-std::optional<FK_Output> Engine::fk_solve(FK_Input const & fk_input)
+std::optional<FK_Output> Engine::fk_solve(FK_Input const & fk_input) const
 {
   assert(_leg_chain.getNrOfJoints() == fk_input.joint_positions().rows());
  
@@ -78,7 +78,7 @@ std::optional<FK_Output> Engine::fk_solve(FK_Input const & fk_input)
   return fk_output;
 }
 
-std::optional<IK_Output> Engine::ik_solve(IK_Input const & ik_input)
+std::optional<IK_Output> Engine::ik_solve(IK_Input const & ik_input) const
 {
   assert(_leg_chain.getNrOfJoints() == ik_input.joint_positions().rows());
 

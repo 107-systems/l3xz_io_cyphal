@@ -44,8 +44,8 @@ public:
 
   Engine();
 
-  std::optional<FK_Output> fk_solve(FK_Input const & fk_input);
-  std::optional<IK_Output> ik_solve(IK_Input const & ik_input);
+  std::optional<FK_Output> fk_solve(FK_Input const & fk_input) const;
+  std::optional<IK_Output> ik_solve(IK_Input const & ik_input) const;
 
 private:
   KDL::Chain _leg_chain;
