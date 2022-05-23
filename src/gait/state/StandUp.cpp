@@ -38,9 +38,9 @@ void StandUp::onExit()
 
 StateBase * StandUp::update(common::kinematic::Engine const & engine, GaitControllerInput & input, GaitControllerOutput & output)
 {
-  static double const TARGET_TIBIA_TIP_x = 100.0;
-  static double const TARGET_TIBIA_TIP_y = 100.0;
-  static double const TARGET_TIBIA_TIP_z = 100.0;
+  static double const TARGET_TIBIA_TIP_x =  175.0;
+  static double const TARGET_TIBIA_TIP_y =    0.0;
+  static double const TARGET_TIBIA_TIP_z = -150.0;
 
   double x = TARGET_TIBIA_TIP_x,
          y = TARGET_TIBIA_TIP_y,
