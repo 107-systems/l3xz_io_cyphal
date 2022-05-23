@@ -13,7 +13,7 @@
 #include <ros/ros.h>
 #include <ros/console.h>
 
-#include <gait/state/Standing.h>
+#include <gait/state/StandUp.h>
 
 /**************************************************************************************
  * NAMESPACE
@@ -86,7 +86,7 @@ StateBase * Init::update(GaitControllerInput & input, GaitControllerOutput & out
     return this;
 
   /* All good, let's transition to the next state. */
-  return new Standing();
+  return new StandUp();
 }
 
 /**************************************************************************************
