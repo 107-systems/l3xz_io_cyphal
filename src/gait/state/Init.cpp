@@ -62,7 +62,7 @@ StateBase * Init::update(common::kinematic::Engine const & engine, GaitControlle
   {
     float const coxa_angle_actual = input(leg, joint)->get().value();
     float const coxa_angle_error = fabs(INITIAL_COXA_ANGLE - coxa_angle_actual);
-    bool  const coxa_is_initial_angle_reached = coxa_angle_error < 1.0f;
+    bool  const coxa_is_initial_angle_reached = coxa_angle_error < 2.0f;
 
     if (!coxa_is_initial_angle_reached) {
       ROS_INFO("gait::state::Init::update: target angle not reached for %s", input(leg, joint)->name().c_str());
