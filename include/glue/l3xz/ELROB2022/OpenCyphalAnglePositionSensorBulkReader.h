@@ -50,7 +50,25 @@ public:
                                           SharedOpenCyphalAnglePositionSensor angle_sensor_right_middle_tibia,
                                           SharedOpenCyphalAnglePositionSensor angle_sensor_right_front_femur,
                                           SharedOpenCyphalAnglePositionSensor angle_sensor_right_front_tibia)
-  : NODE_ID_TO_FEMUR_ANGLE_POSITION_SENSOR_MAP
+  : FEMUR_ANGLE_OFFSET_MAP
+  {
+    {1, 286.08},
+    {2,  50.34},
+    {3, 324.40},
+    {4, 105.85},
+    {5, 347.97},
+    {6,  60.10}
+  }
+  , TIBIA_ANGLE_OFFSET_MAP
+  {
+    {1, 246.04},
+    {2, 159.08+25},
+    {3, 304.90},
+    {4, 234.05+40+8},
+    {5,  87.97},
+    {6, 124.10}
+  }
+  , NODE_ID_TO_FEMUR_ANGLE_POSITION_SENSOR_MAP
   {
     {1, angle_sensor_left_front_femur},
     {2, angle_sensor_left_middle_femur},
@@ -78,7 +96,8 @@ public:
       return;
     }
     std::lock_guard<std::mutex> lock(_mtx);
-    _femur_angle_map[node_id] = femur_angle_deg;
+    float const corrected_femur_angle_deg = (femur_angle_deg - FEMUR_ANGLE_OFFSET_MAP.at(node_id));
+    _femur_angle_map[node_id] = corrected_femur_angle_deg;
   }
 
   void update_tibia_angle(CanardNodeID const node_id, float const tibia_angle_deg)
@@ -88,7 +107,8 @@ public:
       return;
     }
     std::lock_guard<std::mutex> lock(_mtx);
-    _tibia_angle_map[node_id] = tibia_angle_deg;
+    float const corrected_tibia_angle_deg = (tibia_angle_deg - TIBIA_ANGLE_OFFSET_MAP.at(node_id));
+    _tibia_angle_map[node_id] = corrected_tibia_angle_deg;
   }
 
   /* It's not really a bulk read but a bulk copy
@@ -116,6 +136,9 @@ private:
 
   std::map<CanardNodeID, float> _femur_angle_map;
   std::map<CanardNodeID, float> _tibia_angle_map;
+
+  std::map<CanardNodeID, float> const FEMUR_ANGLE_OFFSET_MAP;
+  std::map<CanardNodeID, float> const TIBIA_ANGLE_OFFSET_MAP;
 
   std::map<CanardNodeID, SharedOpenCyphalAnglePositionSensor> const NODE_ID_TO_FEMUR_ANGLE_POSITION_SENSOR_MAP;
   std::map<CanardNodeID, SharedOpenCyphalAnglePositionSensor> const NODE_ID_TO_TIBIA_ANGLE_POSITION_SENSOR_MAP;

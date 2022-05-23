@@ -46,6 +46,7 @@ StateBase * StandUp::update(common::kinematic::Engine const & engine, GaitContro
          y = TARGET_TIBIA_TIP_y,
          z = TARGET_TIBIA_TIP_z;
 
+  bool all_target_angles_reached = true;
   for (auto leg : LEG_LIST)
   {
     /* Calculate required target angles for desired
@@ -65,14 +66,47 @@ StateBase * StandUp::update(common::kinematic::Engine const & engine, GaitContro
       return this;
     }
 
-    /* Set output to the angle actuators.
-     */
+    /* Set output to the angle actuators. */
     output(leg, Joint::Coxa )->set(ik_output.value().angle_deg(Joint::Coxa));
     output(leg, Joint::Femur)->set(ik_output.value().angle_deg(Joint::Femur));
     output(leg, Joint::Tibia)->set(ik_output.value().angle_deg(Joint::Tibia));
+
+
+
+    /* Check if target angles have been reached. */
+    float const coxa_angle_actual = input(leg, Joint::Coxa)->get().value();
+    float const coxa_angle_error = fabs(ik_output.value().angle_deg(Joint::Coxa) - coxa_angle_actual);
+    bool  const coxa_is_initial_angle_reached = coxa_angle_error < 2.0f;
+
+    if (!coxa_is_initial_angle_reached) {
+      ROS_INFO("gait::state::StandUp::update: coxa target angle not reached for %s", input(leg, Joint::Coxa)->name().c_str());
+      all_target_angles_reached = false;
+    }
+ 
+ 
+    float const femur_angle_actual = input(leg, Joint::Femur)->get().value();
+    float const femur_angle_error = fabs(ik_output.value().angle_deg(Joint::Femur) - femur_angle_actual);
+    bool  const femur_is_initial_angle_reached = femur_angle_error < 2.0f;
+
+    if (!femur_is_initial_angle_reached) {
+      ROS_INFO("gait::state::StandUp::update: femur target angle not reached for %s", input(leg, Joint::Femur)->name().c_str());
+      all_target_angles_reached = false;
+    }
+
+    float const tibia_angle_actual = input(leg, Joint::Tibia)->get().value();
+    float const tibia_angle_error = fabs(ik_output.value().angle_deg(Joint::Tibia) - tibia_angle_actual);
+    bool  const tibia_is_initial_angle_reached = tibia_angle_error < 2.0f;
+
+    if (!tibia_is_initial_angle_reached) {
+      ROS_INFO("gait::state::StandUp::update: tibia target angle not reached for %s", input(leg, Joint::Tibia)->name().c_str());
+      all_target_angles_reached = false;
+    }
   }
 
-  return this;
+  if (!all_target_angles_reached)
+    return this;
+
+  return new Standing();
 }
 
 /**************************************************************************************

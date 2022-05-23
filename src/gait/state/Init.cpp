@@ -46,26 +46,35 @@ StateBase * Init::update(common::kinematic::Engine const & engine, GaitControlle
     output(leg, Joint::Tibia)->set(INITIAL_TIBIA_ANGLE);
   }
 
-  /* Check if we have reached the desired target angle. */
-  static std::list<GaitControllerInput::AngleSensorMapKey> const COXA_ANGLE_SENSOR_KEY_LIST =
-  {
-    std::tuple(Leg::LeftFront,   Joint::Coxa),
-    std::tuple(Leg::RightFront,  Joint::Coxa),
-    std::tuple(Leg::LeftMiddle,  Joint::Coxa),
-    std::tuple(Leg::RightMiddle, Joint::Coxa),
-    std::tuple(Leg::LeftMiddle,  Joint::Coxa),
-    std::tuple(Leg::RightMiddle, Joint::Coxa),
-  };
-
+  /* Check if target angles have been reached. */
   bool all_target_angles_reached = true;
-  for (auto [leg, joint] : COXA_ANGLE_SENSOR_KEY_LIST)
+  for (auto leg : LEG_LIST)
   {
-    float const coxa_angle_actual = input(leg, joint)->get().value();
+    float const coxa_angle_actual = input(leg, Joint::Coxa)->get().value();
     float const coxa_angle_error = fabs(INITIAL_COXA_ANGLE - coxa_angle_actual);
-    bool  const coxa_is_initial_angle_reached = coxa_angle_error < 2.0f;
+    bool  const coxa_is_initial_angle_reached = coxa_angle_error < 5.0f;
 
     if (!coxa_is_initial_angle_reached) {
-      ROS_INFO("gait::state::Init::update: target angle not reached for %s", input(leg, joint)->name().c_str());
+      ROS_INFO("gait::state::Init::update: coxa target angle not reached for %s", input(leg, Joint::Coxa)->name().c_str());
+      all_target_angles_reached = false;
+    }
+ 
+ 
+    float const femur_angle_actual = input(leg, Joint::Femur)->get().value();
+    float const femur_angle_error = fabs(INITIAL_FEMUR_ANGLE - femur_angle_actual);
+    bool  const femur_is_initial_angle_reached = femur_angle_error < 5.0f;
+
+    if (!femur_is_initial_angle_reached) {
+      ROS_INFO("gait::state::Init::update: femur target angle not reached for %s", input(leg, Joint::Femur)->name().c_str());
+      all_target_angles_reached = false;
+    }
+
+    float const tibia_angle_actual = input(leg, Joint::Tibia)->get().value();
+    float const tibia_angle_error = fabs(INITIAL_TIBIA_ANGLE - tibia_angle_actual);
+    bool  const tibia_is_initial_angle_reached = tibia_angle_error < 5.0f;
+
+    if (!tibia_is_initial_angle_reached) {
+      ROS_INFO("gait::state::Init::update: tibia target angle not reached for %s", input(leg, Joint::Tibia)->name().c_str());
       all_target_angles_reached = false;
     }
   }
