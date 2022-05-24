@@ -46,9 +46,7 @@ std::tuple<StateBase *, ControllerOutput> Teleop::update(ControllerInput const &
   float const tilt_angle_actual = input._angle_sensor_sensor_head_tilt->get().value();
   float const tilt_angle_target = tilt_angle_actual + (input._teleop_cmd.angular_velocity_head_tilt * MAX_ANGLE_INCREMENT_PER_CYCLE_DEG);
 
-  ControllerOutput const next_output(pan_angle_target, tilt_angle_target);
-
-  return std::tuple(this, next_output);
+  return std::tuple(this, ControllerOutput(pan_angle_target, tilt_angle_target));
 }
 
 /**************************************************************************************

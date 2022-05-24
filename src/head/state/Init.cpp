@@ -40,12 +40,6 @@ void Init::onExit()
 
 std::tuple<StateBase *, ControllerOutput> Init::update(ControllerInput const & input, ControllerOutput const & prev_output)
 {
-  /* The desired output in this state is always
-   * the pre-configured initial angle for pan
-   * and tilt element of the head.
-   */
-  ControllerOutput const next_output(INITIAL_PAN_ANGLE_DEG, INITIAL_TILT_ANGLE_DEG);
-
   /* Check if we have reached the initial tilt angle. */
   float const tilt_angle_actual = input._angle_sensor_sensor_head_tilt->get().value();
   float const tilt_angle_error = fabs(INITIAL_TILT_ANGLE_DEG - tilt_angle_actual);
@@ -62,7 +56,7 @@ std::tuple<StateBase *, ControllerOutput> Init::update(ControllerInput const & i
   if (tilt_is_initial_angle_reached && pan_is_initial_angle_reached)
     return std::tuple(new Teleop(), prev_output);
 
-  return std::tuple(this, prev_output);
+  return std::tuple(this, ControllerOutput(INITIAL_PAN_ANGLE_DEG, INITIAL_TILT_ANGLE_DEG));
 }
  
 /**************************************************************************************
