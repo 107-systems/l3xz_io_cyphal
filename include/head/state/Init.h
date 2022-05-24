@@ -30,7 +30,7 @@ public:
   virtual ~Init() { }
   virtual void onEnter() override;
   virtual void onExit() override;
-  virtual StateBase * update(ControllerInput const & input, ControllerOutput & output) override;
+  virtual std::tuple<StateBase *, ControllerOutput> update(ControllerInput const & input, ControllerOutput const & prev_output) override;
 
 private:
   static float constexpr INITIAL_ANGLE_EPSILON = 2.0f;

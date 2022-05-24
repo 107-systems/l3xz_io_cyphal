@@ -11,6 +11,8 @@
  * INCLUDES
  **************************************************************************************/
 
+#include <tuple>
+
 #include <Const.h>
 #include "../HeadControllerInput.h"
 #include "../HeadControllerOutput.h"
@@ -32,7 +34,7 @@ public:
   virtual ~StateBase() { }
   virtual void onEnter() { }
   virtual void onExit() { }
-  virtual StateBase * update(ControllerInput const & input, ControllerOutput & output) = 0;
+  virtual std::tuple<StateBase *, ControllerOutput> update(ControllerInput const & input, ControllerOutput const & prev_output) = 0;
 };
 
 /**************************************************************************************
