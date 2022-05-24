@@ -313,12 +313,10 @@ int main(int argc, char **argv) try
 
     auto const next_head_ctrl_output = head_ctrl.update(head_ctrl_input, prev_head_ctrl_output);
 
-    if (next_head_ctrl_output != prev_head_ctrl_output)
-    {
-      angle_actuator_sensor_head_pan->set (next_head_ctrl_output[head::ControllerOutput::Angle::Pan]);
-      angle_actuator_sensor_head_tilt->set(next_head_ctrl_output[head::ControllerOutput::Angle::Tilt]);
-      prev_head_ctrl_output = next_head_ctrl_output;
-    }
+    angle_actuator_sensor_head_pan->set (next_head_ctrl_output[head::ControllerOutput::Angle::Pan]);
+    angle_actuator_sensor_head_tilt->set(next_head_ctrl_output[head::ControllerOutput::Angle::Tilt]);
+
+    prev_head_ctrl_output = next_head_ctrl_output;
 
     /**************************************************************************************
      * WRITE TO PERIPHERALS
