@@ -67,7 +67,7 @@ public:
     /* If we are outside our acceptable error margins
      * turn the valve in the required position.
      */
-    float const kP = 1.0f;
+    float const kP = 0.5f;
     float const set = kP * angle_diff;
     _valve_actuator->set(set);
   }

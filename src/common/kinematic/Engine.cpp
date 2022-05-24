@@ -51,7 +51,7 @@ Engine::Engine()
 
   _fksolver     = std::unique_ptr<KDL::ChainFkSolverPos_recursive>(new KDL::ChainFkSolverPos_recursive(_leg_chain));
   _iksolver_vel = std::unique_ptr<KDL::ChainIkSolverVel_pinv>     (new KDL::ChainIkSolverVel_pinv(_leg_chain));
-  _iksolver_pos = std::unique_ptr<KDL::ChainIkSolverPos_NR>       (new KDL::ChainIkSolverPos_NR(_leg_chain, *_fksolver, *_iksolver_vel));
+  _iksolver_pos = std::unique_ptr<KDL::ChainIkSolverPos_NR>       (new KDL::ChainIkSolverPos_NR(_leg_chain, *_fksolver, *_iksolver_vel, /* maxiter = */ 200, /* eps = */ 1e-1));
 }
 
 /**************************************************************************************

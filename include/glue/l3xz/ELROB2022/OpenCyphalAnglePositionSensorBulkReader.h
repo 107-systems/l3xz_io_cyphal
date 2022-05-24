@@ -52,21 +52,21 @@ public:
                                           SharedOpenCyphalAnglePositionSensor angle_sensor_right_front_tibia)
   : FEMUR_ANGLE_OFFSET_MAP
   {
-    {1, 286.08},
-    {2,  50.34},
-    {3, 324.40},
-    {4, 105.85},
-    {5, 347.97},
-    {6,  60.10}
+    {1, 285},
+    {2, 50},
+    {3, 143},
+    {4, 111},
+    {5, 116+46-5},
+    {6, 234}
   }
   , TIBIA_ANGLE_OFFSET_MAP
   {
-    {1, 246.04},
-    {2, 159.08+25},
-    {3, 304.90},
-    {4, 234.05+40+8},
-    {5,  87.97},
-    {6, 124.10}
+    {1, 60},
+    {2, 195-49},
+    {3, 299},
+    {4, 127},
+    {5, 59},
+    {6, 123+10}
   }
   , NODE_ID_TO_FEMUR_ANGLE_POSITION_SENSOR_MAP
   {
