@@ -41,16 +41,8 @@ public:
 
   enum class Angle {Pan, Tilt};
 
-  inline double & operator[](Angle const angle) {
-    switch(angle)
-    {
-    case Angle::Pan : return _pan_angle_target; break;
-    case Angle::Tilt: return _tilt_angle_target; break;
-    default: throw std::runtime_error("ControllerOutput::operator[] error, invalid parameter for 'angle'"); break;
-    }
-  }
-
-  inline double const operator[](Angle const angle) const {
+  inline double const operator[](Angle const angle) const
+  {
     switch(angle)
     {
     case Angle::Pan : return _pan_angle_target; break;
