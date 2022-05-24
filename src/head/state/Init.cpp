@@ -40,19 +40,6 @@ void Init::onExit()
 
 std::tuple<StateBase *, ControllerOutput> Init::update(ControllerInput const & input, ControllerOutput const & prev_output)
 {
-  /* No state transition if we do not even have
-   * valid input data.
-   */
-  if (!input._angle_sensor_sensor_head_pan->get().has_value()) {
-    ROS_ERROR("head::state::Init::update: no valid input data for %s", input._angle_sensor_sensor_head_pan->name().c_str());
-    return std::tuple(this, prev_output);
-  }
-
-  if (!input._angle_sensor_sensor_head_tilt->get().value()) {
-    ROS_ERROR("head::state::Init::update: no valid input data for %s", input._angle_sensor_sensor_head_tilt->name().c_str());
-    return std::tuple(this, prev_output);
-  }
-
   /* The desired output in this state is always
    * the pre-configured initial angle for pan
    * and tilt element of the head.

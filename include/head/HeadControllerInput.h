@@ -36,6 +36,13 @@ public:
   , _angle_sensor_sensor_head_tilt{angle_sensor_sensor_head_tilt}
   { }
 
+  bool isValid() const
+  {
+    if (!_angle_sensor_sensor_head_pan->get().has_value()) return false;
+    if (!_angle_sensor_sensor_head_tilt->get().has_value()) return false;
+    return true;
+  }
+
   TeleopCommandData const _teleop_cmd;
   common::sensor::interface::SharedAnglePositionSensor _angle_sensor_sensor_head_pan,
                                                        _angle_sensor_sensor_head_tilt;
