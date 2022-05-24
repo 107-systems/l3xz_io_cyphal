@@ -83,7 +83,7 @@ StateBase * Init::update(common::kinematic::Engine const & engine, GaitControlle
     return this;
 
   /* All good, let's transition to the next state. */
-  return new StandUp();
+  return this;//new StandUp();
 }
 
 /**************************************************************************************

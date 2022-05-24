@@ -19,6 +19,9 @@
  * TYPEDEF
  **************************************************************************************/
 
+static float constexpr INITIAL_PAN_ANGLE_DEG  = 0.0f;
+static float constexpr INITIAL_TILT_ANGLE_DEG = 0.0f;
+
 static std::list<Leg> const LEG_LIST =
 {
   Leg::LeftFront, Leg::LeftMiddle, Leg::LeftBack, Leg::RightFront, Leg::RightMiddle, Leg::RightBack

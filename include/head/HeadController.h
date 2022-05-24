@@ -32,7 +32,7 @@ public:
    Controller();
   ~Controller();
 
-  ControllerOutput update(ControllerInput const & input);
+  ControllerOutput update(ControllerInput const & input, ControllerOutput const & prev_output);
 
 private:
   state::StateBase * _head_state;

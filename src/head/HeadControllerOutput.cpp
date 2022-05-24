@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2022 LXHeadControllerics GmbH.
+ * Copyright (c) 2022 LXRobotics GmbH.
  * Author: Alexander Entinger <alexander.entinger@lxrobotics.com>
  * Contributors: https://github.com/107-systems/l3xz/graphs/contributors.
  */
@@ -8,9 +8,9 @@
  * INCLUDES
  **************************************************************************************/
 
-#include <head/HeadController.h>
+#include <head/HeadControllerOutput.h>
 
-#include <head/state/Init.h>
+#include <cmath>
 
 /**************************************************************************************
  * NAMESPACE
@@ -20,41 +20,22 @@ namespace head
 {
 
 /**************************************************************************************
- * CTOR/DTOR
+ * FREE FUNCTION DEFINITION
  **************************************************************************************/
 
-Controller::Controller()
-: _head_state{new state::Init()}
+bool operator == (ControllerOutput const & lhs, ControllerOutput const & rhs)
 {
-  _head_state->onEnter();
+  static float const EPSILON = 1e-3;
+  
+  bool const is_pan_equal  = fabs(lhs[ControllerOutput::Angle::Pan]  - rhs[ControllerOutput::Angle::Pan])  < EPSILON;
+  bool const is_tilt_equal = fabs(lhs[ControllerOutput::Angle::Tilt] - rhs[ControllerOutput::Angle::Tilt]) < EPSILON;
+
+  return (is_pan_equal && is_tilt_equal);
 }
 
-Controller::~Controller()
+bool operator != (ControllerOutput const & lhs, ControllerOutput const & rhs)
 {
-  delete _head_state;
-}
-
-/**************************************************************************************
- * PUBLIC MEMBER FUNCTIONS
- **************************************************************************************/
-
-ControllerOutput Controller::update(ControllerInput const & input, ControllerOutput const & prev_output)
-{
-  ControllerOutput next_output = prev_output;
-
-  state::StateBase * next_head_state = _head_state->update(input, next_output);
-    
-  if (next_head_state != _head_state)
-  {
-    _head_state->onExit();
-
-    delete _head_state;
-    _head_state = next_head_state;
-    
-    _head_state->onEnter();
-  }
-
-  return next_output;
+  return !(lhs == rhs);
 }
 
 /**************************************************************************************

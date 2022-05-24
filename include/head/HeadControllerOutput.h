@@ -29,12 +29,17 @@ namespace head
 class ControllerOutput
 {
 public:
-  ControllerOutput()
-  : _pan_angle_target {0.0}
-  , _tilt_angle_target{0.0}
+  ControllerOutput(double const pan_angle_target, double const tilt_angle_target)
+  : _pan_angle_target {pan_angle_target}
+  , _tilt_angle_target{tilt_angle_target}
   { }
 
-  enum class Angle {Pan, Tilt };
+  ControllerOutput(ControllerOutput const & other)
+  : _pan_angle_target {other[Angle::Pan]}
+  , _tilt_angle_target{other[Angle::Tilt]}
+  { }
+
+  enum class Angle {Pan, Tilt};
 
   inline double & operator[](Angle const angle) {
     switch(angle)
@@ -58,6 +63,13 @@ private:
   double _pan_angle_target,
          _tilt_angle_target;
 };
+
+/**************************************************************************************
+ * FREE FUNCTION DECLARATION
+ **************************************************************************************/
+
+bool operator == (ControllerOutput const & lhs, ControllerOutput const & rhs);
+bool operator != (ControllerOutput const & lhs, ControllerOutput const & rhs);
 
 /**************************************************************************************
  * NAMESPACE
