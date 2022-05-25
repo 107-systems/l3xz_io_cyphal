@@ -43,11 +43,6 @@ Controller::~Controller()
 
 ControllerOutput Controller::update(ControllerInput const & input, ControllerOutput const & prev_output)
 {
-  if (!input.isValid()) {
-    ROS_ERROR("HeadController::update: invalid input data.");
-    return prev_output;
-  }
-
   auto [next_head_state, next_output] = _head_state->update(input, prev_output);
     
   if (next_head_state != _head_state)

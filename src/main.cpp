@@ -345,7 +345,12 @@ int main(int argc, char **argv) try
                                           angle_sensor_sensor_head_pan,
                                           angle_sensor_sensor_head_tilt);
 
-    auto const next_head_ctrl_output = head_ctrl.update(head_ctrl_input, prev_head_ctrl_output);
+    auto next_head_ctrl_output = prev_head_ctrl_output;
+
+    if (head_ctrl_input.isValid())
+      next_head_ctrl_output = head_ctrl.update(head_ctrl_input, prev_head_ctrl_output);
+    else
+      ROS_ERROR("head::ControllerInput: invalid input data.");
 
     angle_actuator_sensor_head_pan->set (next_head_ctrl_output[head::ControllerOutput::Angle::Pan]);
     angle_actuator_sensor_head_tilt->set(next_head_ctrl_output[head::ControllerOutput::Angle::Tilt]);
