@@ -326,7 +326,10 @@ int main(int argc, char **argv) try
 
     ROS_INFO("IN: %s", gait_ctrl_input.toStr().c_str());
 
-    gait_ctrl.update(gait_ctrl_input, gait_ctrl_output);
+    if (gait_ctrl_input.isValid())
+      gait_ctrl.update(gait_ctrl_input, gait_ctrl_output);
+    else
+      ROS_ERROR("GaitController::update: invalid input data.");
 
     ROS_INFO("OUT: %s", gait_ctrl_output.toStr().c_str());
 
