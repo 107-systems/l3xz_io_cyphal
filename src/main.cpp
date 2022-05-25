@@ -495,7 +495,7 @@ void init_ssc32(driver::SharedSSC32 & ssc32_ctrl)
    * means that all valves are turned off.
    */
   for (auto ch = driver::SSC32::MIN_CHANNEL; ch <= driver::SSC32::MAX_CHANNEL; ch++)
-    ssc32_ctrl->setPulseWidth(ch, 1500, 0);
+    ssc32_ctrl->setPulseWidth(ch, 1500, 50);
 }
 
 void deinit_ssc32(driver::SharedSSC32 & ssc32_ctrl)

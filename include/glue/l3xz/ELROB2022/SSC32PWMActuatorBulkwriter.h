@@ -43,7 +43,7 @@ public:
   void doBulkWrite()
   {
     for (auto [channel, pulse_width_us] : _channel_pulse_width_map)
-      _ssc32->setPulseWidth(channel, pulse_width_us, 0);
+      _ssc32->setPulseWidth(channel, pulse_width_us, 50);
   }
 
 private:
