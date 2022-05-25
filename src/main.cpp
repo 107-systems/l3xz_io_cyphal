@@ -261,24 +261,24 @@ int main(int argc, char **argv) try
   ros::Subscriber cmd_vel_sub = node_hdl.subscribe<geometry_msgs::Twist>("/l3xz/cmd_vel", 10, std::bind(cmd_vel_callback, std::placeholders::_1, std::ref(teleop_cmd_data)));
 
   gait::GaitController gait_ctrl;
-  gait::GaitControllerOutput gait_ctrl_output(INITIAL_COXA_ANGLE_DEG,
-                                              INITIAL_FEMUR_ANGLE_DEG,
-                                              INITIAL_TIBIA_ANGLE_DEG,
-                                              INITIAL_COXA_ANGLE_DEG,
-                                              INITIAL_FEMUR_ANGLE_DEG,
-                                              INITIAL_TIBIA_ANGLE_DEG,
-                                              INITIAL_COXA_ANGLE_DEG,
-                                              INITIAL_FEMUR_ANGLE_DEG,
-                                              INITIAL_TIBIA_ANGLE_DEG,
-                                              INITIAL_COXA_ANGLE_DEG,
-                                              INITIAL_FEMUR_ANGLE_DEG,
-                                              INITIAL_TIBIA_ANGLE_DEG,
-                                              INITIAL_COXA_ANGLE_DEG,
-                                              INITIAL_FEMUR_ANGLE_DEG,
-                                              INITIAL_TIBIA_ANGLE_DEG,
-                                              INITIAL_COXA_ANGLE_DEG,
-                                              INITIAL_FEMUR_ANGLE_DEG,
-                                              INITIAL_TIBIA_ANGLE_DEG);
+  gait::GaitControllerOutput prev_gait_ctrl_output(INITIAL_COXA_ANGLE_DEG,
+                                                   INITIAL_FEMUR_ANGLE_DEG,
+                                                   INITIAL_TIBIA_ANGLE_DEG,
+                                                   INITIAL_COXA_ANGLE_DEG,
+                                                   INITIAL_FEMUR_ANGLE_DEG,
+                                                   INITIAL_TIBIA_ANGLE_DEG,
+                                                   INITIAL_COXA_ANGLE_DEG,
+                                                   INITIAL_FEMUR_ANGLE_DEG,
+                                                   INITIAL_TIBIA_ANGLE_DEG,
+                                                   INITIAL_COXA_ANGLE_DEG,
+                                                   INITIAL_FEMUR_ANGLE_DEG,
+                                                   INITIAL_TIBIA_ANGLE_DEG,
+                                                   INITIAL_COXA_ANGLE_DEG,
+                                                   INITIAL_FEMUR_ANGLE_DEG,
+                                                   INITIAL_TIBIA_ANGLE_DEG,
+                                                   INITIAL_COXA_ANGLE_DEG,
+                                                   INITIAL_FEMUR_ANGLE_DEG,
+                                                   INITIAL_TIBIA_ANGLE_DEG);
 
   head::Controller head_ctrl;
   head::ControllerOutput prev_head_ctrl_output(INITIAL_PAN_ANGLE_DEG, INITIAL_TILT_ANGLE_DEG);
@@ -326,17 +326,19 @@ int main(int argc, char **argv) try
 
     ROS_INFO("IN: %s", gait_ctrl_input.toStr().c_str());
 
+    auto next_gait_ctrl_output = prev_gait_ctrl_output;
+
     if (gait_ctrl_input.isValid())
-      gait_ctrl.update(gait_ctrl_input, gait_ctrl_output);
+      next_gait_ctrl_output = gait_ctrl.update(gait_ctrl_input, prev_gait_ctrl_output);
     else
       ROS_ERROR("GaitController::update: invalid input data.");
 
-    ROS_INFO("OUT: %s", gait_ctrl_output.toStr().c_str());
+    ROS_INFO("OUT: %s", next_gait_ctrl_output.toStr().c_str());
 
     /* Write the target angles to the actual angle position actuators. */
     for (auto [leg, joint] : LEG_JOINT_LIST)
     {
-      float const target_angle_deg = gait_ctrl_output.at(leg, joint);
+      float const target_angle_deg = next_gait_ctrl_output.at(leg, joint);
       angle_position_actuator_map.at(common::actuator::interface::angle_position_actuator_map_make_key(leg, joint))->set(target_angle_deg);
     }
 
