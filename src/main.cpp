@@ -393,6 +393,11 @@ catch (std::runtime_error const & err)
   ROS_ERROR("Exception caught: %s\nTerminating ...", err.what());
   return EXIT_FAILURE;
 }
+catch (...)
+{
+  ROS_ERROR("Unhandled exception caught.\nTerminating ...");
+  return EXIT_FAILURE;
+}
 
 /**************************************************************************************
  * FUNCTION DECLARATION
