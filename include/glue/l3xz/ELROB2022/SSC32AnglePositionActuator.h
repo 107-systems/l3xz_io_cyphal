@@ -68,8 +68,12 @@ public:
      * turn the valve in the required position.
      */
     float const kP = 0.5f;
-    float const set = kP * angle_diff;
-    _valve_actuator->set(set);
+    float const set = kP * angle_error;
+
+    if (actual_angle_deg < target_angle_deg)
+      _valve_actuator->set(set);
+    else
+      _valve_actuator->set(set * (-1.0f));
   }
 
 protected:
