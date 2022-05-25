@@ -41,9 +41,9 @@ StateBase * Init::update(common::kinematic::Engine const & engine, GaitControlle
   /* Set the desired target angle. */
   for (auto leg : LEG_LIST)
   {
-    output(leg, Joint::Coxa ) = INITIAL_COXA_ANGLE_DEG;
-    output(leg, Joint::Femur) = INITIAL_FEMUR_ANGLE_DEG;
-    output(leg, Joint::Tibia) = INITIAL_TIBIA_ANGLE_DEG;
+    output.at(leg, Joint::Coxa ) = INITIAL_COXA_ANGLE_DEG;
+    output.at(leg, Joint::Femur) = INITIAL_FEMUR_ANGLE_DEG;
+    output.at(leg, Joint::Tibia) = INITIAL_TIBIA_ANGLE_DEG;
   }
 
   /* Check if target angles have been reached. */

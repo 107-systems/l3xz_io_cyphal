@@ -52,7 +52,7 @@ public:
                        float const right_back_tibia_angle_target);
                        
 
-  float & operator()(Leg const leg, Joint const joint);
+  float & at(Leg const leg, Joint const joint);
 
   std::string toStr();
 

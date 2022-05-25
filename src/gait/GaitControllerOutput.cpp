@@ -92,7 +92,7 @@ GaitControllerOutput::GaitControllerOutput(float const left_front_coxa_angle_tar
  * PUBLIC MEMBER FUNCTIONS
  **************************************************************************************/
 
-float & GaitControllerOutput::operator()(Leg const leg, Joint const joint)
+float & GaitControllerOutput::at(Leg const leg, Joint const joint)
 {
   if (!_map.count(make_key(leg, joint)))
   {
