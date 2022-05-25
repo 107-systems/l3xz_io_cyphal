@@ -38,18 +38,18 @@ void Standing::onExit()
   ROS_INFO("Standing EXIT");
 }
 
-StateBase * Standing::update(common::kinematic::Engine const & engine, GaitControllerInput & input, GaitControllerOutput & output)
+std::tuple<StateBase *, GaitControllerOutput> Standing::update(common::kinematic::Engine const & engine, GaitControllerInput & input, GaitControllerOutput const & prev_output)
 {
   if      (input._teleop_cmd.linear_velocity_x > 0.2f)
-    return new ForwardWalking();
+    return std::tuple(new ForwardWalking(), prev_output);
   else if (input._teleop_cmd.linear_velocity_x < -0.2f)
-    return new BackwardWalking();
+    return std::tuple(new BackwardWalking(), prev_output);
   else if (input._teleop_cmd.angular_velocity_z > 0.2f)
-    return new TurningRight();
+    return std::tuple(new TurningRight(), prev_output);
   else if (input._teleop_cmd.angular_velocity_z < -0.2f)
-    return new TurningLeft();
+    return std::tuple(new TurningLeft(), prev_output);
   else
-    return this;
+    return std::tuple(this, prev_output);
 }
 
 /**************************************************************************************

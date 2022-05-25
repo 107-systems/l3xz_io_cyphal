@@ -36,7 +36,7 @@ void StandUp::onExit()
   ROS_INFO("StandUp EXIT");
 }
 
-StateBase * StandUp::update(common::kinematic::Engine const & engine, GaitControllerInput & input, GaitControllerOutput & output)
+std::tuple<StateBase *, GaitControllerOutput> StandUp::update(common::kinematic::Engine const & engine, GaitControllerInput & input, GaitControllerOutput const & prev_output)
 {
   // static double const TARGET_TIBIA_TIP_x =  175.0;
   // static double const TARGET_TIBIA_TIP_y =    0.0;
@@ -45,6 +45,8 @@ StateBase * StandUp::update(common::kinematic::Engine const & engine, GaitContro
   // double x = TARGET_TIBIA_TIP_x,
   //        y = TARGET_TIBIA_TIP_y,
   //        z = TARGET_TIBIA_TIP_z;
+
+  GaitControllerOutput next_output(prev_output);
 
   bool all_target_angles_reached = true;
   for (auto leg : LEG_LIST)
@@ -75,9 +77,9 @@ StateBase * StandUp::update(common::kinematic::Engine const & engine, GaitContro
     float const FEMUR_TARGET = -45.0f;
     float const TIBIA_TARGET = -45.0f;
 
-    output.at(leg, Joint::Coxa)  = COXA_TARGET;
-    output.at(leg, Joint::Femur) = FEMUR_TARGET;
-    output.at(leg, Joint::Tibia) = TIBIA_TARGET;
+    next_output.at(leg, Joint::Coxa)  = COXA_TARGET;
+    next_output.at(leg, Joint::Femur) = FEMUR_TARGET;
+    next_output.at(leg, Joint::Tibia) = TIBIA_TARGET;
 
 
 
@@ -115,9 +117,9 @@ StateBase * StandUp::update(common::kinematic::Engine const & engine, GaitContro
   }
 
   if (!all_target_angles_reached)
-    return this;
+    return std::tuple(this, next_output);
 
-  return new Standing();
+  return std::tuple(new Standing(), prev_output);
 }
 
 /**************************************************************************************

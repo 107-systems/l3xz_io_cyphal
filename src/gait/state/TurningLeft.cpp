@@ -35,10 +35,10 @@ void TurningLeft::onExit()
   ROS_INFO("TurningLeft EXIT");
 }
 
-StateBase * TurningLeft::update(common::kinematic::Engine const & engine, GaitControllerInput & input, GaitControllerOutput & output)
+std::tuple<StateBase *, GaitControllerOutput> TurningLeft::update(common::kinematic::Engine const & engine, GaitControllerInput & input, GaitControllerOutput const & prev_output)
 {
   /* TODO: Walk one gait::state cycle Backward. */
-  return new Standing();
+  return std::tuple(new Standing(), prev_output);
 }
 
 /**************************************************************************************

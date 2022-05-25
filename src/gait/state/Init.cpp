@@ -36,14 +36,15 @@ void Init::onExit()
   ROS_INFO("Init EXIT");
 }
 
-StateBase * Init::update(common::kinematic::Engine const & engine, GaitControllerInput & input, GaitControllerOutput & output)
+std::tuple<StateBase *, GaitControllerOutput> Init::update(common::kinematic::Engine const & engine, GaitControllerInput & input, GaitControllerOutput const & prev_output)
 {
   /* Set the desired target angle. */
+  GaitControllerOutput next_output(prev_output);
   for (auto leg : LEG_LIST)
   {
-    output.at(leg, Joint::Coxa ) = INITIAL_COXA_ANGLE_DEG;
-    output.at(leg, Joint::Femur) = INITIAL_FEMUR_ANGLE_DEG;
-    output.at(leg, Joint::Tibia) = INITIAL_TIBIA_ANGLE_DEG;
+    next_output.at(leg, Joint::Coxa ) = INITIAL_COXA_ANGLE_DEG;
+    next_output.at(leg, Joint::Femur) = INITIAL_FEMUR_ANGLE_DEG;
+    next_output.at(leg, Joint::Tibia) = INITIAL_TIBIA_ANGLE_DEG;
   }
 
   /* Check if target angles have been reached. */
@@ -80,10 +81,11 @@ StateBase * Init::update(common::kinematic::Engine const & engine, GaitControlle
   }
 
   if (!all_target_angles_reached)
-    return this;
+    return std::tuple(this, next_output);
 
   /* All good, let's transition to the next state. */
-  return this;//new StandUp();
+  return std::tuple(this, next_output);
+  //return std::tuple(new StandUp(), next_output);
 }
 
 /**************************************************************************************

@@ -74,7 +74,7 @@ public:
   virtual ~ForwardWalking() { }
   virtual void onEnter() override;
   virtual void onExit() override;
-  virtual StateBase * update(common::kinematic::Engine const & engine, GaitControllerInput & input, GaitControllerOutput & output) override;
+  virtual std::tuple<StateBase *, GaitControllerOutput> update(common::kinematic::Engine const & engine, GaitControllerInput & input, GaitControllerOutput const & prev_output) override;
 
 private:
   GaitSequence::const_iterator _current_leg_state;

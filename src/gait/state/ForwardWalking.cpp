@@ -46,7 +46,7 @@ void ForwardWalking::onExit()
   ROS_INFO("ForwardWalking EXIT");
 }
 
-StateBase * ForwardWalking::update(common::kinematic::Engine const & engine, GaitControllerInput & input, GaitControllerOutput & output)
+std::tuple<StateBase *, GaitControllerOutput> ForwardWalking::update(common::kinematic::Engine const & engine, GaitControllerInput & input, GaitControllerOutput const & prev_output)
 {
   /* TODO: Walk one gait::state cycle forward. */
 
@@ -91,11 +91,11 @@ StateBase * ForwardWalking::update(common::kinematic::Engine const & engine, Gai
     _current_leg_state = std::next(_current_leg_state);
     if (_current_leg_state == RIPPLE_GAIT.cend()) {
       /* Now the one complete cycle of walking forward has been completed, return to the the default state. */
-      return new Standing;
+      return std::tuple(new Standing, prev_output);
     }
   }
 
-  return this;
+  return std::tuple(this, prev_output);
 }
 
 /**************************************************************************************

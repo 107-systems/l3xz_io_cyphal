@@ -35,10 +35,10 @@ void BackwardWalking::onExit()
   ROS_INFO("BackwardWalking EXIT");
 }
 
-StateBase * BackwardWalking::update(common::kinematic::Engine const & engine, GaitControllerInput & input, GaitControllerOutput & output)
+std::tuple<StateBase *, GaitControllerOutput> BackwardWalking::update(common::kinematic::Engine const & engine, GaitControllerInput & input, GaitControllerOutput const & prev_output)
 {
   /* TODO: Walk one gait::state cycle Backward. */
-  return new Standing();
+  return std::tuple(new Standing(), prev_output);
 }
 
 /**************************************************************************************
