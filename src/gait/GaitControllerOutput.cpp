@@ -24,9 +24,9 @@ namespace gait
  * FUNCTION DEFINITION
  **************************************************************************************/
 
-struct valve_map_key_equal : public std::binary_function<GaitControllerOutput::AngleActuatorMapKey, GaitControllerOutput::AngleActuatorMapKey, bool>
+struct valve_map_key_equal : public std::binary_function<GaitControllerOutput::TargetAngleMapKey, GaitControllerOutput::TargetAngleMapKey, bool>
 {
-  bool operator()(const GaitControllerOutput::AngleActuatorMapKey & v0, const GaitControllerOutput::AngleActuatorMapKey & v1) const
+  bool operator()(const GaitControllerOutput::TargetAngleMapKey & v0, const GaitControllerOutput::TargetAngleMapKey & v1) const
   {
     return (
             std::get<0>(v0) == std::get<0>(v1) &&
@@ -35,7 +35,7 @@ struct valve_map_key_equal : public std::binary_function<GaitControllerOutput::A
   }
 };
 
-static GaitControllerOutput::AngleActuatorMapKey make_key(Leg const leg, Joint const joint)
+static GaitControllerOutput::TargetAngleMapKey make_key(Leg const leg, Joint const joint)
 {
   return std::tuple(leg, joint);
 }
@@ -44,55 +44,55 @@ static GaitControllerOutput::AngleActuatorMapKey make_key(Leg const leg, Joint c
  * CTOR/DTOR
  **************************************************************************************/
 
-GaitControllerOutput::GaitControllerOutput(common::actuator::interface::SharedAnglePositionActuator angle_actuator_left_front_coxa,
-                                           common::actuator::interface::SharedAnglePositionActuator angle_actuator_left_front_femur,
-                                           common::actuator::interface::SharedAnglePositionActuator angle_actuator_left_front_tibia,
-                                           common::actuator::interface::SharedAnglePositionActuator angle_actuator_left_middle_coxa,
-                                           common::actuator::interface::SharedAnglePositionActuator angle_actuator_left_middle_femur,
-                                           common::actuator::interface::SharedAnglePositionActuator angle_actuator_left_middle_tibia,
-                                           common::actuator::interface::SharedAnglePositionActuator angle_actuator_left_back_coxa,
-                                           common::actuator::interface::SharedAnglePositionActuator angle_actuator_left_back_femur,
-                                           common::actuator::interface::SharedAnglePositionActuator angle_actuator_left_back_tibia,
-                                           common::actuator::interface::SharedAnglePositionActuator angle_actuator_right_front_coxa,
-                                           common::actuator::interface::SharedAnglePositionActuator angle_actuator_right_front_femur,
-                                           common::actuator::interface::SharedAnglePositionActuator angle_actuator_right_front_tibia,
-                                           common::actuator::interface::SharedAnglePositionActuator angle_actuator_right_middle_coxa,
-                                           common::actuator::interface::SharedAnglePositionActuator angle_actuator_right_middle_femur,
-                                           common::actuator::interface::SharedAnglePositionActuator angle_actuator_right_middle_tibia,
-                                           common::actuator::interface::SharedAnglePositionActuator angle_actuator_right_back_coxa,
-                                           common::actuator::interface::SharedAnglePositionActuator angle_actuator_right_back_femur,
-                                           common::actuator::interface::SharedAnglePositionActuator angle_actuator_right_back_tibia)
+GaitControllerOutput::GaitControllerOutput(float const left_front_coxa_angle_target,
+                                           float const left_front_femur_angle_target,
+                                           float const left_front_tibia_angle_target,
+                                           float const left_middle_coxa_angle_target,
+                                           float const left_middle_femur_angle_target,
+                                           float const left_middle_tibia_angle_target,
+                                           float const left_back_coxa_angle_target,
+                                           float const left_back_femur_angle_target,
+                                           float const left_back_tibia_angle_target,
+                                           float const right_front_coxa_angle_target,
+                                           float const right_front_femur_angle_target,
+                                           float const right_front_tibia_angle_target,
+                                           float const right_middle_coxa_angle_target,
+                                           float const right_middle_femur_angle_target,
+                                           float const right_middle_tibia_angle_target,
+                                           float const right_back_coxa_angle_target,
+                                           float const right_back_femur_angle_target,
+                                           float const right_back_tibia_angle_target)
 {
-  _map[make_key(Leg::LeftFront,   Joint::Coxa)]  = angle_actuator_left_front_coxa;
-  _map[make_key(Leg::LeftFront,   Joint::Femur)] = angle_actuator_left_front_femur;
-  _map[make_key(Leg::LeftFront,   Joint::Tibia)] = angle_actuator_left_front_tibia;
+  _map[make_key(Leg::LeftFront,   Joint::Coxa)]  = left_front_coxa_angle_target;
+  _map[make_key(Leg::LeftFront,   Joint::Femur)] = left_front_femur_angle_target;
+  _map[make_key(Leg::LeftFront,   Joint::Tibia)] = left_front_tibia_angle_target;
 
-  _map[make_key(Leg::LeftMiddle,  Joint::Coxa)]  = angle_actuator_left_middle_coxa;
-  _map[make_key(Leg::LeftMiddle,  Joint::Femur)] = angle_actuator_left_middle_femur;
-  _map[make_key(Leg::LeftMiddle,  Joint::Tibia)] = angle_actuator_left_middle_tibia;
+  _map[make_key(Leg::LeftMiddle,  Joint::Coxa)]  = left_middle_coxa_angle_target;
+  _map[make_key(Leg::LeftMiddle,  Joint::Femur)] = left_middle_femur_angle_target;
+  _map[make_key(Leg::LeftMiddle,  Joint::Tibia)] = left_middle_tibia_angle_target;
 
-  _map[make_key(Leg::LeftBack,    Joint::Coxa)]  = angle_actuator_left_back_coxa;
-  _map[make_key(Leg::LeftBack,    Joint::Femur)] = angle_actuator_left_back_femur;
-  _map[make_key(Leg::LeftBack,    Joint::Tibia)] = angle_actuator_left_back_tibia;
+  _map[make_key(Leg::LeftBack,    Joint::Coxa)]  = left_back_coxa_angle_target;
+  _map[make_key(Leg::LeftBack,    Joint::Femur)] = left_back_femur_angle_target;
+  _map[make_key(Leg::LeftBack,    Joint::Tibia)] = left_back_tibia_angle_target;
 
-  _map[make_key(Leg::RightFront,  Joint::Coxa)]  = angle_actuator_right_front_coxa;
-  _map[make_key(Leg::RightFront,  Joint::Femur)] = angle_actuator_right_front_femur;
-  _map[make_key(Leg::RightFront,  Joint::Tibia)] = angle_actuator_right_front_tibia;
+  _map[make_key(Leg::RightFront,  Joint::Coxa)]  = right_front_coxa_angle_target;
+  _map[make_key(Leg::RightFront,  Joint::Femur)] = right_front_femur_angle_target;
+  _map[make_key(Leg::RightFront,  Joint::Tibia)] = right_front_tibia_angle_target;
 
-  _map[make_key(Leg::RightMiddle, Joint::Coxa)]  = angle_actuator_right_middle_coxa;
-  _map[make_key(Leg::RightMiddle, Joint::Femur)] = angle_actuator_right_middle_femur;
-  _map[make_key(Leg::RightMiddle, Joint::Tibia)] = angle_actuator_right_middle_tibia;
+  _map[make_key(Leg::RightMiddle, Joint::Coxa)]  = right_middle_coxa_angle_target;
+  _map[make_key(Leg::RightMiddle, Joint::Femur)] = right_middle_femur_angle_target;
+  _map[make_key(Leg::RightMiddle, Joint::Tibia)] = right_middle_tibia_angle_target;
 
-  _map[make_key(Leg::RightBack,   Joint::Coxa)]  = angle_actuator_right_back_coxa;
-  _map[make_key(Leg::RightBack,   Joint::Femur)] = angle_actuator_right_back_femur;
-  _map[make_key(Leg::RightBack,   Joint::Tibia)] = angle_actuator_right_back_tibia;
+  _map[make_key(Leg::RightBack,   Joint::Coxa)]  = right_back_coxa_angle_target;
+  _map[make_key(Leg::RightBack,   Joint::Femur)] = right_back_femur_angle_target;
+  _map[make_key(Leg::RightBack,   Joint::Tibia)] = right_back_tibia_angle_target;
 }
 
 /**************************************************************************************
  * PUBLIC MEMBER FUNCTIONS
  **************************************************************************************/
 
-common::actuator::interface::SharedAnglePositionActuator GaitControllerOutput::operator()(Leg const leg, Joint const joint)
+float & GaitControllerOutput::operator()(Leg const leg, Joint const joint)
 {
   if (!_map.count(make_key(leg, joint)))
   {
@@ -117,35 +117,35 @@ std::string GaitControllerOutput::toStr()
   msg << "\n"
       << "Left\n"
       << "  Front :"
-      << "  Coxa: "   << _map[make_key(Leg::LeftFront, Joint::Coxa)]->toStr()
-      << "  Femur: "  << _map[make_key(Leg::LeftFront, Joint::Femur)]->toStr()
-      << "  Tibia: "  << _map[make_key(Leg::LeftFront, Joint::Tibia)]->toStr()
+      << "  Coxa: "   << _map[make_key(Leg::LeftFront, Joint::Coxa)]
+      << "  Femur: "  << _map[make_key(Leg::LeftFront, Joint::Femur)]
+      << "  Tibia: "  << _map[make_key(Leg::LeftFront, Joint::Tibia)]
       << "\n"
       << "  Middle:"
-      << "  Coxa: "   << _map[make_key(Leg::LeftMiddle, Joint::Coxa)]->toStr()
-      << "  Femur: "  << _map[make_key(Leg::LeftMiddle, Joint::Femur)]->toStr()
-      << "  Tibia: "  << _map[make_key(Leg::LeftMiddle, Joint::Tibia)]->toStr()
+      << "  Coxa: "   << _map[make_key(Leg::LeftMiddle, Joint::Coxa)]
+      << "  Femur: "  << _map[make_key(Leg::LeftMiddle, Joint::Femur)]
+      << "  Tibia: "  << _map[make_key(Leg::LeftMiddle, Joint::Tibia)]
       << "\n"
       << "  Back  :"
-      << "  Coxa: "   << _map[make_key(Leg::LeftBack, Joint::Coxa)]->toStr()
-      << "  Femur: "  << _map[make_key(Leg::LeftBack, Joint::Femur)]->toStr()
-      << "  Tibia: "  << _map[make_key(Leg::LeftBack, Joint::Tibia)]->toStr()
+      << "  Coxa: "   << _map[make_key(Leg::LeftBack, Joint::Coxa)]
+      << "  Femur: "  << _map[make_key(Leg::LeftBack, Joint::Femur)]
+      << "  Tibia: "  << _map[make_key(Leg::LeftBack, Joint::Tibia)]
       << "\n"
       << "Right\n"
       << "  Front :"
-      << "  Coxa: "   << _map[make_key(Leg::RightFront, Joint::Coxa)]->toStr()
-      << "  Femur: "  << _map[make_key(Leg::RightFront, Joint::Femur)]->toStr()
-      << "  Tibia: "  << _map[make_key(Leg::RightFront, Joint::Tibia)]->toStr()
+      << "  Coxa: "   << _map[make_key(Leg::RightFront, Joint::Coxa)]
+      << "  Femur: "  << _map[make_key(Leg::RightFront, Joint::Femur)]
+      << "  Tibia: "  << _map[make_key(Leg::RightFront, Joint::Tibia)]
       << "\n"
       << "  Middle:"
-      << "  Coxa: "   << _map[make_key(Leg::RightMiddle, Joint::Coxa)]->toStr()
-      << "  Femur: "  << _map[make_key(Leg::RightMiddle, Joint::Femur)]->toStr()
-      << "  Tibia: "  << _map[make_key(Leg::RightMiddle, Joint::Tibia)]->toStr()
+      << "  Coxa: "   << _map[make_key(Leg::RightMiddle, Joint::Coxa)]
+      << "  Femur: "  << _map[make_key(Leg::RightMiddle, Joint::Femur)]
+      << "  Tibia: "  << _map[make_key(Leg::RightMiddle, Joint::Tibia)]
       << "\n"
       << "  Back  :"
-      << "  Coxa: "   << _map[make_key(Leg::RightBack, Joint::Coxa)]->toStr()
-      << "  Femur: "  << _map[make_key(Leg::RightBack, Joint::Femur)]->toStr()
-      << "  Tibia: "  << _map[make_key(Leg::RightBack, Joint::Tibia)]->toStr();
+      << "  Coxa: "   << _map[make_key(Leg::RightBack, Joint::Coxa)]
+      << "  Femur: "  << _map[make_key(Leg::RightBack, Joint::Femur)]
+      << "  Tibia: "  << _map[make_key(Leg::RightBack, Joint::Tibia)];
 
   return msg.str();
 }

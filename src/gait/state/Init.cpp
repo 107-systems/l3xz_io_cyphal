@@ -41,9 +41,9 @@ StateBase * Init::update(common::kinematic::Engine const & engine, GaitControlle
   /* Set the desired target angle. */
   for (auto leg : LEG_LIST)
   {
-    output(leg, Joint::Coxa )->set(INITIAL_COXA_ANGLE);
-    output(leg, Joint::Femur)->set(INITIAL_FEMUR_ANGLE);
-    output(leg, Joint::Tibia)->set(INITIAL_TIBIA_ANGLE);
+    output(leg, Joint::Coxa ) = INITIAL_COXA_ANGLE_DEG;
+    output(leg, Joint::Femur) = INITIAL_FEMUR_ANGLE_DEG;
+    output(leg, Joint::Tibia) = INITIAL_TIBIA_ANGLE_DEG;
   }
 
   /* Check if target angles have been reached. */
@@ -51,7 +51,7 @@ StateBase * Init::update(common::kinematic::Engine const & engine, GaitControlle
   for (auto leg : LEG_LIST)
   {
     float const coxa_angle_actual = input(leg, Joint::Coxa)->get().value();
-    float const coxa_angle_error = fabs(INITIAL_COXA_ANGLE - coxa_angle_actual);
+    float const coxa_angle_error = fabs(INITIAL_COXA_ANGLE_DEG - coxa_angle_actual);
     bool  const coxa_is_initial_angle_reached = coxa_angle_error < 5.0f;
 
     if (!coxa_is_initial_angle_reached) {
@@ -61,7 +61,7 @@ StateBase * Init::update(common::kinematic::Engine const & engine, GaitControlle
  
  
     float const femur_angle_actual = input(leg, Joint::Femur)->get().value();
-    float const femur_angle_error = fabs(INITIAL_FEMUR_ANGLE - femur_angle_actual);
+    float const femur_angle_error = fabs(INITIAL_FEMUR_ANGLE_DEG - femur_angle_actual);
     bool  const femur_is_initial_angle_reached = femur_angle_error < 5.0f;
 
     if (!femur_is_initial_angle_reached) {
@@ -70,7 +70,7 @@ StateBase * Init::update(common::kinematic::Engine const & engine, GaitControlle
     }
 
     float const tibia_angle_actual = input(leg, Joint::Tibia)->get().value();
-    float const tibia_angle_error = fabs(INITIAL_TIBIA_ANGLE - tibia_angle_actual);
+    float const tibia_angle_error = fabs(INITIAL_TIBIA_ANGLE_DEG - tibia_angle_actual);
     bool  const tibia_is_initial_angle_reached = tibia_angle_error < 5.0f;
 
     if (!tibia_is_initial_angle_reached) {

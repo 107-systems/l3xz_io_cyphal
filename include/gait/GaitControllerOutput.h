@@ -32,36 +32,36 @@ namespace gait
 class GaitControllerOutput
 {
 public:
-  GaitControllerOutput(common::actuator::interface::SharedAnglePositionActuator angle_actuator_left_front_coxa,
-                       common::actuator::interface::SharedAnglePositionActuator angle_actuator_left_front_femur,
-                       common::actuator::interface::SharedAnglePositionActuator angle_actuator_left_front_tibia,
-                       common::actuator::interface::SharedAnglePositionActuator angle_actuator_left_middle_coxa,
-                       common::actuator::interface::SharedAnglePositionActuator angle_actuator_left_middle_femur,
-                       common::actuator::interface::SharedAnglePositionActuator angle_actuator_left_middle_tibia,
-                       common::actuator::interface::SharedAnglePositionActuator angle_actuator_left_back_coxa,
-                       common::actuator::interface::SharedAnglePositionActuator angle_actuator_left_back_femur,
-                       common::actuator::interface::SharedAnglePositionActuator angle_actuator_left_back_tibia,
-                       common::actuator::interface::SharedAnglePositionActuator angle_actuator_right_front_coxa,
-                       common::actuator::interface::SharedAnglePositionActuator angle_actuator_right_front_femur,
-                       common::actuator::interface::SharedAnglePositionActuator angle_actuator_right_front_tibia,
-                       common::actuator::interface::SharedAnglePositionActuator angle_actuator_right_middle_coxa,
-                       common::actuator::interface::SharedAnglePositionActuator angle_actuator_right_middle_femur,
-                       common::actuator::interface::SharedAnglePositionActuator angle_actuator_right_middle_tibia,
-                       common::actuator::interface::SharedAnglePositionActuator angle_actuator_right_back_coxa,
-                       common::actuator::interface::SharedAnglePositionActuator angle_actuator_right_back_femur,
-                       common::actuator::interface::SharedAnglePositionActuator angle_actuator_right_back_tibia);
+  GaitControllerOutput(float const left_front_coxa_angle_target,
+                       float const left_front_femur_angle_target,
+                       float const left_front_tibia_angle_target,
+                       float const left_middle_coxa_angle_target,
+                       float const left_middle_femur_angle_target,
+                       float const left_middle_tibia_angle_target,
+                       float const left_back_coxa_angle_target,
+                       float const left_back_femur_angle_target,
+                       float const left_back_tibia_angle_target,
+                       float const right_front_coxa_angle_target,
+                       float const right_front_femur_angle_target,
+                       float const right_front_tibia_angle_target,
+                       float const right_middle_coxa_angle_target,
+                       float const right_middle_femur_angle_target,
+                       float const right_middle_tibia_angle_target,
+                       float const right_back_coxa_angle_target,
+                       float const right_back_femur_angle_target,
+                       float const right_back_tibia_angle_target);
                        
 
-  common::actuator::interface::SharedAnglePositionActuator operator()(Leg const leg, Joint const joint);
+  float & operator()(Leg const leg, Joint const joint);
 
   std::string toStr();
 
-  typedef std::tuple<Leg, Joint> AngleActuatorMapKey;
-  typedef common::actuator::interface::SharedAnglePositionActuator AngleActuatorMapValue;
-  typedef std::map<AngleActuatorMapKey, AngleActuatorMapValue> AngleActuatorMap;
+  typedef std::tuple<Leg, Joint> TargetAngleMapKey;
+  typedef float TargetAngleMapValue;
+  typedef std::map<TargetAngleMapKey, TargetAngleMapValue> TargetAngleMap;
 
 private:
-  AngleActuatorMap _map;
+  TargetAngleMap _map;
 };
 
 /**************************************************************************************

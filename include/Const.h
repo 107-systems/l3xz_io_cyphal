@@ -19,6 +19,10 @@
  * TYPEDEF
  **************************************************************************************/
 
+static float constexpr INITIAL_COXA_ANGLE_DEG  = 0.0f;
+static float constexpr INITIAL_FEMUR_ANGLE_DEG = 0.0f;
+static float constexpr INITIAL_TIBIA_ANGLE_DEG = 0.0f;
+
 static float constexpr INITIAL_PAN_ANGLE_DEG  = 0.0f;
 static float constexpr INITIAL_TILT_ANGLE_DEG = 0.0f;
 

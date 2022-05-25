@@ -24,6 +24,8 @@
 
 #include <Const.h>
 
+#include <common/actuator/interface/AnglePositionActuatorMap.h>
+
 #include <gait/GaitController.h>
 #include <head/HeadController.h>
 
@@ -211,7 +213,6 @@ int main(int argc, char **argv) try
   auto valve_actuator_back_right_femur       = std::make_shared<glue::l3xz::ELROB2022::SSC32ValveActuator>("R/B Femur", pwm_actuator_valve_back_right_femur);
   auto valve_actuator_back_right_tibia       = std::make_shared<glue::l3xz::ELROB2022::SSC32ValveActuator>("R/B Tibia", pwm_actuator_valve_back_right_tibia);
 
-
   auto angle_actuator_left_front_femur       = std::make_shared<glue::l3xz::ELROB2022::SSC32AnglePositionActuator>("L/F Femur", valve_actuator_front_left_femur,   angle_sensor_left_front_femur);
   auto angle_actuator_left_front_tibia       = std::make_shared<glue::l3xz::ELROB2022::SSC32AnglePositionActuator>("L/F Tibia", valve_actuator_front_left_tibia,   angle_sensor_left_front_tibia);
   auto angle_actuator_left_middle_femur      = std::make_shared<glue::l3xz::ELROB2022::SSC32AnglePositionActuator>("L/M Femur", valve_actuator_middle_left_femur,  angle_sensor_left_middle_femur);
@@ -227,6 +228,32 @@ int main(int argc, char **argv) try
   auto angle_actuator_right_back_tibia       = std::make_shared<glue::l3xz::ELROB2022::SSC32AnglePositionActuator>("R/B Tibia", valve_actuator_back_right_tibia,   angle_sensor_right_back_tibia);
 
   /**************************************************************************************
+   * ALL ANGLE POSITION ACTUATORS
+   **************************************************************************************/
+
+  common::actuator::interface::AnglePositionActuatorMap angle_position_actuator_map =
+  {
+    {common::actuator::interface::angle_position_actuator_map_make_key(Leg::LeftFront,   Joint::Coxa),  angle_actuator_left_front_coxa},
+    {common::actuator::interface::angle_position_actuator_map_make_key(Leg::LeftFront,   Joint::Femur), angle_actuator_left_front_femur},
+    {common::actuator::interface::angle_position_actuator_map_make_key(Leg::LeftFront,   Joint::Tibia), angle_actuator_left_front_tibia},
+    {common::actuator::interface::angle_position_actuator_map_make_key(Leg::LeftMiddle,  Joint::Coxa),  angle_actuator_left_middle_coxa},
+    {common::actuator::interface::angle_position_actuator_map_make_key(Leg::LeftMiddle,  Joint::Femur), angle_actuator_left_middle_femur},
+    {common::actuator::interface::angle_position_actuator_map_make_key(Leg::LeftMiddle,  Joint::Tibia), angle_actuator_left_middle_tibia},
+    {common::actuator::interface::angle_position_actuator_map_make_key(Leg::LeftBack,    Joint::Coxa),  angle_actuator_left_back_coxa},
+    {common::actuator::interface::angle_position_actuator_map_make_key(Leg::LeftBack,    Joint::Femur), angle_actuator_left_back_femur},
+    {common::actuator::interface::angle_position_actuator_map_make_key(Leg::LeftBack,    Joint::Tibia), angle_actuator_left_back_tibia},
+    {common::actuator::interface::angle_position_actuator_map_make_key(Leg::RightFront,  Joint::Coxa),  angle_actuator_right_front_coxa},
+    {common::actuator::interface::angle_position_actuator_map_make_key(Leg::RightFront,  Joint::Femur), angle_actuator_right_front_femur},
+    {common::actuator::interface::angle_position_actuator_map_make_key(Leg::RightFront,  Joint::Tibia), angle_actuator_right_front_tibia},
+    {common::actuator::interface::angle_position_actuator_map_make_key(Leg::RightMiddle, Joint::Coxa),  angle_actuator_right_middle_coxa},
+    {common::actuator::interface::angle_position_actuator_map_make_key(Leg::RightMiddle, Joint::Femur), angle_actuator_right_middle_femur},
+    {common::actuator::interface::angle_position_actuator_map_make_key(Leg::RightMiddle, Joint::Tibia), angle_actuator_right_middle_tibia},
+    {common::actuator::interface::angle_position_actuator_map_make_key(Leg::RightBack,   Joint::Coxa),  angle_actuator_right_back_coxa},
+    {common::actuator::interface::angle_position_actuator_map_make_key(Leg::RightBack,   Joint::Femur), angle_actuator_right_back_femur},
+    {common::actuator::interface::angle_position_actuator_map_make_key(Leg::RightBack,   Joint::Tibia), angle_actuator_right_back_tibia}
+  };
+
+  /**************************************************************************************
    * STATE
    **************************************************************************************/
 
@@ -234,24 +261,24 @@ int main(int argc, char **argv) try
   ros::Subscriber cmd_vel_sub = node_hdl.subscribe<geometry_msgs::Twist>("/l3xz/cmd_vel", 10, std::bind(cmd_vel_callback, std::placeholders::_1, std::ref(teleop_cmd_data)));
 
   gait::GaitController gait_ctrl;
-  gait::GaitControllerOutput gait_ctrl_output(angle_actuator_left_front_coxa,
-                                              angle_actuator_left_front_femur,
-                                              angle_actuator_left_front_tibia,
-                                              angle_actuator_left_middle_coxa,
-                                              angle_actuator_left_middle_femur,
-                                              angle_actuator_left_middle_tibia,
-                                              angle_actuator_left_back_coxa,
-                                              angle_actuator_left_back_femur,
-                                              angle_actuator_left_back_tibia,
-                                              angle_actuator_right_front_coxa,
-                                              angle_actuator_right_front_femur,
-                                              angle_actuator_right_front_tibia,
-                                              angle_actuator_right_middle_coxa,
-                                              angle_actuator_right_middle_femur,
-                                              angle_actuator_right_middle_tibia,
-                                              angle_actuator_right_back_coxa,
-                                              angle_actuator_right_back_femur,
-                                              angle_actuator_right_back_tibia);
+  gait::GaitControllerOutput gait_ctrl_output(INITIAL_COXA_ANGLE_DEG,
+                                              INITIAL_FEMUR_ANGLE_DEG,
+                                              INITIAL_TIBIA_ANGLE_DEG,
+                                              INITIAL_COXA_ANGLE_DEG,
+                                              INITIAL_FEMUR_ANGLE_DEG,
+                                              INITIAL_TIBIA_ANGLE_DEG,
+                                              INITIAL_COXA_ANGLE_DEG,
+                                              INITIAL_FEMUR_ANGLE_DEG,
+                                              INITIAL_TIBIA_ANGLE_DEG,
+                                              INITIAL_COXA_ANGLE_DEG,
+                                              INITIAL_FEMUR_ANGLE_DEG,
+                                              INITIAL_TIBIA_ANGLE_DEG,
+                                              INITIAL_COXA_ANGLE_DEG,
+                                              INITIAL_FEMUR_ANGLE_DEG,
+                                              INITIAL_TIBIA_ANGLE_DEG,
+                                              INITIAL_COXA_ANGLE_DEG,
+                                              INITIAL_FEMUR_ANGLE_DEG,
+                                              INITIAL_TIBIA_ANGLE_DEG);
 
   head::Controller head_ctrl;
   head::ControllerOutput prev_head_ctrl_output(INITIAL_PAN_ANGLE_DEG, INITIAL_TILT_ANGLE_DEG);
@@ -302,6 +329,13 @@ int main(int argc, char **argv) try
     gait_ctrl.update(gait_ctrl_input, gait_ctrl_output);
 
     ROS_INFO("OUT: %s", gait_ctrl_output.toStr().c_str());
+
+    /* Write the target angles to the actual angle position actuators. */
+    for (auto [leg, joint] : LEG_JOINT_LIST)
+    {
+      float const target_angle_deg = gait_ctrl_output(leg, joint);
+      angle_position_actuator_map.at(common::actuator::interface::angle_position_actuator_map_make_key(leg, joint))->set(target_angle_deg);
+    }
 
     /**************************************************************************************
      * HEAD CONTROL

@@ -75,9 +75,9 @@ StateBase * StandUp::update(common::kinematic::Engine const & engine, GaitContro
     float const FEMUR_TARGET = -45.0f;
     float const TIBIA_TARGET = -45.0f;
 
-    output(leg, Joint::Coxa)->set (COXA_TARGET);
-    output(leg, Joint::Femur)->set(FEMUR_TARGET);
-    output(leg, Joint::Tibia)->set(TIBIA_TARGET);
+    output(leg, Joint::Coxa)  = COXA_TARGET;
+    output(leg, Joint::Femur) = FEMUR_TARGET;
+    output(leg, Joint::Tibia) = TIBIA_TARGET;
 
 
 
