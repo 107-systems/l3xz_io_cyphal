@@ -1,0 +1,3 @@
+[submodule "external/libuavcan"]
+	path = external/libuavcan
+	url = https://github.com/dronecan/libuavcan
