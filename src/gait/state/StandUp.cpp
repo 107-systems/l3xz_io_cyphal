@@ -54,11 +54,11 @@ std::tuple<StateBase *, ControllerOutput> StandUp::update(common::kinematic::Eng
     // /* Calculate required target angles for desired
     //  * target position and set the output actuators.
     //  */
-    // double const coxa_deg_actual  = input.at(leg, Joint::Coxa );
-    // double const femur_deg_actual = input.at(leg, Joint::Femur);
-    // double const tibia_deg_actual = input.at(leg, Joint::Tibia);
+    // double const coxa_deg_actual  = input.angle_deg(leg, Joint::Coxa );
+    // double const femur_deg_actual = input.angle_deg(leg, Joint::Femur);
+    // double const tibia_deg_actual = input.angle_deg(leg, Joint::Tibia);
 
-    // common::kinematic::IK_Input const ik_input.at(x, y, z, coxa_deg_actual, femur_deg_actual, tibia_deg_actual);
+    // common::kinematic::IK_Input const ik_input.angle_deg(x, y, z, coxa_deg_actual, femur_deg_actual, tibia_deg_actual);
 
     // auto const ik_output = engine.ik_solve(ik_input);
 
@@ -84,7 +84,7 @@ std::tuple<StateBase *, ControllerOutput> StandUp::update(common::kinematic::Eng
 
 
     /* Check if target angles have been reached. */
-    float const coxa_angle_actual = input.at(leg, Joint::Coxa);
+    float const coxa_angle_actual = input.angle_deg(leg, Joint::Coxa);
     //float const coxa_angle_error = fabs(ik_output.value().angle_deg(Joint::Coxa) - coxa_angle_actual);
     float const coxa_angle_error = fabs(COXA_TARGET - coxa_angle_actual);
     bool  const coxa_is_initial_angle_reached = coxa_angle_error < 2.0f;
@@ -95,7 +95,7 @@ std::tuple<StateBase *, ControllerOutput> StandUp::update(common::kinematic::Eng
     }
  
  
-    float const femur_angle_actual = input.at(leg, Joint::Femur);
+    float const femur_angle_actual = input.angle_deg(leg, Joint::Femur);
     //float const femur_angle_error = fabs(ik_output.value().angle_deg(Joint::Femur) - femur_angle_actual);
     float const femur_angle_error = fabs(FEMUR_TARGET - femur_angle_actual);
     bool  const femur_is_initial_angle_reached = femur_angle_error < 2.0f;
@@ -105,7 +105,7 @@ std::tuple<StateBase *, ControllerOutput> StandUp::update(common::kinematic::Eng
       all_target_angles_reached = false;
     }
 
-    float const tibia_angle_actual = input.at(leg, Joint::Tibia);
+    float const tibia_angle_actual = input.angle_deg(leg, Joint::Tibia);
     //float const tibia_angle_error = fabs(ik_output.value().angle_deg(Joint::Tibia) - tibia_angle_actual);
     float const tibia_angle_error = fabs(TIBIA_TARGET - tibia_angle_actual);
     bool  const tibia_is_initial_angle_reached = tibia_angle_error < 2.0f;

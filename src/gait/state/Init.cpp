@@ -52,7 +52,7 @@ std::tuple<StateBase *, ControllerOutput> Init::update(common::kinematic::Engine
   bool all_target_angles_reached = true;
   for (auto leg : LEG_LIST)
   {
-    float const coxa_angle_actual = input.at(leg, Joint::Coxa);
+    float const coxa_angle_actual = input.angle_deg(leg, Joint::Coxa);
     float const coxa_angle_error = fabs(INITIAL_COXA_ANGLE_DEG - coxa_angle_actual);
     bool  const coxa_is_initial_angle_reached = coxa_angle_error < 5.0f;
 
@@ -62,7 +62,7 @@ std::tuple<StateBase *, ControllerOutput> Init::update(common::kinematic::Engine
     }
  
  
-    float const femur_angle_actual = input.at(leg, Joint::Femur);
+    float const femur_angle_actual = input.angle_deg(leg, Joint::Femur);
     float const femur_angle_error = fabs(INITIAL_FEMUR_ANGLE_DEG - femur_angle_actual);
     bool  const femur_is_initial_angle_reached = femur_angle_error < 5.0f;
 
@@ -71,7 +71,7 @@ std::tuple<StateBase *, ControllerOutput> Init::update(common::kinematic::Engine
       all_target_angles_reached = false;
     }
 
-    float const tibia_angle_actual = input.at(leg, Joint::Tibia);
+    float const tibia_angle_actual = input.angle_deg(leg, Joint::Tibia);
     float const tibia_angle_error = fabs(INITIAL_TIBIA_ANGLE_DEG - tibia_angle_actual);
     bool  const tibia_is_initial_angle_reached = tibia_angle_error < 5.0f;
 
