@@ -392,7 +392,7 @@ int main(int argc, char **argv) try
     /* Write the target angles to the actual angle position actuators. */
     for (auto [leg, joint] : LEG_JOINT_LIST)
     {
-      float const target_angle_deg = next_gait_ctrl_output.at(leg, joint);
+      float const target_angle_deg = next_gait_ctrl_output.get_angle_deg(leg, joint);
       angle_position_actuator_map.at(make_key(leg, joint))->set(target_angle_deg);
     }
 

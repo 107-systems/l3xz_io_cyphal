@@ -43,9 +43,9 @@ std::tuple<StateBase *, ControllerOutput> Init::update(common::kinematic::Engine
   /* Set the desired target angle. */
   for (auto leg : LEG_LIST)
   {
-    next_output.at(leg, Joint::Coxa ) = INITIAL_COXA_ANGLE_DEG;
-    next_output.at(leg, Joint::Femur) = INITIAL_FEMUR_ANGLE_DEG;
-    next_output.at(leg, Joint::Tibia) = INITIAL_TIBIA_ANGLE_DEG;
+    next_output.set_angle_deg(leg, Joint::Coxa,  INITIAL_COXA_ANGLE_DEG);
+    next_output.set_angle_deg(leg, Joint::Femur, INITIAL_FEMUR_ANGLE_DEG);
+    next_output.set_angle_deg(leg, Joint::Tibia, INITIAL_TIBIA_ANGLE_DEG);
   }
 
   /* Check if target angles have been reached. */

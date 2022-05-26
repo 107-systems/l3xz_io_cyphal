@@ -77,9 +77,9 @@ std::tuple<StateBase *, ControllerOutput> StandUp::update(common::kinematic::Eng
     float const FEMUR_TARGET = -45.0f;
     float const TIBIA_TARGET = -45.0f;
 
-    next_output.at(leg, Joint::Coxa)  = COXA_TARGET;
-    next_output.at(leg, Joint::Femur) = FEMUR_TARGET;
-    next_output.at(leg, Joint::Tibia) = TIBIA_TARGET;
+    next_output.set_angle_deg(leg, Joint::Coxa,  COXA_TARGET);
+    next_output.set_angle_deg(leg, Joint::Femur, FEMUR_TARGET);
+    next_output.set_angle_deg(leg, Joint::Tibia, TIBIA_TARGET);
 
 
 

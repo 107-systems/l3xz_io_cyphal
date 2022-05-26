@@ -72,7 +72,7 @@ ControllerOutput::ControllerOutput(float const left_front_coxa_angle_target,
  * PUBLIC MEMBER FUNCTIONS
  **************************************************************************************/
 
-float & ControllerOutput::at(Leg const leg, Joint const joint)
+float ControllerOutput::get_angle_deg(Leg const leg, Joint const joint) const
 {
   if (!_angle_position_map.count(make_key(leg, joint)))
   {
@@ -88,6 +88,11 @@ float & ControllerOutput::at(Leg const leg, Joint const joint)
   }
 
   return _angle_position_map.at(make_key(leg, joint));
+}
+
+void ControllerOutput::set_angle_deg(Leg const leg, Joint const joint, float const angle_deg)
+{
+  _angle_position_map[make_key(leg, joint)] = angle_deg;
 }
 
 std::string ControllerOutput::toStr() const
