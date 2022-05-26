@@ -153,6 +153,7 @@ add_executable(${PROJECT_NAME}_node
   src/common/kinematic/FK_Output.cpp
   src/common/kinematic/IK_Output.cpp
   src/common/sensor/interface/AnglePositionSensor.cpp
+  src/common/sensor/interface/BumperSensor.cpp
   src/common/threading/ThreadBase.cpp
   src/common/threading/ThreadStats.cpp
   src/driver/dynamixel/Dynamixel.cpp

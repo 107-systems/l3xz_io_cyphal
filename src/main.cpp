@@ -47,6 +47,8 @@
 #include <glue/l3xz/ELROB2022/DynamixelAnglePositionActuatorBulkWriter.h>
 #include <glue/l3xz/ELROB2022/OpenCyphalAnglePositionSensor.h>
 #include <glue/l3xz/ELROB2022/OpenCyphalAnglePositionSensorBulkReader.h>
+#include <glue/l3xz/ELROB2022/OpenCyphalBumperSensor.h>
+#include <glue/l3xz/ELROB2022/OpenCyphalBumperSensorBulkReader.h>
 
 /**************************************************************************************
  * FUNCTION DECLARATION
@@ -55,7 +57,9 @@
 bool init_dynamixel  (driver::SharedMX28 & mx28_ctrl);
 void deinit_dynamixel(driver::SharedMX28 & mx28_ctrl);
 
-bool init_open_cyphal(phy::opencyphal::Node & open_cyphal_node, glue::l3xz::ELROB2022::OpenCyphalAnglePositionSensorBulkReader & open_cyphal_angle_position_sensor_bulk_reader);
+bool init_open_cyphal(phy::opencyphal::Node & open_cyphal_node,
+                      glue::l3xz::ELROB2022::OpenCyphalAnglePositionSensorBulkReader & open_cyphal_angle_position_sensor_bulk_reader,
+                      glue::l3xz::ELROB2022::OpenCyphalBumperSensorBulkReader & open_cyphal_bumper_sensor_bulk_reader);
 
 void init_ssc32  (driver::SharedSSC32 & ssc32_ctrl);
 void deinit_ssc32(driver::SharedSSC32 & ssc32_ctrl);
@@ -168,8 +172,29 @@ int main(int argc, char **argv) try
     angle_sensor_right_front_tibia
   );
 
-  if (!init_open_cyphal(open_cyphal_node, open_cyphal_angle_position_sensor_bulk_reader))
+  auto tibia_tip_bumper_left_front   = std::make_shared<glue::l3xz::ELROB2022::OpenCyphalBumperSensor>("L/F");
+  auto tibia_tip_bumper_left_middle  = std::make_shared<glue::l3xz::ELROB2022::OpenCyphalBumperSensor>("L/M");
+  auto tibia_tip_bumper_left_back    = std::make_shared<glue::l3xz::ELROB2022::OpenCyphalBumperSensor>("L/B");
+  auto tibia_tip_bumper_right_back   = std::make_shared<glue::l3xz::ELROB2022::OpenCyphalBumperSensor>("R/B");
+  auto tibia_tip_bumper_right_middle = std::make_shared<glue::l3xz::ELROB2022::OpenCyphalBumperSensor>("R/M");
+  auto tibia_tip_bumper_right_front  = std::make_shared<glue::l3xz::ELROB2022::OpenCyphalBumperSensor>("R/F");
+
+  glue::l3xz::ELROB2022::OpenCyphalBumperSensorBulkReader open_cyphal_bumper_sensor_bulk_reader
+  (
+    tibia_tip_bumper_left_front,
+    tibia_tip_bumper_left_middle,
+    tibia_tip_bumper_left_back,
+    tibia_tip_bumper_right_back,
+    tibia_tip_bumper_right_middle,
+    tibia_tip_bumper_right_front
+  );
+
+  if (!init_open_cyphal(open_cyphal_node,
+                        open_cyphal_angle_position_sensor_bulk_reader,
+                        open_cyphal_bumper_sensor_bulk_reader))
+  {
     ROS_ERROR("init_open_cyphal failed.");
+  }
   ROS_INFO("init_open_cyphal successfully completed.");
 
   /**************************************************************************************
@@ -275,6 +300,16 @@ int main(int argc, char **argv) try
     {make_key(Leg::RightBack,   Joint::Tibia), angle_sensor_right_back_tibia}
   };
 
+  std::map<Leg, common::sensor::interface::SharedBumperSensor> bumper_sensor_map =
+  {
+    {Leg::LeftFront,   tibia_tip_bumper_left_front},
+    {Leg::LeftMiddle,  tibia_tip_bumper_left_middle},
+    {Leg::LeftBack,    tibia_tip_bumper_left_back},
+    {Leg::RightFront,  tibia_tip_bumper_right_front},
+    {Leg::RightMiddle, tibia_tip_bumper_right_middle},
+    {Leg::RightBack,   tibia_tip_bumper_right_back}
+  };
+
   auto isControllerInputDataValid = [](std::map<LegJointKey, common::sensor::interface::SharedAnglePositionSensor> const & map) -> bool
   {
     for (auto [leg, joint] : LEG_JOINT_LIST)
@@ -284,42 +319,49 @@ int main(int argc, char **argv) try
     return true;
   };
 
-  auto toStr = [](std::map<LegJointKey, common::sensor::interface::SharedAnglePositionSensor> const & map) -> std::string
+  auto toStr = [](std::map<LegJointKey, common::sensor::interface::SharedAnglePositionSensor> const & map,
+                  std::map<Leg, common::sensor::interface::SharedBumperSensor> const & bumper) -> std::string
   {
     std::stringstream msg;
 
     msg << "\n"
         << "Left\n"
         << "  Front :"
-        << "  Coxa: "   << map.at(make_key(Leg::LeftFront, Joint::Coxa))->toStr()
-        << "  Femur: "  << map.at(make_key(Leg::LeftFront, Joint::Femur))->toStr()
-        << "  Tibia: "  << map.at(make_key(Leg::LeftFront, Joint::Tibia))->toStr()
+        << "  Coxa:"   << map.at(make_key(Leg::LeftFront, Joint::Coxa))->toStr()
+        << "  Femur:"  << map.at(make_key(Leg::LeftFront, Joint::Femur))->toStr()
+        << "  Tibia:"  << map.at(make_key(Leg::LeftFront, Joint::Tibia))->toStr()
+        << "  Tip:"    << bumper.at(Leg::LeftFront)->toStr()
         << "\n"
         << "  Middle:"
-        << "  Coxa: "   << map.at(make_key(Leg::LeftMiddle, Joint::Coxa))->toStr()
-        << "  Femur: "  << map.at(make_key(Leg::LeftMiddle, Joint::Femur))->toStr()
-        << "  Tibia: "  << map.at(make_key(Leg::LeftMiddle, Joint::Tibia))->toStr()
+        << "  Coxa:"   << map.at(make_key(Leg::LeftMiddle, Joint::Coxa))->toStr()
+        << "  Femur:"  << map.at(make_key(Leg::LeftMiddle, Joint::Femur))->toStr()
+        << "  Tibia:"  << map.at(make_key(Leg::LeftMiddle, Joint::Tibia))->toStr()
+        << "  Tip:"    << bumper.at(Leg::LeftMiddle)->toStr()
         << "\n"
         << "  Back  :"
-        << "  Coxa: "   << map.at(make_key(Leg::LeftBack, Joint::Coxa))->toStr()
-        << "  Femur: "  << map.at(make_key(Leg::LeftBack, Joint::Femur))->toStr()
-        << "  Tibia: "  << map.at(make_key(Leg::LeftBack, Joint::Tibia))->toStr()
+        << "  Coxa:"   << map.at(make_key(Leg::LeftBack, Joint::Coxa))->toStr()
+        << "  Femur:"  << map.at(make_key(Leg::LeftBack, Joint::Femur))->toStr()
+        << "  Tibia:"  << map.at(make_key(Leg::LeftBack, Joint::Tibia))->toStr()
+        << "  Tip:"    << bumper.at(Leg::LeftBack)->toStr()
         << "\n"
         << "Right\n"
         << "  Front :"
-        << "  Coxa: "   << map.at(make_key(Leg::RightFront, Joint::Coxa))->toStr()
-        << "  Femur: "  << map.at(make_key(Leg::RightFront, Joint::Femur))->toStr()
-        << "  Tibia: "  << map.at(make_key(Leg::RightFront, Joint::Tibia))->toStr()
+        << "  Coxa:"   << map.at(make_key(Leg::RightFront, Joint::Coxa))->toStr()
+        << "  Femur:"  << map.at(make_key(Leg::RightFront, Joint::Femur))->toStr()
+        << "  Tibia:"  << map.at(make_key(Leg::RightFront, Joint::Tibia))->toStr()
+        << "  Tip:"    << bumper.at(Leg::RightFront)->toStr()
         << "\n"
         << "  Middle:"
-        << "  Coxa: "   << map.at(make_key(Leg::RightMiddle, Joint::Coxa))->toStr()
-        << "  Femur: "  << map.at(make_key(Leg::RightMiddle, Joint::Femur))->toStr()
-        << "  Tibia: "  << map.at(make_key(Leg::RightMiddle, Joint::Tibia))->toStr()
+        << "  Coxa:"   << map.at(make_key(Leg::RightMiddle, Joint::Coxa))->toStr()
+        << "  Femur:"  << map.at(make_key(Leg::RightMiddle, Joint::Femur))->toStr()
+        << "  Tibia:"  << map.at(make_key(Leg::RightMiddle, Joint::Tibia))->toStr()
+        << "  Tip:"    << bumper.at(Leg::RightMiddle)->toStr()
         << "\n"
         << "  Back  :"
-        << "  Coxa: "   << map.at(make_key(Leg::RightBack, Joint::Coxa))->toStr()
-        << "  Femur: "  << map.at(make_key(Leg::RightBack, Joint::Femur))->toStr()
-        << "  Tibia: "  << map.at(make_key(Leg::RightBack, Joint::Tibia))->toStr();
+        << "  Coxa:"   << map.at(make_key(Leg::RightBack, Joint::Coxa))->toStr()
+        << "  Femur:"  << map.at(make_key(Leg::RightBack, Joint::Femur))->toStr()
+        << "  Tibia:"  << map.at(make_key(Leg::RightBack, Joint::Tibia))->toStr()
+        << "  Tip:"    << bumper.at(Leg::RightBack)->toStr();
 
     return msg.str();
   };
@@ -370,6 +412,7 @@ int main(int argc, char **argv) try
 
     dynamixel_angle_position_sensor_bulk_reader.doBulkRead();
     open_cyphal_angle_position_sensor_bulk_reader.doBulkRead();
+    open_cyphal_bumper_sensor_bulk_reader.doBulkRead();
 
     /**************************************************************************************
      * GAIT CONTROL
@@ -377,7 +420,7 @@ int main(int argc, char **argv) try
 
     auto next_gait_ctrl_output = prev_gait_ctrl_output;
 
-    ROS_INFO("IN: %s", toStr(angle_position_sensor_map).c_str());
+    ROS_INFO("IN: %s", toStr(angle_position_sensor_map, bumper_sensor_map).c_str());
 
     if (isControllerInputDataValid(angle_position_sensor_map))
     {
@@ -500,7 +543,9 @@ void deinit_dynamixel(driver::SharedMX28 & mx28_ctrl)
   mx28_ctrl->torqueOff(glue::l3xz::ELROB2022::DYNAMIXEL_ID_VECT);
 }
 
-bool init_open_cyphal(phy::opencyphal::Node & open_cyphal_node, glue::l3xz::ELROB2022::OpenCyphalAnglePositionSensorBulkReader & open_cyphal_angle_position_sensor_bulk_reader)
+bool init_open_cyphal(phy::opencyphal::Node & open_cyphal_node,
+                      glue::l3xz::ELROB2022::OpenCyphalAnglePositionSensorBulkReader & open_cyphal_angle_position_sensor_bulk_reader,
+                      glue::l3xz::ELROB2022::OpenCyphalBumperSensorBulkReader & open_cyphal_bumper_sensor_bulk_reader)
 {
   if (!open_cyphal_node.subscribe<uavcan::node::Heartbeat_1_0<>>([](CanardTransfer const & transfer)
   {
@@ -523,6 +568,7 @@ bool init_open_cyphal(phy::opencyphal::Node & open_cyphal_node, glue::l3xz::ELRO
     return false;
   }
 
+
   if (!open_cyphal_node.subscribe<uavcan::primitive::scalar::Real32_1_0<1002>>([&open_cyphal_angle_position_sensor_bulk_reader](CanardTransfer const & transfer)
   {
     uavcan::primitive::scalar::Real32_1_0<1002> const as5048_a_angle = uavcan::primitive::scalar::Real32_1_0<1002>::deserialize(transfer);
@@ -534,6 +580,7 @@ bool init_open_cyphal(phy::opencyphal::Node & open_cyphal_node, glue::l3xz::ELRO
     return false;
   }
 
+
   if (!open_cyphal_node.subscribe<uavcan::primitive::scalar::Real32_1_0<1003>>([&open_cyphal_angle_position_sensor_bulk_reader](CanardTransfer const & transfer)
   {
     uavcan::primitive::scalar::Real32_1_0<1003> const as5048_b_angle = uavcan::primitive::scalar::Real32_1_0<1003>::deserialize(transfer);
@@ -542,6 +589,18 @@ bool init_open_cyphal(phy::opencyphal::Node & open_cyphal_node, glue::l3xz::ELRO
   }))
   {
     ROS_ERROR("init_open_cyphal failed to subscribe to 'uavcan::primitive::scalar::Real32_1_0<1003>'");
+    return false;
+  }
+
+
+  if (!open_cyphal_node.subscribe<uavcan::primitive::scalar::Bit_1_0<1004>>([&open_cyphal_bumper_sensor_bulk_reader](CanardTransfer const & transfer)
+  {
+    uavcan::primitive::scalar::Bit_1_0<1004> const tibia_endpoint_switch = uavcan::primitive::scalar::Bit_1_0<1004>::deserialize(transfer);
+    open_cyphal_bumper_sensor_bulk_reader.update_bumper_sensor(transfer.remote_node_id, tibia_endpoint_switch.data.value);
+    ROS_INFO("[%d] Tibia Endpoint Switch %d", transfer.remote_node_id, tibia_endpoint_switch.data.value);
+  }))
+  {
+    ROS_ERROR("init_open_cyphal failed to subscribe to 'uavcan::primitive::scalar::Bit_1_0<1004>'");
     return false;
   }
 
