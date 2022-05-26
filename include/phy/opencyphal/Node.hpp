@@ -65,7 +65,7 @@ public:
 
 private:
 
-  static size_t constexpr LIBCANARD_O1HEAP_SIZE = 4096;
+  static size_t constexpr LIBCANARD_O1HEAP_SIZE = 16*4096;
   typedef O1Heap<LIBCANARD_O1HEAP_SIZE> O1HeapLibcanard;
 
   typedef struct
