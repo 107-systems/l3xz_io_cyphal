@@ -284,6 +284,46 @@ int main(int argc, char **argv) try
     return true;
   };
 
+  auto toStr = [](std::map<LegJointKey, common::sensor::interface::SharedAnglePositionSensor> const & map) -> std::string
+  {
+    std::stringstream msg;
+
+    msg << "\n"
+        << "Left\n"
+        << "  Front :"
+        << "  Coxa: "   << map.at(make_key(Leg::LeftFront, Joint::Coxa))->toStr()
+        << "  Femur: "  << map.at(make_key(Leg::LeftFront, Joint::Femur))->toStr()
+        << "  Tibia: "  << map.at(make_key(Leg::LeftFront, Joint::Tibia))->toStr()
+        << "\n"
+        << "  Middle:"
+        << "  Coxa: "   << map.at(make_key(Leg::LeftMiddle, Joint::Coxa))->toStr()
+        << "  Femur: "  << map.at(make_key(Leg::LeftMiddle, Joint::Femur))->toStr()
+        << "  Tibia: "  << map.at(make_key(Leg::LeftMiddle, Joint::Tibia))->toStr()
+        << "\n"
+        << "  Back  :"
+        << "  Coxa: "   << map.at(make_key(Leg::LeftBack, Joint::Coxa))->toStr()
+        << "  Femur: "  << map.at(make_key(Leg::LeftBack, Joint::Femur))->toStr()
+        << "  Tibia: "  << map.at(make_key(Leg::LeftBack, Joint::Tibia))->toStr()
+        << "\n"
+        << "Right\n"
+        << "  Front :"
+        << "  Coxa: "   << map.at(make_key(Leg::RightFront, Joint::Coxa))->toStr()
+        << "  Femur: "  << map.at(make_key(Leg::RightFront, Joint::Femur))->toStr()
+        << "  Tibia: "  << map.at(make_key(Leg::RightFront, Joint::Tibia))->toStr()
+        << "\n"
+        << "  Middle:"
+        << "  Coxa: "   << map.at(make_key(Leg::RightMiddle, Joint::Coxa))->toStr()
+        << "  Femur: "  << map.at(make_key(Leg::RightMiddle, Joint::Femur))->toStr()
+        << "  Tibia: "  << map.at(make_key(Leg::RightMiddle, Joint::Tibia))->toStr()
+        << "\n"
+        << "  Back  :"
+        << "  Coxa: "   << map.at(make_key(Leg::RightBack, Joint::Coxa))->toStr()
+        << "  Femur: "  << map.at(make_key(Leg::RightBack, Joint::Femur))->toStr()
+        << "  Tibia: "  << map.at(make_key(Leg::RightBack, Joint::Tibia))->toStr();
+
+    return msg.str();
+  };
+
   /**************************************************************************************
    * STATE
    **************************************************************************************/
@@ -337,7 +377,7 @@ int main(int argc, char **argv) try
 
     auto next_gait_ctrl_output = prev_gait_ctrl_output;
 
-    //ROS_INFO("IN: %s", gait_ctrl_input.toStr().c_str());
+    ROS_INFO("IN: %s", toStr(angle_position_sensor_map).c_str());
 
     if (isControllerInputDataValid(angle_position_sensor_map))
     {
