@@ -36,7 +36,7 @@ public:
                       std::map<LegJointKey, common::sensor::interface::SharedAnglePositionSensor> const & angle_position_sensor_map);
 
   TeleopCommandData const _teleop_cmd;
-  float operator()(Leg const leg, Joint const joint) const;
+  float at(Leg const leg, Joint const joint) const;
 
 private:
   std::map<LegJointKey, float> _angle_position_map;

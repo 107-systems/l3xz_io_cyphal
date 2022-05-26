@@ -36,7 +36,7 @@ GaitControllerInput::GaitControllerInput(TeleopCommandData const teleop_cmd,
  * PUBLIC MEMBER FUNCTIONS
  **************************************************************************************/
 
-float GaitControllerInput::operator()(Leg const leg, Joint const joint) const
+float GaitControllerInput::at(Leg const leg, Joint const joint) const
 {
   if (!_angle_position_map.count(make_key(leg, joint)))
   {
