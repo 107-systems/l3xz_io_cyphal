@@ -11,9 +11,8 @@
  * INCLUDE
  **************************************************************************************/
 
-#include <memory>
-
 #include <uavcan/uavcan.hpp>
+#include <uavcan/equipment/esc/RPMCommand.hpp>
 
 /**************************************************************************************
  * NAMESPACE
@@ -31,14 +30,16 @@ class Orel20
 public:
   Orel20(uint8_t const dronecan_node_id);
 
-private:
-  static unsigned constexpr NodeMemoryPoolSize = 16384;
-  uavcan::Node<NodeMemoryPoolSize> _node;
-};
+  inline void setRPM(uint16_t const rpm_val) { _rpm_val = rpm_val; }
 
-/**************************************************************************************
- * TYPEDEF
- **************************************************************************************/
+  void spinOnce();
+
+private:
+  static unsigned constexpr NODE_MEMORY_POOL_SIZE = 16384;
+  uavcan::Node<NODE_MEMORY_POOL_SIZE> _node;
+  uavcan::Publisher<uavcan::equipment::esc::RPMCommand> _esc_pub;
+  uint16_t _rpm_val;
+};
 
 /**************************************************************************************
  * NAMESPACE

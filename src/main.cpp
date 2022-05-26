@@ -29,6 +29,7 @@
 #include <head/HeadController.h>
 
 #include <driver/ssc32/SSC32.h>
+#include <driver/orel20/Orel20.h>
 #include <driver/dynamixel/MX28.h>
 #include <driver/dynamixel/Dynamixel.h>
 
@@ -61,6 +62,8 @@ bool init_open_cyphal(phy::opencyphal::Node & open_cyphal_node,
                       glue::l3xz::ELROB2022::OpenCyphalAnglePositionSensorBulkReader & open_cyphal_angle_position_sensor_bulk_reader,
                       glue::l3xz::ELROB2022::OpenCyphalBumperSensorBulkReader & open_cyphal_bumper_sensor_bulk_reader);
 
+void deinit_orel32(driver::Orel20 & orel20_ctrl);
+
 void init_ssc32  (driver::SharedSSC32 & ssc32_ctrl);
 void deinit_ssc32(driver::SharedSSC32 & ssc32_ctrl);
 
@@ -78,6 +81,7 @@ static std::string const SSC32_DEVICE_NAME = "/dev/serial/by-id/usb-FTDI_FT232R_
 static size_t      const SSC32_BAUDRATE = 115200;
 
 static uint8_t     const OPEN_CYPHAL_THIS_NODE_ID = 0;
+static uint8_t     const DRONECAN_THIS_NODE_ID = 127;
 
 /**************************************************************************************
  * MAIN
@@ -194,6 +198,12 @@ int main(int argc, char **argv) try
     ROS_ERROR("init_open_cyphal failed.");
   }
   ROS_INFO("init_open_cyphal successfully completed.");
+
+  /**************************************************************************************
+   * OREL 20 / DRONECAN
+   **************************************************************************************/
+
+  driver::Orel20 orel20_esc(DRONECAN_THIS_NODE_ID);
 
   /**************************************************************************************
    * SSC32
@@ -470,6 +480,7 @@ int main(int argc, char **argv) try
       ROS_ERROR("failed to set target angles for all dynamixel servos");
 
     ssc32_pwm_actuator_bulk_driver.doBulkWrite();
+    orel20_esc.spinOnce();
 
     /**************************************************************************************
      * ROS
@@ -608,6 +619,12 @@ bool init_open_cyphal(phy::opencyphal::Node & open_cyphal_node,
   }
 
   return true;
+}
+
+void deinit_orel32(driver::Orel20 & orel20_ctrl)
+{
+  orel20_ctrl.setRPM(0);
+  orel20_ctrl.spinOnce();
 }
 
 void init_ssc32(driver::SharedSSC32 & ssc32_ctrl)
