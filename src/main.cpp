@@ -22,9 +22,8 @@
 
 #include <dynamixel_sdk.h>
 
+#include <Types.h>
 #include <Const.h>
-
-#include <common/actuator/interface/AnglePositionActuatorMap.h>
 
 #include <gait/GaitController.h>
 #include <head/HeadController.h>
@@ -231,7 +230,7 @@ int main(int argc, char **argv) try
    * ALL ANGLE POSITION ACTUATORS
    **************************************************************************************/
 
-  common::actuator::interface::AnglePositionActuatorMap angle_position_actuator_map =
+  std::map<LegJointKey, common::actuator::interface::SharedAnglePositionActuator> angle_position_actuator_map =
   {
     {make_key(Leg::LeftFront,   Joint::Coxa),  angle_actuator_left_front_coxa},
     {make_key(Leg::LeftFront,   Joint::Femur), angle_actuator_left_front_femur},
