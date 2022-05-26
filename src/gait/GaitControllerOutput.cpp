@@ -90,42 +90,42 @@ float & ControllerOutput::at(Leg const leg, Joint const joint)
   return _angle_position_map.at(make_key(leg, joint));
 }
 
-std::string ControllerOutput::toStr()
+std::string ControllerOutput::toStr() const
 {
   std::stringstream msg;
 
   msg << "\n"
       << "Left\n"
       << "  Front :"
-      << "  Coxa: "   << _angle_position_map[make_key(Leg::LeftFront, Joint::Coxa)]
-      << "  Femur: "  << _angle_position_map[make_key(Leg::LeftFront, Joint::Femur)]
-      << "  Tibia: "  << _angle_position_map[make_key(Leg::LeftFront, Joint::Tibia)]
+      << "  Coxa: "   << _angle_position_map.at(make_key(Leg::LeftFront, Joint::Coxa))
+      << "  Femur: "  << _angle_position_map.at(make_key(Leg::LeftFront, Joint::Femur))
+      << "  Tibia: "  << _angle_position_map.at(make_key(Leg::LeftFront, Joint::Tibia))
       << "\n"
       << "  Middle:"
-      << "  Coxa: "   << _angle_position_map[make_key(Leg::LeftMiddle, Joint::Coxa)]
-      << "  Femur: "  << _angle_position_map[make_key(Leg::LeftMiddle, Joint::Femur)]
-      << "  Tibia: "  << _angle_position_map[make_key(Leg::LeftMiddle, Joint::Tibia)]
+      << "  Coxa: "   << _angle_position_map.at(make_key(Leg::LeftMiddle, Joint::Coxa))
+      << "  Femur: "  << _angle_position_map.at(make_key(Leg::LeftMiddle, Joint::Femur))
+      << "  Tibia: "  << _angle_position_map.at(make_key(Leg::LeftMiddle, Joint::Tibia))
       << "\n"
       << "  Back  :"
-      << "  Coxa: "   << _angle_position_map[make_key(Leg::LeftBack, Joint::Coxa)]
-      << "  Femur: "  << _angle_position_map[make_key(Leg::LeftBack, Joint::Femur)]
-      << "  Tibia: "  << _angle_position_map[make_key(Leg::LeftBack, Joint::Tibia)]
+      << "  Coxa: "   << _angle_position_map.at(make_key(Leg::LeftBack, Joint::Coxa))
+      << "  Femur: "  << _angle_position_map.at(make_key(Leg::LeftBack, Joint::Femur))
+      << "  Tibia: "  << _angle_position_map.at(make_key(Leg::LeftBack, Joint::Tibia))
       << "\n"
       << "Right\n"
       << "  Front :"
-      << "  Coxa: "   << _angle_position_map[make_key(Leg::RightFront, Joint::Coxa)]
-      << "  Femur: "  << _angle_position_map[make_key(Leg::RightFront, Joint::Femur)]
-      << "  Tibia: "  << _angle_position_map[make_key(Leg::RightFront, Joint::Tibia)]
+      << "  Coxa: "   << _angle_position_map.at(make_key(Leg::RightFront, Joint::Coxa))
+      << "  Femur: "  << _angle_position_map.at(make_key(Leg::RightFront, Joint::Femur))
+      << "  Tibia: "  << _angle_position_map.at(make_key(Leg::RightFront, Joint::Tibia))
       << "\n"
       << "  Middle:"
-      << "  Coxa: "   << _angle_position_map[make_key(Leg::RightMiddle, Joint::Coxa)]
-      << "  Femur: "  << _angle_position_map[make_key(Leg::RightMiddle, Joint::Femur)]
-      << "  Tibia: "  << _angle_position_map[make_key(Leg::RightMiddle, Joint::Tibia)]
+      << "  Coxa: "   << _angle_position_map.at(make_key(Leg::RightMiddle, Joint::Coxa))
+      << "  Femur: "  << _angle_position_map.at(make_key(Leg::RightMiddle, Joint::Femur))
+      << "  Tibia: "  << _angle_position_map.at(make_key(Leg::RightMiddle, Joint::Tibia))
       << "\n"
       << "  Back  :"
-      << "  Coxa: "   << _angle_position_map[make_key(Leg::RightBack, Joint::Coxa)]
-      << "  Femur: "  << _angle_position_map[make_key(Leg::RightBack, Joint::Femur)]
-      << "  Tibia: "  << _angle_position_map[make_key(Leg::RightBack, Joint::Tibia)];
+      << "  Coxa: "   << _angle_position_map.at(make_key(Leg::RightBack, Joint::Coxa))
+      << "  Femur: "  << _angle_position_map.at(make_key(Leg::RightBack, Joint::Femur))
+      << "  Tibia: "  << _angle_position_map.at(make_key(Leg::RightBack, Joint::Tibia));
 
   return msg.str();
 }
