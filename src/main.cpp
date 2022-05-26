@@ -183,34 +183,35 @@ int main(int argc, char **argv) try
 
   glue::l3xz::ELROB2022::SSC32PWMActuatorBulkwriter ssc32_pwm_actuator_bulk_driver(ssc32_ctrl);
 
-  auto pwm_actuator_valve_front_left_femur   = std::make_shared<glue::l3xz::ELROB2022::SSC32PWMActuator>("L/F Femur",  0, [&ssc32_pwm_actuator_bulk_driver](uint8_t const channel, uint16_t const pulse_width_us) { ssc32_pwm_actuator_bulk_driver.update(channel, pulse_width_us); });
-  auto pwm_actuator_valve_front_left_tibia   = std::make_shared<glue::l3xz::ELROB2022::SSC32PWMActuator>("L/F Tibia",  1, [&ssc32_pwm_actuator_bulk_driver](uint8_t const channel, uint16_t const pulse_width_us) { ssc32_pwm_actuator_bulk_driver.update(channel, pulse_width_us); });
-  auto pwm_actuator_valve_middle_left_femur  = std::make_shared<glue::l3xz::ELROB2022::SSC32PWMActuator>("L/M Femur",  2, [&ssc32_pwm_actuator_bulk_driver](uint8_t const channel, uint16_t const pulse_width_us) { ssc32_pwm_actuator_bulk_driver.update(channel, pulse_width_us); });
-  auto pwm_actuator_valve_middle_left_tibia  = std::make_shared<glue::l3xz::ELROB2022::SSC32PWMActuator>("L/M Tibia",  3, [&ssc32_pwm_actuator_bulk_driver](uint8_t const channel, uint16_t const pulse_width_us) { ssc32_pwm_actuator_bulk_driver.update(channel, pulse_width_us); });
-  auto pwm_actuator_valve_back_left_femur    = std::make_shared<glue::l3xz::ELROB2022::SSC32PWMActuator>("L/B Femur",  4, [&ssc32_pwm_actuator_bulk_driver](uint8_t const channel, uint16_t const pulse_width_us) { ssc32_pwm_actuator_bulk_driver.update(channel, pulse_width_us); });
-  auto pwm_actuator_valve_back_left_tibia    = std::make_shared<glue::l3xz::ELROB2022::SSC32PWMActuator>("L/B Tibia",  5, [&ssc32_pwm_actuator_bulk_driver](uint8_t const channel, uint16_t const pulse_width_us) { ssc32_pwm_actuator_bulk_driver.update(channel, pulse_width_us); });
+  glue::l3xz::ELROB2022::SSC32PWMActuator pwm_actuator_valve_front_left_femur  ("L/F Femur",  0, [&ssc32_pwm_actuator_bulk_driver](uint8_t const channel, uint16_t const pulse_width_us) { ssc32_pwm_actuator_bulk_driver.update(channel, pulse_width_us); });
+  glue::l3xz::ELROB2022::SSC32PWMActuator pwm_actuator_valve_front_left_tibia  ("L/F Tibia",  1, [&ssc32_pwm_actuator_bulk_driver](uint8_t const channel, uint16_t const pulse_width_us) { ssc32_pwm_actuator_bulk_driver.update(channel, pulse_width_us); });
+  glue::l3xz::ELROB2022::SSC32PWMActuator pwm_actuator_valve_middle_left_femur ("L/M Femur",  2, [&ssc32_pwm_actuator_bulk_driver](uint8_t const channel, uint16_t const pulse_width_us) { ssc32_pwm_actuator_bulk_driver.update(channel, pulse_width_us); });
+  glue::l3xz::ELROB2022::SSC32PWMActuator pwm_actuator_valve_middle_left_tibia ("L/M Tibia",  3, [&ssc32_pwm_actuator_bulk_driver](uint8_t const channel, uint16_t const pulse_width_us) { ssc32_pwm_actuator_bulk_driver.update(channel, pulse_width_us); });
+  glue::l3xz::ELROB2022::SSC32PWMActuator pwm_actuator_valve_back_left_femur   ("L/B Femur",  4, [&ssc32_pwm_actuator_bulk_driver](uint8_t const channel, uint16_t const pulse_width_us) { ssc32_pwm_actuator_bulk_driver.update(channel, pulse_width_us); });
+  glue::l3xz::ELROB2022::SSC32PWMActuator pwm_actuator_valve_back_left_tibia   ("L/B Tibia",  5, [&ssc32_pwm_actuator_bulk_driver](uint8_t const channel, uint16_t const pulse_width_us) { ssc32_pwm_actuator_bulk_driver.update(channel, pulse_width_us); });
 
-  auto pwm_actuator_valve_front_right_femur  = std::make_shared<glue::l3xz::ELROB2022::SSC32PWMActuator>("R/F Femur", 16, [&ssc32_pwm_actuator_bulk_driver](uint8_t const channel, uint16_t const pulse_width_us) { ssc32_pwm_actuator_bulk_driver.update(channel, pulse_width_us); });
-  auto pwm_actuator_valve_front_right_tibia  = std::make_shared<glue::l3xz::ELROB2022::SSC32PWMActuator>("R/F Tibia", 17, [&ssc32_pwm_actuator_bulk_driver](uint8_t const channel, uint16_t const pulse_width_us) { ssc32_pwm_actuator_bulk_driver.update(channel, pulse_width_us); });
-  auto pwm_actuator_valve_middle_right_femur = std::make_shared<glue::l3xz::ELROB2022::SSC32PWMActuator>("R/M Femur", 18, [&ssc32_pwm_actuator_bulk_driver](uint8_t const channel, uint16_t const pulse_width_us) { ssc32_pwm_actuator_bulk_driver.update(channel, pulse_width_us); });
-  auto pwm_actuator_valve_middle_right_tibia = std::make_shared<glue::l3xz::ELROB2022::SSC32PWMActuator>("R/M Tibia", 19, [&ssc32_pwm_actuator_bulk_driver](uint8_t const channel, uint16_t const pulse_width_us) { ssc32_pwm_actuator_bulk_driver.update(channel, pulse_width_us); });
-  auto pwm_actuator_valve_back_right_femur   = std::make_shared<glue::l3xz::ELROB2022::SSC32PWMActuator>("R/B Femur", 20, [&ssc32_pwm_actuator_bulk_driver](uint8_t const channel, uint16_t const pulse_width_us) { ssc32_pwm_actuator_bulk_driver.update(channel, pulse_width_us); });
-  auto pwm_actuator_valve_back_right_tibia   = std::make_shared<glue::l3xz::ELROB2022::SSC32PWMActuator>("R/B Tibia", 21, [&ssc32_pwm_actuator_bulk_driver](uint8_t const channel, uint16_t const pulse_width_us) { ssc32_pwm_actuator_bulk_driver.update(channel, pulse_width_us); });
+  glue::l3xz::ELROB2022::SSC32PWMActuator pwm_actuator_valve_front_right_femur ("R/F Femur", 16, [&ssc32_pwm_actuator_bulk_driver](uint8_t const channel, uint16_t const pulse_width_us) { ssc32_pwm_actuator_bulk_driver.update(channel, pulse_width_us); });
+  glue::l3xz::ELROB2022::SSC32PWMActuator pwm_actuator_valve_front_right_tibia ("R/F Tibia", 17, [&ssc32_pwm_actuator_bulk_driver](uint8_t const channel, uint16_t const pulse_width_us) { ssc32_pwm_actuator_bulk_driver.update(channel, pulse_width_us); });
+  glue::l3xz::ELROB2022::SSC32PWMActuator pwm_actuator_valve_middle_right_femur("R/M Femur", 18, [&ssc32_pwm_actuator_bulk_driver](uint8_t const channel, uint16_t const pulse_width_us) { ssc32_pwm_actuator_bulk_driver.update(channel, pulse_width_us); });
+  glue::l3xz::ELROB2022::SSC32PWMActuator pwm_actuator_valve_middle_right_tibia("R/M Tibia", 19, [&ssc32_pwm_actuator_bulk_driver](uint8_t const channel, uint16_t const pulse_width_us) { ssc32_pwm_actuator_bulk_driver.update(channel, pulse_width_us); });
+  glue::l3xz::ELROB2022::SSC32PWMActuator pwm_actuator_valve_back_right_femur  ("R/B Femur", 20, [&ssc32_pwm_actuator_bulk_driver](uint8_t const channel, uint16_t const pulse_width_us) { ssc32_pwm_actuator_bulk_driver.update(channel, pulse_width_us); });
+  glue::l3xz::ELROB2022::SSC32PWMActuator pwm_actuator_valve_back_right_tibia  ("R/B Tibia", 21, [&ssc32_pwm_actuator_bulk_driver](uint8_t const channel, uint16_t const pulse_width_us) { ssc32_pwm_actuator_bulk_driver.update(channel, pulse_width_us); });
 
 
-  auto valve_actuator_front_left_femur       = std::make_shared<glue::l3xz::ELROB2022::SSC32ValveActuator>("L/F Femur", pwm_actuator_valve_front_left_femur);
-  auto valve_actuator_front_left_tibia       = std::make_shared<glue::l3xz::ELROB2022::SSC32ValveActuator>("L/F Tibia", pwm_actuator_valve_front_left_tibia);
-  auto valve_actuator_middle_left_femur      = std::make_shared<glue::l3xz::ELROB2022::SSC32ValveActuator>("L/M Femur", pwm_actuator_valve_middle_left_femur);
-  auto valve_actuator_middle_left_tibia      = std::make_shared<glue::l3xz::ELROB2022::SSC32ValveActuator>("L/M Tibia", pwm_actuator_valve_middle_left_tibia);
-  auto valve_actuator_back_left_femur        = std::make_shared<glue::l3xz::ELROB2022::SSC32ValveActuator>("L/B Femur", pwm_actuator_valve_back_left_femur);
-  auto valve_actuator_back_left_tibia        = std::make_shared<glue::l3xz::ELROB2022::SSC32ValveActuator>("L/B Tibia", pwm_actuator_valve_back_left_tibia);
+  glue::l3xz::ELROB2022::SSC32ValveActuator valve_actuator_front_left_femur  ("L/F Femur", pwm_actuator_valve_front_left_femur);
+  glue::l3xz::ELROB2022::SSC32ValveActuator valve_actuator_front_left_tibia  ("L/F Tibia", pwm_actuator_valve_front_left_tibia);
+  glue::l3xz::ELROB2022::SSC32ValveActuator valve_actuator_middle_left_femur ("L/M Femur", pwm_actuator_valve_middle_left_femur);
+  glue::l3xz::ELROB2022::SSC32ValveActuator valve_actuator_middle_left_tibia ("L/M Tibia", pwm_actuator_valve_middle_left_tibia);
+  glue::l3xz::ELROB2022::SSC32ValveActuator valve_actuator_back_left_femur   ("L/B Femur", pwm_actuator_valve_back_left_femur);
+  glue::l3xz::ELROB2022::SSC32ValveActuator valve_actuator_back_left_tibia   ("L/B Tibia", pwm_actuator_valve_back_left_tibia);
 
-  auto valve_actuator_front_right_femur      = std::make_shared<glue::l3xz::ELROB2022::SSC32ValveActuator>("R/F Femur", pwm_actuator_valve_front_right_femur);
-  auto valve_actuator_front_right_tibia      = std::make_shared<glue::l3xz::ELROB2022::SSC32ValveActuator>("R/F Tibia", pwm_actuator_valve_front_right_tibia);
-  auto valve_actuator_middle_right_femur     = std::make_shared<glue::l3xz::ELROB2022::SSC32ValveActuator>("R/M Femur", pwm_actuator_valve_middle_right_femur);
-  auto valve_actuator_middle_right_tibia     = std::make_shared<glue::l3xz::ELROB2022::SSC32ValveActuator>("R/M Tibia", pwm_actuator_valve_middle_right_tibia);
-  auto valve_actuator_back_right_femur       = std::make_shared<glue::l3xz::ELROB2022::SSC32ValveActuator>("R/B Femur", pwm_actuator_valve_back_right_femur);
-  auto valve_actuator_back_right_tibia       = std::make_shared<glue::l3xz::ELROB2022::SSC32ValveActuator>("R/B Tibia", pwm_actuator_valve_back_right_tibia);
+  glue::l3xz::ELROB2022::SSC32ValveActuator valve_actuator_front_right_femur ("R/F Femur", pwm_actuator_valve_front_right_femur);
+  glue::l3xz::ELROB2022::SSC32ValveActuator valve_actuator_front_right_tibia ("R/F Tibia", pwm_actuator_valve_front_right_tibia);
+  glue::l3xz::ELROB2022::SSC32ValveActuator valve_actuator_middle_right_femur("R/M Femur", pwm_actuator_valve_middle_right_femur);
+  glue::l3xz::ELROB2022::SSC32ValveActuator valve_actuator_middle_right_tibia("R/M Tibia", pwm_actuator_valve_middle_right_tibia);
+  glue::l3xz::ELROB2022::SSC32ValveActuator valve_actuator_back_right_femur  ("R/B Femur", pwm_actuator_valve_back_right_femur);
+  glue::l3xz::ELROB2022::SSC32ValveActuator valve_actuator_back_right_tibia  ("R/B Tibia", pwm_actuator_valve_back_right_tibia);
+
 
   auto angle_actuator_left_front_femur       = std::make_shared<glue::l3xz::ELROB2022::SSC32AnglePositionActuator>("L/F Femur", valve_actuator_front_left_femur,   angle_sensor_left_front_femur);
   auto angle_actuator_left_front_tibia       = std::make_shared<glue::l3xz::ELROB2022::SSC32AnglePositionActuator>("L/F Tibia", valve_actuator_front_left_tibia,   angle_sensor_left_front_tibia);

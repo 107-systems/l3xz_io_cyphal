@@ -29,7 +29,7 @@ namespace glue::l3xz::ELROB2022
 class SSC32ValveActuator : public common::actuator::interface::ValveActuator
 {
 public:
-  SSC32ValveActuator(std::string const & name, common::actuator::interface::SharedPWMActuator pwm_actuator)
+  SSC32ValveActuator(std::string const & name, common::actuator::interface::PWMActuator & pwm_actuator)
   : ValveActuator(name)
   , _pwm_actuator{pwm_actuator}
   { }
@@ -45,7 +45,7 @@ public:
 
     float const pulse_width_us = (_val.value() * 500) + 1500;
 
-    _pwm_actuator->set(pulse_width_us);
+    _pwm_actuator.set(pulse_width_us);
   }
 
 protected:
@@ -55,7 +55,7 @@ protected:
   }
 
 private:
-  common::actuator::interface::SharedPWMActuator _pwm_actuator;
+  common::actuator::interface::PWMActuator & _pwm_actuator;
   std::optional<float> _val;
 };
 
