@@ -36,7 +36,7 @@ ControllerInput::ControllerInput(TeleopCommandData const teleop_cmd,
  * PUBLIC MEMBER FUNCTIONS
  **************************************************************************************/
 
-float ControllerInput::angle_deg(Leg const leg, Joint const joint) const
+float ControllerInput::get_angle_deg(Leg const leg, Joint const joint) const
 {
   if (!_angle_position_map.count(make_key(leg, joint)))
   {
