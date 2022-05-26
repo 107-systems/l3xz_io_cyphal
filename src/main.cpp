@@ -430,7 +430,7 @@ int main(int argc, char **argv) try
     else
       ROS_ERROR("gait_ctrl.update: invalid input data.");
 
-    ROS_INFO("OUT: %s", next_gait_ctrl_output.toStr().c_str());
+    ROS_DEBUG("OUT: %s", next_gait_ctrl_output.toStr().c_str());
 
     /* Write the target angles to the actual angle position actuators. */
     for (auto [leg, joint] : LEG_JOINT_LIST)
