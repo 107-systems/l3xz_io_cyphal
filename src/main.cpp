@@ -62,7 +62,7 @@ bool init_open_cyphal(phy::opencyphal::Node & open_cyphal_node,
                       glue::l3xz::ELROB2022::OpenCyphalAnglePositionSensorBulkReader & open_cyphal_angle_position_sensor_bulk_reader,
                       glue::l3xz::ELROB2022::OpenCyphalBumperSensorBulkReader & open_cyphal_bumper_sensor_bulk_reader);
 
-void deinit_orel32(driver::Orel20 & orel20_ctrl);
+void deinit_orel20(driver::Orel20 & orel20_ctrl);
 
 void init_ssc32  (driver::SharedSSC32 & ssc32_ctrl);
 void deinit_ssc32(driver::SharedSSC32 & ssc32_ctrl);
@@ -203,7 +203,7 @@ int main(int argc, char **argv) try
    * OREL 20 / DRONECAN
    **************************************************************************************/
 
-  driver::Orel20 orel20_esc(DRONECAN_THIS_NODE_ID);
+  driver::Orel20 orel20_ctrl(DRONECAN_THIS_NODE_ID);
 
   /**************************************************************************************
    * SSC32
@@ -480,7 +480,7 @@ int main(int argc, char **argv) try
       ROS_ERROR("failed to set target angles for all dynamixel servos");
 
     ssc32_pwm_actuator_bulk_driver.doBulkWrite();
-    orel20_esc.spinOnce();
+    orel20_ctrl.spinOnce();
 
     /**************************************************************************************
      * ROS
@@ -499,7 +499,7 @@ int main(int argc, char **argv) try
   }
 
   deinit_dynamixel(mx28_ctrl);
-
+  deinit_orel20(orel20_ctrl);
   deinit_ssc32(ssc32_ctrl);
 
   return EXIT_SUCCESS;
@@ -621,7 +621,7 @@ bool init_open_cyphal(phy::opencyphal::Node & open_cyphal_node,
   return true;
 }
 
-void deinit_orel32(driver::Orel20 & orel20_ctrl)
+void deinit_orel20(driver::Orel20 & orel20_ctrl)
 {
   orel20_ctrl.setRPM(0);
   orel20_ctrl.spinOnce();
