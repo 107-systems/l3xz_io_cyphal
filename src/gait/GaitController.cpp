@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2022 LXGaitControllerics GmbH.
+ * Copyright (c) 2022 LXControllerics GmbH.
  * Author: Alexander Entinger <alexander.entinger@lxrobotics.com>
  * Contributors: https://github.com/107-systems/l3xz/graphs/contributors.
  */
@@ -26,14 +26,14 @@ namespace gait
  * CTOR/DTOR
  **************************************************************************************/
 
-GaitController::GaitController()
+Controller::Controller()
 : _robot_state{new state::Init()}
 , _kinematic_engine{}
 {
   _robot_state->onEnter();
 }
 
-GaitController::~GaitController()
+Controller::~Controller()
 {
   delete _robot_state;
 }
@@ -42,7 +42,7 @@ GaitController::~GaitController()
  * PUBLIC MEMBER FUNCTIONS
  **************************************************************************************/
 
-GaitControllerOutput GaitController::update(GaitControllerInput const & input, GaitControllerOutput const & prev_output)
+ControllerOutput Controller::update(ControllerInput const & input, ControllerOutput const & prev_output)
 {
   auto [next_robot_state, next_output] = _robot_state->update(_kinematic_engine, input, prev_output);
     

@@ -30,7 +30,7 @@ public:
   virtual ~Standing() { }
   virtual void onEnter() override;
   virtual void onExit() override;
-  virtual std::tuple<StateBase *, GaitControllerOutput> update(common::kinematic::Engine const & engine, GaitControllerInput const & input, GaitControllerOutput const & prev_output) override;
+  virtual std::tuple<StateBase *, ControllerOutput> update(common::kinematic::Engine const & engine, ControllerInput const & input, ControllerOutput const & prev_output) override;
 };
 
 /**************************************************************************************

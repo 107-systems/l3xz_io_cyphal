@@ -28,13 +28,13 @@ namespace gait
  * CLASS DECLARATION
  **************************************************************************************/
 
-class GaitController
+class Controller
 {
 public:
-   GaitController();
-  ~GaitController();
+   Controller();
+  ~Controller();
 
-  GaitControllerOutput update(GaitControllerInput const & input, GaitControllerOutput const & prev_output);
+  ControllerOutput update(ControllerInput const & input, ControllerOutput const & prev_output);
 
 private:
   state::StateBase * _robot_state;

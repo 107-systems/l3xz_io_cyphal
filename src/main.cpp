@@ -275,7 +275,7 @@ int main(int argc, char **argv) try
     {make_key(Leg::RightBack,   Joint::Tibia), angle_sensor_right_back_tibia}
   };
 
-  auto isGaitControllerInputDataValid = [](std::map<LegJointKey, common::sensor::interface::SharedAnglePositionSensor> const & map) -> bool
+  auto isControllerInputDataValid = [](std::map<LegJointKey, common::sensor::interface::SharedAnglePositionSensor> const & map) -> bool
   {
     for (auto [leg, joint] : LEG_JOINT_LIST)
       if (!map.at(make_key(leg, joint))->get().has_value())
@@ -291,25 +291,25 @@ int main(int argc, char **argv) try
   TeleopCommandData teleop_cmd_data = {0.0f, 0.0f, 0.0f, 0.0f, 0.0f};
   ros::Subscriber cmd_vel_sub = node_hdl.subscribe<geometry_msgs::Twist>("/l3xz/cmd_vel", 10, std::bind(cmd_vel_callback, std::placeholders::_1, std::ref(teleop_cmd_data)));
 
-  gait::GaitController gait_ctrl;
-  gait::GaitControllerOutput prev_gait_ctrl_output(INITIAL_COXA_ANGLE_DEG,
-                                                   INITIAL_FEMUR_ANGLE_DEG,
-                                                   INITIAL_TIBIA_ANGLE_DEG,
-                                                   INITIAL_COXA_ANGLE_DEG,
-                                                   INITIAL_FEMUR_ANGLE_DEG,
-                                                   INITIAL_TIBIA_ANGLE_DEG,
-                                                   INITIAL_COXA_ANGLE_DEG,
-                                                   INITIAL_FEMUR_ANGLE_DEG,
-                                                   INITIAL_TIBIA_ANGLE_DEG,
-                                                   INITIAL_COXA_ANGLE_DEG,
-                                                   INITIAL_FEMUR_ANGLE_DEG,
-                                                   INITIAL_TIBIA_ANGLE_DEG,
-                                                   INITIAL_COXA_ANGLE_DEG,
-                                                   INITIAL_FEMUR_ANGLE_DEG,
-                                                   INITIAL_TIBIA_ANGLE_DEG,
-                                                   INITIAL_COXA_ANGLE_DEG,
-                                                   INITIAL_FEMUR_ANGLE_DEG,
-                                                   INITIAL_TIBIA_ANGLE_DEG);
+  gait::Controller gait_ctrl;
+  gait::ControllerOutput prev_gait_ctrl_output(INITIAL_COXA_ANGLE_DEG,
+                                               INITIAL_FEMUR_ANGLE_DEG,
+                                               INITIAL_TIBIA_ANGLE_DEG,
+                                               INITIAL_COXA_ANGLE_DEG,
+                                               INITIAL_FEMUR_ANGLE_DEG,
+                                               INITIAL_TIBIA_ANGLE_DEG,
+                                               INITIAL_COXA_ANGLE_DEG,
+                                               INITIAL_FEMUR_ANGLE_DEG,
+                                               INITIAL_TIBIA_ANGLE_DEG,
+                                               INITIAL_COXA_ANGLE_DEG,
+                                               INITIAL_FEMUR_ANGLE_DEG,
+                                               INITIAL_TIBIA_ANGLE_DEG,
+                                               INITIAL_COXA_ANGLE_DEG,
+                                               INITIAL_FEMUR_ANGLE_DEG,
+                                               INITIAL_TIBIA_ANGLE_DEG,
+                                               INITIAL_COXA_ANGLE_DEG,
+                                               INITIAL_FEMUR_ANGLE_DEG,
+                                               INITIAL_TIBIA_ANGLE_DEG);
 
   head::Controller head_ctrl;
   head::ControllerOutput prev_head_ctrl_output(INITIAL_PAN_ANGLE_DEG, INITIAL_TILT_ANGLE_DEG);
@@ -339,9 +339,9 @@ int main(int argc, char **argv) try
 
     //ROS_INFO("IN: %s", gait_ctrl_input.toStr().c_str());
 
-    if (isGaitControllerInputDataValid(angle_position_sensor_map))
+    if (isControllerInputDataValid(angle_position_sensor_map))
     {
-      gait::GaitControllerInput const gait_ctrl_input(teleop_cmd_data, angle_position_sensor_map);
+      gait::ControllerInput const gait_ctrl_input(teleop_cmd_data, angle_position_sensor_map);
       next_gait_ctrl_output = gait_ctrl.update(gait_ctrl_input, prev_gait_ctrl_output);
     }
     else

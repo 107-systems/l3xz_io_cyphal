@@ -24,7 +24,7 @@ namespace gait
  * CTOR/DTOR
  **************************************************************************************/
 
-GaitControllerInput::GaitControllerInput(TeleopCommandData const teleop_cmd,
+ControllerInput::ControllerInput(TeleopCommandData const teleop_cmd,
                                          std::map<LegJointKey, common::sensor::interface::SharedAnglePositionSensor> const & angle_position_sensor_map)
 : _teleop_cmd{teleop_cmd}
 {
@@ -36,13 +36,13 @@ GaitControllerInput::GaitControllerInput(TeleopCommandData const teleop_cmd,
  * PUBLIC MEMBER FUNCTIONS
  **************************************************************************************/
 
-float GaitControllerInput::at(Leg const leg, Joint const joint) const
+float ControllerInput::at(Leg const leg, Joint const joint) const
 {
   if (!_angle_position_map.count(make_key(leg, joint)))
   {
     std::stringstream msg;
 
-    msg << "GaitControllerInput::operator(): error, trying to access non-existing position sensor ("
+    msg << "ControllerInput::operator(): error, trying to access non-existing position sensor ("
         << static_cast<int>(leg)
         << ", "
         << static_cast<int>(joint)
@@ -54,7 +54,7 @@ float GaitControllerInput::at(Leg const leg, Joint const joint) const
   return _angle_position_map.at(make_key(leg, joint));
 }
 /*
-std::string GaitControllerInput::toStr()
+std::string ControllerInput::toStr()
 {
   std::stringstream msg;
 

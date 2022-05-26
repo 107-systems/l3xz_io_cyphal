@@ -29,10 +29,10 @@ namespace gait
  * CLASS DECLARATION
  **************************************************************************************/
 
-class GaitControllerOutput
+class ControllerOutput
 {
 public:
-  GaitControllerOutput(float const left_front_coxa_angle_target,
+  ControllerOutput(float const left_front_coxa_angle_target,
                        float const left_front_femur_angle_target,
                        float const left_front_tibia_angle_target,
                        float const left_middle_coxa_angle_target,

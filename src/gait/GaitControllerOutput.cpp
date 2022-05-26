@@ -24,7 +24,7 @@ namespace gait
  * CTOR/DTOR
  **************************************************************************************/
 
-GaitControllerOutput::GaitControllerOutput(float const left_front_coxa_angle_target,
+ControllerOutput::ControllerOutput(float const left_front_coxa_angle_target,
                                            float const left_front_femur_angle_target,
                                            float const left_front_tibia_angle_target,
                                            float const left_middle_coxa_angle_target,
@@ -72,13 +72,13 @@ GaitControllerOutput::GaitControllerOutput(float const left_front_coxa_angle_tar
  * PUBLIC MEMBER FUNCTIONS
  **************************************************************************************/
 
-float & GaitControllerOutput::at(Leg const leg, Joint const joint)
+float & ControllerOutput::at(Leg const leg, Joint const joint)
 {
   if (!_map.count(make_key(leg, joint)))
   {
     std::stringstream msg;
 
-    msg << "GaitControllerOutput::operator(): error, trying to access non-existing position actuator ("
+    msg << "ControllerOutput::operator(): error, trying to access non-existing position actuator ("
         << static_cast<int>(leg)
         << ", "
         << static_cast<int>(joint)
@@ -90,7 +90,7 @@ float & GaitControllerOutput::at(Leg const leg, Joint const joint)
   return _map.at(make_key(leg, joint));
 }
 
-std::string GaitControllerOutput::toStr()
+std::string ControllerOutput::toStr()
 {
   std::stringstream msg;
 

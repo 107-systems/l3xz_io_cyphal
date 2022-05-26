@@ -29,10 +29,10 @@ namespace gait
  * CLASS DECLARATION
  **************************************************************************************/
 
-class GaitControllerInput
+class ControllerInput
 {
 public:
-  GaitControllerInput(TeleopCommandData const teleop_cmd,
+  ControllerInput(TeleopCommandData const teleop_cmd,
                       std::map<LegJointKey, common::sensor::interface::SharedAnglePositionSensor> const & angle_position_sensor_map);
 
   TeleopCommandData const _teleop_cmd;
