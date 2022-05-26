@@ -42,13 +42,13 @@ std::tuple<StateBase *, ControllerOutput> Standing::update(common::kinematic::En
 {
   ControllerOutput next_output = prev_output;
 
-  if      (input._teleop_cmd.linear_velocity_x > 0.2f)
+  if      (input.teleop_cmd().linear_velocity_x > 0.2f)
     return std::tuple(new ForwardWalking(), next_output);
-  else if (input._teleop_cmd.linear_velocity_x < -0.2f)
+  else if (input.teleop_cmd().linear_velocity_x < -0.2f)
     return std::tuple(new BackwardWalking(), next_output);
-  else if (input._teleop_cmd.angular_velocity_z > 0.2f)
+  else if (input.teleop_cmd().angular_velocity_z > 0.2f)
     return std::tuple(new TurningRight(), next_output);
-  else if (input._teleop_cmd.angular_velocity_z < -0.2f)
+  else if (input.teleop_cmd().angular_velocity_z < -0.2f)
     return std::tuple(new TurningLeft(), next_output);
   else
     return std::tuple(this, next_output);

@@ -25,7 +25,7 @@ namespace gait
  **************************************************************************************/
 
 ControllerInput::ControllerInput(TeleopCommandData const teleop_cmd,
-                                         std::map<LegJointKey, common::sensor::interface::SharedAnglePositionSensor> const & angle_position_sensor_map)
+                                 std::map<LegJointKey, common::sensor::interface::SharedAnglePositionSensor> const & angle_position_sensor_map)
 : _teleop_cmd{teleop_cmd}
 {
   for (auto [leg, joint] : LEG_JOINT_LIST)

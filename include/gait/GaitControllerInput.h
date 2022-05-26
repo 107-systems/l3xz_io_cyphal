@@ -33,12 +33,13 @@ class ControllerInput
 {
 public:
   ControllerInput(TeleopCommandData const teleop_cmd,
-                      std::map<LegJointKey, common::sensor::interface::SharedAnglePositionSensor> const & angle_position_sensor_map);
+                  std::map<LegJointKey, common::sensor::interface::SharedAnglePositionSensor> const & angle_position_sensor_map);
 
-  TeleopCommandData const _teleop_cmd;
+  TeleopCommandData teleop_cmd() const { return _teleop_cmd; }
   float angle_deg(Leg const leg, Joint const joint) const;
 
 private:
+  TeleopCommandData const _teleop_cmd;
   std::map<LegJointKey, float> _angle_position_map;
 };
 
