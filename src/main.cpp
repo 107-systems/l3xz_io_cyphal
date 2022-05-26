@@ -275,6 +275,15 @@ int main(int argc, char **argv) try
     {make_key(Leg::RightBack,   Joint::Tibia), angle_sensor_right_back_tibia}
   };
 
+  auto isGaitControllerInputDataValid = [](std::map<LegJointKey, common::sensor::interface::SharedAnglePositionSensor> const & map) -> bool
+  {
+    for (auto [leg, joint] : LEG_JOINT_LIST)
+      if (!map.at(make_key(leg, joint))->get().has_value())
+        return false;
+
+    return true;
+  };
+
   /**************************************************************************************
    * STATE
    **************************************************************************************/
@@ -325,15 +334,6 @@ int main(int argc, char **argv) try
     /**************************************************************************************
      * GAIT CONTROL
      **************************************************************************************/
-
-    auto isGaitControllerInputDataValid = [](std::map<LegJointKey, common::sensor::interface::SharedAnglePositionSensor> const & map) -> bool
-    {
-      for (auto [leg, joint] : LEG_JOINT_LIST)
-        if (!map.at(make_key(leg, joint))->get().has_value())
-          return false;
-
-      return true;
-    };
 
     auto next_gait_ctrl_output = prev_gait_ctrl_output;
 
