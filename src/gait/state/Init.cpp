@@ -38,8 +38,9 @@ void Init::onExit()
 
 std::tuple<StateBase *, GaitControllerOutput> Init::update(common::kinematic::Engine const & engine, GaitControllerInput & input, GaitControllerOutput const & prev_output)
 {
+  GaitControllerOutput next_output = prev_output;
+
   /* Set the desired target angle. */
-  GaitControllerOutput next_output(prev_output);
   for (auto leg : LEG_LIST)
   {
     next_output.at(leg, Joint::Coxa ) = INITIAL_COXA_ANGLE_DEG;

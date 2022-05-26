@@ -38,6 +38,8 @@ void StandUp::onExit()
 
 std::tuple<StateBase *, GaitControllerOutput> StandUp::update(common::kinematic::Engine const & engine, GaitControllerInput & input, GaitControllerOutput const & prev_output)
 {
+  GaitControllerOutput next_output = prev_output;
+
   // static double const TARGET_TIBIA_TIP_x =  175.0;
   // static double const TARGET_TIBIA_TIP_y =    0.0;
   // static double const TARGET_TIBIA_TIP_z = -200.0;
@@ -45,8 +47,6 @@ std::tuple<StateBase *, GaitControllerOutput> StandUp::update(common::kinematic:
   // double x = TARGET_TIBIA_TIP_x,
   //        y = TARGET_TIBIA_TIP_y,
   //        z = TARGET_TIBIA_TIP_z;
-
-  GaitControllerOutput next_output(prev_output);
 
   bool all_target_angles_reached = true;
   for (auto leg : LEG_LIST)
@@ -119,7 +119,7 @@ std::tuple<StateBase *, GaitControllerOutput> StandUp::update(common::kinematic:
   if (!all_target_angles_reached)
     return std::tuple(this, next_output);
 
-  return std::tuple(new Standing(), prev_output);
+  return std::tuple(new Standing(), next_output);
 }
 
 /**************************************************************************************

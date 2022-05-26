@@ -48,6 +48,8 @@ void ForwardWalking::onExit()
 
 std::tuple<StateBase *, GaitControllerOutput> ForwardWalking::update(common::kinematic::Engine const & engine, GaitControllerInput & input, GaitControllerOutput const & prev_output)
 {
+  GaitControllerOutput next_output = prev_output;
+
   /* TODO: Walk one gait::state cycle forward. */
 
   /* 1st: Move to start position: by placing F/R, M/L a half step forward. */
@@ -91,11 +93,11 @@ std::tuple<StateBase *, GaitControllerOutput> ForwardWalking::update(common::kin
     _current_leg_state = std::next(_current_leg_state);
     if (_current_leg_state == RIPPLE_GAIT.cend()) {
       /* Now the one complete cycle of walking forward has been completed, return to the the default state. */
-      return std::tuple(new Standing, prev_output);
+      return std::tuple(new Standing, next_output);
     }
   }
 
-  return std::tuple(this, prev_output);
+  return std::tuple(this, next_output);
 }
 
 /**************************************************************************************

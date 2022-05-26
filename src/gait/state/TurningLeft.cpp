@@ -37,8 +37,11 @@ void TurningLeft::onExit()
 
 std::tuple<StateBase *, GaitControllerOutput> TurningLeft::update(common::kinematic::Engine const & engine, GaitControllerInput & input, GaitControllerOutput const & prev_output)
 {
+  GaitControllerOutput next_output = prev_output;
+
   /* TODO: Walk one gait::state cycle Backward. */
-  return std::tuple(new Standing(), prev_output);
+
+  return std::tuple(new Standing(), next_output);
 }
 
 /**************************************************************************************
