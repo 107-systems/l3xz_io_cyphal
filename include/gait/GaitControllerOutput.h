@@ -57,7 +57,7 @@ public:
   std::string toStr();
 
 private:
-  std::map<LegJointKey, float> _map;
+  std::map<LegJointKey, float> _angle_position_map;
 };
 
 /**************************************************************************************
