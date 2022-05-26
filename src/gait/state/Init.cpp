@@ -36,7 +36,7 @@ void Init::onExit()
   ROS_INFO("Init EXIT");
 }
 
-std::tuple<StateBase *, GaitControllerOutput> Init::update(common::kinematic::Engine const & engine, GaitControllerInput & input, GaitControllerOutput const & prev_output)
+std::tuple<StateBase *, GaitControllerOutput> Init::update(common::kinematic::Engine const & engine, GaitControllerInput const & input, GaitControllerOutput const & prev_output)
 {
   GaitControllerOutput next_output = prev_output;
 

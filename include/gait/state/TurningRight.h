@@ -30,7 +30,7 @@ public:
   virtual ~TurningRight() { }
   virtual void onEnter() override;
   virtual void onExit() override;
-  virtual std::tuple<StateBase *, GaitControllerOutput> update(common::kinematic::Engine const & engine, GaitControllerInput & input, GaitControllerOutput const & prev_output) override;
+  virtual std::tuple<StateBase *, GaitControllerOutput> update(common::kinematic::Engine const & engine, GaitControllerInput const & input, GaitControllerOutput const & prev_output) override;
 };
 
 /**************************************************************************************

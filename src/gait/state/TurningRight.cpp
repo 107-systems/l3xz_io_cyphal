@@ -35,7 +35,7 @@ void TurningRight::onExit()
   ROS_INFO("TurningRight EXIT");
 }
 
-std::tuple<StateBase *, GaitControllerOutput> TurningRight::update(common::kinematic::Engine const & engine, GaitControllerInput & input, GaitControllerOutput const & prev_output)
+std::tuple<StateBase *, GaitControllerOutput> TurningRight::update(common::kinematic::Engine const & engine, GaitControllerInput const & input, GaitControllerOutput const & prev_output)
 {
   GaitControllerOutput next_output = prev_output;
 

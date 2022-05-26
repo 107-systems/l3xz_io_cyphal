@@ -38,7 +38,7 @@ void Standing::onExit()
   ROS_INFO("Standing EXIT");
 }
 
-std::tuple<StateBase *, GaitControllerOutput> Standing::update(common::kinematic::Engine const & engine, GaitControllerInput & input, GaitControllerOutput const & prev_output)
+std::tuple<StateBase *, GaitControllerOutput> Standing::update(common::kinematic::Engine const & engine, GaitControllerInput const & input, GaitControllerOutput const & prev_output)
 {
   GaitControllerOutput next_output = prev_output;
 

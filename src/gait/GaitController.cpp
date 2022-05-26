@@ -42,7 +42,7 @@ GaitController::~GaitController()
  * PUBLIC MEMBER FUNCTIONS
  **************************************************************************************/
 
-GaitControllerOutput GaitController::update(GaitControllerInput & input, GaitControllerOutput const & prev_output)
+GaitControllerOutput GaitController::update(GaitControllerInput const & input, GaitControllerOutput const & prev_output)
 {
   auto [next_robot_state, next_output] = _robot_state->update(_kinematic_engine, input, prev_output);
     

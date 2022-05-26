@@ -34,7 +34,7 @@ public:
    GaitController();
   ~GaitController();
 
-  GaitControllerOutput update(GaitControllerInput & input, GaitControllerOutput const & prev_output);
+  GaitControllerOutput update(GaitControllerInput const & input, GaitControllerOutput const & prev_output);
 
 private:
   state::StateBase * _robot_state;
