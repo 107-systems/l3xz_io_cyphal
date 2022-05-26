@@ -310,8 +310,8 @@ int main(int argc, char **argv) try
     {Leg::RightBack,   tibia_tip_bumper_right_back}
   };
 
-  auto isControllerInputDataValid = [](std::map<LegJointKey, common::sensor::interface::SharedAnglePositionSensor> const & ap_map,
-                                       std::map<Leg, common::sensor::interface::SharedBumperSensor> const & b_map) -> bool
+  auto isGaitControllerInputDataValid = [](std::map<LegJointKey, common::sensor::interface::SharedAnglePositionSensor> const & ap_map,
+                                           std::map<Leg, common::sensor::interface::SharedBumperSensor> const & b_map) -> bool
   {
     for (auto [leg, joint] : LEG_JOINT_LIST)
       if (!ap_map.at(make_key(leg, joint))->get().has_value())
@@ -427,7 +427,7 @@ int main(int argc, char **argv) try
 
     ROS_INFO("IN: %s", toStr(angle_position_sensor_map, bumper_sensor_map).c_str());
 
-    if (isControllerInputDataValid(angle_position_sensor_map, bumper_sensor_map))
+    if (isGaitControllerInputDataValid(angle_position_sensor_map, bumper_sensor_map))
     {
       gait::ControllerInput const gait_ctrl_input(teleop_cmd_data, angle_position_sensor_map);
       next_gait_ctrl_output = gait_ctrl.update(gait_ctrl_input, prev_gait_ctrl_output);
