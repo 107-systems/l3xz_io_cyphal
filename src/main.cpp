@@ -253,6 +253,28 @@ int main(int argc, char **argv) try
     {make_key(Leg::RightBack,   Joint::Tibia), angle_actuator_right_back_tibia}
   };
 
+  std::map<LegJointKey, common::sensor::interface::SharedAnglePositionSensor> angle_position_sensor_map =
+  {
+    {make_key(Leg::LeftFront,   Joint::Coxa),  angle_sensor_left_front_coxa},
+    {make_key(Leg::LeftFront,   Joint::Femur), angle_sensor_left_front_femur},
+    {make_key(Leg::LeftFront,   Joint::Tibia), angle_sensor_left_front_tibia},
+    {make_key(Leg::LeftMiddle,  Joint::Coxa),  angle_sensor_left_middle_coxa},
+    {make_key(Leg::LeftMiddle,  Joint::Femur), angle_sensor_left_middle_femur},
+    {make_key(Leg::LeftMiddle,  Joint::Tibia), angle_sensor_left_middle_tibia},
+    {make_key(Leg::LeftBack,    Joint::Coxa),  angle_sensor_left_back_coxa},
+    {make_key(Leg::LeftBack,    Joint::Femur), angle_sensor_left_back_femur},
+    {make_key(Leg::LeftBack,    Joint::Tibia), angle_sensor_left_back_tibia},
+    {make_key(Leg::RightFront,  Joint::Coxa),  angle_sensor_right_front_coxa},
+    {make_key(Leg::RightFront,  Joint::Femur), angle_sensor_right_front_femur},
+    {make_key(Leg::RightFront,  Joint::Tibia), angle_sensor_right_front_tibia},
+    {make_key(Leg::RightMiddle, Joint::Coxa),  angle_sensor_right_middle_coxa},
+    {make_key(Leg::RightMiddle, Joint::Femur), angle_sensor_right_middle_femur},
+    {make_key(Leg::RightMiddle, Joint::Tibia), angle_sensor_right_middle_tibia},
+    {make_key(Leg::RightBack,   Joint::Coxa),  angle_sensor_right_back_coxa},
+    {make_key(Leg::RightBack,   Joint::Femur), angle_sensor_right_back_femur},
+    {make_key(Leg::RightBack,   Joint::Tibia), angle_sensor_right_back_tibia}
+  };
+
   /**************************************************************************************
    * STATE
    **************************************************************************************/
@@ -304,34 +326,26 @@ int main(int argc, char **argv) try
      * GAIT CONTROL
      **************************************************************************************/
 
-    gait::GaitControllerInput gait_ctrl_input(teleop_cmd_data,
-                                              angle_sensor_left_front_coxa,
-                                              angle_sensor_left_front_femur,
-                                              angle_sensor_left_front_tibia,
-                                              angle_sensor_left_middle_coxa,
-                                              angle_sensor_left_middle_femur,
-                                              angle_sensor_left_middle_tibia,
-                                              angle_sensor_left_back_coxa,
-                                              angle_sensor_left_back_femur,
-                                              angle_sensor_left_back_tibia,
-                                              angle_sensor_right_front_coxa,
-                                              angle_sensor_right_front_femur,
-                                              angle_sensor_right_front_tibia,
-                                              angle_sensor_right_middle_coxa,
-                                              angle_sensor_right_middle_femur,
-                                              angle_sensor_right_middle_tibia,
-                                              angle_sensor_right_back_coxa,
-                                              angle_sensor_right_back_femur,
-                                              angle_sensor_right_back_tibia);
+    auto isGaitControllerInputDataValid = [](std::map<LegJointKey, common::sensor::interface::SharedAnglePositionSensor> const & map) -> bool
+    {
+      for (auto [leg, joint] : LEG_JOINT_LIST)
+        if (!map.at(make_key(leg, joint))->get().has_value())
+          return false;
 
-    ROS_INFO("IN: %s", gait_ctrl_input.toStr().c_str());
+      return true;
+    };
 
     auto next_gait_ctrl_output = prev_gait_ctrl_output;
 
-    if (gait_ctrl_input.isValid())
+    //ROS_INFO("IN: %s", gait_ctrl_input.toStr().c_str());
+
+    if (isGaitControllerInputDataValid(angle_position_sensor_map))
+    {
+      gait::GaitControllerInput gait_ctrl_input(teleop_cmd_data, angle_position_sensor_map);
       next_gait_ctrl_output = gait_ctrl.update(gait_ctrl_input, prev_gait_ctrl_output);
+    }
     else
-      ROS_ERROR("GaitController::update: invalid input data.");
+      ROS_ERROR("gait_ctrl.update: invalid input data.");
 
     ROS_INFO("OUT: %s", next_gait_ctrl_output.toStr().c_str());
 

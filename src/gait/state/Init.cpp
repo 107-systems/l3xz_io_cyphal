@@ -52,31 +52,31 @@ std::tuple<StateBase *, GaitControllerOutput> Init::update(common::kinematic::En
   bool all_target_angles_reached = true;
   for (auto leg : LEG_LIST)
   {
-    float const coxa_angle_actual = input(leg, Joint::Coxa)->get().value();
+    float const coxa_angle_actual = input(leg, Joint::Coxa);
     float const coxa_angle_error = fabs(INITIAL_COXA_ANGLE_DEG - coxa_angle_actual);
     bool  const coxa_is_initial_angle_reached = coxa_angle_error < 5.0f;
 
     if (!coxa_is_initial_angle_reached) {
-      ROS_INFO("gait::state::Init::update: coxa target angle not reached for %s", input(leg, Joint::Coxa)->name().c_str());
+      ROS_INFO("gait::state::Init::update: coxa target angle not reached");
       all_target_angles_reached = false;
     }
  
  
-    float const femur_angle_actual = input(leg, Joint::Femur)->get().value();
+    float const femur_angle_actual = input(leg, Joint::Femur);
     float const femur_angle_error = fabs(INITIAL_FEMUR_ANGLE_DEG - femur_angle_actual);
     bool  const femur_is_initial_angle_reached = femur_angle_error < 5.0f;
 
     if (!femur_is_initial_angle_reached) {
-      ROS_INFO("gait::state::Init::update: femur target angle not reached for %s", input(leg, Joint::Femur)->name().c_str());
+      ROS_INFO("gait::state::Init::update: femur target angle not reached");
       all_target_angles_reached = false;
     }
 
-    float const tibia_angle_actual = input(leg, Joint::Tibia)->get().value();
+    float const tibia_angle_actual = input(leg, Joint::Tibia);
     float const tibia_angle_error = fabs(INITIAL_TIBIA_ANGLE_DEG - tibia_angle_actual);
     bool  const tibia_is_initial_angle_reached = tibia_angle_error < 5.0f;
 
     if (!tibia_is_initial_angle_reached) {
-      ROS_INFO("gait::state::Init::update: tibia target angle not reached for %s", input(leg, Joint::Tibia)->name().c_str());
+      ROS_INFO("gait::state::Init::update: tibia target angle not reached");
       all_target_angles_reached = false;
     }
   }

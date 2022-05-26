@@ -25,71 +25,20 @@ namespace gait
  **************************************************************************************/
 
 GaitControllerInput::GaitControllerInput(TeleopCommandData const teleop_cmd,
-                                         common::sensor::interface::SharedAnglePositionSensor angle_sensor_left_front_coxa,
-                                         common::sensor::interface::SharedAnglePositionSensor angle_sensor_left_front_femur,
-                                         common::sensor::interface::SharedAnglePositionSensor angle_sensor_left_front_tibia,
-                                         common::sensor::interface::SharedAnglePositionSensor angle_sensor_left_middle_coxa,
-                                         common::sensor::interface::SharedAnglePositionSensor angle_sensor_left_middle_femur,
-                                         common::sensor::interface::SharedAnglePositionSensor angle_sensor_left_middle_tibia,
-                                         common::sensor::interface::SharedAnglePositionSensor angle_sensor_left_back_coxa,
-                                         common::sensor::interface::SharedAnglePositionSensor angle_sensor_left_back_femur,
-                                         common::sensor::interface::SharedAnglePositionSensor angle_sensor_left_back_tibia,
-                                         common::sensor::interface::SharedAnglePositionSensor angle_sensor_right_front_coxa,
-                                         common::sensor::interface::SharedAnglePositionSensor angle_sensor_right_front_femur,
-                                         common::sensor::interface::SharedAnglePositionSensor angle_sensor_right_front_tibia,
-                                         common::sensor::interface::SharedAnglePositionSensor angle_sensor_right_middle_coxa,
-                                         common::sensor::interface::SharedAnglePositionSensor angle_sensor_right_middle_femur,
-                                         common::sensor::interface::SharedAnglePositionSensor angle_sensor_right_middle_tibia,
-                                         common::sensor::interface::SharedAnglePositionSensor angle_sensor_right_back_coxa,
-                                         common::sensor::interface::SharedAnglePositionSensor angle_sensor_right_back_femur,
-                                         common::sensor::interface::SharedAnglePositionSensor angle_sensor_right_back_tibia)
+                                         std::map<LegJointKey, common::sensor::interface::SharedAnglePositionSensor> const & angle_position_sensor_map)
 : _teleop_cmd{teleop_cmd}
 {
-  _map[make_key(Leg::LeftFront,   Joint::Coxa)]  = angle_sensor_left_front_coxa;
-  _map[make_key(Leg::LeftFront,   Joint::Femur)] = angle_sensor_left_front_femur;
-  _map[make_key(Leg::LeftFront,   Joint::Tibia)] = angle_sensor_left_front_tibia;
-
-  _map[make_key(Leg::LeftMiddle,  Joint::Coxa)]  = angle_sensor_left_middle_coxa;
-  _map[make_key(Leg::LeftMiddle,  Joint::Femur)] = angle_sensor_left_middle_femur;
-  _map[make_key(Leg::LeftMiddle,  Joint::Tibia)] = angle_sensor_left_middle_tibia;
-
-  _map[make_key(Leg::LeftBack,    Joint::Coxa)]  = angle_sensor_left_back_coxa;
-  _map[make_key(Leg::LeftBack,    Joint::Femur)] = angle_sensor_left_back_femur;
-  _map[make_key(Leg::LeftBack,    Joint::Tibia)] = angle_sensor_left_back_tibia;
-
-  _map[make_key(Leg::RightFront,  Joint::Coxa)]  = angle_sensor_right_front_coxa;
-  _map[make_key(Leg::RightFront,  Joint::Femur)] = angle_sensor_right_front_femur;
-  _map[make_key(Leg::RightFront,  Joint::Tibia)] = angle_sensor_right_front_tibia;
-
-  _map[make_key(Leg::RightMiddle, Joint::Coxa)]  = angle_sensor_right_middle_coxa;
-  _map[make_key(Leg::RightMiddle, Joint::Femur)] = angle_sensor_right_middle_femur;
-  _map[make_key(Leg::RightMiddle, Joint::Tibia)] = angle_sensor_right_middle_tibia;
-
-  _map[make_key(Leg::RightBack,   Joint::Coxa)]  = angle_sensor_right_back_coxa;
-  _map[make_key(Leg::RightBack,   Joint::Femur)] = angle_sensor_right_back_femur;
-  _map[make_key(Leg::RightBack,   Joint::Tibia)] = angle_sensor_right_back_tibia;
+  for (auto [leg, joint] : LEG_JOINT_LIST)
+    _angle_position_map[make_key(leg, joint)] = angle_position_sensor_map.at(make_key(leg, joint))->get().value();
 }
 
 /**************************************************************************************
  * PUBLIC MEMBER FUNCTIONS
  **************************************************************************************/
 
-bool GaitControllerInput::isValid() const
+float GaitControllerInput::operator()(Leg const leg, Joint const joint) const
 {
-  /* Check if we have valid angles. */
-  for (auto [leg, joint] : LEG_JOINT_LIST)
-  {
-    if (!_map.at(make_key(leg, joint))->get().has_value()) {
-      return false;
-    }
-  }
-
-  return true;
-}
-
-common::sensor::interface::SharedAnglePositionSensor GaitControllerInput::operator()(Leg const leg, Joint const joint)
-{
-  if (!_map.count(make_key(leg, joint)))
+  if (!_angle_position_map.count(make_key(leg, joint)))
   {
     std::stringstream msg;
 
@@ -102,9 +51,9 @@ common::sensor::interface::SharedAnglePositionSensor GaitControllerInput::operat
     throw std::runtime_error(msg.str());
   }
 
-  return _map.at(make_key(leg, joint));
+  return _angle_position_map.at(make_key(leg, joint));
 }
-
+/*
 std::string GaitControllerInput::toStr()
 {
   std::stringstream msg;
@@ -144,7 +93,7 @@ std::string GaitControllerInput::toStr()
 
   return msg.str();
 }
-
+*/
 /**************************************************************************************
  * NAMESPACE
  **************************************************************************************/

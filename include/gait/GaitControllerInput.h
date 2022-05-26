@@ -33,35 +33,13 @@ class GaitControllerInput
 {
 public:
   GaitControllerInput(TeleopCommandData const teleop_cmd,
-                      common::sensor::interface::SharedAnglePositionSensor angle_sensor_left_front_coxa,
-                      common::sensor::interface::SharedAnglePositionSensor angle_sensor_left_front_femur,
-                      common::sensor::interface::SharedAnglePositionSensor angle_sensor_left_front_tibia,
-                      common::sensor::interface::SharedAnglePositionSensor angle_sensor_left_middle_coxa,
-                      common::sensor::interface::SharedAnglePositionSensor angle_sensor_left_middle_femur,
-                      common::sensor::interface::SharedAnglePositionSensor angle_sensor_left_middle_tibia,
-                      common::sensor::interface::SharedAnglePositionSensor angle_sensor_left_back_coxa,
-                      common::sensor::interface::SharedAnglePositionSensor angle_sensor_left_back_femur,
-                      common::sensor::interface::SharedAnglePositionSensor angle_sensor_left_back_tibia,
-                      common::sensor::interface::SharedAnglePositionSensor angle_sensor_right_front_coxa,
-                      common::sensor::interface::SharedAnglePositionSensor angle_sensor_right_front_femur,
-                      common::sensor::interface::SharedAnglePositionSensor angle_sensor_right_front_tibia,
-                      common::sensor::interface::SharedAnglePositionSensor angle_sensor_right_middle_coxa,
-                      common::sensor::interface::SharedAnglePositionSensor angle_sensor_right_middle_femur,
-                      common::sensor::interface::SharedAnglePositionSensor angle_sensor_right_middle_tibia,
-                      common::sensor::interface::SharedAnglePositionSensor angle_sensor_right_back_coxa,
-                      common::sensor::interface::SharedAnglePositionSensor angle_sensor_right_back_femur,
-                      common::sensor::interface::SharedAnglePositionSensor angle_sensor_right_back_tibia);
-
-  bool isValid() const;
+                      std::map<LegJointKey, common::sensor::interface::SharedAnglePositionSensor> const & angle_position_sensor_map);
 
   TeleopCommandData const _teleop_cmd;
-
-  common::sensor::interface::SharedAnglePositionSensor operator()(Leg const leg, Joint const joint);
-
-  std::string toStr();
+  float operator()(Leg const leg, Joint const joint) const;
 
 private:
-  std::map<LegJointKey, common::sensor::interface::SharedAnglePositionSensor> _map;
+  std::map<LegJointKey, float> _angle_position_map;
 };
 
 /**************************************************************************************
