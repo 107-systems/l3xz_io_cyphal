@@ -319,7 +319,7 @@ int main(int argc, char **argv) try
     return true;
   };
 
-  auto toStr = [](std::map<LegJointKey, common::sensor::interface::SharedAnglePositionSensor> const & map,
+  auto toStr = [](std::map<LegJointKey, common::sensor::interface::SharedAnglePositionSensor> const & angle_position,
                   std::map<Leg, common::sensor::interface::SharedBumperSensor> const & bumper) -> std::string
   {
     std::stringstream msg;
@@ -327,40 +327,40 @@ int main(int argc, char **argv) try
     msg << "\n"
         << "Left\n"
         << "  Front :"
-        << "  Coxa:"   << map.at(make_key(Leg::LeftFront, Joint::Coxa))->toStr()
-        << "  Femur:"  << map.at(make_key(Leg::LeftFront, Joint::Femur))->toStr()
-        << "  Tibia:"  << map.at(make_key(Leg::LeftFront, Joint::Tibia))->toStr()
+        << "  Coxa:"   << angle_position.at(make_key(Leg::LeftFront, Joint::Coxa))->toStr()
+        << "  Femur:"  << angle_position.at(make_key(Leg::LeftFront, Joint::Femur))->toStr()
+        << "  Tibia:"  << angle_position.at(make_key(Leg::LeftFront, Joint::Tibia))->toStr()
         << "  Tip:"    << bumper.at(Leg::LeftFront)->toStr()
         << "\n"
         << "  Middle:"
-        << "  Coxa:"   << map.at(make_key(Leg::LeftMiddle, Joint::Coxa))->toStr()
-        << "  Femur:"  << map.at(make_key(Leg::LeftMiddle, Joint::Femur))->toStr()
-        << "  Tibia:"  << map.at(make_key(Leg::LeftMiddle, Joint::Tibia))->toStr()
+        << "  Coxa:"   << angle_position.at(make_key(Leg::LeftMiddle, Joint::Coxa))->toStr()
+        << "  Femur:"  << angle_position.at(make_key(Leg::LeftMiddle, Joint::Femur))->toStr()
+        << "  Tibia:"  << angle_position.at(make_key(Leg::LeftMiddle, Joint::Tibia))->toStr()
         << "  Tip:"    << bumper.at(Leg::LeftMiddle)->toStr()
         << "\n"
         << "  Back  :"
-        << "  Coxa:"   << map.at(make_key(Leg::LeftBack, Joint::Coxa))->toStr()
-        << "  Femur:"  << map.at(make_key(Leg::LeftBack, Joint::Femur))->toStr()
-        << "  Tibia:"  << map.at(make_key(Leg::LeftBack, Joint::Tibia))->toStr()
+        << "  Coxa:"   << angle_position.at(make_key(Leg::LeftBack, Joint::Coxa))->toStr()
+        << "  Femur:"  << angle_position.at(make_key(Leg::LeftBack, Joint::Femur))->toStr()
+        << "  Tibia:"  << angle_position.at(make_key(Leg::LeftBack, Joint::Tibia))->toStr()
         << "  Tip:"    << bumper.at(Leg::LeftBack)->toStr()
         << "\n"
         << "Right\n"
         << "  Front :"
-        << "  Coxa:"   << map.at(make_key(Leg::RightFront, Joint::Coxa))->toStr()
-        << "  Femur:"  << map.at(make_key(Leg::RightFront, Joint::Femur))->toStr()
-        << "  Tibia:"  << map.at(make_key(Leg::RightFront, Joint::Tibia))->toStr()
+        << "  Coxa:"   << angle_position.at(make_key(Leg::RightFront, Joint::Coxa))->toStr()
+        << "  Femur:"  << angle_position.at(make_key(Leg::RightFront, Joint::Femur))->toStr()
+        << "  Tibia:"  << angle_position.at(make_key(Leg::RightFront, Joint::Tibia))->toStr()
         << "  Tip:"    << bumper.at(Leg::RightFront)->toStr()
         << "\n"
         << "  Middle:"
-        << "  Coxa:"   << map.at(make_key(Leg::RightMiddle, Joint::Coxa))->toStr()
-        << "  Femur:"  << map.at(make_key(Leg::RightMiddle, Joint::Femur))->toStr()
-        << "  Tibia:"  << map.at(make_key(Leg::RightMiddle, Joint::Tibia))->toStr()
+        << "  Coxa:"   << angle_position.at(make_key(Leg::RightMiddle, Joint::Coxa))->toStr()
+        << "  Femur:"  << angle_position.at(make_key(Leg::RightMiddle, Joint::Femur))->toStr()
+        << "  Tibia:"  << angle_position.at(make_key(Leg::RightMiddle, Joint::Tibia))->toStr()
         << "  Tip:"    << bumper.at(Leg::RightMiddle)->toStr()
         << "\n"
         << "  Back  :"
-        << "  Coxa:"   << map.at(make_key(Leg::RightBack, Joint::Coxa))->toStr()
-        << "  Femur:"  << map.at(make_key(Leg::RightBack, Joint::Femur))->toStr()
-        << "  Tibia:"  << map.at(make_key(Leg::RightBack, Joint::Tibia))->toStr()
+        << "  Coxa:"   << angle_position.at(make_key(Leg::RightBack, Joint::Coxa))->toStr()
+        << "  Femur:"  << angle_position.at(make_key(Leg::RightBack, Joint::Femur))->toStr()
+        << "  Tibia:"  << angle_position.at(make_key(Leg::RightBack, Joint::Tibia))->toStr()
         << "  Tip:"    << bumper.at(Leg::RightBack)->toStr();
 
     return msg.str();
