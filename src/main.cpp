@@ -449,7 +449,7 @@ int main(int argc, char **argv) try
 }
 catch (std::runtime_error const & err)
 {
-  ROS_ERROR("Exception caught: %s\nTerminating ...", err.what());
+  ROS_ERROR("Exception (std::runtime_error) caught: %s\nTerminating ...", err.what());
   return EXIT_FAILURE;
 }
 catch (...)
