@@ -233,24 +233,24 @@ int main(int argc, char **argv) try
 
   common::actuator::interface::AnglePositionActuatorMap angle_position_actuator_map =
   {
-    {common::actuator::interface::angle_position_actuator_map_make_key(Leg::LeftFront,   Joint::Coxa),  angle_actuator_left_front_coxa},
-    {common::actuator::interface::angle_position_actuator_map_make_key(Leg::LeftFront,   Joint::Femur), angle_actuator_left_front_femur},
-    {common::actuator::interface::angle_position_actuator_map_make_key(Leg::LeftFront,   Joint::Tibia), angle_actuator_left_front_tibia},
-    {common::actuator::interface::angle_position_actuator_map_make_key(Leg::LeftMiddle,  Joint::Coxa),  angle_actuator_left_middle_coxa},
-    {common::actuator::interface::angle_position_actuator_map_make_key(Leg::LeftMiddle,  Joint::Femur), angle_actuator_left_middle_femur},
-    {common::actuator::interface::angle_position_actuator_map_make_key(Leg::LeftMiddle,  Joint::Tibia), angle_actuator_left_middle_tibia},
-    {common::actuator::interface::angle_position_actuator_map_make_key(Leg::LeftBack,    Joint::Coxa),  angle_actuator_left_back_coxa},
-    {common::actuator::interface::angle_position_actuator_map_make_key(Leg::LeftBack,    Joint::Femur), angle_actuator_left_back_femur},
-    {common::actuator::interface::angle_position_actuator_map_make_key(Leg::LeftBack,    Joint::Tibia), angle_actuator_left_back_tibia},
-    {common::actuator::interface::angle_position_actuator_map_make_key(Leg::RightFront,  Joint::Coxa),  angle_actuator_right_front_coxa},
-    {common::actuator::interface::angle_position_actuator_map_make_key(Leg::RightFront,  Joint::Femur), angle_actuator_right_front_femur},
-    {common::actuator::interface::angle_position_actuator_map_make_key(Leg::RightFront,  Joint::Tibia), angle_actuator_right_front_tibia},
-    {common::actuator::interface::angle_position_actuator_map_make_key(Leg::RightMiddle, Joint::Coxa),  angle_actuator_right_middle_coxa},
-    {common::actuator::interface::angle_position_actuator_map_make_key(Leg::RightMiddle, Joint::Femur), angle_actuator_right_middle_femur},
-    {common::actuator::interface::angle_position_actuator_map_make_key(Leg::RightMiddle, Joint::Tibia), angle_actuator_right_middle_tibia},
-    {common::actuator::interface::angle_position_actuator_map_make_key(Leg::RightBack,   Joint::Coxa),  angle_actuator_right_back_coxa},
-    {common::actuator::interface::angle_position_actuator_map_make_key(Leg::RightBack,   Joint::Femur), angle_actuator_right_back_femur},
-    {common::actuator::interface::angle_position_actuator_map_make_key(Leg::RightBack,   Joint::Tibia), angle_actuator_right_back_tibia}
+    {make_key(Leg::LeftFront,   Joint::Coxa),  angle_actuator_left_front_coxa},
+    {make_key(Leg::LeftFront,   Joint::Femur), angle_actuator_left_front_femur},
+    {make_key(Leg::LeftFront,   Joint::Tibia), angle_actuator_left_front_tibia},
+    {make_key(Leg::LeftMiddle,  Joint::Coxa),  angle_actuator_left_middle_coxa},
+    {make_key(Leg::LeftMiddle,  Joint::Femur), angle_actuator_left_middle_femur},
+    {make_key(Leg::LeftMiddle,  Joint::Tibia), angle_actuator_left_middle_tibia},
+    {make_key(Leg::LeftBack,    Joint::Coxa),  angle_actuator_left_back_coxa},
+    {make_key(Leg::LeftBack,    Joint::Femur), angle_actuator_left_back_femur},
+    {make_key(Leg::LeftBack,    Joint::Tibia), angle_actuator_left_back_tibia},
+    {make_key(Leg::RightFront,  Joint::Coxa),  angle_actuator_right_front_coxa},
+    {make_key(Leg::RightFront,  Joint::Femur), angle_actuator_right_front_femur},
+    {make_key(Leg::RightFront,  Joint::Tibia), angle_actuator_right_front_tibia},
+    {make_key(Leg::RightMiddle, Joint::Coxa),  angle_actuator_right_middle_coxa},
+    {make_key(Leg::RightMiddle, Joint::Femur), angle_actuator_right_middle_femur},
+    {make_key(Leg::RightMiddle, Joint::Tibia), angle_actuator_right_middle_tibia},
+    {make_key(Leg::RightBack,   Joint::Coxa),  angle_actuator_right_back_coxa},
+    {make_key(Leg::RightBack,   Joint::Femur), angle_actuator_right_back_femur},
+    {make_key(Leg::RightBack,   Joint::Tibia), angle_actuator_right_back_tibia}
   };
 
   /**************************************************************************************
@@ -339,7 +339,7 @@ int main(int argc, char **argv) try
     for (auto [leg, joint] : LEG_JOINT_LIST)
     {
       float const target_angle_deg = next_gait_ctrl_output.at(leg, joint);
-      angle_position_actuator_map.at(common::actuator::interface::angle_position_actuator_map_make_key(leg, joint))->set(target_angle_deg);
+      angle_position_actuator_map.at(make_key(leg, joint))->set(target_angle_deg);
     }
 
     /**************************************************************************************

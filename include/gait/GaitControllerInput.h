@@ -60,12 +60,8 @@ public:
 
   std::string toStr();
 
-  typedef std::tuple<Leg, Joint> AngleSensorMapKey;
-  typedef common::sensor::interface::SharedAnglePositionSensor AngleSensorMapValue;
-  typedef std::map<AngleSensorMapKey, AngleSensorMapValue> AngleSensorMap;
-
 private:
-  AngleSensorMap _map;
+  std::map<LegJointKey, common::sensor::interface::SharedAnglePositionSensor> _map;
 };
 
 /**************************************************************************************

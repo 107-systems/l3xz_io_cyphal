@@ -21,26 +21,6 @@ namespace gait
 {
 
 /**************************************************************************************
- * FUNCTION DEFINITION
- **************************************************************************************/
-
-struct valve_map_key_equal : public std::binary_function<GaitControllerInput::AngleSensorMapKey, GaitControllerInput::AngleSensorMapKey, bool>
-{
-  bool operator()(const GaitControllerInput::AngleSensorMapKey & v0, const GaitControllerInput::AngleSensorMapKey & v1) const
-  {
-    return (
-            std::get<0>(v0) == std::get<0>(v1) &&
-            std::get<1>(v0) == std::get<1>(v1)
-           );
-  }
-};
-
-static GaitControllerInput::AngleSensorMapKey make_key(Leg const leg, Joint const joint)
-{
-  return std::tuple(leg, joint);
-}
-
-/**************************************************************************************
  * CTOR/DTOR
  **************************************************************************************/
 

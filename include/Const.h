@@ -31,7 +31,7 @@ static std::list<Leg> const LEG_LIST =
   Leg::LeftFront, Leg::LeftMiddle, Leg::LeftBack, Leg::RightFront, Leg::RightMiddle, Leg::RightBack
 };
 
-static std::list<LegJointPair> const LEG_JOINT_LIST =
+static std::list<LegJointKey> const LEG_JOINT_LIST =
 {
   std::tuple(Leg::LeftFront,   Joint::Coxa),
   std::tuple(Leg::LeftFront,   Joint::Femur),

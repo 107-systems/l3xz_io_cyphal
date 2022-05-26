@@ -29,25 +29,7 @@ namespace common::actuator::interface
  * CLASS DECLARATION
  **************************************************************************************/
 
-typedef std::tuple<Leg, Joint> AnglePositionActuatorKey;
-typedef SharedAnglePositionActuator AnglePositionActuatorValue;
-typedef std::map<AnglePositionActuatorKey, AnglePositionActuatorValue> AnglePositionActuatorMap;
-
-struct angle_position_actuator_map_key_equal : public std::binary_function<AnglePositionActuatorKey, AnglePositionActuatorKey, bool>
-{
-  bool operator()(const AnglePositionActuatorKey & v0, const AnglePositionActuatorKey & v1) const
-  {
-    return (
-            std::get<0>(v0) == std::get<0>(v1) &&
-            std::get<1>(v0) == std::get<1>(v1)
-           );
-  }
-};
-
-inline AnglePositionActuatorKey angle_position_actuator_map_make_key(Leg const leg, Joint const joint)
-{
-  return std::tuple(leg, joint);
-}
+typedef std::map<LegJointKey, SharedAnglePositionActuator> AnglePositionActuatorMap;
 
 /**************************************************************************************
  * NAMESPACE

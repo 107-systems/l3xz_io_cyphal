@@ -56,12 +56,8 @@ public:
 
   std::string toStr();
 
-  typedef std::tuple<Leg, Joint> TargetAngleMapKey;
-  typedef float TargetAngleMapValue;
-  typedef std::map<TargetAngleMapKey, TargetAngleMapValue> TargetAngleMap;
-
 private:
-  TargetAngleMap _map;
+  std::map<LegJointKey, float> _map;
 };
 
 /**************************************************************************************
