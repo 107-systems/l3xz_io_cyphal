@@ -413,6 +413,28 @@ int main(int argc, char **argv) try
   head::ControllerOutput prev_head_ctrl_output(INITIAL_PAN_ANGLE_DEG, INITIAL_TILT_ANGLE_DEG);
 
   /**************************************************************************************
+   * CALIBRATION
+   **************************************************************************************/
+
+  for (auto ch = driver::SSC32::MIN_CHANNEL; ch <= driver::SSC32::MAX_CHANNEL; ch++)
+    ssc32_ctrl->setPulseWidth(ch, 2000, 50);
+
+  orel20_ctrl.setRPM(10);
+
+  for(size_t i = 0; i < 100; i++)
+  {
+    orel20_ctrl.spinOnce();
+    std::this_thread::sleep_for (std::chrono::milliseconds(100));
+  }
+
+  for (auto ch = driver::SSC32::MIN_CHANNEL; ch <= driver::SSC32::MAX_CHANNEL; ch++)
+    ssc32_ctrl->setPulseWidth(ch, 1500, 50);
+
+  orel20_ctrl.setRPM(0);
+  orel20_ctrl.spinOnce();
+
+
+  /**************************************************************************************
    * MAIN LOOP
    **************************************************************************************/
 
