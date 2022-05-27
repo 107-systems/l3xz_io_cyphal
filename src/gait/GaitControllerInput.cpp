@@ -10,8 +10,7 @@
 
 #include <gait/GaitControllerInput.h>
 
-#include <sstream>
-#include <stdexcept>
+#include <Const.h>
 
 /**************************************************************************************
  * NAMESPACE
@@ -42,19 +41,6 @@ ControllerInput::ControllerInput(TeleopCommandData const teleop_cmd,
 
 float ControllerInput::get_angle_deg(Leg const leg, Joint const joint) const
 {
-  if (!_angle_position_map.count(make_key(leg, joint)))
-  {
-    std::stringstream msg;
-
-    msg << "ControllerInput::operator(): error, trying to access non-existing position sensor ("
-        << static_cast<int>(leg)
-        << ", "
-        << static_cast<int>(joint)
-        << ")";
-
-    throw std::runtime_error(msg.str());
-  }
-
   return _angle_position_map.at(make_key(leg, joint));
 }
 

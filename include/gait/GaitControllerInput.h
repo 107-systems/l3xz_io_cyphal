@@ -13,7 +13,7 @@
 
 #include <map>
 
-#include <Const.h>
+#include <Types.h>
 
 #include <common/sensor/interface/BumperSensor.h>
 #include <common/sensor/interface/AnglePositionSensor.h>
