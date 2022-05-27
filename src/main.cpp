@@ -438,14 +438,29 @@ int main(int argc, char **argv) try
 
     ROS_INFO("IN: %s", toStr(angle_position_sensor_map, bumper_sensor_map).c_str());
 
-    gait::ControllerInput const gait_ctrl_input(teleop_cmd_data, angle_position_sensor_map, bumper_sensor_map);
-
-    if (isGaitControllerInputDataValid(angle_position_sensor_map, bumper_sensor_map))
-      next_gait_ctrl_output = gait_ctrl.update(gait_ctrl_input, prev_gait_ctrl_output);
-    else
+    if (!isGaitControllerInputDataValid(angle_position_sensor_map, bumper_sensor_map))
       ROS_ERROR("gait_ctrl.update: invalid input data.");
+    else
+    {
+      gait::ControllerInput const gait_ctrl_input(teleop_cmd_data, angle_position_sensor_map, bumper_sensor_map);
+      next_gait_ctrl_output = gait_ctrl.update(gait_ctrl_input, prev_gait_ctrl_output);
 
-    ROS_DEBUG("OUT: %s", next_gait_ctrl_output.toStr().c_str());
+      ROS_DEBUG("OUT: %s", next_gait_ctrl_output.toStr().c_str());
+
+      /* Check if we need to turn on the pump. */
+      unsigned int num_joints_actively_controlled = 0;
+      for (auto [leg, joint] : HYDRAULIC_LEG_JOINT_LIST)
+      {
+        float const target_angle_deg = next_gait_ctrl_output.get_angle_deg(leg, joint);
+        float const actual_angle_deg = gait_ctrl_input.get_angle_deg(leg, joint);
+        float const angle_err = fabs(target_angle_deg - actual_angle_deg);
+        if (angle_err > 2.0f)
+          num_joints_actively_controlled++;
+      }
+      static uint16_t const OREL20_ESC_RPM_STEP_SIZE = 5;
+      uint16_t const orel20_esc_rpm = num_joints_actively_controlled * OREL20_ESC_RPM_STEP_SIZE;
+      orel20_rpm_actuator.set(orel20_esc_rpm);
+    }
 
     for (auto [leg, joint] : LEG_JOINT_LIST)
     {
@@ -453,20 +468,6 @@ int main(int argc, char **argv) try
       float const target_angle_deg = next_gait_ctrl_output.get_angle_deg(leg, joint);
       angle_position_actuator_map.at(make_key(leg, joint))->set(target_angle_deg);
     }
-
-    /* Check if we need to turn on the pump. */
-    unsigned int num_joints_actively_controlled = 0;
-    for (auto [leg, joint] : HYDRAULIC_LEG_JOINT_LIST)
-    {
-      float const target_angle_deg = next_gait_ctrl_output.get_angle_deg(leg, joint);
-      float const actual_angle_deg = gait_ctrl_input.get_angle_deg(leg, joint);
-      float const angle_err = fabs(target_angle_deg - actual_angle_deg);
-      if (angle_err > 2.0f)
-        num_joints_actively_controlled++;
-    }
-    static uint16_t const OREL20_ESC_RPM_STEP_SIZE = 5;
-    uint16_t const orel20_esc_rpm = num_joints_actively_controlled * OREL20_ESC_RPM_STEP_SIZE;
-    orel20_rpm_actuator.set(orel20_esc_rpm);
 
     /**************************************************************************************
      * HEAD CONTROL
