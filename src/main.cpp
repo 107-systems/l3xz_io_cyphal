@@ -437,7 +437,7 @@ int main(int argc, char **argv) try
 
     if (isGaitControllerInputDataValid(angle_position_sensor_map, bumper_sensor_map))
     {
-      gait::ControllerInput const gait_ctrl_input(teleop_cmd_data, angle_position_sensor_map);
+      gait::ControllerInput const gait_ctrl_input(teleop_cmd_data, angle_position_sensor_map, bumper_sensor_map);
       next_gait_ctrl_output = gait_ctrl.update(gait_ctrl_input, prev_gait_ctrl_output);
     }
     else
