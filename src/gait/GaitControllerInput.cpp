@@ -33,7 +33,7 @@ ControllerInput::ControllerInput(TeleopCommandData const teleop_cmd,
     _angle_position_map[make_key(leg, joint)] = angle_position_sensor_map.at(make_key(leg, joint))->get().value();
 
   for (auto leg : LEG_LIST)
-    _bumper_map[leg] = bumper_sensor_map.at(leg)->get().value();
+    _bumper_map[leg] = bumper_sensor_map.at(leg)->isPressed().value();
 }
 
 /**************************************************************************************
