@@ -43,6 +43,10 @@ public:
     _rpm = rpm;
   }
 
+  void doWrite()
+  {
+    _orel20_ctrl.spinOnce();
+  }
 
 protected:
   virtual std::optional<uint32_t> get() const override

@@ -53,4 +53,20 @@ static std::list<LegJointKey> const LEG_JOINT_LIST =
   std::tuple(Leg::RightFront,  Joint::Tibia),
 };
 
+static std::list<LegJointKey> const HYDRAULIC_LEG_JOINT_LIST =
+{
+  std::tuple(Leg::LeftFront,   Joint::Femur),
+  std::tuple(Leg::LeftFront,   Joint::Tibia),
+  std::tuple(Leg::LeftMiddle,  Joint::Femur),
+  std::tuple(Leg::LeftMiddle,  Joint::Tibia),
+  std::tuple(Leg::LeftBack,    Joint::Femur),
+  std::tuple(Leg::LeftBack,    Joint::Tibia),
+  std::tuple(Leg::RightBack,   Joint::Femur),
+  std::tuple(Leg::RightBack,   Joint::Tibia),
+  std::tuple(Leg::RightMiddle, Joint::Femur),
+  std::tuple(Leg::RightMiddle, Joint::Tibia),
+  std::tuple(Leg::RightFront,  Joint::Femur),
+  std::tuple(Leg::RightFront,  Joint::Tibia),
+};
+
 #endif /* CONST_H_ */
