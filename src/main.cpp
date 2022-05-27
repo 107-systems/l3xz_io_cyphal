@@ -50,6 +50,7 @@
 #include <glue/l3xz/ELROB2022/OpenCyphalAnglePositionSensorBulkReader.h>
 #include <glue/l3xz/ELROB2022/OpenCyphalBumperSensor.h>
 #include <glue/l3xz/ELROB2022/OpenCyphalBumperSensorBulkReader.h>
+#include <glue/l3xz/ELROB2022/Orel20RPMActuator.h>
 
 /**************************************************************************************
  * FUNCTION DECLARATION
@@ -204,6 +205,8 @@ int main(int argc, char **argv) try
    **************************************************************************************/
 
   driver::Orel20 orel20_ctrl(DRONECAN_THIS_NODE_ID);
+
+  glue::l3xz::ELROB2022::Orel20RPMActuator orel20_rpm_actuator("Pump", orel20_ctrl);
 
   /**************************************************************************************
    * SSC32
