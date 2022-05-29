@@ -311,6 +311,15 @@ int main(int argc, char **argv) try
     {make_key(Leg::RightBack,   Joint::Tibia), angle_sensor_right_back_tibia}
   };
 
+  /* This map contains the angle offsets of all the sensors
+   * angles as reported by the leg controllers. At initialisation
+   * these are zero and are then set during the calibration
+   * state.
+   **/
+  std::map<LegJointKey, float> angle_position_sensor_offset_map;
+  for (auto [leg, joint] : HYDRAULIC_LEG_JOINT_LIST)
+    angle_position_sensor_offset_map[make_key(leg, joint)] = 0.0f;
+
   std::map<Leg, common::sensor::interface::SharedBumperSensor> bumper_sensor_map =
   {
     {Leg::LeftFront,   tibia_tip_bumper_left_front},
@@ -389,7 +398,7 @@ int main(int argc, char **argv) try
   TeleopCommandData teleop_cmd_data = {0.0f, 0.0f, 0.0f, 0.0f, 0.0f};
   ros::Subscriber cmd_vel_sub = node_hdl.subscribe<geometry_msgs::Twist>("/l3xz/cmd_vel", 10, std::bind(cmd_vel_callback, std::placeholders::_1, std::ref(teleop_cmd_data)));
 
-  gait::Controller gait_ctrl(ssc32_ctrl, orel20_ctrl);
+  gait::Controller gait_ctrl(ssc32_ctrl, orel20_ctrl, angle_position_sensor_offset_map);
   gait::ControllerOutput prev_gait_ctrl_output(INITIAL_COXA_ANGLE_DEG,
                                                INITIAL_FEMUR_ANGLE_DEG,
                                                INITIAL_TIBIA_ANGLE_DEG,
@@ -429,6 +438,25 @@ int main(int argc, char **argv) try
     dynamixel_angle_position_sensor_bulk_reader.doBulkRead();
     open_cyphal_angle_position_sensor_bulk_reader.doBulkRead();
     open_cyphal_bumper_sensor_bulk_reader.doBulkRead();
+
+    /* Perform the correction of the sensor values from
+     * the offset sensor map.
+     */
+    for (auto [leg, joint] : HYDRAULIC_LEG_JOINT_LIST)
+    {
+      glue::l3xz::ELROB2022::OpenCyphalAnglePositionSensor * angle_pos_sensor_ptr =
+        reinterpret_cast<glue::l3xz::ELROB2022::OpenCyphalAnglePositionSensor *>(angle_position_sensor_map.at(make_key(leg, joint)).get());
+
+      if (angle_pos_sensor_ptr->get().has_value())
+      {
+        float const raw_angle_deg    = angle_pos_sensor_ptr->get().value();
+        float const offset_angle_deg = angle_position_sensor_offset_map.at(make_key(leg, joint));
+
+        float const offset_corrected_angle_deg = (raw_angle_deg - offset_angle_deg);
+
+        angle_pos_sensor_ptr->update(offset_corrected_angle_deg);
+      }
+    }
 
     /**************************************************************************************
      * GAIT CONTROL

@@ -13,6 +13,8 @@
 
 #include "StateBase.h"
 
+#include <chrono>
+
 #include <driver/ssc32/SSC32.h>
 #include <driver/orel20/Orel20.h>
 
@@ -30,7 +32,9 @@ namespace gait::state
 class Calibrate : public StateBase
 {
 public:
-           Calibrate(driver::SharedSSC32 ssc32_ctrl, driver::SharedOrel20 orel20_ctrl);
+           Calibrate(driver::SharedSSC32 ssc32_ctrl,
+                     driver::SharedOrel20 orel20_ctrl,
+                     std::map<LegJointKey, float> & angle_position_sensor_offset_map);
   virtual ~Calibrate() { }
   virtual void onEnter() override;
   virtual void onExit() override;
@@ -39,6 +43,8 @@ public:
 private:
   driver::SharedSSC32 _ssc32_ctrl;
   driver::SharedOrel20 _orel20_ctrl;
+  std::map<LegJointKey, float> & _angle_position_sensor_offset_map;
+  std::chrono::high_resolution_clock::time_point _start_calibration;
 };
 
 /**************************************************************************************

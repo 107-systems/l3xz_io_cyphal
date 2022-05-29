@@ -34,7 +34,9 @@ namespace gait
 class Controller
 {
 public:
-   Controller(driver::SharedSSC32 ssc32_ctrl, driver::SharedOrel20 orel20_ctrl);
+   Controller(driver::SharedSSC32 ssc32_ctrl,
+              driver::SharedOrel20 orel20_ctrl,
+              std::map<LegJointKey, float> & angle_position_sensor_offset_map);
   ~Controller();
 
   ControllerOutput update(ControllerInput const & input, ControllerOutput const & prev_output);
