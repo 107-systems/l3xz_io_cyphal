@@ -31,10 +31,12 @@ namespace gait::state
 
 Calibrate::Calibrate(driver::SharedSSC32 ssc32_ctrl,
                      driver::SharedOrel20 orel20_ctrl,
-                     std::map<LegJointKey, float> & angle_position_sensor_offset_map)
+                     std::map<LegJointKey, float> & angle_position_sensor_offset_map,
+                     bool & is_calibration_complete)
 : _ssc32_ctrl{ssc32_ctrl}
 , _orel20_ctrl{orel20_ctrl}
 , _angle_position_sensor_offset_map{angle_position_sensor_offset_map}
+, _is_calibration_complete{is_calibration_complete}
 {
 
 }
@@ -46,6 +48,8 @@ Calibrate::Calibrate(driver::SharedSSC32 ssc32_ctrl,
 void Calibrate::onEnter()
 {
   ROS_INFO("Calibrate ENTER");
+
+  _is_calibration_complete = false;
 
   /* Open all hydraulic valves. */
   for (auto ch: SERVO_CHANNEL_LIST)
@@ -116,6 +120,8 @@ std::tuple<StateBase *, ControllerOutput> Calibrate::update(common::kinematic::E
       ;
 
   ROS_INFO("Calibrate::update: captured offset angles ...\n%s", msg.str().c_str());
+
+  _is_calibration_complete = true;
 
   return std::tuple(new Init(), prev_output);
 }

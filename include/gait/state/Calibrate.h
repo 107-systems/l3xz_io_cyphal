@@ -34,7 +34,8 @@ class Calibrate : public StateBase
 public:
            Calibrate(driver::SharedSSC32 ssc32_ctrl,
                      driver::SharedOrel20 orel20_ctrl,
-                     std::map<LegJointKey, float> & angle_position_sensor_offset_map);
+                     std::map<LegJointKey, float> & angle_position_sensor_offset_map,
+                     bool & is_calibration_complete);
   virtual ~Calibrate() { }
   virtual void onEnter() override;
   virtual void onExit() override;
@@ -44,6 +45,7 @@ private:
   driver::SharedSSC32 _ssc32_ctrl;
   driver::SharedOrel20 _orel20_ctrl;
   std::map<LegJointKey, float> & _angle_position_sensor_offset_map;
+  bool & _is_calibration_complete;
   std::chrono::high_resolution_clock::time_point _start_calibration;
 };
 

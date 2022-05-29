@@ -28,8 +28,9 @@ namespace gait
 
 Controller::Controller(driver::SharedSSC32 ssc32_ctrl,
                        driver::SharedOrel20 orel20_ctrl,
-                       std::map<LegJointKey, float> & angle_position_sensor_offset_map)
-: _robot_state{new state::Calibrate(ssc32_ctrl, orel20_ctrl, angle_position_sensor_offset_map)}
+                       std::map<LegJointKey, float> & angle_position_sensor_offset_map,
+                       bool & is_calibrate_complete)
+: _robot_state{new state::Calibrate(ssc32_ctrl, orel20_ctrl, angle_position_sensor_offset_map, is_calibrate_complete)}
 , _kinematic_engine{}
 {
   _robot_state->onEnter();

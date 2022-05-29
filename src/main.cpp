@@ -316,6 +316,7 @@ int main(int argc, char **argv) try
    * these are zero and are then set during the calibration
    * state.
    **/
+  bool is_angle_position_sensor_offset_calibration_complete = false;
   std::map<LegJointKey, float> angle_position_sensor_offset_map;
   for (auto [leg, joint] : HYDRAULIC_LEG_JOINT_LIST)
     angle_position_sensor_offset_map[make_key(leg, joint)] = 0.0f;
@@ -398,7 +399,7 @@ int main(int argc, char **argv) try
   TeleopCommandData teleop_cmd_data = {0.0f, 0.0f, 0.0f, 0.0f, 0.0f};
   ros::Subscriber cmd_vel_sub = node_hdl.subscribe<geometry_msgs::Twist>("/l3xz/cmd_vel", 10, std::bind(cmd_vel_callback, std::placeholders::_1, std::ref(teleop_cmd_data)));
 
-  gait::Controller gait_ctrl(ssc32_ctrl, orel20_ctrl, angle_position_sensor_offset_map);
+  gait::Controller gait_ctrl(ssc32_ctrl, orel20_ctrl, angle_position_sensor_offset_map, is_angle_position_sensor_offset_calibration_complete);
   gait::ControllerOutput prev_gait_ctrl_output(INITIAL_COXA_ANGLE_DEG,
                                                INITIAL_FEMUR_ANGLE_DEG,
                                                INITIAL_TIBIA_ANGLE_DEG,
@@ -476,26 +477,32 @@ int main(int argc, char **argv) try
       ROS_DEBUG("OUT: %s", next_gait_ctrl_output.toStr().c_str());
 
       /* Check if we need to turn on the pump. */
-      unsigned int num_joints_actively_controlled = 0;
-      for (auto [leg, joint] : HYDRAULIC_LEG_JOINT_LIST)
+      if (is_angle_position_sensor_offset_calibration_complete)
       {
-        float const target_angle_deg = next_gait_ctrl_output.get_angle_deg(leg, joint);
-        float const actual_angle_deg = gait_ctrl_input.get_angle_deg(leg, joint);
-        float const angle_err = fabs(target_angle_deg - actual_angle_deg);
-        if (angle_err > 2.0f)
-          num_joints_actively_controlled++;
+        unsigned int num_joints_actively_controlled = 0;
+        for (auto [leg, joint] : HYDRAULIC_LEG_JOINT_LIST)
+        {
+          float const target_angle_deg = next_gait_ctrl_output.get_angle_deg(leg, joint);
+          float const actual_angle_deg = gait_ctrl_input.get_angle_deg(leg, joint);
+          float const angle_err = fabs(target_angle_deg - actual_angle_deg);
+          if (angle_err > 2.0f)
+            num_joints_actively_controlled++;
+        }
+        static uint16_t const OREL20_ESC_RPM_STEP_SIZE = 5;
+        uint16_t const orel20_esc_rpm = num_joints_actively_controlled * OREL20_ESC_RPM_STEP_SIZE;
+        orel20_rpm_actuator.set(orel20_esc_rpm);
       }
-      static uint16_t const OREL20_ESC_RPM_STEP_SIZE = 5;
-      uint16_t const orel20_esc_rpm = num_joints_actively_controlled * OREL20_ESC_RPM_STEP_SIZE;
-      orel20_rpm_actuator.set(orel20_esc_rpm);
     }
 
-    for (auto [leg, joint] : LEG_JOINT_LIST)
-    {
-      /* Write the target angles to the actual angle position actuators. */
-      float const target_angle_deg = next_gait_ctrl_output.get_angle_deg(leg, joint);
-      angle_position_actuator_map.at(make_key(leg, joint))->set(target_angle_deg);
-    }
+      if (is_angle_position_sensor_offset_calibration_complete)
+      {
+        for (auto [leg, joint] : LEG_JOINT_LIST)
+        {
+          /* Write the target angles to the actual angle position actuators. */
+          float const target_angle_deg = next_gait_ctrl_output.get_angle_deg(leg, joint);
+          angle_position_actuator_map.at(make_key(leg, joint))->set(target_angle_deg);
+        }
+      }
 
     /**************************************************************************************
      * HEAD CONTROL
