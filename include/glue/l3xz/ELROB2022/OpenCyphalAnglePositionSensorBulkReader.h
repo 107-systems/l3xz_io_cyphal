@@ -50,25 +50,7 @@ public:
                                           SharedOpenCyphalAnglePositionSensor angle_sensor_right_middle_tibia,
                                           SharedOpenCyphalAnglePositionSensor angle_sensor_right_front_femur,
                                           SharedOpenCyphalAnglePositionSensor angle_sensor_right_front_tibia)
-  : FEMUR_ANGLE_OFFSET_MAP
-  {
-    {1, 285},
-    {2, 50},
-    {3, 143},
-    {4, 111},
-    {5, 116+46-5},
-    {6, 234}
-  }
-  , TIBIA_ANGLE_OFFSET_MAP
-  {
-    {1, 60},
-    {2, 195-49},
-    {3, 299},
-    {4, 127},
-    {5, 59},
-    {6, 123+10}
-  }
-  , NODE_ID_TO_FEMUR_ANGLE_POSITION_SENSOR_MAP
+  : NODE_ID_TO_FEMUR_ANGLE_POSITION_SENSOR_MAP
   {
     {1, angle_sensor_left_front_femur},
     {2, angle_sensor_left_middle_femur},
@@ -96,8 +78,7 @@ public:
       return;
     }
     std::lock_guard<std::mutex> lock(_mtx);
-    float const corrected_femur_angle_deg = (femur_angle_deg - FEMUR_ANGLE_OFFSET_MAP.at(node_id));
-    _femur_angle_map[node_id] = corrected_femur_angle_deg;
+    _femur_angle_map[node_id] = femur_angle_deg;
   }
 
   void update_tibia_angle(CanardNodeID const node_id, float const tibia_angle_deg)
@@ -107,8 +88,7 @@ public:
       return;
     }
     std::lock_guard<std::mutex> lock(_mtx);
-    float const corrected_tibia_angle_deg = (tibia_angle_deg - TIBIA_ANGLE_OFFSET_MAP.at(node_id));
-    _tibia_angle_map[node_id] = corrected_tibia_angle_deg;
+    _tibia_angle_map[node_id] = tibia_angle_deg;
   }
 
   /* It's not really a bulk read but a bulk copy
@@ -136,9 +116,6 @@ private:
 
   std::map<CanardNodeID, float> _femur_angle_map;
   std::map<CanardNodeID, float> _tibia_angle_map;
-
-  std::map<CanardNodeID, float> const FEMUR_ANGLE_OFFSET_MAP;
-  std::map<CanardNodeID, float> const TIBIA_ANGLE_OFFSET_MAP;
 
   std::map<CanardNodeID, SharedOpenCyphalAnglePositionSensor> const NODE_ID_TO_FEMUR_ANGLE_POSITION_SENSOR_MAP;
   std::map<CanardNodeID, SharedOpenCyphalAnglePositionSensor> const NODE_ID_TO_TIBIA_ANGLE_POSITION_SENSOR_MAP;
