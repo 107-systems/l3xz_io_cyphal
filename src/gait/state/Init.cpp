@@ -85,8 +85,7 @@ std::tuple<StateBase *, ControllerOutput> Init::update(common::kinematic::Engine
     return std::tuple(this, next_output);
 
   /* All good, let's transition to the next state. */
-  return std::tuple(this, next_output);
-  //return std::tuple(new StandUp(), next_output);
+  return std::tuple(new StandUp(), next_output);
 }
 
 /**************************************************************************************
