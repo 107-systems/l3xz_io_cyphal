@@ -84,7 +84,7 @@ std::tuple<StateBase *, ControllerOutput> Calibrate::update(common::kinematic::E
   auto const now = std::chrono::high_resolution_clock::now();
   auto const duration = std::chrono::duration_cast<std::chrono::seconds>(now - _start_calibration);
 
-  if (duration.count() < 10)
+  if (duration.count() < 20)
     return std::tuple(this, prev_output);
 
   /* Capture the raw angles which are at this point

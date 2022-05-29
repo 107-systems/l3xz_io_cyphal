@@ -491,9 +491,10 @@ int main(int argc, char **argv) try
           if (angle_err > 2.0f)
             num_joints_actively_controlled++;
         }
-        static uint16_t const OREL20_ESC_RPM_STEP_SIZE = 10;
-        uint16_t const orel20_esc_rpm = num_joints_actively_controlled * OREL20_ESC_RPM_STEP_SIZE;
-        orel20_rpm_actuator.set(orel20_esc_rpm);
+        if (num_joints_actively_controlled > 0)
+          orel20_rpm_actuator.set(4096);
+        else
+          orel20_rpm_actuator.set(0);
       }
     }
 
