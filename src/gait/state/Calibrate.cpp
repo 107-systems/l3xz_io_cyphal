@@ -56,7 +56,7 @@ void Calibrate::onEnter()
       _ssc32_ctrl->setPulseWidth(ch, 2000, 50);
 
   /* Start the hydraulic pump. */
-  _orel20_ctrl->setRPM(20);
+  _orel20_ctrl->setRPM(4096);
 
   /* Capture the start time. */
   _start_calibration = std::chrono::high_resolution_clock::now();
@@ -84,7 +84,7 @@ std::tuple<StateBase *, ControllerOutput> Calibrate::update(common::kinematic::E
   auto const now = std::chrono::high_resolution_clock::now();
   auto const duration = std::chrono::duration_cast<std::chrono::seconds>(now - _start_calibration);
 
-  if (duration.count() < 20)
+  if (duration.count() < 10)
     return std::tuple(this, prev_output);
 
   /* Capture the raw angles which are at this point
