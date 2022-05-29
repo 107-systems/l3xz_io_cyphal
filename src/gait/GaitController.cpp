@@ -13,7 +13,7 @@
 #include <ros/ros.h>
 #include <ros/console.h>
 
-#include <gait/state/Init.h>
+#include <gait/state/Calibrate.h>
 
 /**************************************************************************************
  * NAMESPACE
@@ -26,8 +26,8 @@ namespace gait
  * CTOR/DTOR
  **************************************************************************************/
 
-Controller::Controller()
-: _robot_state{new state::Init()}
+Controller::Controller(driver::SharedSSC32 ssc32_ctrl, driver::SharedOrel20 orel20_ctrl)
+: _robot_state{new state::Calibrate(ssc32_ctrl, orel20_ctrl)}
 , _kinematic_engine{}
 {
   _robot_state->onEnter();

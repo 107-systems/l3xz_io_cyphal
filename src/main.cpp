@@ -63,7 +63,7 @@ bool init_open_cyphal(phy::opencyphal::Node & open_cyphal_node,
                       glue::l3xz::ELROB2022::OpenCyphalAnglePositionSensorBulkReader & open_cyphal_angle_position_sensor_bulk_reader,
                       glue::l3xz::ELROB2022::OpenCyphalBumperSensorBulkReader & open_cyphal_bumper_sensor_bulk_reader);
 
-void deinit_orel20(driver::Orel20 & orel20_ctrl);
+void deinit_orel20(driver::SharedOrel20 orel20_ctrl);
 
 void init_ssc32  (driver::SharedSSC32 & ssc32_ctrl);
 void deinit_ssc32(driver::SharedSSC32 & ssc32_ctrl);
@@ -204,7 +204,7 @@ int main(int argc, char **argv) try
    * OREL 20 / DRONECAN
    **************************************************************************************/
 
-  driver::Orel20 orel20_ctrl(DRONECAN_THIS_NODE_ID);
+  auto orel20_ctrl = std::make_shared<driver::Orel20>(DRONECAN_THIS_NODE_ID);
 
   glue::l3xz::ELROB2022::Orel20RPMActuator orel20_rpm_actuator("Pump", orel20_ctrl);
 
@@ -389,7 +389,7 @@ int main(int argc, char **argv) try
   TeleopCommandData teleop_cmd_data = {0.0f, 0.0f, 0.0f, 0.0f, 0.0f};
   ros::Subscriber cmd_vel_sub = node_hdl.subscribe<geometry_msgs::Twist>("/l3xz/cmd_vel", 10, std::bind(cmd_vel_callback, std::placeholders::_1, std::ref(teleop_cmd_data)));
 
-  gait::Controller gait_ctrl;
+  gait::Controller gait_ctrl(ssc32_ctrl, orel20_ctrl);
   gait::ControllerOutput prev_gait_ctrl_output(INITIAL_COXA_ANGLE_DEG,
                                                INITIAL_FEMUR_ANGLE_DEG,
                                                INITIAL_TIBIA_ANGLE_DEG,
@@ -411,28 +411,6 @@ int main(int argc, char **argv) try
 
   head::Controller head_ctrl;
   head::ControllerOutput prev_head_ctrl_output(INITIAL_PAN_ANGLE_DEG, INITIAL_TILT_ANGLE_DEG);
-
-  /**************************************************************************************
-   * CALIBRATION
-   **************************************************************************************/
-
-  for (auto ch = driver::SSC32::MIN_CHANNEL; ch <= driver::SSC32::MAX_CHANNEL; ch++)
-    ssc32_ctrl->setPulseWidth(ch, 2000, 50);
-
-  orel20_ctrl.setRPM(10);
-
-  for(size_t i = 0; i < 100; i++)
-  {
-    orel20_ctrl.spinOnce();
-    std::this_thread::sleep_for (std::chrono::milliseconds(100));
-  }
-
-  for (auto ch = driver::SSC32::MIN_CHANNEL; ch <= driver::SSC32::MAX_CHANNEL; ch++)
-    ssc32_ctrl->setPulseWidth(ch, 1500, 50);
-
-  orel20_ctrl.setRPM(0);
-  orel20_ctrl.spinOnce();
-
 
   /**************************************************************************************
    * MAIN LOOP
@@ -660,10 +638,10 @@ bool init_open_cyphal(phy::opencyphal::Node & open_cyphal_node,
   return true;
 }
 
-void deinit_orel20(driver::Orel20 & orel20_ctrl)
+void deinit_orel20(driver::SharedOrel20 orel20_ctrl)
 {
-  orel20_ctrl.setRPM(0);
-  orel20_ctrl.spinOnce();
+  orel20_ctrl->setRPM(0);
+  orel20_ctrl->spinOnce();
 }
 
 void init_ssc32(driver::SharedSSC32 & ssc32_ctrl)

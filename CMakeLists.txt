@@ -167,6 +167,7 @@ add_executable(${PROJECT_NAME}_node
   src/gait/state/BackwardWalking.cpp
   src/gait/state/ForwardWalking.cpp
   src/gait/state/Init.cpp
+  src/gait/state/Calibrate.cpp
   src/gait/state/Standing.cpp
   src/gait/state/StandUp.cpp
   src/gait/state/TurningLeft.cpp

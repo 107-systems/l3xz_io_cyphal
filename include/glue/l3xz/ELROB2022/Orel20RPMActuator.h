@@ -29,7 +29,7 @@ namespace glue::l3xz::ELROB2022
 class Orel20RPMActuator : public common::actuator::interface::RPMActuator
 {
 public:
-  Orel20RPMActuator(std::string const & name, driver::Orel20 & orel20_ctrl)
+  Orel20RPMActuator(std::string const & name, driver::SharedOrel20 orel20_ctrl)
   : RPMActuator(name)
   , _orel20_ctrl{orel20_ctrl}
   { }
@@ -39,13 +39,13 @@ public:
   {
     uint32_t const MAX_RPM = 1000;
     uint16_t const rpm = std::min(val, MAX_RPM);
-    _orel20_ctrl.setRPM(rpm);
+    _orel20_ctrl->setRPM(rpm);
     _rpm = rpm;
   }
 
   void doWrite()
   {
-    _orel20_ctrl.spinOnce();
+    _orel20_ctrl->spinOnce();
   }
 
 protected:
@@ -55,7 +55,7 @@ protected:
   }
 
 private:
-  driver::Orel20 & _orel20_ctrl;
+  driver::SharedOrel20 _orel20_ctrl;
   std::optional<uint32_t> _rpm;
 };
 

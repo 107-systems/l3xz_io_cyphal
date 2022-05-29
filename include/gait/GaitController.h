@@ -17,6 +17,9 @@
 
 #include <common/kinematic/Engine.h>
 
+#include <driver/ssc32/SSC32.h>
+#include <driver/orel20/Orel20.h>
+
 /**************************************************************************************
  * NAMESPACE
  **************************************************************************************/
@@ -31,7 +34,7 @@ namespace gait
 class Controller
 {
 public:
-   Controller();
+   Controller(driver::SharedSSC32 ssc32_ctrl, driver::SharedOrel20 orel20_ctrl);
   ~Controller();
 
   ControllerOutput update(ControllerInput const & input, ControllerOutput const & prev_output);

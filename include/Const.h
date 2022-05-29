@@ -69,4 +69,10 @@ static std::list<LegJointKey> const HYDRAULIC_LEG_JOINT_LIST =
   std::tuple(Leg::RightFront,  Joint::Tibia),
 };
 
+static std::list const SERVO_CHANNEL_LIST =
+{
+   0,  1,  2,  3,  4,  5,
+  16, 17, 18, 19, 20, 21,
+};
+
 #endif /* CONST_H_ */

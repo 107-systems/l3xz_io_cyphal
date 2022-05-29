@@ -66,7 +66,7 @@ SSC32::Error SSC32::setPulseWidth(uint8_t const channel, uint16_t const pulse_wi
 
   //ROS_INFO("%s", msg_str.c_str());
 
-  _serial.transmit(msg_vect);
+  //_serial.transmit(msg_vect);
 
   return Error::None;
 }

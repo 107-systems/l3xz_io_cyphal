@@ -4,55 +4,47 @@
  * Contributors: https://github.com/107-systems/l3xz/graphs/contributors.
  */
 
-#ifndef DRIVER_OREL20_OREL20_H_
-#define DRIVER_OREL20_OREL20_H_
+#ifndef CALIBRATE_STATE_H_
+#define CALIBRATE_STATE_H_
 
 /**************************************************************************************
- * INCLUDE
+ * INCLUDES
  **************************************************************************************/
 
-#include <memory>
+#include "StateBase.h"
 
-#include <uavcan/uavcan.hpp>
-#include <uavcan/equipment/esc/RPMCommand.hpp>
+#include <driver/ssc32/SSC32.h>
+#include <driver/orel20/Orel20.h>
 
 /**************************************************************************************
  * NAMESPACE
  **************************************************************************************/
 
-namespace driver
+namespace gait::state
 {
 
 /**************************************************************************************
  * CLASS DECLARATION
  **************************************************************************************/
 
-class Orel20
+class Calibrate : public StateBase
 {
 public:
-  Orel20(uint8_t const dronecan_node_id);
-
-  inline void setRPM(uint16_t const rpm_val) { _rpm_val = rpm_val; }
-
-  void spinOnce();
+           Calibrate(driver::SharedSSC32 ssc32_ctrl, driver::SharedOrel20 orel20_ctrl);
+  virtual ~Calibrate() { }
+  virtual void onEnter() override;
+  virtual void onExit() override;
+  virtual std::tuple<StateBase *, ControllerOutput> update(common::kinematic::Engine const & engine, ControllerInput const & input, ControllerOutput const & prev_output) override;
 
 private:
-  static unsigned constexpr NODE_MEMORY_POOL_SIZE = 16384;
-  uavcan::Node<NODE_MEMORY_POOL_SIZE> _node;
-  uavcan::Publisher<uavcan::equipment::esc::RPMCommand> _esc_pub;
-  uint16_t _rpm_val;
+  driver::SharedSSC32 _ssc32_ctrl;
+  driver::SharedOrel20 _orel20_ctrl;
 };
-
-/**************************************************************************************
- * TYPEDEF
- **************************************************************************************/
-
-typedef std::shared_ptr<Orel20> SharedOrel20;
 
 /**************************************************************************************
  * NAMESPACE
  **************************************************************************************/
 
-} /* driver */
+} /* gait::state */
 
-#endif /* DRIVER_OREL20_OREL20_H_ */
+#endif /* CALIBRATE_STATE_H_ */
