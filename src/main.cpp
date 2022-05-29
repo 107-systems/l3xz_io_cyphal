@@ -443,19 +443,22 @@ int main(int argc, char **argv) try
     /* Perform the correction of the sensor values from
      * the offset sensor map.
      */
-    for (auto [leg, joint] : HYDRAULIC_LEG_JOINT_LIST)
+    if (is_angle_position_sensor_offset_calibration_complete)
     {
-      glue::l3xz::ELROB2022::OpenCyphalAnglePositionSensor * angle_pos_sensor_ptr =
-        reinterpret_cast<glue::l3xz::ELROB2022::OpenCyphalAnglePositionSensor *>(angle_position_sensor_map.at(make_key(leg, joint)).get());
-
-      if (angle_pos_sensor_ptr->get().has_value())
+      for (auto [leg, joint] : HYDRAULIC_LEG_JOINT_LIST)
       {
-        float const raw_angle_deg    = angle_pos_sensor_ptr->get().value();
-        float const offset_angle_deg = angle_position_sensor_offset_map.at(make_key(leg, joint));
+        glue::l3xz::ELROB2022::OpenCyphalAnglePositionSensor * angle_pos_sensor_ptr =
+          reinterpret_cast<glue::l3xz::ELROB2022::OpenCyphalAnglePositionSensor *>(angle_position_sensor_map.at(make_key(leg, joint)).get());
 
-        float const offset_corrected_angle_deg = (raw_angle_deg - offset_angle_deg);
+        if (angle_pos_sensor_ptr->get().has_value())
+        {
+          float const raw_angle_deg    = angle_pos_sensor_ptr->get().value();
+          float const offset_angle_deg = angle_position_sensor_offset_map.at(make_key(leg, joint));
 
-        angle_pos_sensor_ptr->update(offset_corrected_angle_deg);
+          float const offset_corrected_angle_deg = (raw_angle_deg - offset_angle_deg);
+
+          angle_pos_sensor_ptr->update(offset_corrected_angle_deg);
+        }
       }
     }
 
@@ -663,7 +666,7 @@ bool init_open_cyphal(phy::opencyphal::Node & open_cyphal_node,
   {
     uavcan::primitive::scalar::Bit_1_0<1004> const tibia_endpoint_switch = uavcan::primitive::scalar::Bit_1_0<1004>::deserialize(transfer);
     open_cyphal_bumper_sensor_bulk_reader.update_bumper_sensor(transfer.remote_node_id, tibia_endpoint_switch.data.value);
-    ROS_INFO("[%d] Tibia Endpoint Switch %d", transfer.remote_node_id, tibia_endpoint_switch.data.value);
+    ROS_DEBUG("[%d] Tibia Endpoint Switch %d", transfer.remote_node_id, tibia_endpoint_switch.data.value);
   }))
   {
     ROS_ERROR("init_open_cyphal failed to subscribe to 'uavcan::primitive::scalar::Bit_1_0<1004>'");
