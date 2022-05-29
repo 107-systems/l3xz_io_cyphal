@@ -37,7 +37,7 @@ public:
 
   virtual void set(uint32_t const & val) override
   {
-    uint32_t const MAX_RPM = 1000;
+    uint32_t const MAX_RPM = 8192;
     uint16_t const rpm = std::min(val, MAX_RPM);
     _orel20_ctrl->setRPM(rpm);
     _rpm = rpm;
