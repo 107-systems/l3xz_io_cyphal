@@ -353,41 +353,41 @@ int main(int argc, char **argv) try
     msg << "\n"
         << "Left\n"
         << "  Front :"
-        << "  Coxa:"   << angle_position.at(make_key(Leg::LeftFront, Joint::Coxa))->toStr()
-        << "  Femur:"  << angle_position.at(make_key(Leg::LeftFront, Joint::Femur))->toStr()
-        << "  Tibia:"  << angle_position.at(make_key(Leg::LeftFront, Joint::Tibia))->toStr()
-        << "  Tip:"    << bumper.at(Leg::LeftFront)->toStr()
+        << "  Coxa: "   << angle_position.at(make_key(Leg::LeftFront, Joint::Coxa))->toStr()
+        << "  Femur: "  << angle_position.at(make_key(Leg::LeftFront, Joint::Femur))->toStr()
+        << "  Tibia: "  << angle_position.at(make_key(Leg::LeftFront, Joint::Tibia))->toStr()
+        << "  Tip: "    << bumper.at(Leg::LeftFront)->toStr()
         << "\n"
         << "  Middle:"
-        << "  Coxa:"   << angle_position.at(make_key(Leg::LeftMiddle, Joint::Coxa))->toStr()
-        << "  Femur:"  << angle_position.at(make_key(Leg::LeftMiddle, Joint::Femur))->toStr()
-        << "  Tibia:"  << angle_position.at(make_key(Leg::LeftMiddle, Joint::Tibia))->toStr()
-        << "  Tip:"    << bumper.at(Leg::LeftMiddle)->toStr()
+        << "  Coxa: "   << angle_position.at(make_key(Leg::LeftMiddle, Joint::Coxa))->toStr()
+        << "  Femur: "  << angle_position.at(make_key(Leg::LeftMiddle, Joint::Femur))->toStr()
+        << "  Tibia: "  << angle_position.at(make_key(Leg::LeftMiddle, Joint::Tibia))->toStr()
+        << "  Tip: "    << bumper.at(Leg::LeftMiddle)->toStr()
         << "\n"
         << "  Back  :"
-        << "  Coxa:"   << angle_position.at(make_key(Leg::LeftBack, Joint::Coxa))->toStr()
-        << "  Femur:"  << angle_position.at(make_key(Leg::LeftBack, Joint::Femur))->toStr()
-        << "  Tibia:"  << angle_position.at(make_key(Leg::LeftBack, Joint::Tibia))->toStr()
-        << "  Tip:"    << bumper.at(Leg::LeftBack)->toStr()
+        << "  Coxa: "   << angle_position.at(make_key(Leg::LeftBack, Joint::Coxa))->toStr()
+        << "  Femur: "  << angle_position.at(make_key(Leg::LeftBack, Joint::Femur))->toStr()
+        << "  Tibia: "  << angle_position.at(make_key(Leg::LeftBack, Joint::Tibia))->toStr()
+        << "  Tip: "    << bumper.at(Leg::LeftBack)->toStr()
         << "\n"
         << "Right\n"
         << "  Front :"
-        << "  Coxa:"   << angle_position.at(make_key(Leg::RightFront, Joint::Coxa))->toStr()
-        << "  Femur:"  << angle_position.at(make_key(Leg::RightFront, Joint::Femur))->toStr()
-        << "  Tibia:"  << angle_position.at(make_key(Leg::RightFront, Joint::Tibia))->toStr()
-        << "  Tip:"    << bumper.at(Leg::RightFront)->toStr()
+        << "  Coxa: "   << angle_position.at(make_key(Leg::RightFront, Joint::Coxa))->toStr()
+        << "  Femur: "  << angle_position.at(make_key(Leg::RightFront, Joint::Femur))->toStr()
+        << "  Tibia: "  << angle_position.at(make_key(Leg::RightFront, Joint::Tibia))->toStr()
+        << "  Tip: "    << bumper.at(Leg::RightFront)->toStr()
         << "\n"
         << "  Middle:"
-        << "  Coxa:"   << angle_position.at(make_key(Leg::RightMiddle, Joint::Coxa))->toStr()
-        << "  Femur:"  << angle_position.at(make_key(Leg::RightMiddle, Joint::Femur))->toStr()
-        << "  Tibia:"  << angle_position.at(make_key(Leg::RightMiddle, Joint::Tibia))->toStr()
-        << "  Tip:"    << bumper.at(Leg::RightMiddle)->toStr()
+        << "  Coxa: "   << angle_position.at(make_key(Leg::RightMiddle, Joint::Coxa))->toStr()
+        << "  Femur: "  << angle_position.at(make_key(Leg::RightMiddle, Joint::Femur))->toStr()
+        << "  Tibia: "  << angle_position.at(make_key(Leg::RightMiddle, Joint::Tibia))->toStr()
+        << "  Tip: "    << bumper.at(Leg::RightMiddle)->toStr()
         << "\n"
         << "  Back  :"
-        << "  Coxa:"   << angle_position.at(make_key(Leg::RightBack, Joint::Coxa))->toStr()
-        << "  Femur:"  << angle_position.at(make_key(Leg::RightBack, Joint::Femur))->toStr()
-        << "  Tibia:"  << angle_position.at(make_key(Leg::RightBack, Joint::Tibia))->toStr()
-        << "  Tip:"    << bumper.at(Leg::RightBack)->toStr();
+        << "  Coxa: "   << angle_position.at(make_key(Leg::RightBack, Joint::Coxa))->toStr()
+        << "  Femur: "  << angle_position.at(make_key(Leg::RightBack, Joint::Femur))->toStr()
+        << "  Tibia: "  << angle_position.at(make_key(Leg::RightBack, Joint::Tibia))->toStr()
+        << "  Tip: "    << bumper.at(Leg::RightBack)->toStr();
 
     return msg.str();
   };
@@ -477,7 +477,7 @@ int main(int argc, char **argv) try
       gait::ControllerInput const gait_ctrl_input(teleop_cmd_data, angle_position_sensor_map, bumper_sensor_map);
       next_gait_ctrl_output = gait_ctrl.update(gait_ctrl_input, prev_gait_ctrl_output);
 
-      ROS_DEBUG("OUT: %s", next_gait_ctrl_output.toStr().c_str());
+      ROS_INFO("OUT: %s", next_gait_ctrl_output.toStr().c_str());
 
       /* Check if we need to turn on the pump. */
       if (is_angle_position_sensor_offset_calibration_complete)
@@ -491,7 +491,7 @@ int main(int argc, char **argv) try
           if (angle_err > 2.0f)
             num_joints_actively_controlled++;
         }
-        static uint16_t const OREL20_ESC_RPM_STEP_SIZE = 5;
+        static uint16_t const OREL20_ESC_RPM_STEP_SIZE = 10;
         uint16_t const orel20_esc_rpm = num_joints_actively_controlled * OREL20_ESC_RPM_STEP_SIZE;
         orel20_rpm_actuator.set(orel20_esc_rpm);
       }

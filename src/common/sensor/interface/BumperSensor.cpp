@@ -28,15 +28,15 @@ std::string BumperSensor::toStr() const
   std::stringstream ss;
 
   if (!isPressed().has_value()) {
-    ss << "      Inv.";
+    ss << "     Inv.";
     return ss.str();
   }
 
   bool const is_pressed = isPressed().value();
   if (is_pressed)
-    ss << "  Pressed.";
+    ss << " Pressed.";
   else
-    ss << " Released.";
+    ss << "Released.";
 
   return ss.str();
 }
