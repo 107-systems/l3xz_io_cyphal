@@ -13,6 +13,7 @@
 #include <ros/console.h>
 
 #include <gait/state/Standing.h>
+#include <Util.hpp>
 
 /**************************************************************************************
  * NAMESPACE
@@ -20,15 +21,27 @@
 
 namespace gait::state
 {
-
-/**************************************************************************************
- * CTOR/DTOR
- **************************************************************************************/
-
-ForwardWalking::ForwardWalking()
-: _current_leg_state{RIPPLE_GAIT.cbegin()}
-, _gait_cycle{0.0}
+namespace
 {
+
+const float PITCH_MULT  = 1.0F;
+const float FOOT_X      = +180.0F;
+const float FOOT_Z_UP   = -100.0F;
+const float FOOT_Z_DOWN = -200.0F;
+const std::vector<KDL::Vector> FOOT_TRAJECTORY{
+  {FOOT_X, +103.5 * PITCH_MULT, FOOT_Z_UP},
+  {FOOT_X, +103.5 * PITCH_MULT, FOOT_Z_DOWN},
+  {FOOT_X, + 80.5 * PITCH_MULT, FOOT_Z_DOWN},
+  {FOOT_X, + 57.5 * PITCH_MULT, FOOT_Z_DOWN},
+  {FOOT_X, + 34.5 * PITCH_MULT, FOOT_Z_DOWN},
+  {FOOT_X, + 11.5 * PITCH_MULT, FOOT_Z_DOWN},
+  {FOOT_X, - 11.5 * PITCH_MULT, FOOT_Z_DOWN},
+  {FOOT_X, - 34.5 * PITCH_MULT, FOOT_Z_DOWN},
+  {FOOT_X, - 57.5 * PITCH_MULT, FOOT_Z_DOWN},
+  {FOOT_X, - 80.5 * PITCH_MULT, FOOT_Z_DOWN},
+  {FOOT_X, -103.5 * PITCH_MULT, FOOT_Z_DOWN},
+  {FOOT_X, -103.5 * PITCH_MULT, FOOT_Z_UP},
+};
 
 }
 
@@ -48,56 +61,47 @@ void ForwardWalking::onExit()
 
 std::tuple<StateBase *, ControllerOutput> ForwardWalking::update(common::kinematic::Engine const & engine, ControllerInput const & input, ControllerOutput const & prev_output)
 {
+  const auto sample = [&](const std::uint8_t leg_index, const bool flip){
+    auto pos = interpolatePiecewiseClosed(wrapPhase(_phase + (leg_index / 6.0F)),
+                                          FOOT_TRAJECTORY.data(),
+                                          FOOT_TRAJECTORY.size());
+    pos[1] *= flip ? -1.0F : +1.0F;
+    return pos;
+  };
+  
+  std::map<Leg, KDL::Vector> leg_pos;
+  leg_pos[Leg::RightFront]  = sample(0, false);
+  leg_pos[Leg::LeftMiddle]  = sample(1, true);
+  leg_pos[Leg::RightBack]   = sample(2, false);
+  leg_pos[Leg::LeftFront]   = sample(3, true);
+  leg_pos[Leg::RightMiddle] = sample(4, false);
+  leg_pos[Leg::LeftBack]    = sample(5, true);
+
   ControllerOutput next_output = prev_output;
-
-  /* TODO: Walk one gait::state cycle forward. */
-
-  /* 1st: Move to start position: by placing F/R, M/L a half step forward. */
-
-  /* TODO:
-   *  - calc trajectory for each leg on entry.
-   *  - determine current target position dependent on progress within gait::state cycle.
-   *  - determine target joint angles via IK from target position.
-   *  - compare target vs current angle and set angle actuators accordingly.
-   */
-
-  for (auto [leg, leg_state] : (*_current_leg_state))
+  for (const auto& [leg, pos] : leg_pos)
   {
-    switch (leg)
+    double const coxa_deg_actual  = input.get_angle_deg(leg, Joint::Coxa );
+    double const femur_deg_actual = input.get_angle_deg(leg, Joint::Femur);
+    double const tibia_deg_actual = input.get_angle_deg(leg, Joint::Tibia);
+    common::kinematic::IK_Input const ik_input(pos(0), pos(1), pos(2),
+                                               coxa_deg_actual, femur_deg_actual, tibia_deg_actual);
+    auto const ik_output = engine.ik_solve(ik_input);
+    if (!ik_output.has_value()) {
+      ROS_ERROR("ForwardWalking::update, engine.ik_solve failed for (%0.2f, %0.2f, %0.2f / %0.2f, %0.2f, %0.2f)",
+        pos(0), pos(1), pos(2), coxa_deg_actual, femur_deg_actual, tibia_deg_actual);
+      return {this, next_output};
+    }
+    next_output.set_angle_deg(leg, Joint::Coxa,  ik_output.value().angle_deg(Joint::Coxa));
+    next_output.set_angle_deg(leg, Joint::Femur, ik_output.value().angle_deg(Joint::Femur));
+    next_output.set_angle_deg(leg, Joint::Tibia, ik_output.value().angle_deg(Joint::Tibia));
+    if (leg == Leg::LeftFront)
     {
-      case Leg::LeftFront:
-      {
-        /* TODO. */
-      }
-      break;
-      case Leg::RightFront:  break;
-      case Leg::LeftMiddle:  break;
-      case Leg::RightMiddle: break;
-      case Leg::LeftBack:    break;
-      case Leg::RightBack:   break;
-      default: break;
+      ROS_INFO("ForwardWalking::update Front/Left foot pos: %f %f %f", pos(0), pos(1), pos(2));
     }
   }
 
-  /* The gait::state cycle variable tells us where we
-   * are within a single cycle of the complete
-   * gait::state sequence.
-   */
-  _gait_cycle += GAIT_CYCLE_INCREMENT;
-
-  if (_gait_cycle >= 1.0f)
-  {
-    /* Reset the gait::state cycle. */
-    _gait_cycle = 0;
-    /* One full gait::state cycle has been completed, advance to the next one. */
-    _current_leg_state = std::next(_current_leg_state);
-    if (_current_leg_state == RIPPLE_GAIT.cend()) {
-      /* Now the one complete cycle of walking forward has been completed, return to the the default state. */
-      return std::tuple(new Standing, next_output);
-    }
-  }
-
-  return std::tuple(this, next_output);
+  _phase += PHASE_INCREMENT;
+  return std::tuple((_phase < 1.0F) ? this : static_cast<StateBase*>(new Standing), next_output);
 }
 
 /**************************************************************************************
