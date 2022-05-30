@@ -51,6 +51,7 @@
 #include <glue/l3xz/ELROB2022/OpenCyphalBumperSensor.h>
 #include <glue/l3xz/ELROB2022/OpenCyphalBumperSensorBulkReader.h>
 #include <glue/l3xz/ELROB2022/Orel20RPMActuator.h>
+#include <glue/l3xz/ELROB2022/OpenCyphalLEDActuator.h>
 
 /**************************************************************************************
  * FUNCTION DECLARATION
@@ -191,6 +192,9 @@ int main(int argc, char **argv) try
     tibia_tip_bumper_right_middle,
     tibia_tip_bumper_right_front
   );
+
+  glue::l3xz::ELROB2022::OpenCyphalLEDActuator open_cyphal_led_actuator(open_cyphal_node);
+  open_cyphal_led_actuator.setBlinkMode(glue::l3xz::ELROB2022::OpenCyphalLEDActuator::BlinkMode::Green);
 
   if (!init_open_cyphal(open_cyphal_node,
                         open_cyphal_angle_position_sensor_bulk_reader,
@@ -511,6 +515,9 @@ int main(int argc, char **argv) try
     /* Copy previous output. */
     prev_gait_ctrl_output = next_gait_ctrl_output;
 
+    if (is_angle_position_sensor_offset_calibration_complete)
+      open_cyphal_led_actuator.setBlinkMode(glue::l3xz::ELROB2022::OpenCyphalLEDActuator::BlinkMode::Amber);
+
     /**************************************************************************************
      * HEAD CONTROL
      **************************************************************************************/
@@ -540,6 +547,7 @@ int main(int argc, char **argv) try
 
     ssc32_pwm_actuator_bulk_driver.doBulkWrite();
     orel20_rpm_actuator.doWrite();
+    open_cyphal_led_actuator.doBulkWrite();
 
     /**************************************************************************************
      * ROS
