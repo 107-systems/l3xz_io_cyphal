@@ -8,7 +8,7 @@
  * INCLUDES
  **************************************************************************************/
 
-#include <gait/state/ForwardWalking.h>
+#include <gait/state/Walking.h>
 
 #include <ros/console.h>
 
@@ -24,7 +24,7 @@ namespace gait::state
 namespace
 {
 
-const float PITCH_MULT  = 1.0F;
+const float PITCH_MULT  = 0.75F;
 const float FOOT_X      = +180.0F;
 const float FOOT_Z_UP   = -100.0F;
 const float FOOT_Z_DOWN = -200.0F;
@@ -49,17 +49,17 @@ const std::vector<KDL::Vector> FOOT_TRAJECTORY{
  * PUBLIC MEMBER FUNCTIONS
  **************************************************************************************/
 
-void ForwardWalking::onEnter()
+void Walking::onEnter()
 {
-  ROS_INFO("ForwardWalking ENTER");
+  ROS_INFO("Walking ENTER");
 }
 
-void ForwardWalking::onExit()
+void Walking::onExit()
 {
-  ROS_INFO("ForwardWalking EXIT");
+  ROS_INFO("Walking EXIT");
 }
 
-std::tuple<StateBase *, ControllerOutput> ForwardWalking::update(common::kinematic::Engine const & engine, ControllerInput const & input, ControllerOutput const & prev_output)
+std::tuple<StateBase *, ControllerOutput> Walking::update(common::kinematic::Engine const & engine, ControllerInput const & input, ControllerOutput const & prev_output)
 {
   const auto sample = [&](const std::uint8_t leg_index, const bool flip, const float y_offset = 0){
     auto pos = interpolatePiecewiseClosed(wrapPhase(_phase + (leg_index / 6.0F)),
@@ -70,7 +70,7 @@ std::tuple<StateBase *, ControllerOutput> ForwardWalking::update(common::kinemat
     return pos;
   };
   std::map<Leg, KDL::Vector> leg_pos;
-  const float extension_front = 120;
+  const float extension_front = 100;
   leg_pos[Leg::RightFront]  = sample(0, false, extension_front);
   leg_pos[Leg::LeftMiddle]  = sample(1, true);
   leg_pos[Leg::RightBack]   = sample(2, false);
@@ -88,7 +88,7 @@ std::tuple<StateBase *, ControllerOutput> ForwardWalking::update(common::kinemat
                                                coxa_deg_actual, femur_deg_actual, tibia_deg_actual);
     auto const ik_output = engine.ik_solve(ik_input);
     if (!ik_output.has_value()) {
-      ROS_ERROR("ForwardWalking::update, engine.ik_solve failed for (%0.2f, %0.2f, %0.2f / %0.2f, %0.2f, %0.2f)",
+      ROS_ERROR("Walking::update, engine.ik_solve failed for (%0.2f, %0.2f, %0.2f / %0.2f, %0.2f, %0.2f)",
         pos(0), pos(1), pos(2), coxa_deg_actual, femur_deg_actual, tibia_deg_actual);
       return {this, next_output};
     }
@@ -97,12 +97,12 @@ std::tuple<StateBase *, ControllerOutput> ForwardWalking::update(common::kinemat
     next_output.set_angle_deg(leg, Joint::Tibia, ik_output.value().angle_deg(Joint::Tibia));
     if (leg == Leg::LeftFront)
     {
-      ROS_INFO("ForwardWalking::update Front/Left foot pos: %f %f %f", pos(0), pos(1), pos(2));
+      ROS_INFO("Walking::update Front/Left foot pos: %f %f %f", pos(0), pos(1), pos(2));
     }
   }
 
-  _phase += PHASE_INCREMENT;
-  return std::tuple((_phase < 1.0F) ? this : static_cast<StateBase*>(new Standing), next_output);
+  _phase += _phase_increment;
+  return std::tuple((std::abs(_phase) < 1.0F) ? this : static_cast<StateBase*>(new Standing), next_output);
 }
 
 /**************************************************************************************

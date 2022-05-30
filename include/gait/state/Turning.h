@@ -4,15 +4,14 @@
  * Contributors: https://github.com/107-systems/l3xz/graphs/contributors.
  */
 
+#ifndef TURNING_LEFT_H_
+#define TURNING_LEFT_H_
+
 /**************************************************************************************
  * INCLUDES
  **************************************************************************************/
 
-#include <gait/state/TurningLeft.h>
-
-#include <ros/console.h>
-
-#include <gait/state/Standing.h>
+#include "StateBase.h"
 
 /**************************************************************************************
  * NAMESPACE
@@ -22,30 +21,22 @@ namespace gait::state
 {
 
 /**************************************************************************************
- * PUBLIC MEMBER FUNCTIONS
+ * CLASS DECLARATION
  **************************************************************************************/
 
-void TurningLeft::onEnter()
+class Turning : public StateBase
 {
-  ROS_INFO("TurningLeft ENTER");
-}
-
-void TurningLeft::onExit()
-{
-  ROS_INFO("TurningLeft EXIT");
-}
-
-std::tuple<StateBase *, ControllerOutput> TurningLeft::update(common::kinematic::Engine const & engine, ControllerInput const & input, ControllerOutput const & prev_output)
-{
-  ControllerOutput next_output = prev_output;
-
-  /* TODO: Walk one gait::state cycle Backward. */
-
-  return std::tuple(new Standing(), next_output);
-}
+public:
+  explicit Turning(const bool left) { (void) left; /* TODO */ }
+  virtual void onEnter() override;
+  virtual void onExit() override;
+  virtual std::tuple<StateBase *, ControllerOutput> update(common::kinematic::Engine const & engine, ControllerInput const & input, ControllerOutput const & prev_output) override;
+};
 
 /**************************************************************************************
  * NAMESPACE
  **************************************************************************************/
 
 } /* gait::state */
+
+#endif /* TURNING_LEFT_H_ */

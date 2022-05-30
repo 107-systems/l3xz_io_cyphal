@@ -12,10 +12,8 @@
 
 #include <ros/console.h>
 
-#include <gait/state/TurningLeft.h>
-#include <gait/state/TurningRight.h>
-#include <gait/state/ForwardWalking.h>
-#include <gait/state/BackwardWalking.h>
+#include <gait/state/Turning.h>
+#include <gait/state/Walking.h>
 
 /**************************************************************************************
  * NAMESPACE
@@ -42,14 +40,10 @@ std::tuple<StateBase *, ControllerOutput> Standing::update(common::kinematic::En
 {
   ControllerOutput next_output = prev_output;
 
-  if      (input.teleop_cmd().linear_velocity_x > 0.2f)
-    return std::tuple(new ForwardWalking(), next_output);
-  else if (input.teleop_cmd().linear_velocity_x < -0.2f)
-    return std::tuple(new BackwardWalking(), next_output);
-  else if (input.teleop_cmd().angular_velocity_z > 0.2f)
-    return std::tuple(new TurningRight(), next_output);
-  else if (input.teleop_cmd().angular_velocity_z < -0.2f)
-    return std::tuple(new TurningLeft(), next_output);
+  if (std::abs(input.teleop_cmd().linear_velocity_x) > 0.2f)
+    return std::tuple(new Walking(input.teleop_cmd().linear_velocity_x > 0), next_output);
+  else if (std::abs(input.teleop_cmd().angular_velocity_z) > 0.2f)
+    return std::tuple(new Turning(input.teleop_cmd().angular_velocity_z > 0), next_output);
   else
     return std::tuple(this, next_output);
 }

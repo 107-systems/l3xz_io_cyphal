@@ -4,17 +4,15 @@
  * Contributors: https://github.com/107-systems/l3xz/graphs/contributors.
  */
 
-#ifndef FORWARD_WALKING_H_
-#define FORWARD_WALKING_H_
-
 /**************************************************************************************
  * INCLUDES
  **************************************************************************************/
 
-#include "StateBase.h"
+#include <gait/state/Turning.h>
 
-#include <map>
-#include <list>
+#include <ros/console.h>
+
+#include <gait/state/Standing.h>
 
 /**************************************************************************************
  * NAMESPACE
@@ -24,32 +22,30 @@ namespace gait::state
 {
 
 /**************************************************************************************
- * TYPEDEF
+ * PUBLIC MEMBER FUNCTIONS
  **************************************************************************************/
 
-/**************************************************************************************
- * CLASS DECLARATION
- **************************************************************************************/
-
-class ForwardWalking : public StateBase
+void Turning::onEnter()
 {
-public:
-  virtual void onEnter() override;
-  virtual void onExit() override;
-  virtual std::tuple<StateBase *, ControllerOutput> update(common::kinematic::Engine const & engine, ControllerInput const & input, ControllerOutput const & prev_output) override;
+  ROS_INFO("Turning ENTER");
+}
 
-private:
-  float _phase = 0;   // [0, 1]
+void Turning::onExit()
+{
+  ROS_INFO("Turning EXIT");
+}
 
-  static float wrapPhase(const float p) { return (p < 1.0F) ? p : (p - 1.0F); }
+std::tuple<StateBase *, ControllerOutput> Turning::update(common::kinematic::Engine const & engine, ControllerInput const & input, ControllerOutput const & prev_output)
+{
+  ControllerOutput next_output = prev_output;
 
-  static constexpr float PHASE_INCREMENT = 0.005;
-};
+  /* TODO: Walk one gait::state cycle Backward. */
+
+  return std::tuple(new Standing(), next_output);
+}
 
 /**************************************************************************************
  * NAMESPACE
  **************************************************************************************/
 
 } /* gait::state */
-
-#endif /* FORWARD_WALKING_H_ */
