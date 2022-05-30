@@ -53,6 +53,9 @@ int main(int argc, char **argv)
   front_right_leg_chain.addSegment(Segment(Joint(Joint::RotY)));
   /* Tibia axis to foot endpoint. */
   front_right_leg_chain.addSegment(Segment(Joint(Joint::None), Frame(front_right_leg_tibia_endpoint)));
+  /* Virtual joints to avoid issues with underactuated chains. */
+  front_right_leg_chain.addSegment(Segment(Joint(Joint::RotY), Frame(KDL::Vector(0, 0, 0))));
+  front_right_leg_chain.addSegment(Segment(Joint(Joint::RotZ), Frame(KDL::Vector(0, 0, 0))));
 
      /* This is the same. */
 //   front_right_leg_chain.addSegment(Segment(Joint(Joint::None), Frame(front_right_leg_coxa)));
@@ -69,36 +72,18 @@ int main(int argc, char **argv)
   unsigned int nj = front_right_leg_chain.getNrOfJoints();
   KDL::JntArray jointpositions = JntArray(nj);
  
-  /* Assign some values to the joint positions */
-  for(unsigned int i=0;i<nj;i++)
-  {
-    float myinput;
-    printf ("Enter the position of joint %i: ",i);
-    scanf ("%e",&myinput);
-    jointpositions(i)=(double)myinput;
-  }
- 
-  /* Create the frame that will contain the results */
-  KDL::Frame cartpos;    
- 
-  /* Calculate forward position kinematics. */
-  if (fksolver.JntToCart(jointpositions, cartpos) < 0)
-  {
-    std::cout << "Error: could not calculate forward kinematics :(" << std::endl;
-    return EXIT_FAILURE;
-  }
-  std::cout << "FK results" << std::endl << cartpos <<std::endl;
-
-
-
-
   ChainIkSolverVel_pinv front_right_leg_iksolver_vel(front_right_leg_chain);
   ChainIkSolverPos_NR   front_right_leg_iksolver_pos(front_right_leg_chain, fksolver, front_right_leg_iksolver_vel);
 
   KDL::JntArray ik_joint_positions = JntArray(nj);
 
+  KDL::Vector ik_target_pos(0, 0, 0);
+  std::cout << "Enter the target position X Y Z: " << std::flush;
+  std::cin >> ik_target_pos(0) >> ik_target_pos(1) >> ik_target_pos(2);
+  std::cout << ik_target_pos << std::endl;
 
-  if (front_right_leg_iksolver_pos.CartToJnt(jointpositions, cartpos, ik_joint_positions) < 0)
+  KDL::Frame ik_target(ik_target_pos);
+  if (front_right_leg_iksolver_pos.CartToJnt(jointpositions, ik_target, ik_joint_positions) < 0)
   {
     std::cout << "Error: could not calculate inverse kinematics :(" << std::endl;
     return EXIT_FAILURE;
