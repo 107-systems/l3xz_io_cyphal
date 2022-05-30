@@ -61,19 +61,20 @@ void ForwardWalking::onExit()
 
 std::tuple<StateBase *, ControllerOutput> ForwardWalking::update(common::kinematic::Engine const & engine, ControllerInput const & input, ControllerOutput const & prev_output)
 {
-  const auto sample = [&](const std::uint8_t leg_index, const bool flip){
+  const auto sample = [&](const std::uint8_t leg_index, const bool flip, const float y_offset = 0){
     auto pos = interpolatePiecewiseClosed(wrapPhase(_phase + (leg_index / 6.0F)),
                                           FOOT_TRAJECTORY.data(),
                                           FOOT_TRAJECTORY.size());
+    pos[1] += y_offset;
     pos[1] *= flip ? -1.0F : +1.0F;
     return pos;
   };
-  
   std::map<Leg, KDL::Vector> leg_pos;
-  leg_pos[Leg::RightFront]  = sample(0, false);
+  const float extension_front = 120;
+  leg_pos[Leg::RightFront]  = sample(0, false, extension_front);
   leg_pos[Leg::LeftMiddle]  = sample(1, true);
   leg_pos[Leg::RightBack]   = sample(2, false);
-  leg_pos[Leg::LeftFront]   = sample(3, true);
+  leg_pos[Leg::LeftFront]   = sample(3, true, extension_front);
   leg_pos[Leg::RightMiddle] = sample(4, false);
   leg_pos[Leg::LeftBack]    = sample(5, true);
 
