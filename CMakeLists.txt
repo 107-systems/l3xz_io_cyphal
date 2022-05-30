@@ -134,6 +134,11 @@ include_directories(
   external/libuavcan_linux/include
 )
 
+# libuavcan (libdronecan) build configuration
+add_compile_definitions(
+  UAVCAN_CPP_VERSION=UAVCAN_CPP11
+)
+
 ## Declare a C++ library
 # add_library(${PROJECT_NAME}
 #   src/${PROJECT_NAME}/l3xz.cpp
