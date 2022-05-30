@@ -48,6 +48,11 @@ Engine::Engine()
   _leg_chain.addSegment(KDL::Segment(KDL::Joint(KDL::Joint::RotY)));
   /* Tibia axis to foot endpoint. */
   _leg_chain.addSegment(KDL::Segment(KDL::Joint(KDL::Joint::None), KDL::Frame(TIBIA_TO_TIP)));
+  /* Virtual joints to avoid issues with underactuated chains.
+   * Rotation about X is not needed if the X orientation setpoint is always zero (in our case it is).
+   */
+  _leg_chain.addSegment(KDL::Segment(KDL::Joint(KDL::Joint::RotY), KDL::Frame(KDL::Vector::Zero())));
+  _leg_chain.addSegment(KDL::Segment(KDL::Joint(KDL::Joint::RotZ), KDL::Frame(KDL::Vector::Zero())));
 
   _fksolver     = std::unique_ptr<KDL::ChainFkSolverPos_recursive>(new KDL::ChainFkSolverPos_recursive(_leg_chain));
   _iksolver_vel = std::unique_ptr<KDL::ChainIkSolverVel_pinv>     (new KDL::ChainIkSolverVel_pinv(_leg_chain));
