@@ -22,5 +22,5 @@ catkin_make
 ### How-to-run
 ```bash
 source devel/setup.bash
-roslaunch l3xz l3xz.launch
+roslaunch l3xz robot.launch
 ```
