@@ -14,6 +14,7 @@
 #include <ros/console.h>
 
 #include <gait/state/Standing.h>
+#include <gait/state/Walking.h>
 
 /**************************************************************************************
  * NAMESPACE
@@ -40,31 +41,24 @@ std::tuple<StateBase *, ControllerOutput> StandUp::update(common::kinematic::Eng
 {
   ControllerOutput next_output = prev_output;
 
-  static double const TARGET_TIBIA_TIP_x =  175.0;
-  static double const TARGET_TIBIA_TIP_y =    0.0;
-  static double const TARGET_TIBIA_TIP_z = -200.0;
-
-  double x = TARGET_TIBIA_TIP_x,
-         y = TARGET_TIBIA_TIP_y,
-         z = TARGET_TIBIA_TIP_z;
-
   bool all_target_angles_reached = true;
   for (auto leg : LEG_LIST)
   {
-    /* Calculate required target angles for desired
-     * target position and set the output actuators.
-     */
     double const coxa_deg_actual  = input.get_angle_deg(leg, Joint::Coxa );
     double const femur_deg_actual = input.get_angle_deg(leg, Joint::Femur);
     double const tibia_deg_actual = input.get_angle_deg(leg, Joint::Tibia);
 
-    common::kinematic::IK_Input const ik_input(x, y, z, coxa_deg_actual, femur_deg_actual, tibia_deg_actual);
-
+    /* Calculate required target angles for desired
+     * target position and set the output actuators.
+     */
+    const auto pos = Walking::sampleFootTrajectory(Walking::getLegTraits(leg), 0);
+    common::kinematic::IK_Input const ik_input(pos(0), pos(1), pos(2),
+                                               coxa_deg_actual, femur_deg_actual, tibia_deg_actual);
     auto const ik_output = engine.ik_solve(ik_input);
 
     if (!ik_output.has_value()) {
       ROS_ERROR("StandUp::update, engine.ik_solve failed for (%0.2f, %0.2f, %0.2f / %0.2f, %0.2f, %0.2f)",
-        x, y, z, coxa_deg_actual, femur_deg_actual, tibia_deg_actual);
+        pos(0), pos(1), pos(2), coxa_deg_actual, femur_deg_actual, tibia_deg_actual);
       return {this, next_output};
     }
 
