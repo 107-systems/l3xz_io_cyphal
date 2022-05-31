@@ -24,7 +24,7 @@ namespace gait::state
 
 const float PITCH_MULT  = 0.8F;
 const float FOOT_X      = +180.0F;
-const float FOOT_Z_UP   = -100.0F;
+const float FOOT_Z_UP   = -130.0F;
 const float FOOT_Z_DOWN = -200.0F;
 const std::vector<KDL::Vector> Walking::FOOT_TRAJECTORY{
   {FOOT_X, +103.5 * PITCH_MULT, FOOT_Z_UP},
