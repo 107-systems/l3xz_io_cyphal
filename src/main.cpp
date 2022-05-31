@@ -18,6 +18,7 @@
 #include <ros/ros.h>
 #include <ros/console.h>
 
+#include <std_msgs/Int16.h>
 #include <geometry_msgs/Twist.h>
 
 #include <dynamixel_sdk.h>
@@ -62,7 +63,8 @@ void deinit_dynamixel(driver::SharedMX28 & mx28_ctrl);
 
 bool init_open_cyphal(phy::opencyphal::Node & open_cyphal_node,
                       glue::l3xz::ELROB2022::OpenCyphalAnglePositionSensorBulkReader & open_cyphal_angle_position_sensor_bulk_reader,
-                      glue::l3xz::ELROB2022::OpenCyphalBumperSensorBulkReader & open_cyphal_bumper_sensor_bulk_reader);
+                      glue::l3xz::ELROB2022::OpenCyphalBumperSensorBulkReader & open_cyphal_bumper_sensor_bulk_reader,
+                      ros::Publisher & radiation_pub);
 
 void deinit_orel20(driver::SharedOrel20 orel20_ctrl);
 
@@ -196,9 +198,12 @@ int main(int argc, char **argv) try
   glue::l3xz::ELROB2022::OpenCyphalLEDActuator open_cyphal_led_actuator(open_cyphal_node);
   open_cyphal_led_actuator.setBlinkMode(glue::l3xz::ELROB2022::OpenCyphalLEDActuator::BlinkMode::Green);
 
+  ros::Publisher radiation_pub = node_hdl.advertise<std_msgs::Int16>("/l3xz/radiation_tick_cnt", 25);
+
   if (!init_open_cyphal(open_cyphal_node,
                         open_cyphal_angle_position_sensor_bulk_reader,
-                        open_cyphal_bumper_sensor_bulk_reader))
+                        open_cyphal_bumper_sensor_bulk_reader,
+                        radiation_pub))
   {
     ROS_ERROR("init_open_cyphal failed.");
   }
@@ -626,7 +631,8 @@ void deinit_dynamixel(driver::SharedMX28 & mx28_ctrl)
 
 bool init_open_cyphal(phy::opencyphal::Node & open_cyphal_node,
                       glue::l3xz::ELROB2022::OpenCyphalAnglePositionSensorBulkReader & open_cyphal_angle_position_sensor_bulk_reader,
-                      glue::l3xz::ELROB2022::OpenCyphalBumperSensorBulkReader & open_cyphal_bumper_sensor_bulk_reader)
+                      glue::l3xz::ELROB2022::OpenCyphalBumperSensorBulkReader & open_cyphal_bumper_sensor_bulk_reader,
+                      ros::Publisher & radiation_pub)
 {
   if (!open_cyphal_node.subscribe<uavcan::node::Heartbeat_1_0<>>([](CanardTransfer const & transfer)
   {
@@ -684,6 +690,22 @@ bool init_open_cyphal(phy::opencyphal::Node & open_cyphal_node,
     ROS_ERROR("init_open_cyphal failed to subscribe to 'uavcan::primitive::scalar::Bit_1_0<1004>'");
     return false;
   }
+
+
+  if (!open_cyphal_node.subscribe<uavcan::primitive::scalar::Integer16_1_0<3000U>>([&radiation_pub](CanardTransfer const & transfer)
+  {
+    uavcan::primitive::scalar::Integer16_1_0<3000U> const radiation_value = uavcan::primitive::scalar::Integer16_1_0<3000U>::deserialize(transfer);
+    ROS_INFO("[%d] Radiation Tick Count %d", transfer.remote_node_id, radiation_value.data.value);
+
+    std_msgs::Int16 radiation_tick_msg;
+    radiation_tick_msg.data = radiation_value.data.value;
+    radiation_pub.publish(radiation_tick_msg);
+  }))
+  {
+    ROS_ERROR("init_open_cyphal failed to subscribe to 'uavcan::primitive::scalar::Integer16_1_0<3000U>'");
+    return false;
+  }
+
 
   return true;
 }
