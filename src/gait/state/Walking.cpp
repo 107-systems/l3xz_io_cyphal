@@ -22,9 +22,9 @@
 namespace gait::state
 {
 
-const float PITCH_MULT  = 0.75F;
+const float PITCH_MULT  = 0.8F;
 const float FOOT_X      = +180.0F;
-const float FOOT_Z_UP   = -100.0F;
+const float FOOT_Z_UP   = -50.0F;
 const float FOOT_Z_DOWN = -200.0F;
 const std::vector<KDL::Vector> Walking::FOOT_TRAJECTORY{
   {FOOT_X, +103.5 * PITCH_MULT, FOOT_Z_UP},
@@ -83,7 +83,14 @@ std::tuple<StateBase *, ControllerOutput> Walking::update(common::kinematic::Eng
 [[nodiscard]] KDL::Vector Walking::sampleFootTrajectory(const LegTraits lt, const float phase)
 {
   auto pos = interpolatePiecewiseClosed(wrapPhase(phase + (lt.index / 6.0F)), FOOT_TRAJECTORY.data(), FOOT_TRAJECTORY.size());
-  pos[1] += (lt.is_front ? 100 : 0);
+  if (lt.is_front)
+  {
+    pos[1] += 100;
+  }
+  if (lt.is_rear)
+  {
+    pos[1] -= 80;
+  }
   pos[1] *= lt.is_left ? -1.0F : +1.0F;
   return pos;
 }
@@ -105,7 +112,8 @@ std::tuple<StateBase *, ControllerOutput> Walking::update(common::kinematic::Eng
   }
   const bool is_left  = (idx % 2) != 0;
   const bool is_front = (idx % 3) == 0;
-  return {idx, is_left, is_front};
+  const bool is_rear  = (idx % 3) == 2;
+  return {idx, is_left, is_front, is_rear};
 }
 
 } /* gait::state */

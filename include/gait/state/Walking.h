@@ -36,6 +36,7 @@ struct LegTraits final
   std::uint8_t index;
   bool is_left;
   bool is_front;
+  bool is_rear;
 };
 
 class Walking : public StateBase
