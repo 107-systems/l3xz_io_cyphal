@@ -565,6 +565,8 @@ int main(int argc, char **argv) try
       ROS_WARN("main loop duration (%ld ms) exceeds limit", duration.count());
   }
 
+  ROS_WARN("STOPPING");
+
   deinit_dynamixel(mx28_ctrl);
   deinit_orel20(orel20_ctrl);
   deinit_ssc32(ssc32_ctrl);
