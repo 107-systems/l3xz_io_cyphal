@@ -16,7 +16,7 @@
 #include <ros/ros.h>
 #include <ros/console.h>
 
-#include <gait/state/Init.h>
+#include <gait/state/StandUp.h>
 
 /**************************************************************************************
  * NAMESPACE
@@ -123,7 +123,7 @@ std::tuple<StateBase *, ControllerOutput> Calibrate::update(common::kinematic::E
 
   _is_calibration_complete = true;
 
-  return std::tuple(new Init(), prev_output);
+  return std::tuple(new StandUp(), prev_output);
 }
 
 /**************************************************************************************

@@ -170,7 +170,6 @@ add_executable(${PROJECT_NAME}_node
   src/phy/opencyphal/SocketCAN.cpp
   src/phy/serial/AsyncSerial.cpp
   src/gait/state/Walking.cpp
-  src/gait/state/Init.cpp
   src/gait/state/Calibrate.cpp
   src/gait/state/Standing.cpp
   src/gait/state/StandUp.cpp
