@@ -1,7 +1,6 @@
 <launch>
-  <!-- <node name="script_1" pkg="l3xz" type="setup_slcan_l3xz.sh" /> MUST BE ROOT !!!! -->
+  <node name="script_1" pkg="l3xz" type="setup_slcan_l3xz.sh" />
   <node name="l3xz_node" pkg="l3xz" type="l3xz_node" output="screen" ns="l3xz">
   <!-- To use valgrind, add: launch-prefix="valgrind" -->
   </node>
 </launch>
-
