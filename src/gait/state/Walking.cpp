@@ -59,7 +59,7 @@ std::tuple<StateBase *, ControllerOutput> Walking::update(common::kinematic::Eng
     double const coxa_deg_actual  = input.get_angle_deg(leg, Joint::Coxa );
     double const femur_deg_actual = input.get_angle_deg(leg, Joint::Femur);
     double const tibia_deg_actual = input.get_angle_deg(leg, Joint::Tibia);
-    const auto pos = sampleFootTrajectory(leg, _phase);
+    const auto pos = sampleFootTrajectory(getLegTraits(leg), _phase);
     common::kinematic::IK_Input const ik_input(pos(0), pos(1), pos(2),
                                                coxa_deg_actual, femur_deg_actual, tibia_deg_actual);
     auto const ik_output = engine.ik_solve(ik_input);
@@ -80,18 +80,15 @@ std::tuple<StateBase *, ControllerOutput> Walking::update(common::kinematic::Eng
   return std::tuple((std::abs(_phase) < 1.0F) ? this : static_cast<StateBase*>(new Standing), next_output);
 }
 
-[[nodiscard]] KDL::Vector Walking::sampleFootTrajectory(const Leg leg, const float phase)
+[[nodiscard]] KDL::Vector Walking::sampleFootTrajectory(const LegTraits lt, const float phase)
 {
-  const auto idx      = getLegIndex(leg);
-  const bool is_left  = (idx % 2) != 0;    // odd legs are on the left side
-  const bool is_front = (idx % 3) == 0;
-  auto pos = interpolatePiecewiseClosed(wrapPhase(phase + (idx / 6.0F)), FOOT_TRAJECTORY.data(), FOOT_TRAJECTORY.size());
-  pos[1] += (is_front ? 100 : 0);
-  pos[1] *= is_left ? -1.0F : +1.0F;
+  auto pos = interpolatePiecewiseClosed(wrapPhase(phase + (lt.index / 6.0F)), FOOT_TRAJECTORY.data(), FOOT_TRAJECTORY.size());
+  pos[1] += (lt.is_front ? 100 : 0);
+  pos[1] *= lt.is_left ? -1.0F : +1.0F;
   return pos;
 }
 
-[[nodiscard]] std::uint8_t Walking::getLegIndex(const Leg leg)
+[[nodiscard]] LegTraits Walking::getLegTraits(const Leg leg)
 {
   static const std::array<Leg, 6> ref{{
     Leg::RightFront,
@@ -101,12 +98,14 @@ std::tuple<StateBase *, ControllerOutput> Walking::update(common::kinematic::Eng
     Leg::RightMiddle,
     Leg::LeftBack,
   }};
-  std::uint8_t i = 0;
-  while (ref.at(i) != leg)
+  std::uint8_t idx = 0;
+  while (ref.at(idx) != leg)
   {
-    i++;
+    idx++;
   }
-  return i;
+  const bool is_left  = (idx % 2) != 0;
+  const bool is_front = (idx % 3) == 0;
+  return {idx, is_left, is_front};
 }
 
 } /* gait::state */

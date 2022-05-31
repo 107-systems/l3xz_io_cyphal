@@ -31,6 +31,13 @@ namespace gait::state
  * CLASS DECLARATION
  **************************************************************************************/
 
+struct LegTraits final
+{
+  std::uint8_t index;
+  bool is_left;
+  bool is_front;
+};
+
 class Walking : public StateBase
 {
 public:
@@ -40,11 +47,10 @@ public:
   virtual void onExit() override;
   virtual std::tuple<StateBase *, ControllerOutput> update(common::kinematic::Engine const & engine, ControllerInput const & input, ControllerOutput const & prev_output) override;
 
-  [[nodiscard]] static KDL::Vector sampleFootTrajectory(const Leg leg, const float phase);
+  [[nodiscard]] static KDL::Vector sampleFootTrajectory(const LegTraits lt, const float phase);
+  [[nodiscard]] static LegTraits getLegTraits(const Leg leg);
 
 private:
-  [[nodiscard]] static std::uint8_t getLegIndex(const Leg leg);
-
   static const std::vector<KDL::Vector> FOOT_TRAJECTORY;
   static constexpr float PHASE_INCREMENT_ABS = 0.003;
 

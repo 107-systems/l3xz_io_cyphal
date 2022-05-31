@@ -39,13 +39,15 @@ void Standing::onExit()
 std::tuple<StateBase *, ControllerOutput> Standing::update(common::kinematic::Engine const & engine, ControllerInput const & input, ControllerOutput const & prev_output)
 {
   ControllerOutput next_output = prev_output;
-
   if (std::abs(input.teleop_cmd().linear_velocity_x) > 0.2f)
+  {
     return std::tuple(new Walking(input.teleop_cmd().linear_velocity_x > 0), next_output);
-  else if (std::abs(input.teleop_cmd().angular_velocity_z) > 0.2f)
+  }
+  if (std::abs(input.teleop_cmd().angular_velocity_z) > 0.2f)
+  {
     return std::tuple(new Turning(input.teleop_cmd().angular_velocity_z > 0), next_output);
-  else
-    return std::tuple(this, next_output);
+  }
+  return std::tuple(this, next_output);
 }
 
 /**************************************************************************************
