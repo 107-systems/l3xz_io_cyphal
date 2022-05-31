@@ -13,7 +13,7 @@
 #include <ros/console.h>
 
 #include <gait/state/Standing.h>
-#include <Util.hpp>
+#include <Util.h>
 
 /**************************************************************************************
  * NAMESPACE
