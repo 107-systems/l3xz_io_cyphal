@@ -40,24 +40,16 @@ public:
   virtual void onExit() override;
   virtual std::tuple<StateBase *, ControllerOutput> update(common::kinematic::Engine const & engine, ControllerInput const & input, ControllerOutput const & prev_output) override;
 
+  [[nodiscard]] static KDL::Vector sampleFootTrajectory(const Leg leg, const float phase);
+
 private:
-  const float _phase_increment;
-  float _phase = 0;   // [0, 1]
+  [[nodiscard]] static std::uint8_t getLegIndex(const Leg leg);
 
-  static float wrapPhase(const float p)
-  {
-    if (p > 1)
-    {
-      return p - 1;
-    }
-    if (p < 0)
-    {
-      return p + 1;
-    }
-    return p;
-  }
-
+  static const std::vector<KDL::Vector> FOOT_TRAJECTORY;
   static constexpr float PHASE_INCREMENT_ABS = 0.003;
+
+  const float _phase_increment;
+  float _phase = 0;   ///< (-1,+1)
 };
 
 /**************************************************************************************

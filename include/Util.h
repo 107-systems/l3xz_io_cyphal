@@ -37,3 +37,17 @@ inline T interpolatePiecewiseClosed(const float ref, const T* samples, const std
     assert(ilo < size);
     return get(ilo) * (ihi - scaled) + get(ihi) * (scaled - ilo);
 }
+
+/// Wraps phase angle in [0, 1).
+inline float wrapPhase(const float p) noexcept
+{
+    if (p >= 1)
+    {
+        return p - 1;
+    }
+    if (p < 0)
+    {
+        return p + 1;
+    }
+    return p;
+}
