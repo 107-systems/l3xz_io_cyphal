@@ -15,12 +15,15 @@
 
 #include <map>
 #include <mutex>
+#include <thread>
 #include <memory>
+#include <atomic>
 #include <functional>
 
 #include <canard.h>
 
 #include "O1Heap.hpp"
+#include "SocketCAN.h"
 
 /**************************************************************************************
  * NAMESPACE
@@ -33,9 +36,7 @@ namespace phy::opencyphal
  * TYPEDEF
  **************************************************************************************/
 
-class Node;
-typedef std::function<void(CanardTransfer const &, Node &)> OnTransferReceivedFunc;
-typedef std::function<bool(CanardFrame const &)> CanFrameTransmitFunc;
+typedef std::function<void(CanardTransfer const &)> OnTransferReceivedFunc;
 
 /**************************************************************************************
  * CLASS DECLARATION
@@ -46,18 +47,9 @@ class Node
 public:
 
   Node(uint8_t const node_id,
-       CanFrameTransmitFunc transmit_func);
+       SocketCAN & socket_can);
 
-
-  /* Must be called from the application upon the
-   * reception of a can frame.
-   */
-  void onCanFrameReceived(CanardFrame const & frame);
-  /* Must be called regularly from within the application
-   * in order to transmit all CAN pushed on the internal
-   * stack via publish/request.
-   */
-  bool transmitCanFrame();
+  ~Node();
 
 
   template <typename T>                     bool subscribe  (OnTransferReceivedFunc func);
@@ -73,7 +65,7 @@ public:
 
 private:
 
-  static size_t constexpr LIBCANARD_O1HEAP_SIZE = 4096;
+  static size_t constexpr LIBCANARD_O1HEAP_SIZE = 16*4096;
   typedef O1Heap<LIBCANARD_O1HEAP_SIZE> O1HeapLibcanard;
 
   typedef struct
@@ -85,9 +77,16 @@ private:
   std::mutex _mtx;
   O1HeapLibcanard _o1heap;
   CanardInstance _canard_ins;
-  CanFrameTransmitFunc _transmit_func;
+  SocketCAN & _socket_can;
   std::map<CanardPortID, RxTransferData> _rx_transfer_map;
   std::map<CanardPortID, CanardTransferID> _tx_transfer_map;
+
+  std::thread _rx_thread;
+  std::atomic<bool> _rx_thread_active;
+
+  std::thread _tx_thread;
+  std::atomic<bool> _tx_thread_active;
+
 
   static void * o1heap_allocate(CanardInstance * const ins, size_t const amount);
   static void   o1heap_free    (CanardInstance * const ins, void * const pointer);
@@ -97,6 +96,9 @@ private:
   bool             unsubscribe      (CanardTransferKind const transfer_kind, CanardPortID const port_id);
   bool             enqeueTransfer   (CanardNodeID const remote_node_id, CanardTransferKind const transfer_kind, CanardPortID const port_id, size_t const payload_size, void * payload, CanardTransferID const transfer_id);
 
+  void rxThreadFunc();
+  void onCanFrameReceived(CanardFrame const & frame);
+  void txThreadFunc();
 };
 
 /**************************************************************************************

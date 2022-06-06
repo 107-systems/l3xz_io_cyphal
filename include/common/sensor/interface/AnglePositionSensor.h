@@ -11,8 +11,9 @@
  * INCLUDES
  **************************************************************************************/
 
-#include <string>
-#include <optional>
+#include "Base.hpp"
+
+#include <memory>
 
 /**************************************************************************************
  * NAMESPACE
@@ -25,21 +26,20 @@ namespace common::sensor::interface
  * CLASS DECLARATION
  **************************************************************************************/
 
-class AnglePositionSensor
+class AnglePositionSensor : public Base<float>
 {
 public:
-  AnglePositionSensor(std::string const & name);
+           AnglePositionSensor(std::string const & name) : Base(std::string("[Angle Position Sensor] \"") + name + std::string("\"")) { }
+  virtual ~AnglePositionSensor() { }
 
-  std::optional<float> get() const;
-  std::string toStr() const;
-
-protected:
-  void set(float const val);
-
-private:
-  std::string const _name;
-  std::optional<float> _val;
+  virtual std::string toStr() const override;
 };
+
+/**************************************************************************************
+ * TYPEDEF
+ **************************************************************************************/
+
+typedef std::shared_ptr<AnglePositionSensor> SharedAnglePositionSensor;
 
 /**************************************************************************************
  * NAMESPACE

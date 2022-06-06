@@ -11,40 +11,68 @@
  * INCLUDES
  **************************************************************************************/
 
-/**************************************************************************************
- * NAMESPACE
- **************************************************************************************/
+#include <list>
 
-namespace l3xz
-{
+#include "Types.h"
 
 /**************************************************************************************
  * TYPEDEF
  **************************************************************************************/
 
-enum class Joint
+static float constexpr INITIAL_COXA_ANGLE_DEG  = 0.0f;
+static float constexpr INITIAL_FEMUR_ANGLE_DEG = 0.0f;
+static float constexpr INITIAL_TIBIA_ANGLE_DEG = 0.0f;
+
+static float constexpr INITIAL_PAN_ANGLE_DEG  = 0.0f;
+static float constexpr INITIAL_TILT_ANGLE_DEG = 0.0f;
+
+static std::list<Leg> const LEG_LIST =
 {
-  Coxa, Femur, Tibia
+  Leg::LeftFront, Leg::LeftMiddle, Leg::LeftBack, Leg::RightFront, Leg::RightMiddle, Leg::RightBack
 };
 
-enum class Leg
+static std::list<LegJointKey> const LEG_JOINT_LIST =
 {
-  FrontLeft, FrontRight, MiddleLeft, MiddleRight, BackLeft, BackRight
+  std::tuple(Leg::LeftFront,   Joint::Coxa),
+  std::tuple(Leg::LeftFront,   Joint::Femur),
+  std::tuple(Leg::LeftFront,   Joint::Tibia),
+  std::tuple(Leg::LeftMiddle,  Joint::Coxa),
+  std::tuple(Leg::LeftMiddle,  Joint::Femur),
+  std::tuple(Leg::LeftMiddle,  Joint::Tibia),
+  std::tuple(Leg::LeftBack,    Joint::Coxa),
+  std::tuple(Leg::LeftBack,    Joint::Femur),
+  std::tuple(Leg::LeftBack,    Joint::Tibia),
+  std::tuple(Leg::RightBack,   Joint::Coxa),
+  std::tuple(Leg::RightBack,   Joint::Femur),
+  std::tuple(Leg::RightBack,   Joint::Tibia),
+  std::tuple(Leg::RightMiddle, Joint::Coxa),
+  std::tuple(Leg::RightMiddle, Joint::Femur),
+  std::tuple(Leg::RightMiddle, Joint::Tibia),
+  std::tuple(Leg::RightFront,  Joint::Coxa),
+  std::tuple(Leg::RightFront,  Joint::Femur),
+  std::tuple(Leg::RightFront,  Joint::Tibia),
 };
 
-typedef struct
+static std::list<LegJointKey> const HYDRAULIC_LEG_JOINT_LIST =
 {
-  float linear_velocity_x;
-  float linear_velocity_y;
-  float angular_velocity_head_tilt;
-  float angular_velocity_head_pan;
-  float angular_velocity_z;
-} TeleopCommandData;
+  std::tuple(Leg::LeftFront,   Joint::Femur),
+  std::tuple(Leg::LeftFront,   Joint::Tibia),
+  std::tuple(Leg::LeftMiddle,  Joint::Femur),
+  std::tuple(Leg::LeftMiddle,  Joint::Tibia),
+  std::tuple(Leg::LeftBack,    Joint::Femur),
+  std::tuple(Leg::LeftBack,    Joint::Tibia),
+  std::tuple(Leg::RightBack,   Joint::Femur),
+  std::tuple(Leg::RightBack,   Joint::Tibia),
+  std::tuple(Leg::RightMiddle, Joint::Femur),
+  std::tuple(Leg::RightMiddle, Joint::Tibia),
+  std::tuple(Leg::RightFront,  Joint::Femur),
+  std::tuple(Leg::RightFront,  Joint::Tibia),
+};
 
-/**************************************************************************************
- * NAMESPACE
- **************************************************************************************/
-
-} /* l3xz */
+static std::list const SERVO_CHANNEL_LIST =
+{
+   0,  1,  2,  3,  4,  5,
+  16, 17, 18, 19, 20, 21,
+};
 
 #endif /* CONST_H_ */

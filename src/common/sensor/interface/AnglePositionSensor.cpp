@@ -11,6 +11,7 @@
 #include <common/sensor/interface/AnglePositionSensor.h>
 
 #include <sstream>
+#include <iomanip>
 
 /**************************************************************************************
  * NAMESPACE
@@ -20,46 +21,23 @@ namespace common::sensor::interface
 {
 
 /**************************************************************************************
- * CTOR/DTOR
+ * CLASS DECLARATION
  **************************************************************************************/
-
-AnglePositionSensor::AnglePositionSensor(std::string const & name)
-: _name{name}
-, _val{std::nullopt}
-{
-
-}
-
-/**************************************************************************************
- * PUBLIC MEMBER FUNCTIONS
- **************************************************************************************/
-
-std::optional<float> AnglePositionSensor::get() const
-{
-  return _val;
-}
 
 std::string AnglePositionSensor::toStr() const
 {
   std::stringstream ss;
-  ss << "[S] "
-     << _name << ": ";
-  
-  if (_val)
-    ss << _val.value();
+
+  if (get().has_value())
+    ss << std::fixed
+       << std::setprecision(2) 
+       << std::setfill(' ')
+       << std::setw(6)
+       << get().value();
   else
-    ss << "Inv.";
+    ss << "  Inv.";
 
   return ss.str();
-}
-
-/**************************************************************************************
- * PROTECTED MEMBER FUNCTIONS
- **************************************************************************************/
-
-void AnglePositionSensor::set(float const val)
-{
-  _val = val;
 }
 
 /**************************************************************************************

@@ -13,6 +13,8 @@
 
 #include <driver/dynamixel/MX28.h>
 
+#include <cassert>
+
 #include "Const.h"
 #include "DynamixelAnglePositionSensor.h"
 
@@ -31,25 +33,25 @@ class DynamixelAnglePositionSensorBulkReader
 {
 public:
   DynamixelAnglePositionSensorBulkReader(driver::SharedMX28 mx28_ctrl,
-                                         SharedDynamixelAnglePositionSensor coxa_leg_front_left,
-                                         SharedDynamixelAnglePositionSensor coxa_leg_front_right,
-                                         SharedDynamixelAnglePositionSensor coxa_leg_middle_left,
-                                         SharedDynamixelAnglePositionSensor coxa_leg_middle_right,
-                                         SharedDynamixelAnglePositionSensor coxa_leg_back_left,
-                                         SharedDynamixelAnglePositionSensor coxa_leg_back_right,
-                                         SharedDynamixelAnglePositionSensor sensor_head_pan,
-                                         SharedDynamixelAnglePositionSensor sensor_head_tilt)
+                                         SharedDynamixelAnglePositionSensor angle_sensor_left_front_coxa,
+                                         SharedDynamixelAnglePositionSensor angle_sensor_left_middle_coxa,
+                                         SharedDynamixelAnglePositionSensor angle_sensor_left_back_coxa,
+                                         SharedDynamixelAnglePositionSensor angle_sensor_right_back_coxa,
+                                         SharedDynamixelAnglePositionSensor angle_sensor_right_middle_coxa,
+                                         SharedDynamixelAnglePositionSensor angle_sensor_right_front_coxa,
+                                         SharedDynamixelAnglePositionSensor angle_sensor_sensor_head_pan,
+                                         SharedDynamixelAnglePositionSensor angle_sensor_sensor_head_tilt)
   : _mx28_ctrl{mx28_ctrl}
   , DYNAMIXEL_ID_TO_ANGLE_POSITION_SENSOR
   {
-    {1, coxa_leg_front_left},
-    {2, coxa_leg_front_right},
-    {3, coxa_leg_middle_left},
-    {4, coxa_leg_middle_right},
-    {5, coxa_leg_back_left},
-    {6, coxa_leg_back_right},
-    {7, sensor_head_pan},
-    {8, sensor_head_tilt},
+    {1, angle_sensor_left_front_coxa},
+    {2, angle_sensor_left_middle_coxa},
+    {3, angle_sensor_left_back_coxa},
+    {4, angle_sensor_right_back_coxa},
+    {5, angle_sensor_right_middle_coxa},
+    {6, angle_sensor_right_front_coxa},
+    {7, angle_sensor_sensor_head_pan},
+    {8, angle_sensor_sensor_head_tilt},
   }
   { }
 
@@ -57,9 +59,11 @@ public:
   {
     driver::MX28::AngleDataSet const angle_data_set = _mx28_ctrl->getAngle(DYNAMIXEL_ID_VECT);
 
-    for (auto [id, angle_deg] : angle_data_set) {
-      ROS_INFO("id %d = %.2f", id, angle_deg);
-      DYNAMIXEL_ID_TO_ANGLE_POSITION_SENSOR.at(id)->set_angle_deg(angle_deg);
+    for (auto [id, angle_deg] : angle_data_set)
+    {
+      ROS_DEBUG("id %d = %.2f", id, angle_deg);
+      float const corrected_angle_deg = (angle_deg - 180.0f);
+      DYNAMIXEL_ID_TO_ANGLE_POSITION_SENSOR.at(id)->update(corrected_angle_deg);
     }
   }
 

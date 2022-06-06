@@ -12,7 +12,9 @@ find_package(catkin REQUIRED COMPONENTS
   std_msgs
   geometry_msgs
 )
-
+##########################################################################
+find_package(Eigen3)
+##########################################################################
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
 
@@ -117,12 +119,24 @@ add_subdirectory(external/libdynamixel/current)
 add_subdirectory(external/libo1heap/current)
 add_subdirectory(external/liborocos-kdl/current)
 add_subdirectory(external/libsocketcan)
+add_subdirectory(external/libuavcan
+                 ${CMAKE_BINARY_DIR}/l3xz/external/libuavcan
+)
 
 ## Specify additional locations of header files
 ## Your package locations should be listed before other locations
 include_directories(
   include
   ${catkin_INCLUDE_DIRS}
+  ${EIGEN3_INCLUDE_DIR}
+  external/libuavcan/libuavcan/include
+  external/libuavcan/libuavcan/include/dsdlc_generated
+  external/libuavcan_linux/include
+)
+
+# libuavcan (libdronecan) build configuration
+add_compile_definitions(
+  UAVCAN_CPP_VERSION=UAVCAN_CPP11
 )
 
 ## Declare a C++ library
@@ -140,18 +154,34 @@ include_directories(
 ## The recommended prefix ensures that target names across packages don't collide
 add_executable(${PROJECT_NAME}_node
   src/common/actuator/interface/AnglePositionActuator.cpp
+  src/common/kinematic/Engine.cpp
+  src/common/kinematic/FK_Output.cpp
+  src/common/kinematic/IK_Output.cpp
   src/common/sensor/interface/AnglePositionSensor.cpp
+  src/common/sensor/interface/BumperSensor.cpp
   src/common/threading/ThreadBase.cpp
   src/common/threading/ThreadStats.cpp
   src/driver/dynamixel/Dynamixel.cpp
   src/driver/dynamixel/MX28.cpp
+  src/driver/orel20/Orel20.cpp
+  src/driver/ssc32/SSC32.cpp
+  src/phy/dronecan/platform_linux.cpp
   src/phy/opencyphal/Node.cpp
   src/phy/opencyphal/SocketCAN.cpp
   src/phy/serial/AsyncSerial.cpp
-  src/driver/ssc32/SSC32.cpp
-  src/node.cpp
-  src/Pump.cpp
-  src/Valve.cpp
+  src/gait/state/Walking.cpp
+  src/gait/state/Calibrate.cpp
+  src/gait/state/Standing.cpp
+  src/gait/state/StandUp.cpp
+  src/gait/state/Turning.cpp
+  src/gait/GaitController.cpp
+  src/gait/GaitControllerInput.cpp
+  src/gait/GaitControllerOutput.cpp
+  src/head/state/Init.cpp
+  src/head/state/Teleop.cpp
+  src/head/HeadController.cpp
+  src/head/HeadControllerOutput.cpp
+  src/main.cpp
 )
 
 ## Rename C++ executable without prefix
@@ -172,18 +202,19 @@ target_link_libraries(${PROJECT_NAME}_node
   boost_system
   boost_thread
   o1heap
+  orocos-kdl
   pthread
   socketcan
+  uavcan
 )
 
 target_compile_options(${PROJECT_NAME}_node PRIVATE -std=c++17 -Wall -Werror -pedantic)
 
 #######################################################################################
 
+add_subdirectory(tooling/fwlegctrl)
 add_subdirectory(tooling/orocos)
-add_subdirectory(tooling/pumpctrl)
 add_subdirectory(tooling/ssc32ctrl)
-add_subdirectory(tooling/valvectrl)
 
 #############
 ## Install ##
@@ -226,6 +257,12 @@ add_subdirectory(tooling/valvectrl)
 #   # myfile2
 #   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
 # )
+
+install(FILES
+  scripts/setup_slcan_l3xz.sh
+  scripts/setup_slcan.sh
+  DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+)
 
 #############
 ## Testing ##

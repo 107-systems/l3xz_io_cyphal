@@ -11,6 +11,7 @@
 #include <common/actuator/interface/AnglePositionActuator.h>
 
 #include <sstream>
+#include <iomanip>
 
 /**************************************************************************************
  * NAMESPACE
@@ -20,46 +21,23 @@ namespace common::actuator::interface
 {
 
 /**************************************************************************************
- * CTOR/DTOR
+ * CLASS DECLARATION
  **************************************************************************************/
-
-AnglePositionActuator::AnglePositionActuator(std::string const & name)
-: _name{name}
-, _val{std::nullopt}
-{
-
-}
-
-/**************************************************************************************
- * PUBLIC MEMBER FUNCTIONS
- **************************************************************************************/
-
-void AnglePositionActuator::set(float const val)
-{
-  _val = val;
-}
 
 std::string AnglePositionActuator::toStr() const
 {
   std::stringstream ss;
-  ss << "[A] "
-     << _name << ": ";
-  
-  if (_val)
-    ss << _val.value();
+
+  if (get().has_value())
+    ss << std::fixed
+       << std::setprecision(2) 
+       << std::setfill(' ')
+       << std::setw(6)
+       << get().value();
   else
-    ss << "Inv.";
+    ss << "  Inv.";
 
   return ss.str();
-}
-
-/**************************************************************************************
- * PROTECTED MEMBER FUNCTIONS
- **************************************************************************************/
-
-std::optional<float> AnglePositionActuator::get() const
-{
-  return _val;
 }
 
 /**************************************************************************************
