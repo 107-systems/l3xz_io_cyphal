@@ -48,6 +48,11 @@ Engine::Engine()
   _leg_chain.addSegment(KDL::Segment(KDL::Joint(KDL::Joint::RotY)));
   /* Tibia axis to foot endpoint. */
   _leg_chain.addSegment(KDL::Segment(KDL::Joint(KDL::Joint::None), KDL::Frame(TIBIA_TO_TIP)));
+  /* Virtual joints to avoid issues with underactuated chains.
+   * Rotation about X is not needed if the X orientation setpoint is always zero.
+   */
+  _leg_chain.addSegment(KDL::Segment(KDL::Joint(KDL::Joint::RotY), KDL::Frame(KDL::Vector::Zero())));
+  _leg_chain.addSegment(KDL::Segment(KDL::Joint(KDL::Joint::RotZ), KDL::Frame(KDL::Vector::Zero())));
 
   _fksolver     = std::unique_ptr<KDL::ChainFkSolverPos_recursive>(new KDL::ChainFkSolverPos_recursive(_leg_chain));
   _iksolver_vel = std::unique_ptr<KDL::ChainIkSolverVel_pinv>     (new KDL::ChainIkSolverVel_pinv(_leg_chain));
@@ -60,13 +65,18 @@ Engine::Engine()
 
 std::optional<FK_Output> Engine::fk_solve(FK_Input const & fk_input) const
 {
-  assert(_leg_chain.getNrOfJoints() == fk_input.joint_positions().rows());
- 
   /* Create the frame that will contain the results */
   KDL::Frame tibia_tip_frame;
  
   /* Calculate forward position kinematics. */
-  if (auto const rc = _fksolver->JntToCart(fk_input.joint_positions(), tibia_tip_frame); rc < 0)
+  auto const number_joints = _leg_chain.getNrOfJoints();
+  KDL::JntArray joint_positions_in  = KDL::JntArray(number_joints);  // Includes the virtual segments.
+  const auto joint_positions_real = fk_input.joint_positions();
+  for (auto i = 0U; i < joint_positions_real.rows(); i++)
+  {
+    joint_positions_in(i) = joint_positions_real(i);
+  }
+  if (auto const rc = _fksolver->JntToCart(joint_positions_in, tibia_tip_frame); rc < 0)
   {
     ROS_ERROR("Engine::fk_solve, ChainFkSolverPos_recursive::JntToCart failed with %d", rc);
     return std::nullopt;
@@ -83,14 +93,18 @@ std::optional<FK_Output> Engine::fk_solve(FK_Input const & fk_input) const
 
 std::optional<IK_Output> Engine::ik_solve(IK_Input const & ik_input) const
 {
-  assert(_leg_chain.getNrOfJoints() == ik_input.joint_positions().rows());
-
   /* Create joint array. */
   auto const number_joints = _leg_chain.getNrOfJoints();
   KDL::JntArray joint_positions_out = KDL::JntArray(number_joints);
+  KDL::JntArray joint_positions_in  = KDL::JntArray(number_joints);  // Includes the virtual segments.
+  const auto joint_positions_real = ik_input.joint_positions();
+  for (auto i = 0U; i < joint_positions_real.rows(); i++)
+  {
+    joint_positions_in(i) = joint_positions_real(i);
+  }
 
   /* Perform IK calculation. */
-  if (auto const rc = _iksolver_pos->CartToJnt(ik_input.joint_positions(), ik_input.tibia_tip_frame(), joint_positions_out); rc < 0)
+  if (auto const rc = _iksolver_pos->CartToJnt(joint_positions_in, ik_input.tibia_tip_frame(), joint_positions_out); rc < 0)
   {
     ROS_ERROR("Engine::ik_solve, ChainIkSolverPos_NR::CartToJnt failed with %d", rc);
     return std::nullopt;
@@ -103,7 +117,11 @@ std::optional<IK_Output> Engine::ik_solve(IK_Input const & ik_input) const
     msg << joint_positions_out(r) << std::endl;
   ROS_INFO("%s", msg.str().c_str());
 
-  IK_Output const ik_output(joint_positions_out(0), joint_positions_out(1), joint_positions_out(2));
+  IK_Output const ik_output(
+    +joint_positions_out(0),
+    -joint_positions_out(1),
+    +joint_positions_out(2)
+  );
   ROS_INFO("%s", ik_output.toStr().c_str());
   return ik_output;
 }

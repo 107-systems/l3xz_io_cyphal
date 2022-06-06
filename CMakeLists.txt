@@ -134,6 +134,11 @@ include_directories(
   external/libuavcan_linux/include
 )
 
+# libuavcan (libdronecan) build configuration
+add_compile_definitions(
+  UAVCAN_CPP_VERSION=UAVCAN_CPP11
+)
+
 ## Declare a C++ library
 # add_library(${PROJECT_NAME}
 #   src/${PROJECT_NAME}/l3xz.cpp
@@ -164,14 +169,11 @@ add_executable(${PROJECT_NAME}_node
   src/phy/opencyphal/Node.cpp
   src/phy/opencyphal/SocketCAN.cpp
   src/phy/serial/AsyncSerial.cpp
-  src/gait/state/BackwardWalking.cpp
-  src/gait/state/ForwardWalking.cpp
-  src/gait/state/Init.cpp
+  src/gait/state/Walking.cpp
   src/gait/state/Calibrate.cpp
   src/gait/state/Standing.cpp
   src/gait/state/StandUp.cpp
-  src/gait/state/TurningLeft.cpp
-  src/gait/state/TurningRight.cpp
+  src/gait/state/Turning.cpp
   src/gait/GaitController.cpp
   src/gait/GaitControllerInput.cpp
   src/gait/GaitControllerOutput.cpp
