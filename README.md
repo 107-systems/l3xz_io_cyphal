@@ -3,6 +3,10 @@
 ===================
 L3X-Z base robot control package (ROS).
 
+<p align="center">
+  <a href="https://github.com/107-systems/l3xz"><img src="doc/img/2022-05-31-ELROB-2022-L3X-Z.jpg" width="40%"></a>
+</p>
+
 ### Related Repositories
 | Name | Description |
 |-|-|
