@@ -15,6 +15,8 @@ L3X-Z base robot control package (ROS).
 |-|-|
 | [l3xz](https://github.com/107-systems/l3xz) | ROS based control software for L3X-Z, a mixed electric/hydraulic hexapod. |
 | [l3xz_teleop](https://github.com/107-systems/l3xz_teleop) | Teleoperation for L3X-Z via PS3 joystick and ROS topics. |
+| [l3xz_sweep_scanner](https://github.com/107-systems/l3xz_sweep_scanner) | ROS driver for Scanse Sweep 360° 2D LIDAR. |
+| [l3xz_openmv_camera](https://github.com/107-systems/l3xz_openmv_camera) | ROS driver for OpenMV camera. |
 | [l3xz-mapping](https://github.com/107-systems/l3xz-mapping) | Docker container containing the mapping stack for L3X-Z. |
 | [l3xz-hw](https://github.com/107-systems/l3xz-hw) | L3X-Z Hexapod hardware design files (3D model, printed parts, etc.) |
 | [l3xz-hw_leg-controller](https://github.com/107-systems/l3xz-hw_leg-controller) | L3X-Z Hexapod leg controller hardware design files |
