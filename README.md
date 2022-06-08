@@ -3,6 +3,9 @@
 ===================
 L3X-Z base robot control package (ROS).
 
+### Articles
+* 2022/6/8: [L3X-Z - A OpenCyphal enabled hexapod robot for ELROB 2022](https://forum.opencyphal.org/t/l3x-z-a-opencyphal-enabled-hexapod-robot-for-elrob-2022/)
+
 <p align="center">
   <a href="https://github.com/107-systems/l3xz"><img src="doc/img/2022-05-31-ELROB-2022-L3X-Z.jpg" width="40%"></a>
 </p>
