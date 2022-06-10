@@ -31,8 +31,11 @@ L3X-Z base robot control package (ROS).
 Ubuntu 20.04 LTS, [ROS Noetic Ninjemys](http://wiki.ros.org/noetic/Installation/Ubuntu).
 
 ### How-to-build
-```bash
+Install Dependencies:
+* [orocos-kdl](https://github.com/orocos/orocos_kinematics_dynamics/blob/master/orocos_kdl/INSTALL.md)
 
+Build via [`catkin_make`](http://wiki.ros.org/catkin):
+```bash
 # Clone this repository into catkin_ws/src.
 git clone https://github.com/107-systems/l3xz
 # Invoke catkin_make from the catkin workspace root.
