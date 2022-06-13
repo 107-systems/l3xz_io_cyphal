@@ -13,7 +13,7 @@ find_package(catkin REQUIRED COMPONENTS
   geometry_msgs
 )
 ##########################################################################
-find_package(Eigen3)
+find_package(orocos_kdl REQUIRED)
 ##########################################################################
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
@@ -108,7 +108,7 @@ catkin_package(
 #  INCLUDE_DIRS include
 #  LIBRARIES l3xz
 #  CATKIN_DEPENDS roscpp std_msgs
-#  DEPENDS system_lib
+   DEPENDS orocos_kdl
 )
 
 ###########
@@ -117,7 +117,6 @@ catkin_package(
 add_subdirectory(external/libcanard/current)
 add_subdirectory(external/libdynamixel/current)
 add_subdirectory(external/libo1heap/current)
-add_subdirectory(external/liborocos-kdl/current)
 add_subdirectory(external/libsocketcan)
 add_subdirectory(external/libuavcan
                  ${CMAKE_BINARY_DIR}/l3xz/external/libuavcan
@@ -128,7 +127,7 @@ add_subdirectory(external/libuavcan
 include_directories(
   include
   ${catkin_INCLUDE_DIRS}
-  ${EIGEN3_INCLUDE_DIR}
+  ${orocos_kdl_INCLUDE_DIRS}
   external/libuavcan/libuavcan/include
   external/libuavcan/libuavcan/include/dsdlc_generated
   external/libuavcan_linux/include
