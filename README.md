@@ -32,7 +32,9 @@ Ubuntu 20.04 LTS, [ROS Noetic Ninjemys](http://wiki.ros.org/noetic/Installation/
 
 ### How-to-build
 Install Dependencies:
-* [orocos-kdl](https://github.com/orocos/orocos_kinematics_dynamics/blob/master/orocos_kdl/INSTALL.md)
+* [orocos-kdl](https://github.com/orocos/orocos_kinematics_dynamics):
+  * How-to-build from [source](https://github.com/orocos/orocos_kinematics_dynamics/blob/master/orocos_kdl/INSTALL.md)
+  * Install a [prebuilt](https://github.com/107-systems/orocos-kdl-debian) Debian package
 
 Build via [`catkin_make`](http://wiki.ros.org/catkin):
 ```bash
