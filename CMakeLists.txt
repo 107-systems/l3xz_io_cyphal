@@ -86,6 +86,10 @@ add_subdirectory(tooling/fwlegctrl)
 add_subdirectory(tooling/orocos)
 add_subdirectory(tooling/ssc32ctrl)
 #######################################################################################
+install(TARGETS
+  ${PROJECT_NAME}_node
+  DESTINATION lib/${PROJECT_NAME})
+
 install(DIRECTORY
   launch
   DESTINATION share/${PROJECT_NAME}
