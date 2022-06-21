@@ -40,13 +40,13 @@ Build via [`catkin_make`](http://wiki.ros.org/catkin):
 ```bash
 # Clone this repository into catkin_ws/src.
 git clone https://github.com/107-systems/l3xz
-# Invoke catkin_make from the catkin workspace root.
-source /opt/ros/noetic/setup.bash
-catkin_make
+# Invoke 'colcon build' from repository root.
+source /opt/ros/galactic/setup.bash
+colcon build
 ```
 
 ### How-to-run
 ```bash
-source devel/setup.bash
-roslaunch l3xz robot.launch
+source install/setup.bash
+ros2 launch l3xz robot.py
 ```
