@@ -61,7 +61,7 @@ public:
 
     for (auto [id, angle_deg] : angle_data_set)
     {
-      ROS_DEBUG("id %d = %.2f", id, angle_deg);
+      printf("[DEBUG] id %d = %.2f", id, angle_deg);
       float const corrected_angle_deg = (angle_deg - 180.0f);
       DYNAMIXEL_ID_TO_ANGLE_POSITION_SENSOR.at(id)->update(corrected_angle_deg);
     }

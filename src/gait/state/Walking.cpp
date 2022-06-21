@@ -10,8 +10,6 @@
 
 #include <gait/state/Walking.h>
 
-#include <ros/console.h>
-
 #include <gait/state/Standing.h>
 #include <Util.h>
 
@@ -43,12 +41,12 @@ const std::vector<KDL::Vector> Walking::FOOT_TRAJECTORY{
 
 void Walking::onEnter()
 {
-  ROS_INFO("Walking ENTER");
+  printf("[INFO] Walking ENTER");
 }
 
 void Walking::onExit()
 {
-  ROS_INFO("Walking EXIT");
+  printf("[INFO] Walking EXIT");
 }
 
 std::tuple<StateBase *, ControllerOutput> Walking::update(common::kinematic::Engine const & engine, ControllerInput const & input, ControllerOutput const & prev_output)
@@ -64,7 +62,7 @@ std::tuple<StateBase *, ControllerOutput> Walking::update(common::kinematic::Eng
                                                coxa_deg_actual, femur_deg_actual, tibia_deg_actual);
     auto const ik_output = engine.ik_solve(ik_input);
     if (!ik_output.has_value()) {
-      ROS_ERROR("Walking::update, engine.ik_solve failed for (%0.2f, %0.2f, %0.2f / %0.2f, %0.2f, %0.2f)",
+      printf("[ERROR] Walking::update, engine.ik_solve failed for (%0.2f, %0.2f, %0.2f / %0.2f, %0.2f, %0.2f)",
         pos(0), pos(1), pos(2), coxa_deg_actual, femur_deg_actual, tibia_deg_actual);
       return {this, next_output};
     }
@@ -73,7 +71,7 @@ std::tuple<StateBase *, ControllerOutput> Walking::update(common::kinematic::Eng
     next_output.set_angle_deg(leg, Joint::Tibia, ik_output.value().angle_deg(Joint::Tibia));
     if (leg == Leg::LeftFront)
     {
-      ROS_INFO("Walking::update Front/Left foot pos: %f %f %f", pos(0), pos(1), pos(2));
+      printf("[INFO] Walking::update Front/Left foot pos: %f %f %f", pos(0), pos(1), pos(2));
     }
   }
   _phase += _phase_increment;

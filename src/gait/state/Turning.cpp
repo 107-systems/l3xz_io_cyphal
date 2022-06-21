@@ -10,8 +10,6 @@
 
 #include <gait/state/Turning.h>
 
-#include <ros/console.h>
-
 #include <gait/state/Standing.h>
 #include <gait/state/Walking.h>
 
@@ -20,12 +18,12 @@ namespace gait::state
 
 void Turning::onEnter()
 {
-  ROS_INFO("Turning ENTER");
+  printf("[INFO] Turning ENTER");
 }
 
 void Turning::onExit()
 {
-  ROS_INFO("Turning EXIT");
+  printf("[INFO] Turning EXIT");
 }
 
 std::tuple<StateBase *, ControllerOutput> Turning::update(common::kinematic::Engine const & engine, ControllerInput const & input, ControllerOutput const & prev_output)
@@ -42,7 +40,7 @@ std::tuple<StateBase *, ControllerOutput> Turning::update(common::kinematic::Eng
                                                coxa_deg_actual, femur_deg_actual, tibia_deg_actual);
     auto const ik_output = engine.ik_solve(ik_input);
     if (!ik_output.has_value()) {
-      ROS_ERROR("Turning::update, engine.ik_solve failed for (%0.2f, %0.2f, %0.2f / %0.2f, %0.2f, %0.2f)",
+      printf("[ERROR] Turning::update, engine.ik_solve failed for (%0.2f, %0.2f, %0.2f / %0.2f, %0.2f, %0.2f)",
         pos(0), pos(1), pos(2), coxa_deg_actual, femur_deg_actual, tibia_deg_actual);
       return {this, next_output};
     }

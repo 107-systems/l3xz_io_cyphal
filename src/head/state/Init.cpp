@@ -10,8 +10,7 @@
 
 #include <head/state/Init.h>
 
-#include <ros/ros.h>
-#include <ros/console.h>
+#include <cmath>
 
 #include <Const.h>
 

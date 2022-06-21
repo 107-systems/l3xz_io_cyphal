@@ -13,9 +13,6 @@
 #include <sstream>
 #include <iomanip>
 
-#include <ros/ros.h>
-#include <ros/console.h>
-
 #include <gait/state/StandUp.h>
 
 /**************************************************************************************
@@ -47,7 +44,7 @@ Calibrate::Calibrate(driver::SharedSSC32 ssc32_ctrl,
 
 void Calibrate::onEnter()
 {
-  ROS_INFO("Calibrate ENTER");
+  printf("[INFO] Calibrate ENTER");
 
   _is_calibration_complete = false;
 
@@ -71,7 +68,7 @@ void Calibrate::onExit()
   /* Stop the hydraulic pump. */
   _orel20_ctrl->setRPM(0);
 
-  ROS_INFO("Calibrate EXIT");
+  printf("[INFO] Calibrate EXIT");
 }
 
 std::tuple<StateBase *, ControllerOutput> Calibrate::update(common::kinematic::Engine const & engine, ControllerInput const & input, ControllerOutput const & prev_output)
@@ -119,7 +116,7 @@ std::tuple<StateBase *, ControllerOutput> Calibrate::update(common::kinematic::E
       << "    Tibia: " << std::fixed << std::setprecision(2) << std::setfill(' ') << std::setw(6) << _angle_position_sensor_offset_map.at(make_key(Leg::RightBack, Joint::Tibia)) << std::endl
       ;
 
-  ROS_INFO("Calibrate::update: captured offset angles ...\n%s", msg.str().c_str());
+  printf("[INFO] Calibrate::update: captured offset angles ...\n%s", msg.str().c_str());
 
   _is_calibration_complete = true;
 

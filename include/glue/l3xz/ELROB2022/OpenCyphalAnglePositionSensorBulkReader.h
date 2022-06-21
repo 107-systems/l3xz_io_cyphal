@@ -21,9 +21,6 @@
 
 #include <canard.h>
 
-#include <ros/ros.h>
-#include <ros/console.h>
-
 /**************************************************************************************
  * NAMESPACE
  **************************************************************************************/
@@ -74,7 +71,7 @@ public:
   void update_femur_angle(CanardNodeID const node_id, float const femur_angle_deg)
   {
     if (!isValidNodeId(node_id)) {
-      ROS_WARN("OpenCyphalAnglePositionSensorBulkReader::update_femur_angle: invalid node id received: %d", node_id);
+      printf("[WARNING] OpenCyphalAnglePositionSensorBulkReader::update_femur_angle: invalid node id received: %d", node_id);
       return;
     }
     std::lock_guard<std::mutex> lock(_mtx);
@@ -84,7 +81,7 @@ public:
   void update_tibia_angle(CanardNodeID const node_id, float const tibia_angle_deg)
   {
     if (!isValidNodeId(node_id)) {
-      ROS_WARN("OpenCyphalAnglePositionSensorBulkReader::update_tibia_angle: invalid node id received: %d", node_id);
+      printf("[WARNING] OpenCyphalAnglePositionSensorBulkReader::update_tibia_angle: invalid node id received: %d", node_id);
       return;
     }
     std::lock_guard<std::mutex> lock(_mtx);
