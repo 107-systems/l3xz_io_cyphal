@@ -12,9 +12,6 @@
 
 #include <stdexcept>
 
-#include <ros/ros.h>
-#include <ros/console.h>
-
 /**************************************************************************************
  * EXTERN DECLARATION
  **************************************************************************************/
@@ -60,10 +57,10 @@ void Orel20::spinOnce()
   rpm_cmd.rpm.push_back(_rpm_val);
 
   if (auto const rc = _esc_pub.broadcast(rpm_cmd); rc < 0)
-    ROS_ERROR("Orel20::loop: ESC RPMCommand message publication failure: %d", rc);
+    printf("[ERROR] Orel20::loop: ESC RPMCommand message publication failure: %d", rc);
 
   if (auto const rc = _node.spinOnce(); rc < 0)
-    ROS_WARN("Orel20::loop: transient failure: %d", rc);
+    printf("[WARNING] Orel20::loop: transient failure: %d", rc);
 }
 
 /**************************************************************************************

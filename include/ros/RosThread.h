@@ -1,62 +1,66 @@
 /**
- * Copyright (c) 2022 LXHeadControllerics GmbH.
+ * Copyright (c) 2022 LXRobotics GmbH.
  * Author: Alexander Entinger <alexander.entinger@lxrobotics.com>
  * Contributors: https://github.com/107-systems/l3xz/graphs/contributors.
  */
+
+#ifndef ROS_ROS_THREAD_H_
+#define ROS_ROS_THREAD_H_
 
 /**************************************************************************************
  * INCLUDES
  **************************************************************************************/
 
-#include <head/HeadController.h>
+#include <rclcpp/rclcpp.hpp>
 
-#include <head/state/Init.h>
+#include "RosBrigdeNode.h"
 
 /**************************************************************************************
  * NAMESPACE
  **************************************************************************************/
 
-namespace head
+namespace l3xz
 {
 
 /**************************************************************************************
- * CTOR/DTOR
+ * CLASS DECLARATION
  **************************************************************************************/
 
-Controller::Controller()
-: _head_state{new state::Init()}
+class RosThread
 {
-  _head_state->onEnter();
-}
-
-Controller::~Controller()
-{
-  delete _head_state;
-}
-
-/**************************************************************************************
- * PUBLIC MEMBER FUNCTIONS
- **************************************************************************************/
-
-ControllerOutput Controller::update(ControllerInput const & input, ControllerOutput const & prev_output)
-{
-  auto [next_head_state, next_output] = _head_state->update(input, prev_output);
-    
-  if (next_head_state != _head_state)
+public:
+  RosThread(std::shared_ptr<RosBridgeNode> ros_brigde_node)
+  : _ros_thread{}
+  , _ros_thread_active{}
   {
-    _head_state->onExit();
-
-    delete _head_state;
-    _head_state = next_head_state;
-    
-    _head_state->onEnter();
+    _ros_thread = std::thread([this, &ros_brigde_node]() { this->rosThreadFunc(ros_brigde_node); });
   }
 
-  return next_output;
-}
+  ~RosThread()
+  {
+    _ros_thread_active = false;
+    _ros_thread.join();
+  }
+
+private:
+
+  std::thread _ros_thread;
+  std::atomic<bool> _ros_thread_active;
+
+  void rosThreadFunc(std::shared_ptr<RosBridgeNode> ros_brigde_node)
+  {
+    _ros_thread_active = true;
+
+    while(_ros_thread_active && rclcpp::ok()) {
+      rclcpp::spin_some(ros_brigde_node);
+    }
+  }
+};
 
 /**************************************************************************************
  * NAMESPACE
  **************************************************************************************/
 
-} /* head */
+} /* l3xz */
+
+#endif /* ROS_ROS_THREAD_H_ */

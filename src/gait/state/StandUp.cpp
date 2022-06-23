@@ -10,9 +10,6 @@
 
 #include <gait/state/StandUp.h>
 
-#include <ros/ros.h>
-#include <ros/console.h>
-
 #include <gait/state/Standing.h>
 #include <gait/state/Walking.h>
 
@@ -29,12 +26,12 @@ namespace gait::state
 
 void StandUp::onEnter()
 {
-  ROS_INFO("StandUp ENTER");
+  printf("[INFO] StandUp ENTER");
 }
 
 void StandUp::onExit()
 {
-  ROS_INFO("StandUp EXIT");
+  printf("[INFO] StandUp EXIT");
 }
 
 std::tuple<StateBase *, ControllerOutput> StandUp::update(common::kinematic::Engine const & engine, ControllerInput const & input, ControllerOutput const & prev_output)
@@ -57,7 +54,7 @@ std::tuple<StateBase *, ControllerOutput> StandUp::update(common::kinematic::Eng
     auto const ik_output = engine.ik_solve(ik_input);
 
     if (!ik_output.has_value()) {
-      ROS_ERROR("StandUp::update, engine.ik_solve failed for (%0.2f, %0.2f, %0.2f / %0.2f, %0.2f, %0.2f)",
+      printf("[ERROR] StandUp::update, engine.ik_solve failed for (%0.2f, %0.2f, %0.2f / %0.2f, %0.2f, %0.2f)",
         pos(0), pos(1), pos(2), coxa_deg_actual, femur_deg_actual, tibia_deg_actual);
       return {this, next_output};
     }
@@ -73,7 +70,7 @@ std::tuple<StateBase *, ControllerOutput> StandUp::update(common::kinematic::Eng
     bool  const coxa_is_initial_angle_reached = coxa_angle_error < 5.0f;
 
     if (!coxa_is_initial_angle_reached) {
-      ROS_INFO("gait::state::StandUp::update: leg %d coxa target angle not reached", int(leg));
+      printf("[INFO] gait::state::StandUp::update: leg %d coxa target angle not reached", int(leg));
       all_target_angles_reached = false;
     }
  
@@ -82,7 +79,7 @@ std::tuple<StateBase *, ControllerOutput> StandUp::update(common::kinematic::Eng
     bool  const femur_is_initial_angle_reached = femur_angle_error < 5.0f;
 
     if (!femur_is_initial_angle_reached) {
-      ROS_INFO("gait::state::StandUp::update: leg %d femur target angle not reached", int(leg));
+      printf("[INFO] gait::state::StandUp::update: leg %d femur target angle not reached", int(leg));
       all_target_angles_reached = false;
     }
 
@@ -91,7 +88,7 @@ std::tuple<StateBase *, ControllerOutput> StandUp::update(common::kinematic::Eng
     bool  const tibia_is_initial_angle_reached = tibia_angle_error < 5.0f;
 
     if (!tibia_is_initial_angle_reached) {
-      ROS_INFO("gait::state::StandUp::update: tibia %d target angle not reached", int(leg));
+      printf("[INFO] gait::state::StandUp::update: tibia %d target angle not reached", int(leg));
       all_target_angles_reached = false;
     }
   }

@@ -12,9 +12,6 @@
 
 #include <cstring>
 
-#include <ros/ros.h>
-#include <ros/console.h>
-
 /**************************************************************************************
  * NAMESPACE
  **************************************************************************************/
@@ -128,7 +125,7 @@ void Node::rxThreadFunc()
 {
   _rx_thread_active = true;
 
-  ROS_INFO("Node::rxThreadFunc starting  ...");
+  printf("[INFO] Node::rxThreadFunc starting  ...");
 
   while (_rx_thread_active)
   {
@@ -137,17 +134,17 @@ void Node::rxThreadFunc()
 
     int16_t const rc = _socket_can.pop(&rx_frame, sizeof(payload_buffer), payload_buffer, CANARD_DEFAULT_TRANSFER_ID_TIMEOUT_USEC, nullptr);
     if (rc < 0) {
-      ROS_ERROR("socketcanPop failed with error %s ", strerror(abs(rc)));
+      printf("[ERROR] socketcanPop failed with error %s ", strerror(abs(rc)));
     }
     else if (rc == 0) {
-      ROS_INFO("socketcanPop timeout while receiving.");
+      printf("[INFO] socketcanPop timeout while receiving.");
     }
     else {
       onCanFrameReceived(rx_frame);
     }
   }
 
-  ROS_INFO("Node::rxThreadFunc stopping  ...");
+  printf("[INFO] Node::rxThreadFunc stopping  ...");
 }
 
 void Node::onCanFrameReceived(CanardFrame const & frame)
@@ -184,7 +181,7 @@ void Node::txThreadFunc()
 {
   _tx_thread_active = true;
 
-  ROS_INFO("Node::txThreadFunc starting  ...");
+  printf("[INFO] Node::txThreadFunc starting  ...");
 
   while (_tx_thread_active)
   {
@@ -197,7 +194,7 @@ void Node::txThreadFunc()
     {
       /* Transmit CAN frame. */
       if (int16_t const rc = _socket_can.push(tx_frame, CANARD_DEFAULT_TRANSFER_ID_TIMEOUT_USEC); rc <= 0) {
-        ROS_ERROR("socketcanPush failed with error %d", abs(rc));
+        printf("[ERROR] socketcanPush failed with error %d", abs(rc));
       }
       else
       {
@@ -213,7 +210,7 @@ void Node::txThreadFunc()
     }
   }
 
-  ROS_INFO("Node::txThreadFunc stopping  ...");
+  printf("[INFO] Node::txThreadFunc stopping  ...");
 }
 
 /**************************************************************************************

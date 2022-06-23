@@ -10,9 +10,6 @@
 
 #include <gait/GaitController.h>
 
-#include <ros/ros.h>
-#include <ros/console.h>
-
 #include <gait/state/Calibrate.h>
 
 /**************************************************************************************

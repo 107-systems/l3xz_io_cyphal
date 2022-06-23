@@ -13,9 +13,6 @@
 #include <vector>
 #include <sstream>
 
-//#include <ros/ros.h>
-//#include <ros/console.h>
-
 /**************************************************************************************
  * NAMESPACE
  **************************************************************************************/
@@ -63,8 +60,6 @@ SSC32::Error SSC32::setPulseWidth(uint8_t const channel, uint16_t const pulse_wi
       << '\r';
   std::string const msg_str(msg.str());
   std::vector<uint8_t> const msg_vect(msg_str.begin(), msg_str.end());
-
-  //ROS_INFO("%s", msg_str.c_str());
 
   _serial.transmit(msg_vect);
 

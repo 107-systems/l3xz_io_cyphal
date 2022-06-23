@@ -10,8 +10,6 @@
 
 #include <gait/state/Standing.h>
 
-#include <ros/console.h>
-
 #include <gait/state/Turning.h>
 #include <gait/state/Walking.h>
 
@@ -28,12 +26,12 @@ namespace gait::state
 
 void Standing::onEnter()
 {
-  ROS_INFO("Standing ENTER");
+  printf("[INFO] Standing ENTER");
 }
 
 void Standing::onExit()
 {
-  ROS_INFO("Standing EXIT");
+  printf("[INFO] Standing EXIT");
 }
 
 std::tuple<StateBase *, ControllerOutput> Standing::update(common::kinematic::Engine const & engine, ControllerInput const & input, ControllerOutput const & prev_output)

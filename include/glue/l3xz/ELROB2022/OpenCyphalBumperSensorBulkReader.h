@@ -21,9 +21,6 @@
 
 #include <canard.h>
 
-#include <ros/ros.h>
-#include <ros/console.h>
-
 /**************************************************************************************
  * NAMESPACE
  **************************************************************************************/
@@ -59,7 +56,7 @@ public:
   void update_bumper_sensor(CanardNodeID const node_id, bool const is_released)
   {
     if (!isValidNodeId(node_id)) {
-      ROS_WARN("OpenCyphalBumperSensorBulkReader::update_bumper_sensor: invalid node id received: %d", node_id);
+      printf("[WARNING] OpenCyphalBumperSensorBulkReader::update_bumper_sensor: invalid node id received: %d", node_id);
       return;
     }
     std::lock_guard<std::mutex> lock(_mtx);

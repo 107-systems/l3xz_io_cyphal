@@ -15,11 +15,7 @@
 #include <sstream>
 #include <functional>
 
-#include <ros/ros.h>
-#include <ros/console.h>
-
-#include <std_msgs/Int16.h>
-#include <geometry_msgs/Twist.h>
+#include <rclcpp/rclcpp.hpp>
 
 #include <dynamixel_sdk.h>
 
@@ -37,6 +33,9 @@
 #include <phy/opencyphal/Types.h>
 #include <phy/opencyphal/Node.hpp>
 #include <phy/opencyphal/SocketCAN.h>
+
+#include <ros/RosThread.h>
+#include <ros/RosBrigdeNode.h>
 
 #include <glue/l3xz/ELROB2022/Const.h>
 #include <glue/l3xz/ELROB2022/SSC32PWMActuator.h>
@@ -64,14 +63,12 @@ void deinit_dynamixel(driver::SharedMX28 & mx28_ctrl);
 bool init_open_cyphal(phy::opencyphal::Node & open_cyphal_node,
                       glue::l3xz::ELROB2022::OpenCyphalAnglePositionSensorBulkReader & open_cyphal_angle_position_sensor_bulk_reader,
                       glue::l3xz::ELROB2022::OpenCyphalBumperSensorBulkReader & open_cyphal_bumper_sensor_bulk_reader,
-                      ros::Publisher & radiation_pub);
+                      std::shared_ptr<l3xz::RosBridgeNode> ros_brigde_node);
 
 void deinit_orel20(driver::SharedOrel20 orel20_ctrl);
 
 void init_ssc32  (driver::SharedSSC32 & ssc32_ctrl);
 void deinit_ssc32(driver::SharedSSC32 & ssc32_ctrl);
-
-void cmd_vel_callback(const geometry_msgs::Twist::ConstPtr & msg, TeleopCommandData & teleop_cmd_data);
 
 /**************************************************************************************
  * CONSTANT
@@ -93,9 +90,9 @@ static uint8_t     const DRONECAN_THIS_NODE_ID = 127;
 
 int main(int argc, char **argv) try
 {
-  ros::init(argc, argv, "l3xz");
-
-  ros::NodeHandle node_hdl;
+  rclcpp::init(argc, argv);
+  auto ros_bridge_node = std::make_shared<l3xz::RosBridgeNode>();
+  l3xz::RosThread ros_thread(ros_bridge_node);
 
   /**************************************************************************************
    * DYNAMIXEL
@@ -105,8 +102,8 @@ int main(int argc, char **argv) try
   auto mx28_ctrl = std::make_shared<driver::MX28>(dynamixel_ctrl);
 
   if (!init_dynamixel(mx28_ctrl))
-    ROS_ERROR("init_dynamixel failed.");
-  ROS_INFO("init_dynamixel successfully completed.");
+    printf("[ERROR] init_dynamixel failed.");
+  printf("[INFO] init_dynamixel successfully completed.");
 
   auto angle_sensor_left_front_coxa   = std::make_shared<glue::l3xz::ELROB2022::DynamixelAnglePositionSensor>("L/F Coxa");
   auto angle_sensor_left_middle_coxa  = std::make_shared<glue::l3xz::ELROB2022::DynamixelAnglePositionSensor>("L/M Coxa");
@@ -198,16 +195,14 @@ int main(int argc, char **argv) try
   glue::l3xz::ELROB2022::OpenCyphalLEDActuator open_cyphal_led_actuator(open_cyphal_node);
   open_cyphal_led_actuator.setBlinkMode(glue::l3xz::ELROB2022::OpenCyphalLEDActuator::BlinkMode::Green);
 
-  ros::Publisher radiation_pub = node_hdl.advertise<std_msgs::Int16>("/l3xz/radiation_tick_cnt", 25);
-
   if (!init_open_cyphal(open_cyphal_node,
                         open_cyphal_angle_position_sensor_bulk_reader,
                         open_cyphal_bumper_sensor_bulk_reader,
-                        radiation_pub))
+                        ros_bridge_node))
   {
-    ROS_ERROR("init_open_cyphal failed.");
+    printf("[ERROR] init_open_cyphal failed.");
   }
-  ROS_INFO("init_open_cyphal successfully completed.");
+  printf("[INFO] init_open_cyphal successfully completed.");
 
   /**************************************************************************************
    * OREL 20 / DRONECAN
@@ -224,7 +219,7 @@ int main(int argc, char **argv) try
   auto ssc32_ctrl = std::make_shared<driver::SSC32>(SSC32_DEVICE_NAME, SSC32_BAUDRATE);
 
   init_ssc32(ssc32_ctrl);
-  ROS_INFO("init_ssc32 successfully completed.");
+  printf("[INFO] init_ssc32 successfully completed.");
 
   glue::l3xz::ELROB2022::SSC32PWMActuatorBulkwriter ssc32_pwm_actuator_bulk_driver(ssc32_ctrl);
 
@@ -405,9 +400,6 @@ int main(int argc, char **argv) try
    * STATE
    **************************************************************************************/
 
-  TeleopCommandData teleop_cmd_data = {0.0f, 0.0f, 0.0f, 0.0f, 0.0f};
-  ros::Subscriber cmd_vel_sub = node_hdl.subscribe<geometry_msgs::Twist>("/l3xz/cmd_vel", 10, std::bind(cmd_vel_callback, std::placeholders::_1, std::ref(teleop_cmd_data)));
-
   gait::Controller gait_ctrl(ssc32_ctrl, orel20_ctrl, angle_position_sensor_offset_map, is_angle_position_sensor_offset_calibration_complete);
   gait::ControllerOutput prev_gait_ctrl_output(INITIAL_COXA_ANGLE_DEG,
                                                INITIAL_FEMUR_ANGLE_DEG,
@@ -435,9 +427,7 @@ int main(int argc, char **argv) try
    * MAIN LOOP
    **************************************************************************************/
 
-  for (ros::Rate loop_rate(20);
-       ros::ok();
-       loop_rate.sleep())
+  for (;;)
   {
     auto const start = std::chrono::high_resolution_clock::now();
 
@@ -477,16 +467,16 @@ int main(int argc, char **argv) try
 
     auto next_gait_ctrl_output = prev_gait_ctrl_output;
 
-    ROS_INFO("IN: %s", toStr(angle_position_sensor_map, bumper_sensor_map).c_str());
+    printf("[INFO] IN: %s", toStr(angle_position_sensor_map, bumper_sensor_map).c_str());
 
     if (!isGaitControllerInputDataValid(angle_position_sensor_map, bumper_sensor_map))
-      ROS_ERROR("gait_ctrl.update: invalid input data.");
+      printf("[ERROR] gait_ctrl.update: invalid input data.");
     else
     {
-      gait::ControllerInput const gait_ctrl_input(teleop_cmd_data, angle_position_sensor_map, bumper_sensor_map);
+      gait::ControllerInput const gait_ctrl_input(ros_bridge_node->teleop_cmd_data(), angle_position_sensor_map, bumper_sensor_map);
       next_gait_ctrl_output = gait_ctrl.update(gait_ctrl_input, prev_gait_ctrl_output);
 
-      ROS_INFO("OUT: %s", next_gait_ctrl_output.toStr().c_str());
+      printf("[INFO] OUT: %s", next_gait_ctrl_output.toStr().c_str());
 
       /* Check if we need to turn on the pump. */
       if (is_angle_position_sensor_offset_calibration_complete)
@@ -527,7 +517,7 @@ int main(int argc, char **argv) try
      * HEAD CONTROL
      **************************************************************************************/
 
-    head::ControllerInput head_ctrl_input(teleop_cmd_data,
+    head::ControllerInput head_ctrl_input(ros_bridge_node->teleop_cmd_data(),
                                           angle_sensor_sensor_head_pan,
                                           angle_sensor_sensor_head_tilt);
 
@@ -536,7 +526,7 @@ int main(int argc, char **argv) try
     if (head_ctrl_input.isValid())
       next_head_ctrl_output = head_ctrl.update(head_ctrl_input, prev_head_ctrl_output);
     else
-      ROS_ERROR("head::ControllerInput: invalid input data.");
+      printf("[ERROR] head::ControllerInput: invalid input data.");
 
     angle_actuator_sensor_head_pan->set (next_head_ctrl_output[head::ControllerOutput::Angle::Pan]);
     angle_actuator_sensor_head_tilt->set(next_head_ctrl_output[head::ControllerOutput::Angle::Tilt]);
@@ -548,17 +538,11 @@ int main(int argc, char **argv) try
      **************************************************************************************/
 
     if (!dynamixel_angle_position_actuator_bulk_writer.doBulkWrite())
-      ROS_ERROR("failed to set target angles for all dynamixel servos");
+      printf("[ERROR] failed to set target angles for all dynamixel servos");
 
     ssc32_pwm_actuator_bulk_driver.doBulkWrite();
     orel20_rpm_actuator.doWrite();
     open_cyphal_led_actuator.doBulkWrite();
-
-    /**************************************************************************************
-     * ROS
-     **************************************************************************************/
-
-    ros::spinOnce();
 
     /**************************************************************************************
      * LOOP RATE
@@ -567,10 +551,12 @@ int main(int argc, char **argv) try
     auto const stop = std::chrono::high_resolution_clock::now();
     auto const duration = std::chrono::duration_cast<std::chrono::milliseconds>(stop - start);
     if (duration.count() > 50)
-      ROS_WARN("main loop duration (%ld ms) exceeds limit", duration.count());
+      printf("[WARNING] main loop duration (%ld ms) exceeds limit", duration.count());
+    else
+      std::this_thread::sleep_for(std::chrono::milliseconds(50) - duration);
   }
 
-  ROS_WARN("STOPPING");
+  printf("[WARNING] STOPPING");
 
   deinit_dynamixel(mx28_ctrl);
   deinit_orel20(orel20_ctrl);
@@ -580,12 +566,12 @@ int main(int argc, char **argv) try
 }
 catch (std::runtime_error const & err)
 {
-  ROS_ERROR("Exception (std::runtime_error) caught: %s\nTerminating ...", err.what());
+  printf("[ERROR] Exception (std::runtime_error) caught: %s\nTerminating ...", err.what());
   return EXIT_FAILURE;
 }
 catch (...)
 {
-  ROS_ERROR("Unhandled exception caught.\nTerminating ...");
+  printf("[ERROR] Unhandled exception caught.\nTerminating ...");
   return EXIT_FAILURE;
 }
 
@@ -598,14 +584,14 @@ bool init_dynamixel(driver::SharedMX28 & mx28_ctrl)
   std::optional<driver::Dynamixel::IdVect> opt_act_id_vect = mx28_ctrl->discover();
 
   if (!opt_act_id_vect) {
-    ROS_ERROR("Zero MX-28 servos detected.");
+    printf("[ERROR] Zero MX-28 servos detected.");
     return false;
   }
 
   std::stringstream act_id_list;
   for (auto id : opt_act_id_vect.value())
     act_id_list << static_cast<int>(id) << " ";
-  ROS_INFO("Detected Dynamixel MX-28: { %s}", act_id_list.str().c_str());
+  printf("[INFO] Detected Dynamixel MX-28: { %s}", act_id_list.str().c_str());
 
   bool all_req_id_found = true;
   for (auto req_id : glue::l3xz::ELROB2022::DYNAMIXEL_ID_VECT)
@@ -615,7 +601,7 @@ bool init_dynamixel(driver::SharedMX28 & mx28_ctrl)
                                          req_id) > 0;
     if (!req_id_found) {
       all_req_id_found = false;
-      ROS_ERROR("Unable to detect required dynamixel with node id %d", static_cast<int>(req_id));
+      printf("[ERROR] Unable to detect required dynamixel with node id %d", static_cast<int>(req_id));
     }
   }
   if (!all_req_id_found)
@@ -634,15 +620,15 @@ void deinit_dynamixel(driver::SharedMX28 & mx28_ctrl)
 bool init_open_cyphal(phy::opencyphal::Node & open_cyphal_node,
                       glue::l3xz::ELROB2022::OpenCyphalAnglePositionSensorBulkReader & open_cyphal_angle_position_sensor_bulk_reader,
                       glue::l3xz::ELROB2022::OpenCyphalBumperSensorBulkReader & open_cyphal_bumper_sensor_bulk_reader,
-                      ros::Publisher & radiation_pub)
+                      std::shared_ptr<l3xz::RosBridgeNode> ros_brigde_node)
 {
   if (!open_cyphal_node.subscribe<uavcan::node::Heartbeat_1_0<>>([](CanardTransfer const & transfer)
   {
     uavcan::node::Heartbeat_1_0<> const hb = uavcan::node::Heartbeat_1_0<>::deserialize(transfer);
-    ROS_DEBUG("[%d] Heartbeat received\n\tMode = %d", transfer.remote_node_id, hb.data.mode.value);
+    printf("[DEBUG] [%d] Heartbeat received\n\tMode = %d", transfer.remote_node_id, hb.data.mode.value);
   }))
   {
-    ROS_ERROR("init_open_cyphal failed to subscribe to 'uavcan::node::Heartbeat_1_0'");
+    printf("[ERROR] init_open_cyphal failed to subscribe to 'uavcan::node::Heartbeat_1_0'");
     return false;
   }
 
@@ -650,10 +636,10 @@ bool init_open_cyphal(phy::opencyphal::Node & open_cyphal_node,
   if (!open_cyphal_node.subscribe<uavcan::primitive::scalar::Real32_1_0<1001>>([](CanardTransfer const & transfer)
   {
     uavcan::primitive::scalar::Real32_1_0<1001> const input_voltage = uavcan::primitive::scalar::Real32_1_0<1001>::deserialize(transfer);
-    ROS_DEBUG("[%d] Battery Voltage = %f", transfer.remote_node_id, input_voltage.data.value);
+    printf("[DEBUG] [%d] Battery Voltage = %f", transfer.remote_node_id, input_voltage.data.value);
   }))
   {
-    ROS_ERROR("init_open_cyphal failed to subscribe to 'uavcan::primitive::scalar::Real32_1_0<1001>'");
+    printf("[ERROR] init_open_cyphal failed to subscribe to 'uavcan::primitive::scalar::Real32_1_0<1001>'");
     return false;
   }
 
@@ -662,10 +648,10 @@ bool init_open_cyphal(phy::opencyphal::Node & open_cyphal_node,
   {
     uavcan::primitive::scalar::Real32_1_0<1002> const as5048_a_angle = uavcan::primitive::scalar::Real32_1_0<1002>::deserialize(transfer);
     open_cyphal_angle_position_sensor_bulk_reader.update_femur_angle(transfer.remote_node_id, as5048_a_angle.data.value);
-    ROS_DEBUG("[%d] Angle[AS5048 A] = %f", transfer.remote_node_id, as5048_a_angle.data.value);
+    printf("[DEBUG] [%d] Angle[AS5048 A] = %f", transfer.remote_node_id, as5048_a_angle.data.value);
   }))
   {
-    ROS_ERROR("init_open_cyphal failed to subscribe to 'uavcan::primitive::scalar::Real32_1_0<1002>'");
+    printf("[ERROR] init_open_cyphal failed to subscribe to 'uavcan::primitive::scalar::Real32_1_0<1002>'");
     return false;
   }
 
@@ -674,10 +660,10 @@ bool init_open_cyphal(phy::opencyphal::Node & open_cyphal_node,
   {
     uavcan::primitive::scalar::Real32_1_0<1003> const as5048_b_angle = uavcan::primitive::scalar::Real32_1_0<1003>::deserialize(transfer);
     open_cyphal_angle_position_sensor_bulk_reader.update_tibia_angle(transfer.remote_node_id, as5048_b_angle.data.value);
-    ROS_DEBUG("[%d] Angle[AS5048 B] = %f", transfer.remote_node_id, as5048_b_angle.data.value);
+    printf("[DEBUG] [%d] Angle[AS5048 B] = %f", transfer.remote_node_id, as5048_b_angle.data.value);
   }))
   {
-    ROS_ERROR("init_open_cyphal failed to subscribe to 'uavcan::primitive::scalar::Real32_1_0<1003>'");
+    printf("[ERROR] init_open_cyphal failed to subscribe to 'uavcan::primitive::scalar::Real32_1_0<1003>'");
     return false;
   }
 
@@ -686,25 +672,23 @@ bool init_open_cyphal(phy::opencyphal::Node & open_cyphal_node,
   {
     uavcan::primitive::scalar::Bit_1_0<1004> const tibia_endpoint_switch = uavcan::primitive::scalar::Bit_1_0<1004>::deserialize(transfer);
     open_cyphal_bumper_sensor_bulk_reader.update_bumper_sensor(transfer.remote_node_id, tibia_endpoint_switch.data.value);
-    ROS_DEBUG("[%d] Tibia Endpoint Switch %d", transfer.remote_node_id, tibia_endpoint_switch.data.value);
+    printf("[DEBUG] [%d] Tibia Endpoint Switch %d", transfer.remote_node_id, tibia_endpoint_switch.data.value);
   }))
   {
-    ROS_ERROR("init_open_cyphal failed to subscribe to 'uavcan::primitive::scalar::Bit_1_0<1004>'");
+    printf("[ERROR] init_open_cyphal failed to subscribe to 'uavcan::primitive::scalar::Bit_1_0<1004>'");
     return false;
   }
 
 
-  if (!open_cyphal_node.subscribe<uavcan::primitive::scalar::Integer16_1_0<3000U>>([&radiation_pub](CanardTransfer const & transfer)
+  if (!open_cyphal_node.subscribe<uavcan::primitive::scalar::Integer16_1_0<3000U>>([&ros_brigde_node](CanardTransfer const & transfer)
   {
     uavcan::primitive::scalar::Integer16_1_0<3000U> const radiation_value = uavcan::primitive::scalar::Integer16_1_0<3000U>::deserialize(transfer);
-    ROS_INFO("[%d] Radiation Tick Count %d", transfer.remote_node_id, radiation_value.data.value);
+    printf("[INFO] [%d] Radiation Tick Count %d", transfer.remote_node_id, radiation_value.data.value);
 
-    std_msgs::Int16 radiation_tick_msg;
-    radiation_tick_msg.data = radiation_value.data.value;
-    radiation_pub.publish(radiation_tick_msg);
+    ros_brigde_node->publish_radiation_tick_count(radiation_value.data.value);
   }))
   {
-    ROS_ERROR("init_open_cyphal failed to subscribe to 'uavcan::primitive::scalar::Integer16_1_0<3000U>'");
+    printf("[ERROR] init_open_cyphal failed to subscribe to 'uavcan::primitive::scalar::Integer16_1_0<3000U>'");
     return false;
   }
 
@@ -730,15 +714,4 @@ void init_ssc32(driver::SharedSSC32 & ssc32_ctrl)
 void deinit_ssc32(driver::SharedSSC32 & ssc32_ctrl)
 {
   init_ssc32(ssc32_ctrl);
-}
-
-void cmd_vel_callback(const geometry_msgs::Twist::ConstPtr & msg, TeleopCommandData & teleop_cmd_data)
-{
-  teleop_cmd_data.linear_velocity_x           = msg->linear.x;
-  teleop_cmd_data.linear_velocity_y           = msg->linear.y;
-  teleop_cmd_data.angular_velocity_head_tilt  = msg->angular.x;
-  teleop_cmd_data.angular_velocity_head_pan   = msg->angular.y;
-  teleop_cmd_data.angular_velocity_z          = msg->angular.z;
-
-  ROS_DEBUG("v_tilt = %.2f, v_pan = %.2f", teleop_cmd_data.angular_velocity_head_tilt, teleop_cmd_data.angular_velocity_head_pan);
 }
