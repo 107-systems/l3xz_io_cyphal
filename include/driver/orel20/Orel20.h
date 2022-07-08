@@ -13,9 +13,6 @@
 
 #include <memory>
 
-#include <uavcan/uavcan.hpp>
-#include <uavcan/equipment/esc/RPMCommand.hpp>
-
 /**************************************************************************************
  * NAMESPACE
  **************************************************************************************/
@@ -37,9 +34,6 @@ public:
   void spinOnce();
 
 private:
-  static unsigned constexpr NODE_MEMORY_POOL_SIZE = 16384;
-  uavcan::Node<NODE_MEMORY_POOL_SIZE> _node;
-  uavcan::Publisher<uavcan::equipment::esc::RPMCommand> _esc_pub;
   uint16_t _rpm_val;
 };
 
