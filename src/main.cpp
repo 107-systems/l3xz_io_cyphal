@@ -81,8 +81,7 @@ static int         const DYNAMIXEL_BAUD_RATE = 115200;
 static std::string const SSC32_DEVICE_NAME = "/dev/serial/by-id/usb-FTDI_FT232R_USB_UART_AH05FOBL-if00-port0";
 static size_t      const SSC32_BAUDRATE = 115200;
 
-static uint8_t     const OPEN_CYPHAL_THIS_NODE_ID = 0;
-static uint8_t     const DRONECAN_THIS_NODE_ID = 127;
+static uint8_t     const OREL20_NODE_ID = 127;
 
 /**************************************************************************************
  * MAIN
@@ -143,7 +142,7 @@ int main(int argc, char **argv) try
    **************************************************************************************/
 
   phy::opencyphal::SocketCAN open_cyphal_can_if("can0", false);
-  phy::opencyphal::Node open_cyphal_node(OPEN_CYPHAL_THIS_NODE_ID, open_cyphal_can_if);
+  phy::opencyphal::Node open_cyphal_node(open_cyphal_can_if);
 
   auto angle_sensor_left_front_femur   = std::make_shared<glue::l3xz::ELROB2022::OpenCyphalAnglePositionSensor>("L/F Femur");
   auto angle_sensor_left_front_tibia   = std::make_shared<glue::l3xz::ELROB2022::OpenCyphalAnglePositionSensor>("L/F Tibia");
@@ -208,7 +207,7 @@ int main(int argc, char **argv) try
    * OREL 20 / DRONECAN
    **************************************************************************************/
 
-  auto orel20_ctrl = std::make_shared<driver::Orel20>(DRONECAN_THIS_NODE_ID);
+  auto orel20_ctrl = std::make_shared<driver::Orel20>(open_cyphal_node, OREL20_NODE_ID);
 
   glue::l3xz::ELROB2022::Orel20RPMActuator orel20_rpm_actuator("Pump", orel20_ctrl);
 
@@ -622,10 +621,10 @@ bool init_open_cyphal(phy::opencyphal::Node & open_cyphal_node,
                       glue::l3xz::ELROB2022::OpenCyphalBumperSensorBulkReader & open_cyphal_bumper_sensor_bulk_reader,
                       std::shared_ptr<l3xz::RosBridgeNode> ros_brigde_node)
 {
-  if (!open_cyphal_node.subscribe<uavcan::node::Heartbeat_1_0<>>([](CanardTransfer const & transfer)
+  if (!open_cyphal_node.subscribe<uavcan::node::Heartbeat_1_0<>>([](CanardRxTransfer const & transfer)
   {
     uavcan::node::Heartbeat_1_0<> const hb = uavcan::node::Heartbeat_1_0<>::deserialize(transfer);
-    printf("[DEBUG] [%d] Heartbeat received\n\tMode = %d", transfer.remote_node_id, hb.data.mode.value);
+    printf("[DEBUG] [%d] Heartbeat received\n\tMode = %d", transfer.metadata.remote_node_id, hb.data.mode.value);
   }))
   {
     printf("[ERROR] init_open_cyphal failed to subscribe to 'uavcan::node::Heartbeat_1_0'");
@@ -633,10 +632,10 @@ bool init_open_cyphal(phy::opencyphal::Node & open_cyphal_node,
   }
 
 
-  if (!open_cyphal_node.subscribe<uavcan::primitive::scalar::Real32_1_0<1001>>([](CanardTransfer const & transfer)
+  if (!open_cyphal_node.subscribe<uavcan::primitive::scalar::Real32_1_0<1001>>([](CanardRxTransfer const & transfer)
   {
     uavcan::primitive::scalar::Real32_1_0<1001> const input_voltage = uavcan::primitive::scalar::Real32_1_0<1001>::deserialize(transfer);
-    printf("[DEBUG] [%d] Battery Voltage = %f", transfer.remote_node_id, input_voltage.data.value);
+    printf("[DEBUG] [%d] Battery Voltage = %f", transfer.metadata.remote_node_id, input_voltage.data.value);
   }))
   {
     printf("[ERROR] init_open_cyphal failed to subscribe to 'uavcan::primitive::scalar::Real32_1_0<1001>'");
@@ -644,11 +643,11 @@ bool init_open_cyphal(phy::opencyphal::Node & open_cyphal_node,
   }
 
 
-  if (!open_cyphal_node.subscribe<uavcan::primitive::scalar::Real32_1_0<1002>>([&open_cyphal_angle_position_sensor_bulk_reader](CanardTransfer const & transfer)
+  if (!open_cyphal_node.subscribe<uavcan::primitive::scalar::Real32_1_0<1002>>([&open_cyphal_angle_position_sensor_bulk_reader](CanardRxTransfer const & transfer)
   {
     uavcan::primitive::scalar::Real32_1_0<1002> const as5048_a_angle = uavcan::primitive::scalar::Real32_1_0<1002>::deserialize(transfer);
-    open_cyphal_angle_position_sensor_bulk_reader.update_femur_angle(transfer.remote_node_id, as5048_a_angle.data.value);
-    printf("[DEBUG] [%d] Angle[AS5048 A] = %f", transfer.remote_node_id, as5048_a_angle.data.value);
+    open_cyphal_angle_position_sensor_bulk_reader.update_femur_angle(transfer.metadata.remote_node_id, as5048_a_angle.data.value);
+    printf("[DEBUG] [%d] Angle[AS5048 A] = %f", transfer.metadata.remote_node_id, as5048_a_angle.data.value);
   }))
   {
     printf("[ERROR] init_open_cyphal failed to subscribe to 'uavcan::primitive::scalar::Real32_1_0<1002>'");
@@ -656,11 +655,11 @@ bool init_open_cyphal(phy::opencyphal::Node & open_cyphal_node,
   }
 
 
-  if (!open_cyphal_node.subscribe<uavcan::primitive::scalar::Real32_1_0<1003>>([&open_cyphal_angle_position_sensor_bulk_reader](CanardTransfer const & transfer)
+  if (!open_cyphal_node.subscribe<uavcan::primitive::scalar::Real32_1_0<1003>>([&open_cyphal_angle_position_sensor_bulk_reader](CanardRxTransfer const & transfer)
   {
     uavcan::primitive::scalar::Real32_1_0<1003> const as5048_b_angle = uavcan::primitive::scalar::Real32_1_0<1003>::deserialize(transfer);
-    open_cyphal_angle_position_sensor_bulk_reader.update_tibia_angle(transfer.remote_node_id, as5048_b_angle.data.value);
-    printf("[DEBUG] [%d] Angle[AS5048 B] = %f", transfer.remote_node_id, as5048_b_angle.data.value);
+    open_cyphal_angle_position_sensor_bulk_reader.update_tibia_angle(transfer.metadata.remote_node_id, as5048_b_angle.data.value);
+    printf("[DEBUG] [%d] Angle[AS5048 B] = %f", transfer.metadata.remote_node_id, as5048_b_angle.data.value);
   }))
   {
     printf("[ERROR] init_open_cyphal failed to subscribe to 'uavcan::primitive::scalar::Real32_1_0<1003>'");
@@ -668,11 +667,11 @@ bool init_open_cyphal(phy::opencyphal::Node & open_cyphal_node,
   }
 
 
-  if (!open_cyphal_node.subscribe<uavcan::primitive::scalar::Bit_1_0<1004>>([&open_cyphal_bumper_sensor_bulk_reader](CanardTransfer const & transfer)
+  if (!open_cyphal_node.subscribe<uavcan::primitive::scalar::Bit_1_0<1004>>([&open_cyphal_bumper_sensor_bulk_reader](CanardRxTransfer const & transfer)
   {
     uavcan::primitive::scalar::Bit_1_0<1004> const tibia_endpoint_switch = uavcan::primitive::scalar::Bit_1_0<1004>::deserialize(transfer);
-    open_cyphal_bumper_sensor_bulk_reader.update_bumper_sensor(transfer.remote_node_id, tibia_endpoint_switch.data.value);
-    printf("[DEBUG] [%d] Tibia Endpoint Switch %d", transfer.remote_node_id, tibia_endpoint_switch.data.value);
+    open_cyphal_bumper_sensor_bulk_reader.update_bumper_sensor(transfer.metadata.remote_node_id, tibia_endpoint_switch.data.value);
+    printf("[DEBUG] [%d] Tibia Endpoint Switch %d", transfer.metadata.remote_node_id, tibia_endpoint_switch.data.value);
   }))
   {
     printf("[ERROR] init_open_cyphal failed to subscribe to 'uavcan::primitive::scalar::Bit_1_0<1004>'");
@@ -680,10 +679,10 @@ bool init_open_cyphal(phy::opencyphal::Node & open_cyphal_node,
   }
 
 
-  if (!open_cyphal_node.subscribe<uavcan::primitive::scalar::Integer16_1_0<3000U>>([&ros_brigde_node](CanardTransfer const & transfer)
+  if (!open_cyphal_node.subscribe<uavcan::primitive::scalar::Integer16_1_0<3000U>>([&ros_brigde_node](CanardRxTransfer const & transfer)
   {
     uavcan::primitive::scalar::Integer16_1_0<3000U> const radiation_value = uavcan::primitive::scalar::Integer16_1_0<3000U>::deserialize(transfer);
-    printf("[INFO] [%d] Radiation Tick Count %d", transfer.remote_node_id, radiation_value.data.value);
+    printf("[INFO] [%d] Radiation Tick Count %d", transfer.metadata.remote_node_id, radiation_value.data.value);
 
     ros_brigde_node->publish_radiation_tick_count(radiation_value.data.value);
   }))

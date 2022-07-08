@@ -13,6 +13,8 @@
 
 #include <memory>
 
+#include <phy/opencyphal/Node.hpp>
+
 /**************************************************************************************
  * NAMESPACE
  **************************************************************************************/
@@ -27,13 +29,16 @@ namespace driver
 class Orel20
 {
 public:
-  Orel20(uint8_t const dronecan_node_id);
+  Orel20(phy::opencyphal::Node & node,
+         CanardNodeID const orel_node_id);
 
   inline void setRPM(uint16_t const rpm_val) { _rpm_val = rpm_val; }
 
   void spinOnce();
 
 private:
+  phy::opencyphal::Node & _node;
+  CanardNodeID const OREL20_NODE_ID;
   uint16_t _rpm_val;
 };
 

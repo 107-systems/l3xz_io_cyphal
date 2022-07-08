@@ -16,17 +16,12 @@ add_subdirectory(external/libcanard/current)
 add_subdirectory(external/libdynamixel/current)
 add_subdirectory(external/libo1heap/current)
 add_subdirectory(external/libsocketcan)
-
+##########################################################################
 include_directories(
   include
   ${orocos_kdl_INCLUDE_DIRS}
 )
-
-# libuavcan (libdronecan) build configuration
-add_compile_definitions(
-  UAVCAN_CPP_VERSION=UAVCAN_CPP11
-)
-
+##########################################################################
 add_executable(${PROJECT_NAME}_node
   src/common/actuator/interface/AnglePositionActuator.cpp
   src/common/kinematic/Engine.cpp

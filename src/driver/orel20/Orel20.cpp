@@ -23,8 +23,10 @@ namespace driver
  * CTOR/DTOR
  **************************************************************************************/
 
-Orel20::Orel20(uint8_t const dronecan_node_id)
-: _rpm_val{0}
+Orel20::Orel20(phy::opencyphal::Node & node, CanardNodeID const orel_node_id)
+: _node{node}
+, OREL20_NODE_ID{orel_node_id}
+, _rpm_val{0}
 {
 
 }

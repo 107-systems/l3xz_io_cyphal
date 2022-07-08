@@ -23,25 +23,15 @@
 using namespace phy::opencyphal;
 
 /**************************************************************************************
- * CONSTANT
- **************************************************************************************/
-
-static uint8_t const THIS_NODE_ID = 0;
-
-/**************************************************************************************
- * FUNCTION DEFINITION
- **************************************************************************************/
-
-/**************************************************************************************
  * MAIN
  **************************************************************************************/
 
 int main(int argc, char **argv) try
 {
   SocketCAN can_if("can0", false);
-  Node node(THIS_NODE_ID, can_if);
+  Node node(can_if);
 
-  node.subscribe<uavcan::node::Heartbeat_1_0<>>([](CanardTransfer const & transfer)
+  node.subscribe<uavcan::node::Heartbeat_1_0<>>([](CanardRxTransfer const & transfer)
   {
     uavcan::node::Heartbeat_1_0<> const hb = uavcan::node::Heartbeat_1_0<>::deserialize(transfer);
     std::cout << "Heartbeat received"
@@ -50,7 +40,7 @@ int main(int argc, char **argv) try
               << std::endl;
   });
 
-  node.subscribe<uavcan::primitive::scalar::Real32_1_0<1001>>([](CanardTransfer const & transfer)
+  node.subscribe<uavcan::primitive::scalar::Real32_1_0<1001>>([](CanardRxTransfer const & transfer)
   {
     uavcan::primitive::scalar::Real32_1_0<1001> const input_voltage = uavcan::primitive::scalar::Real32_1_0<1001>::deserialize(transfer);
     std::cout << "Battery Voltage = "
@@ -58,7 +48,7 @@ int main(int argc, char **argv) try
               << std::endl;
   });
 
-  node.subscribe<uavcan::primitive::scalar::Real32_1_0<1002>>([](CanardTransfer const & transfer)
+  node.subscribe<uavcan::primitive::scalar::Real32_1_0<1002>>([](CanardRxTransfer const & transfer)
   {
     uavcan::primitive::scalar::Real32_1_0<1002> const as5048_a_angle = uavcan::primitive::scalar::Real32_1_0<1002>::deserialize(transfer);
     std::cout << "Angle[AS5048 A] = "
@@ -66,7 +56,7 @@ int main(int argc, char **argv) try
               << std::endl;
   });
 
-  node.subscribe<uavcan::primitive::scalar::Real32_1_0<1003>>([](CanardTransfer const & transfer)
+  node.subscribe<uavcan::primitive::scalar::Real32_1_0<1003>>([](CanardRxTransfer const & transfer)
   {
     uavcan::primitive::scalar::Real32_1_0<1003> const as5048_b_angle = uavcan::primitive::scalar::Real32_1_0<1003>::deserialize(transfer);
     std::cout << "Angle[AS5048 B] = "
