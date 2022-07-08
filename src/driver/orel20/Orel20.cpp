@@ -10,7 +10,7 @@
 
 #include <driver/orel20/Orel20.h>
 
-#include <stdexcept>
+#include <phy/opencyphal/Types.h>
 
 /**************************************************************************************
  * NAMESPACE
@@ -37,7 +37,11 @@ Orel20::Orel20(phy::opencyphal::Node & node, CanardNodeID const orel_node_id)
 
 void Orel20::spinOnce()
 {
+  reg::udral::service::actuator::common::sp::Vector31_0_1<1000> setpoint;
+  setpoint.data.value[0] = _rpm_val;
 
+  if (!_node.publish(setpoint))
+    printf("[ERROR] Orel20::spinOnce: error, could not publish esc message");
 }
 
 /**************************************************************************************
