@@ -28,7 +28,11 @@ Orel20::Orel20(phy::opencyphal::Node & node, CanardNodeID const orel_node_id)
 , OREL20_NODE_ID{orel_node_id}
 , _rpm_val{0}
 {
+  reg::udral::service::common::Readiness_0_1<1001> readiness;
+  readiness.data.value = reg_udral_service_common_Readiness_0_1_ENGAGED;
 
+  if (!_node.publish(readiness))
+    printf("[ERROR] Orel20::Orel20: error, could not configure ESC to be ready");
 }
 
 /**************************************************************************************

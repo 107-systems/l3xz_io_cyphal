@@ -40,6 +40,8 @@
 
 #include "wrappers/reg/udral/service/actuator/common/sp/Vector31_0_1.hpp"
 
+#include "wrappers/reg/udral/service/common/Readiness_0_1.hpp"
+
 /**************************************************************************************
  * NAMESPACE
  **************************************************************************************/
