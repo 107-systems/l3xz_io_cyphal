@@ -118,6 +118,7 @@ bool Node::enqeueTransfer(CanardNodeID const remote_node_id, CanardTransferKind 
                                 &transfer_metadata,
                                 payload_size,
                                 payload);
+  printf("\n\n\tcanardTxPush %d\n\n", result);
   bool const success = (result >= 0);
   return success;
 }

@@ -34,9 +34,6 @@
 #include <phy/opencyphal/Node.hpp>
 #include <phy/opencyphal/SocketCAN.h>
 
-#include <ros/RosThread.h>
-#include <ros/RosBrigdeNode.h>
-
 #include <glue/l3xz/ELROB2022/Const.h>
 #include <glue/l3xz/ELROB2022/SSC32PWMActuator.h>
 #include <glue/l3xz/ELROB2022/SSC32PWMActuatorBulkwriter.h>
@@ -52,6 +49,8 @@
 #include <glue/l3xz/ELROB2022/OpenCyphalBumperSensorBulkReader.h>
 #include <glue/l3xz/ELROB2022/Orel20RPMActuator.h>
 #include <glue/l3xz/ELROB2022/OpenCyphalLEDActuator.h>
+
+#include <ros/RosBrigdeNode.h>
 
 /**************************************************************************************
  * FUNCTION DECLARATION
@@ -90,8 +89,6 @@ static uint8_t     const OREL20_NODE_ID = 127;
 int main(int argc, char **argv) try
 {
   rclcpp::init(argc, argv);
-  auto ros_bridge_node = std::make_shared<l3xz::RosBridgeNode>();
-  l3xz::RosThread ros_thread(ros_bridge_node);
 
   /**************************************************************************************
    * DYNAMIXEL
@@ -193,15 +190,6 @@ int main(int argc, char **argv) try
 
   glue::l3xz::ELROB2022::OpenCyphalLEDActuator open_cyphal_led_actuator(open_cyphal_node);
   open_cyphal_led_actuator.setBlinkMode(glue::l3xz::ELROB2022::OpenCyphalLEDActuator::BlinkMode::Green);
-
-  if (!init_open_cyphal(open_cyphal_node,
-                        open_cyphal_angle_position_sensor_bulk_reader,
-                        open_cyphal_bumper_sensor_bulk_reader,
-                        ros_bridge_node))
-  {
-    printf("[ERROR] init_open_cyphal failed.");
-  }
-  printf("[INFO] init_open_cyphal successfully completed.");
 
   /**************************************************************************************
    * OREL 20 / DRONECAN
@@ -334,226 +322,47 @@ int main(int argc, char **argv) try
     {Leg::RightBack,   tibia_tip_bumper_right_back}
   };
 
-  auto isGaitControllerInputDataValid = [](std::map<LegJointKey, common::sensor::interface::SharedAnglePositionSensor> const & ap_map,
-                                           std::map<Leg, common::sensor::interface::SharedBumperSensor> const & b_map) -> bool
-  {
-    for (auto [leg, joint] : LEG_JOINT_LIST)
-      if (!ap_map.at(make_key(leg, joint))->get().has_value())
-        return false;
-
-    for (auto leg : LEG_LIST)
-      if (!b_map.at(leg)->get().has_value())
-        return false;
-
-    return true;
-  };
-
-  auto toStr = [](std::map<LegJointKey, common::sensor::interface::SharedAnglePositionSensor> const & angle_position,
-                  std::map<Leg, common::sensor::interface::SharedBumperSensor> const & bumper) -> std::string
-  {
-    std::stringstream msg;
-
-    msg << "\n"
-        << "Left\n"
-        << "  Front :"
-        << "  Coxa: "   << angle_position.at(make_key(Leg::LeftFront, Joint::Coxa))->toStr()
-        << "  Femur: "  << angle_position.at(make_key(Leg::LeftFront, Joint::Femur))->toStr()
-        << "  Tibia: "  << angle_position.at(make_key(Leg::LeftFront, Joint::Tibia))->toStr()
-        << "  Tip: "    << bumper.at(Leg::LeftFront)->toStr()
-        << "\n"
-        << "  Middle:"
-        << "  Coxa: "   << angle_position.at(make_key(Leg::LeftMiddle, Joint::Coxa))->toStr()
-        << "  Femur: "  << angle_position.at(make_key(Leg::LeftMiddle, Joint::Femur))->toStr()
-        << "  Tibia: "  << angle_position.at(make_key(Leg::LeftMiddle, Joint::Tibia))->toStr()
-        << "  Tip: "    << bumper.at(Leg::LeftMiddle)->toStr()
-        << "\n"
-        << "  Back  :"
-        << "  Coxa: "   << angle_position.at(make_key(Leg::LeftBack, Joint::Coxa))->toStr()
-        << "  Femur: "  << angle_position.at(make_key(Leg::LeftBack, Joint::Femur))->toStr()
-        << "  Tibia: "  << angle_position.at(make_key(Leg::LeftBack, Joint::Tibia))->toStr()
-        << "  Tip: "    << bumper.at(Leg::LeftBack)->toStr()
-        << "\n"
-        << "Right\n"
-        << "  Front :"
-        << "  Coxa: "   << angle_position.at(make_key(Leg::RightFront, Joint::Coxa))->toStr()
-        << "  Femur: "  << angle_position.at(make_key(Leg::RightFront, Joint::Femur))->toStr()
-        << "  Tibia: "  << angle_position.at(make_key(Leg::RightFront, Joint::Tibia))->toStr()
-        << "  Tip: "    << bumper.at(Leg::RightFront)->toStr()
-        << "\n"
-        << "  Middle:"
-        << "  Coxa: "   << angle_position.at(make_key(Leg::RightMiddle, Joint::Coxa))->toStr()
-        << "  Femur: "  << angle_position.at(make_key(Leg::RightMiddle, Joint::Femur))->toStr()
-        << "  Tibia: "  << angle_position.at(make_key(Leg::RightMiddle, Joint::Tibia))->toStr()
-        << "  Tip: "    << bumper.at(Leg::RightMiddle)->toStr()
-        << "\n"
-        << "  Back  :"
-        << "  Coxa: "   << angle_position.at(make_key(Leg::RightBack, Joint::Coxa))->toStr()
-        << "  Femur: "  << angle_position.at(make_key(Leg::RightBack, Joint::Femur))->toStr()
-        << "  Tibia: "  << angle_position.at(make_key(Leg::RightBack, Joint::Tibia))->toStr()
-        << "  Tip: "    << bumper.at(Leg::RightBack)->toStr();
-
-    return msg.str();
-  };
-
   /**************************************************************************************
    * STATE
    **************************************************************************************/
 
-  gait::Controller gait_ctrl(ssc32_ctrl, orel20_ctrl, angle_position_sensor_offset_map, is_angle_position_sensor_offset_calibration_complete);
-  gait::ControllerOutput prev_gait_ctrl_output(INITIAL_COXA_ANGLE_DEG,
-                                               INITIAL_FEMUR_ANGLE_DEG,
-                                               INITIAL_TIBIA_ANGLE_DEG,
-                                               INITIAL_COXA_ANGLE_DEG,
-                                               INITIAL_FEMUR_ANGLE_DEG,
-                                               INITIAL_TIBIA_ANGLE_DEG,
-                                               INITIAL_COXA_ANGLE_DEG,
-                                               INITIAL_FEMUR_ANGLE_DEG,
-                                               INITIAL_TIBIA_ANGLE_DEG,
-                                               INITIAL_COXA_ANGLE_DEG,
-                                               INITIAL_FEMUR_ANGLE_DEG,
-                                               INITIAL_TIBIA_ANGLE_DEG,
-                                               INITIAL_COXA_ANGLE_DEG,
-                                               INITIAL_FEMUR_ANGLE_DEG,
-                                               INITIAL_TIBIA_ANGLE_DEG,
-                                               INITIAL_COXA_ANGLE_DEG,
-                                               INITIAL_FEMUR_ANGLE_DEG,
-                                               INITIAL_TIBIA_ANGLE_DEG);
+  auto ros_bridge_node = std::make_shared<l3xz::RosBridgeNode>
+  (
+    orel20_ctrl,
+    ssc32_ctrl,
+    dynamixel_angle_position_sensor_bulk_reader,
+    open_cyphal_angle_position_sensor_bulk_reader,
+    open_cyphal_bumper_sensor_bulk_reader,
+    open_cyphal_led_actuator,
+    orel20_rpm_actuator,
+    ssc32_pwm_actuator_bulk_driver,
+    dynamixel_angle_position_actuator_bulk_writer,
+    is_angle_position_sensor_offset_calibration_complete,
+    angle_position_sensor_map,
+    angle_position_sensor_offset_map,
+    bumper_sensor_map,
+    angle_actuator_sensor_head_pan,
+    angle_actuator_sensor_head_tilt,
+    angle_position_actuator_map,
+    angle_sensor_sensor_head_pan,
+    angle_sensor_sensor_head_tilt
+  );
 
-  head::Controller head_ctrl;
-  head::ControllerOutput prev_head_ctrl_output(INITIAL_PAN_ANGLE_DEG, INITIAL_TILT_ANGLE_DEG);
+  if (!init_open_cyphal(open_cyphal_node,
+                        open_cyphal_angle_position_sensor_bulk_reader,
+                        open_cyphal_bumper_sensor_bulk_reader,
+                        ros_bridge_node))
+  {
+    printf("[ERROR] init_open_cyphal failed.");
+  }
+  printf("[INFO] init_open_cyphal successfully completed.");
 
   /**************************************************************************************
    * MAIN LOOP
    **************************************************************************************/
 
-  for (;;)
-  {
-    auto const start = std::chrono::high_resolution_clock::now();
-
-    /**************************************************************************************
-     * READ FROM PERIPHERALS
-     **************************************************************************************/
-
-    dynamixel_angle_position_sensor_bulk_reader.doBulkRead();
-    open_cyphal_angle_position_sensor_bulk_reader.doBulkRead();
-    open_cyphal_bumper_sensor_bulk_reader.doBulkRead();
-
-    /* Perform the correction of the sensor values from
-     * the offset sensor map.
-     */
-    if (is_angle_position_sensor_offset_calibration_complete)
-    {
-      for (auto [leg, joint] : HYDRAULIC_LEG_JOINT_LIST)
-      {
-        glue::l3xz::ELROB2022::OpenCyphalAnglePositionSensor * angle_pos_sensor_ptr =
-          reinterpret_cast<glue::l3xz::ELROB2022::OpenCyphalAnglePositionSensor *>(angle_position_sensor_map.at(make_key(leg, joint)).get());
-
-        if (angle_pos_sensor_ptr->get().has_value())
-        {
-          float const raw_angle_deg    = angle_pos_sensor_ptr->get().value();
-          float const offset_angle_deg = angle_position_sensor_offset_map.at(make_key(leg, joint));
-
-          float const offset_corrected_angle_deg = (raw_angle_deg - offset_angle_deg);
-
-          angle_pos_sensor_ptr->update(offset_corrected_angle_deg);
-        }
-      }
-    }
-
-    /**************************************************************************************
-     * GAIT CONTROL
-     **************************************************************************************/
-
-    auto next_gait_ctrl_output = prev_gait_ctrl_output;
-
-    printf("[INFO] IN: %s", toStr(angle_position_sensor_map, bumper_sensor_map).c_str());
-
-    if (!isGaitControllerInputDataValid(angle_position_sensor_map, bumper_sensor_map))
-      printf("[ERROR] gait_ctrl.update: invalid input data.");
-    else
-    {
-      gait::ControllerInput const gait_ctrl_input(ros_bridge_node->teleop_cmd_data(), angle_position_sensor_map, bumper_sensor_map);
-      next_gait_ctrl_output = gait_ctrl.update(gait_ctrl_input, prev_gait_ctrl_output);
-
-      printf("[INFO] OUT: %s", next_gait_ctrl_output.toStr().c_str());
-
-      /* Check if we need to turn on the pump. */
-      if (is_angle_position_sensor_offset_calibration_complete)
-      {
-        unsigned int num_joints_actively_controlled = 0;
-        for (auto [leg, joint] : HYDRAULIC_LEG_JOINT_LIST)
-        {
-          float const target_angle_deg = next_gait_ctrl_output.get_angle_deg(leg, joint);
-          float const actual_angle_deg = gait_ctrl_input.get_angle_deg(leg, joint);
-          float const angle_err = fabs(target_angle_deg - actual_angle_deg);
-          if (angle_err > 2.0f)
-            num_joints_actively_controlled++;
-        }
-        if (num_joints_actively_controlled > 0)
-          orel20_rpm_actuator.set(4096);
-        else
-          orel20_rpm_actuator.set(0);
-      }
-    }
-
-      if (is_angle_position_sensor_offset_calibration_complete)
-      {
-        for (auto [leg, joint] : LEG_JOINT_LIST)
-        {
-          /* Write the target angles to the actual angle position actuators. */
-          float const target_angle_deg = next_gait_ctrl_output.get_angle_deg(leg, joint);
-          angle_position_actuator_map.at(make_key(leg, joint))->set(target_angle_deg);
-        }
-      }
-
-    /* Copy previous output. */
-    prev_gait_ctrl_output = next_gait_ctrl_output;
-
-    if (is_angle_position_sensor_offset_calibration_complete)
-      open_cyphal_led_actuator.setBlinkMode(glue::l3xz::ELROB2022::OpenCyphalLEDActuator::BlinkMode::Amber);
-
-    /**************************************************************************************
-     * HEAD CONTROL
-     **************************************************************************************/
-
-    head::ControllerInput head_ctrl_input(ros_bridge_node->teleop_cmd_data(),
-                                          angle_sensor_sensor_head_pan,
-                                          angle_sensor_sensor_head_tilt);
-
-    auto next_head_ctrl_output = prev_head_ctrl_output;
-
-    if (head_ctrl_input.isValid())
-      next_head_ctrl_output = head_ctrl.update(head_ctrl_input, prev_head_ctrl_output);
-    else
-      printf("[ERROR] head::ControllerInput: invalid input data.");
-
-    angle_actuator_sensor_head_pan->set (next_head_ctrl_output[head::ControllerOutput::Angle::Pan]);
-    angle_actuator_sensor_head_tilt->set(next_head_ctrl_output[head::ControllerOutput::Angle::Tilt]);
-
-    prev_head_ctrl_output = next_head_ctrl_output;
-
-    /**************************************************************************************
-     * WRITE TO PERIPHERALS
-     **************************************************************************************/
-
-    if (!dynamixel_angle_position_actuator_bulk_writer.doBulkWrite())
-      printf("[ERROR] failed to set target angles for all dynamixel servos");
-
-    ssc32_pwm_actuator_bulk_driver.doBulkWrite();
-    orel20_rpm_actuator.doWrite();
-    open_cyphal_led_actuator.doBulkWrite();
-
-    /**************************************************************************************
-     * LOOP RATE
-     **************************************************************************************/
-
-    auto const stop = std::chrono::high_resolution_clock::now();
-    auto const duration = std::chrono::duration_cast<std::chrono::milliseconds>(stop - start);
-    if (duration.count() > 50)
-      printf("[WARNING] main loop duration (%ld ms) exceeds limit", duration.count());
-    else
-      std::this_thread::sleep_for(std::chrono::milliseconds(50) - duration);
-  }
+  rclcpp::spin(ros_bridge_node);
+  rclcpp::shutdown();
 
   printf("[WARNING] STOPPING");
 
@@ -623,8 +432,8 @@ bool init_open_cyphal(phy::opencyphal::Node & open_cyphal_node,
 {
   if (!open_cyphal_node.subscribe<uavcan::node::Heartbeat_1_0<>>([](CanardRxTransfer const & transfer)
   {
-    uavcan::node::Heartbeat_1_0<> const hb = uavcan::node::Heartbeat_1_0<>::deserialize(transfer);
-    printf("[DEBUG] [%d] Heartbeat received\n\tMode = %d", transfer.metadata.remote_node_id, hb.data.mode.value);
+    //uavcan::node::Heartbeat_1_0<> const hb = uavcan::node::Heartbeat_1_0<>::deserialize(transfer);
+    //printf("[DEBUG] [%d] Heartbeat received\n\tMode = %d", transfer.metadata.remote_node_id, hb.data.mode.value);
   }))
   {
     printf("[ERROR] init_open_cyphal failed to subscribe to 'uavcan::node::Heartbeat_1_0'");
@@ -634,8 +443,8 @@ bool init_open_cyphal(phy::opencyphal::Node & open_cyphal_node,
 
   if (!open_cyphal_node.subscribe<uavcan::primitive::scalar::Real32_1_0<1001>>([](CanardRxTransfer const & transfer)
   {
-    uavcan::primitive::scalar::Real32_1_0<1001> const input_voltage = uavcan::primitive::scalar::Real32_1_0<1001>::deserialize(transfer);
-    printf("[DEBUG] [%d] Battery Voltage = %f", transfer.metadata.remote_node_id, input_voltage.data.value);
+    //uavcan::primitive::scalar::Real32_1_0<1001> const input_voltage = uavcan::primitive::scalar::Real32_1_0<1001>::deserialize(transfer);
+    //printf("[DEBUG] [%d] Battery Voltage = %f", transfer.metadata.remote_node_id, input_voltage.data.value);
   }))
   {
     printf("[ERROR] init_open_cyphal failed to subscribe to 'uavcan::primitive::scalar::Real32_1_0<1001>'");
@@ -647,7 +456,7 @@ bool init_open_cyphal(phy::opencyphal::Node & open_cyphal_node,
   {
     uavcan::primitive::scalar::Real32_1_0<1002> const as5048_a_angle = uavcan::primitive::scalar::Real32_1_0<1002>::deserialize(transfer);
     open_cyphal_angle_position_sensor_bulk_reader.update_femur_angle(transfer.metadata.remote_node_id, as5048_a_angle.data.value);
-    printf("[DEBUG] [%d] Angle[AS5048 A] = %f", transfer.metadata.remote_node_id, as5048_a_angle.data.value);
+    //printf("[DEBUG] [%d] Angle[AS5048 A] = %f", transfer.metadata.remote_node_id, as5048_a_angle.data.value);
   }))
   {
     printf("[ERROR] init_open_cyphal failed to subscribe to 'uavcan::primitive::scalar::Real32_1_0<1002>'");
@@ -659,7 +468,7 @@ bool init_open_cyphal(phy::opencyphal::Node & open_cyphal_node,
   {
     uavcan::primitive::scalar::Real32_1_0<1003> const as5048_b_angle = uavcan::primitive::scalar::Real32_1_0<1003>::deserialize(transfer);
     open_cyphal_angle_position_sensor_bulk_reader.update_tibia_angle(transfer.metadata.remote_node_id, as5048_b_angle.data.value);
-    printf("[DEBUG] [%d] Angle[AS5048 B] = %f", transfer.metadata.remote_node_id, as5048_b_angle.data.value);
+    //printf("[DEBUG] [%d] Angle[AS5048 B] = %f", transfer.metadata.remote_node_id, as5048_b_angle.data.value);
   }))
   {
     printf("[ERROR] init_open_cyphal failed to subscribe to 'uavcan::primitive::scalar::Real32_1_0<1003>'");
@@ -671,7 +480,7 @@ bool init_open_cyphal(phy::opencyphal::Node & open_cyphal_node,
   {
     uavcan::primitive::scalar::Bit_1_0<1004> const tibia_endpoint_switch = uavcan::primitive::scalar::Bit_1_0<1004>::deserialize(transfer);
     open_cyphal_bumper_sensor_bulk_reader.update_bumper_sensor(transfer.metadata.remote_node_id, tibia_endpoint_switch.data.value);
-    printf("[DEBUG] [%d] Tibia Endpoint Switch %d", transfer.metadata.remote_node_id, tibia_endpoint_switch.data.value);
+    //printf("[DEBUG] [%d] Tibia Endpoint Switch %d", transfer.metadata.remote_node_id, tibia_endpoint_switch.data.value);
   }))
   {
     printf("[ERROR] init_open_cyphal failed to subscribe to 'uavcan::primitive::scalar::Bit_1_0<1004>'");
