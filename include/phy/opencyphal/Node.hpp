@@ -46,7 +46,7 @@ class Node
 {
 public:
 
-  static size_t       constexpr DEFAULT_O1HEAP_SIZE   = 4096;
+  static size_t       constexpr DEFAULT_O1HEAP_SIZE   = 32768;
   static size_t       constexpr DEFAULT_TX_QUEUE_SIZE = 100;
   static size_t       constexpr DEFAULT_MTU_SIZE      = CANARD_MTU_CAN_CLASSIC;
   static CanardNodeID constexpr DEFAULT_NODE_ID       = 42;
