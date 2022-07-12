@@ -38,6 +38,7 @@
 #include "wrappers/uavcan/primitive/scalar/Real32_1_0.hpp"
 #include "wrappers/uavcan/primitive/scalar/Real64_1_0.hpp"
 
+#include "wrappers/reg/udral/service/actuator/common/sp/Scalar_0_1.hpp"
 #include "wrappers/reg/udral/service/actuator/common/sp/Vector31_0_1.hpp"
 
 #include "wrappers/reg/udral/service/common/Readiness_0_1.hpp"

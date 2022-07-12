@@ -60,7 +60,8 @@ public:
   template <typename T>                     bool unsubscribe();
 
   /* publish/subscribe API for "message" data exchange paradigm */
-  template <typename T_MSG>                 bool publish    (T_MSG const & msg);
+  template <typename T_MSG>                 bool publish    (T_MSG const & msg, CanardNodeID const remote_node_id);
+  template <typename T_MSG>                 bool publish    (T_MSG const & msg) { return publish(msg, CANARD_NODE_ID_UNSET); }
 
   /* request/response API for "service" data exchange paradigm */
   template <typename T_RSP>                 bool respond    (T_RSP const & rsp, CanardNodeID const remote_node_id, CanardTransferID const transfer_id);
