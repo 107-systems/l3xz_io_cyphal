@@ -32,7 +32,7 @@ bool Node::unsubscribe()
 }
 
 template <typename T_MSG>
-bool Node::publish(T_MSG const & msg)
+bool Node::publish(T_MSG const & msg, CanardNodeID const remote_node_id)
 {
   std::lock_guard<std::mutex> lock(_mtx);
 
@@ -43,7 +43,7 @@ bool Node::publish(T_MSG const & msg)
   size_t const payload_size = msg.serialize(payload_buf.data());
   CanardTransferID const transfer_id = getNextTransferId(T_MSG::PORT_ID);
 
-  return enqeueTransfer(CANARD_NODE_ID_UNSET, T_MSG::TRANSFER_KIND, T_MSG::PORT_ID, payload_size, payload_buf.data(), transfer_id);
+  return enqeueTransfer(remote_node_id, T_MSG::TRANSFER_KIND, T_MSG::PORT_ID, payload_size, payload_buf.data(), transfer_id);
 }
 
 template <typename T_RSP>

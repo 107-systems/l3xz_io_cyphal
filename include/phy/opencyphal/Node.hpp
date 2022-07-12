@@ -36,7 +36,7 @@ namespace phy::opencyphal
  * TYPEDEF
  **************************************************************************************/
 
-typedef std::function<void(CanardTransfer const &)> OnTransferReceivedFunc;
+typedef std::function<void(CanardRxTransfer const &)> OnTransferReceivedFunc;
 
 /**************************************************************************************
  * CLASS DECLARATION
@@ -46,8 +46,12 @@ class Node
 {
 public:
 
-  Node(uint8_t const node_id,
-       SocketCAN & socket_can);
+  static size_t       constexpr DEFAULT_O1HEAP_SIZE   = 32768;
+  static size_t       constexpr DEFAULT_TX_QUEUE_SIZE = 100;
+  static size_t       constexpr DEFAULT_MTU_SIZE      = CANARD_MTU_CAN_CLASSIC;
+  static CanardNodeID constexpr DEFAULT_NODE_ID       = 42;
+
+  Node(SocketCAN & socket_can);
 
   ~Node();
 
@@ -56,7 +60,8 @@ public:
   template <typename T>                     bool unsubscribe();
 
   /* publish/subscribe API for "message" data exchange paradigm */
-  template <typename T_MSG>                 bool publish    (T_MSG const & msg);
+  template <typename T_MSG>                 bool publish    (T_MSG const & msg, CanardNodeID const remote_node_id);
+  template <typename T_MSG>                 bool publish    (T_MSG const & msg) { return publish(msg, CANARD_NODE_ID_UNSET); }
 
   /* request/response API for "service" data exchange paradigm */
   template <typename T_RSP>                 bool respond    (T_RSP const & rsp, CanardNodeID const remote_node_id, CanardTransferID const transfer_id);
@@ -65,8 +70,7 @@ public:
 
 private:
 
-  static size_t constexpr LIBCANARD_O1HEAP_SIZE = 16*4096;
-  typedef O1Heap<LIBCANARD_O1HEAP_SIZE> O1HeapLibcanard;
+  typedef O1Heap<DEFAULT_O1HEAP_SIZE> O1HeapLibcanard;
 
   typedef struct
   {
@@ -75,8 +79,9 @@ private:
   } RxTransferData;
 
   std::mutex _mtx;
-  O1HeapLibcanard _o1heap;
-  CanardInstance _canard_ins;
+  O1HeapLibcanard _o1heap_hdl;
+  CanardInstance _canard_hdl;
+  CanardTxQueue _canard_tx_queue;
   SocketCAN & _socket_can;
   std::map<CanardPortID, RxTransferData> _rx_transfer_map;
   std::map<CanardPortID, CanardTransferID> _tx_transfer_map;
@@ -97,7 +102,7 @@ private:
   bool             enqeueTransfer   (CanardNodeID const remote_node_id, CanardTransferKind const transfer_kind, CanardPortID const port_id, size_t const payload_size, void * payload, CanardTransferID const transfer_id);
 
   void rxThreadFunc();
-  void onCanFrameReceived(CanardFrame const & frame);
+  void onCanFrameReceived(CanardFrame const & frame, CanardMicrosecond const rx_timestamp_us);
   void txThreadFunc();
 };
 

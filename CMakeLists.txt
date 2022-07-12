@@ -16,23 +16,12 @@ add_subdirectory(external/libcanard/current)
 add_subdirectory(external/libdynamixel/current)
 add_subdirectory(external/libo1heap/current)
 add_subdirectory(external/libsocketcan)
-add_subdirectory(external/libuavcan
-                 ${CMAKE_BINARY_DIR}/l3xz/external/libuavcan
-)
-
+##########################################################################
 include_directories(
   include
   ${orocos_kdl_INCLUDE_DIRS}
-  external/libuavcan/libuavcan/include
-  external/libuavcan/libuavcan/include/dsdlc_generated
-  external/libuavcan_linux/include
 )
-
-# libuavcan (libdronecan) build configuration
-add_compile_definitions(
-  UAVCAN_CPP_VERSION=UAVCAN_CPP11
-)
-
+##########################################################################
 add_executable(${PROJECT_NAME}_node
   src/common/actuator/interface/AnglePositionActuator.cpp
   src/common/kinematic/Engine.cpp
@@ -46,7 +35,6 @@ add_executable(${PROJECT_NAME}_node
   src/driver/dynamixel/MX28.cpp
   src/driver/orel20/Orel20.cpp
   src/driver/ssc32/SSC32.cpp
-  src/phy/dronecan/platform_linux.cpp
   src/phy/opencyphal/Node.cpp
   src/phy/opencyphal/SocketCAN.cpp
   src/phy/serial/AsyncSerial.cpp
@@ -75,7 +63,6 @@ target_link_libraries(${PROJECT_NAME}_node
   orocos-kdl
   pthread
   socketcan
-  uavcan
 )
 #######################################################################################
 target_compile_features(${PROJECT_NAME}_node PRIVATE cxx_std_17)

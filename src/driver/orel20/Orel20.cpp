@@ -10,14 +10,7 @@
 
 #include <driver/orel20/Orel20.h>
 
-#include <stdexcept>
-
-/**************************************************************************************
- * EXTERN DECLARATION
- **************************************************************************************/
-
-extern uavcan::ICanDriver& getCanDriver();
-extern uavcan::ISystemClock& getSystemClock();
+#include <phy/opencyphal/Types.h>
 
 /**************************************************************************************
  * NAMESPACE
@@ -30,21 +23,16 @@ namespace driver
  * CTOR/DTOR
  **************************************************************************************/
 
-Orel20::Orel20(uint8_t const dronecan_node_id)
-: _node{getCanDriver(), getSystemClock()}
-, _esc_pub{_node}
+Orel20::Orel20(phy::opencyphal::Node & node, CanardNodeID const orel_node_id)
+: _node{node}
+, OREL20_NODE_ID{orel_node_id}
 , _rpm_val{0}
 {
-  _node.setNodeID(dronecan_node_id);
-  _node.setName("driver.orel20");
+  reg::udral::service::common::Readiness_0_1<3001> readiness;
+  readiness.data.value = reg_udral_service_common_Readiness_0_1_ENGAGED;
 
-  if (auto const rc = _node.start(); rc < 0)
-    throw std::runtime_error("Orel20::Orel20: failed to start the node, error: " + std::to_string(rc));
-
-  if (auto const rc = _esc_pub.init(); rc < 0)
-    throw std::runtime_error("Orel20::Orel20: failed to start the publisher, error: " + std::to_string(rc));
-
-  _node.setModeOperational();
+  if (!_node.publish(readiness))
+    printf("[ERROR] Orel20::Orel20: error, could not configure ESC to be ready");
 }
 
 /**************************************************************************************
@@ -53,14 +41,11 @@ Orel20::Orel20(uint8_t const dronecan_node_id)
 
 void Orel20::spinOnce()
 {
-  uavcan::equipment::esc::RPMCommand rpm_cmd;
-  rpm_cmd.rpm.push_back(_rpm_val);
+  reg::udral::service::actuator::common::sp::Scalar_0_1<3002> setpoint;
+  setpoint.data.value = _rpm_val;
 
-  if (auto const rc = _esc_pub.broadcast(rpm_cmd); rc < 0)
-    printf("[ERROR] Orel20::loop: ESC RPMCommand message publication failure: %d", rc);
-
-  if (auto const rc = _node.spinOnce(); rc < 0)
-    printf("[WARNING] Orel20::loop: transient failure: %d", rc);
+  if (!_node.publish(setpoint))
+    printf("[ERROR] Orel20::spinOnce: error, could not publish esc message");
 }
 
 /**************************************************************************************
