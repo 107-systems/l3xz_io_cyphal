@@ -28,10 +28,10 @@ Orel20::Orel20(phy::opencyphal::Node & node, CanardNodeID const orel_node_id)
 , OREL20_NODE_ID{orel_node_id}
 , _rpm_val{0}
 {
-  reg::udral::service::common::Readiness_0_1<1001> readiness;
+  reg::udral::service::common::Readiness_0_1<3001> readiness;
   readiness.data.value = reg_udral_service_common_Readiness_0_1_ENGAGED;
 
-  if (!_node.publish(readiness))
+  if (!_node.publish(readiness, OREL20_NODE_ID))
     printf("[ERROR] Orel20::Orel20: error, could not configure ESC to be ready");
 }
 
@@ -41,10 +41,10 @@ Orel20::Orel20(phy::opencyphal::Node & node, CanardNodeID const orel_node_id)
 
 void Orel20::spinOnce()
 {
-  reg::udral::service::actuator::common::sp::Vector31_0_1<1000> setpoint;
-  setpoint.data.value[0] = _rpm_val;
+  reg::udral::service::actuator::common::sp::Scalar_0_1<3002> setpoint;
+  setpoint.data.value = _rpm_val;
 
-  if (!_node.publish(setpoint))
+  if (!_node.publish(setpoint, OREL20_NODE_ID))
     printf("[ERROR] Orel20::spinOnce: error, could not publish esc message");
 }
 
