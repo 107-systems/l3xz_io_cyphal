@@ -104,7 +104,7 @@ private:
   rclcpp::Subscription<geometry_msgs::msg::Twist>::SharedPtr _cmd_vel_sub;
   TeleopCommandData _teleop_cmd_data;
 
-  void onCmdVelUpdate(geometry_msgs::msg::Twist const & msg);
+  void onCmdVelUpdate(geometry_msgs::msg::Twist::SharedPtr const msg);
   void timerCallback();
 };
 
