@@ -70,7 +70,7 @@ RosBridgeNode::RosBridgeNode(
   _radiation_pub = create_publisher<std_msgs::msg::Int16>("/l3xz/radiation_tick_cnt", 25);
 
   _cmd_vel_sub = create_subscription<geometry_msgs::msg::Twist>
-    ("/l3xz/cmd_vel", 10, [this](geometry_msgs::msg::Twist const & msg) { this->onCmdVelUpdate(msg); });
+    ("/l3xz/cmd_vel", 10, [this](geometry_msgs::msg::Twist::SharedPtr const msg) { this->onCmdVelUpdate(msg); });
 }
 
 /**************************************************************************************
@@ -88,13 +88,13 @@ void RosBridgeNode::publish_radiation_tick_count(int16_t const radiation_tick_cn
  * PUBLIC MEMBER FUNCTIONS
  **************************************************************************************/
 
-void RosBridgeNode::onCmdVelUpdate(geometry_msgs::msg::Twist const & msg)
+void RosBridgeNode::onCmdVelUpdate(geometry_msgs::msg::Twist::SharedPtr const msg)
 {
-  _teleop_cmd_data.linear_velocity_x           = msg.linear.x;
-  _teleop_cmd_data.linear_velocity_y           = msg.linear.y;
-  _teleop_cmd_data.angular_velocity_head_tilt  = msg.angular.x;
-  _teleop_cmd_data.angular_velocity_head_pan   = msg.angular.y;
-  _teleop_cmd_data.angular_velocity_z          = msg.angular.z;
+  _teleop_cmd_data.linear_velocity_x           = msg->linear.x;
+  _teleop_cmd_data.linear_velocity_y           = msg->linear.y;
+  _teleop_cmd_data.angular_velocity_head_tilt  = msg->angular.x;
+  _teleop_cmd_data.angular_velocity_head_pan   = msg->angular.y;
+  _teleop_cmd_data.angular_velocity_z          = msg->angular.z;
 }
 
 void RosBridgeNode::timerCallback()
