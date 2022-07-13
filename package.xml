@@ -1,29 +1,23 @@
 <?xml version="1.0"?>
-<package format="2">
+<?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
+<package format="3">
   <name>l3xz_io</name>
-  <version>0.0.0</version>
-  <description>The l3xz_io package</description>
-
+  <version>1.0.0</version>
+  <description>ROS2 IO driver package for the L3X-Z hexapod.</description>
   <maintainer email="consulting@lxrobotics.com">Alexander Entinger</maintainer>
-
   <license>Copyright LXRobotics GmbH</license>
 
   <url type="website">https://107-systems.org/</url>
   <url type="repository">https://github.com/107-systems/l3xz_io</url>
 
-  <author email="consulting@lxrobotics.com">Alexander Entinger</author>
   <buildtool_depend>ament_cmake</buildtool_depend>
+
   <depend>rclcpp</depend>
   <depend>std_msgs</depend>
   <depend>geometry_msgs</depend>
+
   <test_depend>ament_lint_auto</test_depend>
   <test_depend>ament_lint_common</test_depend>
-
-  <build_depend>builtin_interfaces</build_depend>
-  <exec_depend>builtin_interfaces</exec_depend>
-  <build_depend>common_interfaces</build_depend>
-  <exec_depend>common_interfaces</exec_depend>
-  <exec_depend>rosidl_default_runtime</exec_depend>
 
   <export>
     <build_type>ament_cmake</build_type>
