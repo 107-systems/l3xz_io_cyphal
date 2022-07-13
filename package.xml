@@ -1,15 +1,15 @@
 <?xml version="1.0"?>
 <package format="2">
-  <name>l3xz</name>
+  <name>l3xz_io</name>
   <version>0.0.0</version>
-  <description>The l3xz package</description>
+  <description>The l3xz_io package</description>
 
   <maintainer email="consulting@lxrobotics.com">Alexander Entinger</maintainer>
 
   <license>Copyright LXRobotics GmbH</license>
 
   <url type="website">https://107-systems.org/</url>
-  <url type="repository">https://github.com/107-systems/l3xz</url>
+  <url type="repository">https://github.com/107-systems/l3xz_io</url>
 
   <author email="consulting@lxrobotics.com">Alexander Entinger</author>
   <buildtool_depend>ament_cmake</buildtool_depend>

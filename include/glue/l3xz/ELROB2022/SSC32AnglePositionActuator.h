@@ -1,7 +1,7 @@
 /**
  * Copyright (c) 2022 LXRobotics GmbH.
  * Author: Alexander Entinger <alexander.entinger@lxrobotics.com>
- * Contributors: https://github.com/107-systems/l3xz/graphs/contributors.
+ * Contributors: https://github.com/107-systems/l3xz_io/graphs/contributors.
  */
 
 #ifndef GLUE_L3XZ_ELROB2022_SSC32_ANGLE_POSITION_ACTUATOR_H_

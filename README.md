@@ -15,5 +15,5 @@ colcon build --packages-select l3xz_io
 ### How-to-run
 ```bash
 source install/setup.bash
-ros2 launch l3xz robot.py
+ros2 launch l3xz_io robot.py
 ```
