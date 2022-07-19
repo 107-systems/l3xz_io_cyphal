@@ -23,7 +23,6 @@
 #include <Const.h>
 
 #include <gait/GaitController.h>
-#include <head/HeadController.h>
 
 #include <driver/ssc32/SSC32.h>
 #include <driver/orel20/Orel20.h>
