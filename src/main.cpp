@@ -302,7 +302,7 @@ int main(int argc, char **argv) try
   };
 
   /* This map contains the angle offsets of all the sensors
-   * angles as reported by the leg controllers. At initialisation
+   * angles as reported by the leg controllers. At initialization
    * these are zero and are then set during the calibration
    * state.
    **/

@@ -9,7 +9,7 @@ Interface indexes will be assigned automatically in ascending order, i.e., the
 first device will be mapped to slcan0, second to slcan1, and so on.
 Each added option affects only the interfaces that follow it,
 which means that options must be properly ordered (see examples below).
-This tool requires superuser priveleges.
+This tool requires superuser privileges.
 
 The package 'can-utils' must be installed. On Debian/Ubuntu-based systems it
 can be installed via APT: apt-get install can-utils
