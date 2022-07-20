@@ -255,8 +255,8 @@ void RosBridgeNode::timerCallback()
    **************************************************************************************/
 
   l3xz_head_ctrl::msg::HeadAngle head_angle_actual_msg;
-  head_angle_actual_msg.pan_angle_deg = _angle_sensor_sensor_head_pan->get().value();
-  head_angle_actual_msg.tilt_angle_deg = _angle_sensor_sensor_head_pan->get().value();
+  head_angle_actual_msg.pan_angle_deg  = _angle_sensor_sensor_head_pan->get().value();
+  head_angle_actual_msg.tilt_angle_deg = _angle_sensor_sensor_head_tilt->get().value();
   _head_angle_pub->publish(head_angle_actual_msg);
 
   /**************************************************************************************
