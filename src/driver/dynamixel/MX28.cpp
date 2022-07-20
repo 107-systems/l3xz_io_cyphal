@@ -122,9 +122,11 @@ std::optional<float> MX28::getAngle(Dynamixel::Id const id)
 
 MX28::AngleDataSet MX28::getAngle(Dynamixel::IdVect const & id_vect)
 {
-  assert(id_vect.size() > 0);
-
   AngleDataSet angle_data_set;
+
+  /* Return empty angle data set. */
+  if(!id_vect.size())
+    return angle_data_set;
 
   if (auto [err, position_vect] = _dyn_ctrl->syncRead(static_cast<int>(MX28ControlTable::PresentPosition), 4, id_vect); err == Dynamixel::Error::None)
   {
@@ -148,7 +150,8 @@ bool MX28::setAngle(Dynamixel::Id const id, float const angle_deg)
 
 bool MX28::setAngle(AngleDataSet const & angle_data_set)
 {
-  assert(angle_data_set.size() > 0);
+  if(!angle_data_set.size())
+    return false;
 
   std::vector<uint32_t> position_raw_arr(angle_data_set.size());
   Dynamixel::SyncWriteDataVect sync_write_data_vect;
