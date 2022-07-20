@@ -60,8 +60,6 @@ RosBridgeNode::RosBridgeNode(
 , _angle_sensor_sensor_head_tilt{angle_sensor_sensor_head_tilt}
 , _gait_ctrl{ssc32_ctrl, orel20_ctrl, angle_position_sensor_offset_map, is_angle_position_sensor_offset_calibration_complete}
 , _prev_gait_ctrl_output{INITIAL_COXA_ANGLE_DEG, INITIAL_FEMUR_ANGLE_DEG, INITIAL_TIBIA_ANGLE_DEG, INITIAL_COXA_ANGLE_DEG, INITIAL_FEMUR_ANGLE_DEG, INITIAL_TIBIA_ANGLE_DEG, INITIAL_COXA_ANGLE_DEG, INITIAL_FEMUR_ANGLE_DEG, INITIAL_TIBIA_ANGLE_DEG, INITIAL_COXA_ANGLE_DEG, INITIAL_FEMUR_ANGLE_DEG, INITIAL_TIBIA_ANGLE_DEG, INITIAL_COXA_ANGLE_DEG, INITIAL_FEMUR_ANGLE_DEG, INITIAL_TIBIA_ANGLE_DEG, INITIAL_COXA_ANGLE_DEG, INITIAL_FEMUR_ANGLE_DEG, INITIAL_TIBIA_ANGLE_DEG}
-, _head_ctrl{}
-, _prev_head_ctrl_output{INITIAL_PAN_ANGLE_DEG, INITIAL_TILT_ANGLE_DEG}
 , _teleop_cmd_data{0.0f, 0.0f, 0.0f, 0.0f, 0.0f}
 {
   _timer = create_wall_timer
@@ -71,6 +69,16 @@ RosBridgeNode::RosBridgeNode(
 
   _cmd_vel_sub = create_subscription<geometry_msgs::msg::Twist>
     ("/l3xz/cmd_vel", 10, [this](geometry_msgs::msg::Twist::SharedPtr const msg) { this->onCmdVelUpdate(msg); });
+
+  _head_angle_pub = create_publisher<l3xz_head_ctrl::msg::HeadAngle>
+    ("/l3xz/ctrl/head/angle/actual", 10);
+
+  _head_angle_sub = create_subscription<l3xz_head_ctrl::msg::HeadAngle>
+    ("/l3xz/ctrl/head/angle/target", 10, [this](l3xz_head_ctrl::msg::HeadAngle::SharedPtr const head_angle_target_msg)
+    {
+      _angle_actuator_sensor_head_pan->set (head_angle_target_msg->pan_angle_deg);
+      _angle_actuator_sensor_head_tilt->set(head_angle_target_msg->tilt_angle_deg);
+    });
 }
 
 /**************************************************************************************
@@ -246,21 +254,10 @@ void RosBridgeNode::timerCallback()
    * HEAD CONTROL
    **************************************************************************************/
 
-  head::ControllerInput head_ctrl_input(_teleop_cmd_data,
-                                        _angle_sensor_sensor_head_pan,
-                                        _angle_sensor_sensor_head_tilt);
-
-  auto next_head_ctrl_output = _prev_head_ctrl_output;
-
-  if (head_ctrl_input.isValid())
-    next_head_ctrl_output = _head_ctrl.update(head_ctrl_input, _prev_head_ctrl_output);
-  else
-    printf("[ERROR] head::ControllerInput: invalid input data.");
-
-  _angle_actuator_sensor_head_pan->set (next_head_ctrl_output[head::ControllerOutput::Angle::Pan]);
-  _angle_actuator_sensor_head_tilt->set(next_head_ctrl_output[head::ControllerOutput::Angle::Tilt]);
-
-  _prev_head_ctrl_output = next_head_ctrl_output;
+  l3xz_head_ctrl::msg::HeadAngle head_angle_actual_msg;
+  head_angle_actual_msg.pan_angle_deg  = _angle_sensor_sensor_head_pan->get().value();
+  head_angle_actual_msg.tilt_angle_deg = _angle_sensor_sensor_head_tilt->get().value();
+  _head_angle_pub->publish(head_angle_actual_msg);
 
   /**************************************************************************************
    * WRITE TO PERIPHERALS

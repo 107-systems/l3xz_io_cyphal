@@ -19,7 +19,6 @@
 #include <Types.h>
 
 #include <gait/GaitController.h>
-#include <head/HeadController.h>
 
 #include <driver/ssc32/SSC32.h>
 #include <driver/orel20/Orel20.h>
@@ -32,6 +31,8 @@
 #include <glue/l3xz/ELROB2022/OpenCyphalAnglePositionSensorBulkReader.h>
 #include <glue/l3xz/ELROB2022/DynamixelAnglePositionActuator.h>
 #include <glue/l3xz/ELROB2022/DynamixelAnglePositionActuatorBulkWriter.h>
+
+#include <l3xz_head_ctrl/msg/head_angle.hpp>
 
 /**************************************************************************************
  * NAMESPACE
@@ -93,9 +94,6 @@ private:
   gait::Controller _gait_ctrl;
   gait::ControllerOutput _prev_gait_ctrl_output;
 
-  head::Controller _head_ctrl;
-  head::ControllerOutput _prev_head_ctrl_output;
-
 
   rclcpp::TimerBase::SharedPtr _timer;
 
@@ -103,6 +101,12 @@ private:
   
   rclcpp::Subscription<geometry_msgs::msg::Twist>::SharedPtr _cmd_vel_sub;
   TeleopCommandData _teleop_cmd_data;
+
+
+  rclcpp::Publisher<l3xz_head_ctrl::msg::HeadAngle>::SharedPtr _head_angle_pub;
+  rclcpp::Subscription<l3xz_head_ctrl::msg::HeadAngle>::SharedPtr _head_angle_sub;
+
+
 
   void onCmdVelUpdate(geometry_msgs::msg::Twist::SharedPtr const msg);
   void timerCallback();
