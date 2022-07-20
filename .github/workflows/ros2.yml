@@ -34,7 +34,8 @@ jobs:
         
     - uses: actions/checkout@v2
       with:
-        path: 'ros2_ws/src/l3xz_io'
+        repository: '107-systems/l3xz_head_ctrl'
+        path: 'ros2_ws/src/l3xz_head_ctrl'
         
     - name: colcon build
       run: |
