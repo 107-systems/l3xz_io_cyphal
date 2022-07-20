@@ -2,6 +2,7 @@
 :floppy_disk: `l3xz_io`
 =======================
 [![Build Status](https://github.com/107-systems/l3xz_io/actions/workflows/ros2.yml/badge.svg)](https://github.com/107-systems/l3xz_io/actions/workflows/ros2.yml)
+[![Spell Check status](https://github.com/107-systems/l3xz_io/actions/workflows/spell-check.yml/badge.svg)](https://github.com/107-systems/l3xz_io/actions/workflows/spell-check.yml)
 
 L3X-Z base robot control IO package (ROS).
 
