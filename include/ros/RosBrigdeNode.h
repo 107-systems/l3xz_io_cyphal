@@ -91,6 +91,7 @@ private:
   std::map<LegJointKey, common::actuator::interface::SharedAnglePositionActuator> & _angle_position_actuator_map;
   glue::l3xz::ELROB2022::SharedDynamixelAnglePositionSensor _angle_sensor_sensor_head_pan;
   glue::l3xz::ELROB2022::SharedDynamixelAnglePositionSensor _angle_sensor_sensor_head_tilt;
+  std::chrono::high_resolution_clock::time_point _start_calibration;
 
   gait::Controller _gait_ctrl;
   gait::ControllerOutput _prev_gait_ctrl_output;

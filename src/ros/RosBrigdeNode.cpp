@@ -103,6 +103,17 @@ RosBridgeNode::RosBridgeNode(
       _angle_actuator_sensor_head_pan->set (head_angle_target_msg->pan_angle_deg);
       _angle_actuator_sensor_head_tilt->set(head_angle_target_msg->tilt_angle_deg);
     });
+
+
+  /* Open all hydraulic valves. */
+  for (auto ch: SERVO_CHANNEL_LIST)
+    ssc32_ctrl->setPulseWidth(ch, 2000, 50);
+
+  /* Start the hydraulic pump. */
+  orel20_ctrl->setRPM(4096);
+
+  /* Capture the start time. */
+  _start_calibration = std::chrono::high_resolution_clock::now();
 }
 
 /**************************************************************************************
@@ -199,6 +210,52 @@ void RosBridgeNode::timerCallback()
   _dynamixel_angle_position_sensor_bulk_reader.doBulkRead();
   _open_cyphal_angle_position_sensor_bulk_reader.doBulkRead();
   _open_cyphal_bumper_sensor_bulk_reader.doBulkRead();
+
+  if (!_is_angle_position_sensor_offset_calibration_complete)
+  {
+    auto const now = std::chrono::high_resolution_clock::now();
+    auto const duration = std::chrono::duration_cast<std::chrono::seconds>(now - _start_calibration);
+
+    if (duration.count() > 20)
+    {
+      _is_angle_position_sensor_offset_calibration_complete = true;
+
+      /* Capture the raw angles which are at this point
+      * in time the raw values as reported by the sensors.
+      */
+      for (auto [leg, joint] : HYDRAULIC_LEG_JOINT_LIST)
+        _angle_position_sensor_offset_map.at(make_key(leg, joint)) = _angle_position_sensor_map.at(make_key(leg, joint))->get().value();
+
+      /* Print the offset values one time for
+      * documentation.
+      */
+      std::stringstream msg;
+      msg << "Left" << std::endl
+          << "  Front" << std::endl
+          << "    Femur: " << std::fixed << std::setprecision(2) << std::setfill(' ') << std::setw(6) << _angle_position_sensor_offset_map.at(make_key(Leg::LeftFront, Joint::Femur)) << std::endl
+          << "    Tibia: " << std::fixed << std::setprecision(2) << std::setfill(' ') << std::setw(6) << _angle_position_sensor_offset_map.at(make_key(Leg::LeftFront, Joint::Tibia)) << std::endl
+          << "  Middle" << std::endl
+          << "    Femur: " << std::fixed << std::setprecision(2) << std::setfill(' ') << std::setw(6) << _angle_position_sensor_offset_map.at(make_key(Leg::LeftMiddle, Joint::Femur)) << std::endl
+          << "    Tibia: " << std::fixed << std::setprecision(2) << std::setfill(' ') << std::setw(6) << _angle_position_sensor_offset_map.at(make_key(Leg::LeftMiddle, Joint::Tibia)) << std::endl
+          << "  Back" << std::endl
+          << "    Femur: " << std::fixed << std::setprecision(2) << std::setfill(' ') << std::setw(6) << _angle_position_sensor_offset_map.at(make_key(Leg::LeftBack, Joint::Femur)) << std::endl
+          << "    Tibia: " << std::fixed << std::setprecision(2) << std::setfill(' ') << std::setw(6) << _angle_position_sensor_offset_map.at(make_key(Leg::LeftBack, Joint::Tibia)) << std::endl
+          << "Right" << std::endl
+          << "  Front" << std::endl
+          << "    Femur: " << std::fixed << std::setprecision(2) << std::setfill(' ') << std::setw(6) << _angle_position_sensor_offset_map.at(make_key(Leg::RightFront, Joint::Femur)) << std::endl
+          << "    Tibia: " << std::fixed << std::setprecision(2) << std::setfill(' ') << std::setw(6) << _angle_position_sensor_offset_map.at(make_key(Leg::RightFront, Joint::Tibia)) << std::endl
+          << "  Middle: " << std::endl
+          << "    Femur: " << std::fixed << std::setprecision(2) << std::setfill(' ') << std::setw(6) << _angle_position_sensor_offset_map.at(make_key(Leg::RightMiddle, Joint::Femur)) << std::endl
+          << "    Tibia: " << std::fixed << std::setprecision(2) << std::setfill(' ') << std::setw(6) << _angle_position_sensor_offset_map.at(make_key(Leg::RightMiddle, Joint::Tibia)) << std::endl
+          << "  Back" << std::endl
+          << "    Femur: " << std::fixed << std::setprecision(2) << std::setfill(' ') << std::setw(6) << _angle_position_sensor_offset_map.at(make_key(Leg::RightBack, Joint::Femur)) << std::endl
+          << "    Tibia: " << std::fixed << std::setprecision(2) << std::setfill(' ') << std::setw(6) << _angle_position_sensor_offset_map.at(make_key(Leg::RightBack, Joint::Tibia)) << std::endl
+          ;
+
+      printf("[INFO] Calibrate::update: captured offset angles ...\n%s", msg.str().c_str());
+    }
+  }
+
 
   /* Perform the correction of the sensor values from
    * the offset sensor map.
