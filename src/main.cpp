@@ -22,8 +22,6 @@
 #include <Types.h>
 #include <Const.h>
 
-#include <gait/GaitController.h>
-
 #include <driver/ssc32/SSC32.h>
 #include <driver/orel20/Orel20.h>
 #include <driver/dynamixel/MX28.h>
@@ -60,8 +58,7 @@ void deinit_dynamixel(driver::SharedMX28 & mx28_ctrl);
 
 bool init_open_cyphal(phy::opencyphal::Node & open_cyphal_node,
                       glue::l3xz::ELROB2022::OpenCyphalAnglePositionSensorBulkReader & open_cyphal_angle_position_sensor_bulk_reader,
-                      glue::l3xz::ELROB2022::OpenCyphalBumperSensorBulkReader & open_cyphal_bumper_sensor_bulk_reader,
-                      std::shared_ptr<l3xz::RosBridgeNode> ros_brigde_node);
+                      glue::l3xz::ELROB2022::OpenCyphalBumperSensorBulkReader & open_cyphal_bumper_sensor_bulk_reader);
 
 void deinit_orel20(driver::SharedOrel20 orel20_ctrl);
 
@@ -349,8 +346,7 @@ int main(int argc, char **argv) try
 
   if (!init_open_cyphal(open_cyphal_node,
                         open_cyphal_angle_position_sensor_bulk_reader,
-                        open_cyphal_bumper_sensor_bulk_reader,
-                        ros_bridge_node))
+                        open_cyphal_bumper_sensor_bulk_reader))
   {
     printf("[ERROR] init_open_cyphal failed.");
   }
@@ -426,8 +422,7 @@ void deinit_dynamixel(driver::SharedMX28 & mx28_ctrl)
 
 bool init_open_cyphal(phy::opencyphal::Node & open_cyphal_node,
                       glue::l3xz::ELROB2022::OpenCyphalAnglePositionSensorBulkReader & open_cyphal_angle_position_sensor_bulk_reader,
-                      glue::l3xz::ELROB2022::OpenCyphalBumperSensorBulkReader & open_cyphal_bumper_sensor_bulk_reader,
-                      std::shared_ptr<l3xz::RosBridgeNode> ros_brigde_node)
+                      glue::l3xz::ELROB2022::OpenCyphalBumperSensorBulkReader & open_cyphal_bumper_sensor_bulk_reader)
 {
   if (!open_cyphal_node.subscribe<uavcan::node::Heartbeat_1_0<>>([](CanardRxTransfer const & transfer)
   {
@@ -485,20 +480,6 @@ bool init_open_cyphal(phy::opencyphal::Node & open_cyphal_node,
     printf("[ERROR] init_open_cyphal failed to subscribe to 'uavcan::primitive::scalar::Bit_1_0<1004>'");
     return false;
   }
-
-
-  if (!open_cyphal_node.subscribe<uavcan::primitive::scalar::Integer16_1_0<3000U>>([&ros_brigde_node](CanardRxTransfer const & transfer)
-  {
-    uavcan::primitive::scalar::Integer16_1_0<3000U> const radiation_value = uavcan::primitive::scalar::Integer16_1_0<3000U>::deserialize(transfer);
-    printf("[INFO] [%d] Radiation Tick Count %d", transfer.metadata.remote_node_id, radiation_value.data.value);
-
-    ros_brigde_node->publish_radiation_tick_count(radiation_value.data.value);
-  }))
-  {
-    printf("[ERROR] init_open_cyphal failed to subscribe to 'uavcan::primitive::scalar::Integer16_1_0<3000U>'");
-    return false;
-  }
-
 
   return true;
 }

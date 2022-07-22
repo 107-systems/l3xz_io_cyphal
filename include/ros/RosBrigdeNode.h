@@ -18,8 +18,6 @@
 
 #include <Types.h>
 
-#include <gait/GaitController.h>
-
 #include <driver/ssc32/SSC32.h>
 #include <driver/orel20/Orel20.h>
 
@@ -70,10 +68,6 @@ public:
     glue::l3xz::ELROB2022::SharedDynamixelAnglePositionSensor angle_sensor_sensor_head_tilt
   );
 
-  void publish_radiation_tick_count(int16_t const radiation_tick_cnt);
-
-  inline TeleopCommandData teleop_cmd_data() const { return _teleop_cmd_data;  }
-
 private:
   glue::l3xz::ELROB2022::DynamixelAnglePositionSensorBulkReader & _dynamixel_angle_position_sensor_bulk_reader;
   glue::l3xz::ELROB2022::OpenCyphalAnglePositionSensorBulkReader & _open_cyphal_angle_position_sensor_bulk_reader;
@@ -93,16 +87,7 @@ private:
   glue::l3xz::ELROB2022::SharedDynamixelAnglePositionSensor _angle_sensor_sensor_head_tilt;
   std::chrono::high_resolution_clock::time_point _start_calibration;
 
-  gait::Controller _gait_ctrl;
-  gait::ControllerOutput _prev_gait_ctrl_output;
-
-
   rclcpp::TimerBase::SharedPtr _timer;
-
-  rclcpp::Publisher<std_msgs::msg::Int16>::SharedPtr _radiation_pub;
-  
-  rclcpp::Subscription<geometry_msgs::msg::Twist>::SharedPtr _cmd_vel_sub;
-  TeleopCommandData _teleop_cmd_data;
 
   rclcpp::Publisher<l3xz_gait_ctrl::msg::LegAngle>::SharedPtr _leg_angle_pub;
   rclcpp::Subscription<l3xz_gait_ctrl::msg::LegAngle>::SharedPtr _leg_angle_sub;
@@ -111,9 +96,6 @@ private:
   rclcpp::Publisher<l3xz_head_ctrl::msg::HeadAngle>::SharedPtr _head_angle_pub;
   rclcpp::Subscription<l3xz_head_ctrl::msg::HeadAngle>::SharedPtr _head_angle_sub;
 
-
-
-  void onCmdVelUpdate(geometry_msgs::msg::Twist::SharedPtr const msg);
   void timerCallback();
 };
 

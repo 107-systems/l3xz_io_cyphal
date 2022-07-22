@@ -58,9 +58,6 @@ RosBridgeNode::RosBridgeNode(
 , _angle_position_actuator_map{angle_position_actuator_map}
 , _angle_sensor_sensor_head_pan{angle_sensor_sensor_head_pan}
 , _angle_sensor_sensor_head_tilt{angle_sensor_sensor_head_tilt}
-, _gait_ctrl{ssc32_ctrl, orel20_ctrl, angle_position_sensor_offset_map, is_angle_position_sensor_offset_calibration_complete}
-, _prev_gait_ctrl_output{INITIAL_COXA_ANGLE_DEG, INITIAL_FEMUR_ANGLE_DEG, INITIAL_TIBIA_ANGLE_DEG, INITIAL_COXA_ANGLE_DEG, INITIAL_FEMUR_ANGLE_DEG, INITIAL_TIBIA_ANGLE_DEG, INITIAL_COXA_ANGLE_DEG, INITIAL_FEMUR_ANGLE_DEG, INITIAL_TIBIA_ANGLE_DEG, INITIAL_COXA_ANGLE_DEG, INITIAL_FEMUR_ANGLE_DEG, INITIAL_TIBIA_ANGLE_DEG, INITIAL_COXA_ANGLE_DEG, INITIAL_FEMUR_ANGLE_DEG, INITIAL_TIBIA_ANGLE_DEG, INITIAL_COXA_ANGLE_DEG, INITIAL_FEMUR_ANGLE_DEG, INITIAL_TIBIA_ANGLE_DEG}
-, _teleop_cmd_data{0.0f, 0.0f, 0.0f, 0.0f, 0.0f}
 , _leg_angle_target_msg{
     []()
     {
@@ -79,11 +76,6 @@ RosBridgeNode::RosBridgeNode(
 {
   _timer = create_wall_timer
     (std::chrono::milliseconds(50), [this]() { this->timerCallback(); });
-
-  _radiation_pub = create_publisher<std_msgs::msg::Int16>("/l3xz/radiation_tick_cnt", 25);
-
-  _cmd_vel_sub = create_subscription<geometry_msgs::msg::Twist>
-    ("/l3xz/cmd_vel", 10, [this](geometry_msgs::msg::Twist::SharedPtr const msg) { this->onCmdVelUpdate(msg); });
 
   _leg_angle_pub = create_publisher<l3xz_gait_ctrl::msg::LegAngle>
     ("/l3xz/ctrl/gait/angle/actual", 10);
@@ -120,89 +112,8 @@ RosBridgeNode::RosBridgeNode(
  * PUBLIC MEMBER FUNCTIONS
  **************************************************************************************/
 
-void RosBridgeNode::publish_radiation_tick_count(int16_t const radiation_tick_cnt)
-{
-  std_msgs::msg::Int16 radiation_tick_msg;
-  radiation_tick_msg.data = radiation_tick_cnt;
-  _radiation_pub->publish(radiation_tick_msg);
-}
-
-/**************************************************************************************
- * PUBLIC MEMBER FUNCTIONS
- **************************************************************************************/
-
-void RosBridgeNode::onCmdVelUpdate(geometry_msgs::msg::Twist::SharedPtr const msg)
-{
-  _teleop_cmd_data.linear_velocity_x           = msg->linear.x;
-  _teleop_cmd_data.linear_velocity_y           = msg->linear.y;
-  _teleop_cmd_data.angular_velocity_head_tilt  = msg->angular.x;
-  _teleop_cmd_data.angular_velocity_head_pan   = msg->angular.y;
-  _teleop_cmd_data.angular_velocity_z          = msg->angular.z;
-}
-
 void RosBridgeNode::timerCallback()
 {
-  auto isGaitControllerInputDataValid = [](std::map<LegJointKey, common::sensor::interface::SharedAnglePositionSensor> const & ap_map,
-                                           std::map<Leg, common::sensor::interface::SharedBumperSensor> const & b_map) -> bool
-  {
-    for (auto [leg, joint] : LEG_JOINT_LIST)
-      if (!ap_map.at(make_key(leg, joint))->get().has_value())
-        return false;
-
-    for (auto leg : LEG_LIST)
-      if (!b_map.at(leg)->get().has_value())
-        return false;
-
-    return true;
-  };
-
-  auto toStr = [](std::map<LegJointKey, common::sensor::interface::SharedAnglePositionSensor> const & angle_position,
-                  std::map<Leg, common::sensor::interface::SharedBumperSensor> const & bumper) -> std::string
-  {
-    std::stringstream msg;
-
-    msg << "\n"
-        << "Left\n"
-        << "  Front :"
-        << "  Coxa: "   << angle_position.at(make_key(Leg::LeftFront, Joint::Coxa))->toStr()
-        << "  Femur: "  << angle_position.at(make_key(Leg::LeftFront, Joint::Femur))->toStr()
-        << "  Tibia: "  << angle_position.at(make_key(Leg::LeftFront, Joint::Tibia))->toStr()
-        << "  Tip: "    << bumper.at(Leg::LeftFront)->toStr()
-        << "\n"
-        << "  Middle:"
-        << "  Coxa: "   << angle_position.at(make_key(Leg::LeftMiddle, Joint::Coxa))->toStr()
-        << "  Femur: "  << angle_position.at(make_key(Leg::LeftMiddle, Joint::Femur))->toStr()
-        << "  Tibia: "  << angle_position.at(make_key(Leg::LeftMiddle, Joint::Tibia))->toStr()
-        << "  Tip: "    << bumper.at(Leg::LeftMiddle)->toStr()
-        << "\n"
-        << "  Back  :"
-        << "  Coxa: "   << angle_position.at(make_key(Leg::LeftBack, Joint::Coxa))->toStr()
-        << "  Femur: "  << angle_position.at(make_key(Leg::LeftBack, Joint::Femur))->toStr()
-        << "  Tibia: "  << angle_position.at(make_key(Leg::LeftBack, Joint::Tibia))->toStr()
-        << "  Tip: "    << bumper.at(Leg::LeftBack)->toStr()
-        << "\n"
-        << "Right\n"
-        << "  Front :"
-        << "  Coxa: "   << angle_position.at(make_key(Leg::RightFront, Joint::Coxa))->toStr()
-        << "  Femur: "  << angle_position.at(make_key(Leg::RightFront, Joint::Femur))->toStr()
-        << "  Tibia: "  << angle_position.at(make_key(Leg::RightFront, Joint::Tibia))->toStr()
-        << "  Tip: "    << bumper.at(Leg::RightFront)->toStr()
-        << "\n"
-        << "  Middle:"
-        << "  Coxa: "   << angle_position.at(make_key(Leg::RightMiddle, Joint::Coxa))->toStr()
-        << "  Femur: "  << angle_position.at(make_key(Leg::RightMiddle, Joint::Femur))->toStr()
-        << "  Tibia: "  << angle_position.at(make_key(Leg::RightMiddle, Joint::Tibia))->toStr()
-        << "  Tip: "    << bumper.at(Leg::RightMiddle)->toStr()
-        << "\n"
-        << "  Back  :"
-        << "  Coxa: "   << angle_position.at(make_key(Leg::RightBack, Joint::Coxa))->toStr()
-        << "  Femur: "  << angle_position.at(make_key(Leg::RightBack, Joint::Femur))->toStr()
-        << "  Tibia: "  << angle_position.at(make_key(Leg::RightBack, Joint::Tibia))->toStr()
-        << "  Tip: "    << bumper.at(Leg::RightBack)->toStr();
-
-    return msg.str();
-  };
-
   /**************************************************************************************
    * READ FROM PERIPHERALS
    **************************************************************************************/
@@ -256,7 +167,6 @@ void RosBridgeNode::timerCallback()
     }
   }
 
-
   /* Perform the correction of the sensor values from
    * the offset sensor map.
    */
@@ -283,36 +193,21 @@ void RosBridgeNode::timerCallback()
    * GAIT CONTROL
    **************************************************************************************/
 
-  auto next_gait_ctrl_output = _prev_gait_ctrl_output;
-
-  printf("[INFO] IN: %s", toStr(_angle_position_sensor_map, _bumper_sensor_map).c_str());
-
-  if (!isGaitControllerInputDataValid(_angle_position_sensor_map, _bumper_sensor_map))
-    printf("[ERROR] gait_ctrl.update: invalid input data.");
-  else
+  if (_is_angle_position_sensor_offset_calibration_complete)
   {
-    gait::ControllerInput const gait_ctrl_input(_teleop_cmd_data, _angle_position_sensor_map, _bumper_sensor_map);
-    next_gait_ctrl_output = _gait_ctrl.update(gait_ctrl_input, _prev_gait_ctrl_output);
-
-    printf("[INFO] OUT: %s", next_gait_ctrl_output.toStr().c_str());
-
-    /* Check if we need to turn on the pump. */
-    if (_is_angle_position_sensor_offset_calibration_complete)
+    unsigned int num_joints_actively_controlled = 0;
+    for (auto [leg, joint] : HYDRAULIC_LEG_JOINT_LIST)
     {
-      unsigned int num_joints_actively_controlled = 0;
-      for (auto [leg, joint] : HYDRAULIC_LEG_JOINT_LIST)
-      {
-        float const target_angle_deg = next_gait_ctrl_output.get_angle_deg(leg, joint);
-        float const actual_angle_deg = gait_ctrl_input.get_angle_deg(leg, joint);
-        float const angle_err = fabs(target_angle_deg - actual_angle_deg);
-        if (angle_err > 2.0f)
-          num_joints_actively_controlled++;
-      }
-      if (num_joints_actively_controlled > 0)
-        _orel20_rpm_actuator.set(4096);
-      else
-        _orel20_rpm_actuator.set(0);
+      float const target_angle_deg = next_gait_ctrl_output.get_angle_deg(leg, joint);
+      float const actual_angle_deg = gait_ctrl_input.get_angle_deg(leg, joint);
+      float const angle_err = fabs(target_angle_deg - actual_angle_deg);
+      if (angle_err > 2.0f)
+        num_joints_actively_controlled++;
     }
+    if (num_joints_actively_controlled > 0)
+      _orel20_rpm_actuator.set(4096);
+    else
+      _orel20_rpm_actuator.set(0);
   }
 
   if (_is_angle_position_sensor_offset_calibration_complete)
@@ -324,9 +219,6 @@ void RosBridgeNode::timerCallback()
       _angle_position_actuator_map.at(make_key(leg, joint))->set(target_angle_deg);
     }
   }
-
-  /* Copy previous output. */
-  _prev_gait_ctrl_output = next_gait_ctrl_output;
 
   if (_is_angle_position_sensor_offset_calibration_complete)
     _open_cyphal_led_actuator.setBlinkMode(glue::l3xz::ELROB2022::OpenCyphalLEDActuator::BlinkMode::Amber);

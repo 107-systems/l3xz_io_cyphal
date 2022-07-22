@@ -41,14 +41,6 @@ add_executable(${PROJECT_NAME}_node
   src/phy/opencyphal/SocketCAN.cpp
   src/phy/serial/AsyncSerial.cpp
   src/ros/RosBrigdeNode.cpp
-  src/gait/state/Walking.cpp
-  src/gait/state/Calibrate.cpp
-  src/gait/state/Standing.cpp
-  src/gait/state/StandUp.cpp
-  src/gait/state/Turning.cpp
-  src/gait/GaitController.cpp
-  src/gait/GaitControllerInput.cpp
-  src/gait/GaitControllerOutput.cpp
   src/main.cpp
 )
 #######################################################################################
