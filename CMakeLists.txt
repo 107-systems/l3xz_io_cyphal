@@ -7,8 +7,6 @@ find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(builtin_interfaces REQUIRED)
 find_package(common_interfaces REQUIRED)
-find_package(std_msgs REQUIRED)
-find_package(geometry_msgs REQUIRED)
 find_package(l3xz_gait_ctrl REQUIRED)
 find_package(l3xz_head_ctrl REQUIRED)
 ##########################################################################
@@ -26,13 +24,8 @@ include_directories(
 ##########################################################################
 add_executable(${PROJECT_NAME}_node
   src/common/actuator/interface/AnglePositionActuator.cpp
-  src/common/kinematic/Engine.cpp
-  src/common/kinematic/FK_Output.cpp
-  src/common/kinematic/IK_Output.cpp
   src/common/sensor/interface/AnglePositionSensor.cpp
   src/common/sensor/interface/BumperSensor.cpp
-  src/common/threading/ThreadBase.cpp
-  src/common/threading/ThreadStats.cpp
   src/driver/dynamixel/Dynamixel.cpp
   src/driver/dynamixel/MX28.cpp
   src/driver/orel20/Orel20.cpp
@@ -57,7 +50,7 @@ target_link_libraries(${PROJECT_NAME}_node
 #######################################################################################
 target_compile_features(${PROJECT_NAME}_node PRIVATE cxx_std_17)
 target_compile_options(${PROJECT_NAME}_node PRIVATE -Wall -Werror -pedantic)
-ament_target_dependencies(${PROJECT_NAME}_node rclcpp std_msgs geometry_msgs l3xz_gait_ctrl l3xz_head_ctrl)
+ament_target_dependencies(${PROJECT_NAME}_node rclcpp l3xz_gait_ctrl l3xz_head_ctrl)
 #######################################################################################
 add_subdirectory(tooling/fwlegctrl)
 add_subdirectory(tooling/orocos)

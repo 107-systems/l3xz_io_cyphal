@@ -13,9 +13,6 @@
 
 #include <rclcpp/rclcpp.hpp>
 
-#include <std_msgs/msg/int16.hpp>
-#include <geometry_msgs/msg/twist.hpp>
-
 #include <Types.h>
 
 #include <driver/ssc32/SSC32.h>
