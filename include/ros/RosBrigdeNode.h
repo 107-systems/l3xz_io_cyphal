@@ -19,7 +19,6 @@
 #include <driver/orel20/Orel20.h>
 
 #include <glue/l3xz/ELROB2022/Orel20RPMActuator.h>
-#include <glue/l3xz/ELROB2022/OpenCyphalLEDActuator.h>
 #include <glue/l3xz/ELROB2022/SSC32PWMActuatorBulkwriter.h>
 #include <glue/l3xz/ELROB2022/OpenCyphalBumperSensorBulkReader.h>
 #include <glue/l3xz/ELROB2022/DynamixelAnglePositionSensorBulkReader.h>
@@ -50,7 +49,6 @@ public:
     glue::l3xz::ELROB2022::DynamixelAnglePositionSensorBulkReader & dynamixel_angle_position_sensor_bulk_reader,
     glue::l3xz::ELROB2022::OpenCyphalAnglePositionSensorBulkReader & open_cyphal_angle_position_sensor_bulk_reader,
     glue::l3xz::ELROB2022::OpenCyphalBumperSensorBulkReader & open_cyphal_bumper_sensor_bulk_reader,
-    glue::l3xz::ELROB2022::OpenCyphalLEDActuator & open_cyphal_led_actuator,
     glue::l3xz::ELROB2022::Orel20RPMActuator & orel20_rpm_actuator,
     glue::l3xz::ELROB2022::SSC32PWMActuatorBulkwriter & ssc32_pwm_actuator_bulk_driver,
     glue::l3xz::ELROB2022::DynamixelAnglePositionActuatorBulkWriter & dynamixel_angle_position_actuator_bulk_writer,
@@ -69,7 +67,6 @@ private:
   glue::l3xz::ELROB2022::DynamixelAnglePositionSensorBulkReader & _dynamixel_angle_position_sensor_bulk_reader;
   glue::l3xz::ELROB2022::OpenCyphalAnglePositionSensorBulkReader & _open_cyphal_angle_position_sensor_bulk_reader;
   glue::l3xz::ELROB2022::OpenCyphalBumperSensorBulkReader & _open_cyphal_bumper_sensor_bulk_reader;
-  glue::l3xz::ELROB2022::OpenCyphalLEDActuator & _open_cyphal_led_actuator;
   glue::l3xz::ELROB2022::Orel20RPMActuator & _orel20_rpm_actuator;
   glue::l3xz::ELROB2022::SSC32PWMActuatorBulkwriter & _ssc32_pwm_actuator_bulk_driver;
   glue::l3xz::ELROB2022::DynamixelAnglePositionActuatorBulkWriter & _dynamixel_angle_position_actuator_bulk_writer;

@@ -45,7 +45,6 @@
 #include <glue/l3xz/ELROB2022/OpenCyphalBumperSensor.h>
 #include <glue/l3xz/ELROB2022/OpenCyphalBumperSensorBulkReader.h>
 #include <glue/l3xz/ELROB2022/Orel20RPMActuator.h>
-#include <glue/l3xz/ELROB2022/OpenCyphalLEDActuator.h>
 
 #include <ros/RosBrigdeNode.h>
 
@@ -183,9 +182,6 @@ int main(int argc, char **argv) try
     tibia_tip_bumper_right_middle,
     tibia_tip_bumper_right_front
   );
-
-  glue::l3xz::ELROB2022::OpenCyphalLEDActuator open_cyphal_led_actuator(open_cyphal_node);
-  open_cyphal_led_actuator.setBlinkMode(glue::l3xz::ELROB2022::OpenCyphalLEDActuator::BlinkMode::Green);
 
   /**************************************************************************************
    * OREL 20 / DRONECAN
@@ -329,7 +325,6 @@ int main(int argc, char **argv) try
     dynamixel_angle_position_sensor_bulk_reader,
     open_cyphal_angle_position_sensor_bulk_reader,
     open_cyphal_bumper_sensor_bulk_reader,
-    open_cyphal_led_actuator,
     orel20_rpm_actuator,
     ssc32_pwm_actuator_bulk_driver,
     dynamixel_angle_position_actuator_bulk_writer,

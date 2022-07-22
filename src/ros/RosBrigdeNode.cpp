@@ -27,8 +27,7 @@ RosBridgeNode::RosBridgeNode(
   glue::l3xz::ELROB2022::DynamixelAnglePositionSensorBulkReader & dynamixel_angle_position_sensor_bulk_reader,
   glue::l3xz::ELROB2022::OpenCyphalAnglePositionSensorBulkReader & open_cyphal_angle_position_sensor_bulk_reader,
   glue::l3xz::ELROB2022::OpenCyphalBumperSensorBulkReader & open_cyphal_bumper_sensor_bulk_reader,
-  glue::l3xz::ELROB2022::OpenCyphalLEDActuator & open_cyphal_led_actuator,
-  glue::l3xz::ELROB2022::Orel20RPMActuator & orel20_rpm_actuator,
+    glue::l3xz::ELROB2022::Orel20RPMActuator & orel20_rpm_actuator,
   glue::l3xz::ELROB2022::SSC32PWMActuatorBulkwriter & ssc32_pwm_actuator_bulk_driver,
   glue::l3xz::ELROB2022::DynamixelAnglePositionActuatorBulkWriter & dynamixel_angle_position_actuator_bulk_writer,
   bool & is_angle_position_sensor_offset_calibration_complete,
@@ -45,7 +44,6 @@ RosBridgeNode::RosBridgeNode(
 , _dynamixel_angle_position_sensor_bulk_reader{dynamixel_angle_position_sensor_bulk_reader}
 , _open_cyphal_angle_position_sensor_bulk_reader{open_cyphal_angle_position_sensor_bulk_reader}
 , _open_cyphal_bumper_sensor_bulk_reader{open_cyphal_bumper_sensor_bulk_reader}
-, _open_cyphal_led_actuator{open_cyphal_led_actuator}
 , _orel20_rpm_actuator{orel20_rpm_actuator}
 , _ssc32_pwm_actuator_bulk_driver{ssc32_pwm_actuator_bulk_driver}
 , _dynamixel_angle_position_actuator_bulk_writer{dynamixel_angle_position_actuator_bulk_writer}
@@ -220,9 +218,6 @@ void RosBridgeNode::timerCallback()
     }
   }
 
-  if (_is_angle_position_sensor_offset_calibration_complete)
-    _open_cyphal_led_actuator.setBlinkMode(glue::l3xz::ELROB2022::OpenCyphalLEDActuator::BlinkMode::Amber);
-
   /**************************************************************************************
    * HEAD CONTROL
    **************************************************************************************/
@@ -241,7 +236,6 @@ void RosBridgeNode::timerCallback()
 
   _ssc32_pwm_actuator_bulk_driver.doBulkWrite();
   _orel20_rpm_actuator.doWrite();
-  _open_cyphal_led_actuator.doBulkWrite();
 }
 
 /**************************************************************************************
