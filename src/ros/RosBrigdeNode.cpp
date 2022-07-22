@@ -61,6 +61,21 @@ RosBridgeNode::RosBridgeNode(
 , _gait_ctrl{ssc32_ctrl, orel20_ctrl, angle_position_sensor_offset_map, is_angle_position_sensor_offset_calibration_complete}
 , _prev_gait_ctrl_output{INITIAL_COXA_ANGLE_DEG, INITIAL_FEMUR_ANGLE_DEG, INITIAL_TIBIA_ANGLE_DEG, INITIAL_COXA_ANGLE_DEG, INITIAL_FEMUR_ANGLE_DEG, INITIAL_TIBIA_ANGLE_DEG, INITIAL_COXA_ANGLE_DEG, INITIAL_FEMUR_ANGLE_DEG, INITIAL_TIBIA_ANGLE_DEG, INITIAL_COXA_ANGLE_DEG, INITIAL_FEMUR_ANGLE_DEG, INITIAL_TIBIA_ANGLE_DEG, INITIAL_COXA_ANGLE_DEG, INITIAL_FEMUR_ANGLE_DEG, INITIAL_TIBIA_ANGLE_DEG, INITIAL_COXA_ANGLE_DEG, INITIAL_FEMUR_ANGLE_DEG, INITIAL_TIBIA_ANGLE_DEG}
 , _teleop_cmd_data{0.0f, 0.0f, 0.0f, 0.0f, 0.0f}
+, _leg_angle_target_msg{
+    []()
+    {
+      l3xz_gait_ctrl::msg::LegAngle msg;
+      
+      for (size_t l = 0; l < 6; l++)
+      {
+        msg.coxa_angle_deg [l] = INITIAL_COXA_ANGLE_DEG;
+        msg.femur_angle_deg[l] = INITIAL_FEMUR_ANGLE_DEG;
+        msg.tibia_angle_deg[l] = INITIAL_TIBIA_ANGLE_DEG;
+      }
+
+      return msg;
+    } ()
+  }
 {
   _timer = create_wall_timer
     (std::chrono::milliseconds(50), [this]() { this->timerCallback(); });
@@ -69,6 +84,15 @@ RosBridgeNode::RosBridgeNode(
 
   _cmd_vel_sub = create_subscription<geometry_msgs::msg::Twist>
     ("/l3xz/cmd_vel", 10, [this](geometry_msgs::msg::Twist::SharedPtr const msg) { this->onCmdVelUpdate(msg); });
+
+  _leg_angle_pub = create_publisher<l3xz_gait_ctrl::msg::LegAngle>
+    ("/l3xz/ctrl/gait/angle/actual", 10);
+
+  _leg_angle_sub = create_subscription<l3xz_gait_ctrl::msg::LegAngle>
+    ("/l3xz/ctrl/gait/angle/actual", 10, [this](l3xz_gait_ctrl::msg::LegAngle::SharedPtr const leg_angle_target_msg)
+    {
+      _leg_angle_target_msg = *leg_angle_target_msg;
+    });
 
   _head_angle_pub = create_publisher<l3xz_head_ctrl::msg::HeadAngle>
     ("/l3xz/ctrl/head/angle/actual", 10);

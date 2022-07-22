@@ -32,6 +32,7 @@
 #include <glue/l3xz/ELROB2022/DynamixelAnglePositionActuator.h>
 #include <glue/l3xz/ELROB2022/DynamixelAnglePositionActuatorBulkWriter.h>
 
+#include <l3xz_gait_ctrl/msg/leg_angle.hpp>
 #include <l3xz_head_ctrl/msg/head_angle.hpp>
 
 /**************************************************************************************
@@ -102,6 +103,9 @@ private:
   rclcpp::Subscription<geometry_msgs::msg::Twist>::SharedPtr _cmd_vel_sub;
   TeleopCommandData _teleop_cmd_data;
 
+  rclcpp::Publisher<l3xz_gait_ctrl::msg::LegAngle>::SharedPtr _leg_angle_pub;
+  rclcpp::Subscription<l3xz_gait_ctrl::msg::LegAngle>::SharedPtr _leg_angle_sub;
+  l3xz_gait_ctrl::msg::LegAngle _leg_angle_target_msg;
 
   rclcpp::Publisher<l3xz_head_ctrl::msg::HeadAngle>::SharedPtr _head_angle_pub;
   rclcpp::Subscription<l3xz_head_ctrl::msg::HeadAngle>::SharedPtr _head_angle_sub;
