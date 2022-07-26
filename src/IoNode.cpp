@@ -8,7 +8,7 @@
  * INCLUDES
  **************************************************************************************/
 
-#include <ros/RosBrigdeNode.h>
+#include <IoNode.h>
 
 /**************************************************************************************
  * NAMESPACE
@@ -21,7 +21,7 @@ namespace l3xz
  * CTOR/DTOR
  **************************************************************************************/
 
-RosBridgeNode::RosBridgeNode(
+IoNode::IoNode(
   driver::SharedOrel20 orel20_ctrl,
   driver::SharedSSC32 ssc32_ctrl,
   glue::l3xz::ELROB2022::DynamixelAnglePositionSensorBulkReader & dynamixel_angle_position_sensor_bulk_reader,
@@ -135,7 +135,7 @@ RosBridgeNode::RosBridgeNode(
  * PUBLIC MEMBER FUNCTIONS
  **************************************************************************************/
 
-void RosBridgeNode::timerCallback()
+void IoNode::timerCallback()
 {
   /**************************************************************************************
    * READ FROM PERIPHERALS
@@ -257,7 +257,7 @@ void RosBridgeNode::timerCallback()
   _orel20_rpm_actuator.doWrite();
 }
 
-float RosBridgeNode::get_angle_deg(l3xz_gait_ctrl::msg::LegAngle const & msg, Leg const leg, Joint const joint)
+float IoNode::get_angle_deg(l3xz_gait_ctrl::msg::LegAngle const & msg, Leg const leg, Joint const joint)
 {
   std::map<LegJointKey, float> const ANGLE_POSITION_MAP =
   {

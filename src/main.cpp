@@ -46,7 +46,7 @@
 #include <glue/l3xz/ELROB2022/OpenCyphalBumperSensorBulkReader.h>
 #include <glue/l3xz/ELROB2022/Orel20RPMActuator.h>
 
-#include <ros/RosBrigdeNode.h>
+#include <IoNode.h>
 
 /**************************************************************************************
  * FUNCTION DECLARATION
@@ -318,7 +318,7 @@ int main(int argc, char **argv) try
    * STATE
    **************************************************************************************/
 
-  auto ros_bridge_node = std::make_shared<l3xz::RosBridgeNode>
+  auto io_node = std::make_shared<l3xz::IoNode>
   (
     orel20_ctrl,
     ssc32_ctrl,
@@ -351,7 +351,7 @@ int main(int argc, char **argv) try
    * MAIN LOOP
    **************************************************************************************/
 
-  rclcpp::spin(ros_bridge_node);
+  rclcpp::spin(io_node);
   rclcpp::shutdown();
 
   printf("[WARNING] STOPPING");

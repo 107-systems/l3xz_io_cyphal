@@ -33,7 +33,7 @@ add_executable(${PROJECT_NAME}_node
   src/phy/opencyphal/Node.cpp
   src/phy/opencyphal/SocketCAN.cpp
   src/phy/serial/AsyncSerial.cpp
-  src/ros/RosBrigdeNode.cpp
+  src/IoNode.cpp
   src/main.cpp
 )
 #######################################################################################

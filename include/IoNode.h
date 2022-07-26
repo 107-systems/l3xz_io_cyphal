@@ -40,10 +40,10 @@ namespace l3xz
  * CLASS DECLARATION
  **************************************************************************************/
 
-class RosBridgeNode : public rclcpp::Node
+class IoNode : public rclcpp::Node
 {
 public:
-  RosBridgeNode(
+  IoNode(
     driver::SharedOrel20 orel20_ctrl,
     driver::SharedSSC32 ssc32_ctrl,
     glue::l3xz::ELROB2022::DynamixelAnglePositionSensorBulkReader & dynamixel_angle_position_sensor_bulk_reader,
