@@ -56,6 +56,21 @@ RosBridgeNode::RosBridgeNode(
 , _angle_position_actuator_map{angle_position_actuator_map}
 , _angle_sensor_sensor_head_pan{angle_sensor_sensor_head_pan}
 , _angle_sensor_sensor_head_tilt{angle_sensor_sensor_head_tilt}
+, _leg_angle_actual_msg{
+    []()
+    {
+      l3xz_gait_ctrl::msg::LegAngle msg;
+      
+      for (size_t l = 0; l < 6; l++)
+      {
+        msg.coxa_angle_deg [l] = INITIAL_COXA_ANGLE_DEG;
+        msg.femur_angle_deg[l] = INITIAL_FEMUR_ANGLE_DEG;
+        msg.tibia_angle_deg[l] = INITIAL_TIBIA_ANGLE_DEG;
+      }
+
+      return msg;
+    } ()
+  }
 , _leg_angle_target_msg{
     []()
     {
@@ -204,28 +219,19 @@ void RosBridgeNode::timerCallback()
   if (_is_angle_position_sensor_offset_calibration_complete)
   {
     unsigned int num_joints_actively_controlled = 0;
-    for (auto [leg, joint] : HYDRAULIC_LEG_JOINT_LIST)
+    for (auto [leg, joint] : LEG_JOINT_LIST)
     {
-      float const target_angle_deg = next_gait_ctrl_output.get_angle_deg(leg, joint);
-      float const actual_angle_deg = gait_ctrl_input.get_angle_deg(leg, joint);
+      float const target_angle_deg = get_angle_deg(_leg_angle_target_msg, leg, joint);
+      float const actual_angle_deg = get_angle_deg(_leg_angle_actual_msg, leg, joint);
       float const angle_err = fabs(target_angle_deg - actual_angle_deg);
       if (angle_err > 2.0f)
         num_joints_actively_controlled++;
     }
+
     if (num_joints_actively_controlled > 0)
       _orel20_rpm_actuator.set(4096);
     else
       _orel20_rpm_actuator.set(0);
-  }
-
-  if (_is_angle_position_sensor_offset_calibration_complete)
-  {
-    for (auto [leg, joint] : LEG_JOINT_LIST)
-    {
-      /* Write the target angles to the actual angle position actuators. */
-      float const target_angle_deg = next_gait_ctrl_output.get_angle_deg(leg, joint);
-      _angle_position_actuator_map.at(make_key(leg, joint))->set(target_angle_deg);
-    }
   }
 
   /**************************************************************************************
@@ -249,6 +255,12 @@ void RosBridgeNode::timerCallback()
 
   _ssc32_pwm_actuator_bulk_driver.doBulkWrite();
   _orel20_rpm_actuator.doWrite();
+}
+
+float RosBridgeNode::get_angle_deg(l3xz_gait_ctrl::msg::LegAngle const & msg, Leg const leg, Joint const joint)
+{
+  /* TODO */
+  return 0.0f;
 }
 
 /**************************************************************************************

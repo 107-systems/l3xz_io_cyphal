@@ -85,13 +85,15 @@ private:
 
   rclcpp::Publisher<l3xz_gait_ctrl::msg::LegAngle>::SharedPtr _leg_angle_pub;
   rclcpp::Subscription<l3xz_gait_ctrl::msg::LegAngle>::SharedPtr _leg_angle_sub;
-  l3xz_gait_ctrl::msg::LegAngle _leg_angle_target_msg;
+  l3xz_gait_ctrl::msg::LegAngle _leg_angle_actual_msg, _leg_angle_target_msg;
 
   rclcpp::Publisher<l3xz_head_ctrl::msg::HeadAngle>::SharedPtr _head_angle_pub;
   rclcpp::Subscription<l3xz_head_ctrl::msg::HeadAngle>::SharedPtr _head_angle_sub;
   l3xz_head_ctrl::msg::HeadAngle _head_angle_target_msg;
 
   void timerCallback();
+
+  static float get_angle_deg(l3xz_gait_ctrl::msg::LegAngle const & msg, Leg const leg, Joint const joint);
 };
 
 /**************************************************************************************
