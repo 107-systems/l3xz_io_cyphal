@@ -50,13 +50,4 @@ inline LegJointKey make_key(Leg const leg, Joint const joint)
   return std::tuple(leg, joint);
 }
 
-typedef struct
-{
-  float linear_velocity_x;
-  float linear_velocity_y;
-  float angular_velocity_head_tilt;
-  float angular_velocity_head_pan;
-  float angular_velocity_z;
-} TeleopCommandData;
-
 #endif /* TYPES_H_ */
