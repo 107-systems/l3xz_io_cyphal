@@ -259,8 +259,34 @@ void RosBridgeNode::timerCallback()
 
 float RosBridgeNode::get_angle_deg(l3xz_gait_ctrl::msg::LegAngle const & msg, Leg const leg, Joint const joint)
 {
-  /* TODO */
-  return 0.0f;
+  std::map<LegJointKey, float> const ANGLE_POSITION_MAP =
+  {
+    {make_key(Leg::LeftFront,   Joint::Coxa),  msg.coxa_angle_deg [0]},
+    {make_key(Leg::LeftFront,   Joint::Femur), msg.femur_angle_deg[0]},
+    {make_key(Leg::LeftFront,   Joint::Tibia), msg.tibia_angle_deg[0]},
+
+    {make_key(Leg::LeftMiddle,  Joint::Coxa),  msg.coxa_angle_deg [1]},
+    {make_key(Leg::LeftMiddle,  Joint::Femur), msg.femur_angle_deg[1]},
+    {make_key(Leg::LeftMiddle,  Joint::Tibia), msg.tibia_angle_deg[1]},
+
+    {make_key(Leg::LeftBack,    Joint::Coxa),  msg.coxa_angle_deg [2]},
+    {make_key(Leg::LeftBack,    Joint::Femur), msg.femur_angle_deg[2]},
+    {make_key(Leg::LeftBack,    Joint::Tibia), msg.tibia_angle_deg[2]},
+
+    {make_key(Leg::RightFront,  Joint::Coxa),  msg.coxa_angle_deg [3]},
+    {make_key(Leg::RightFront,  Joint::Femur), msg.femur_angle_deg[3]},
+    {make_key(Leg::RightFront,  Joint::Tibia), msg.tibia_angle_deg[3]},
+
+    {make_key(Leg::RightMiddle, Joint::Coxa),  msg.coxa_angle_deg [4]},
+    {make_key(Leg::RightMiddle, Joint::Femur), msg.femur_angle_deg[4]},
+    {make_key(Leg::RightMiddle, Joint::Tibia), msg.tibia_angle_deg[4]},
+
+    {make_key(Leg::RightBack,   Joint::Coxa),  msg.coxa_angle_deg [5]},
+    {make_key(Leg::RightBack,   Joint::Femur), msg.femur_angle_deg[5]},
+    {make_key(Leg::RightBack,   Joint::Tibia), msg.tibia_angle_deg[5]}
+  };
+
+  return ANGLE_POSITION_MAP.at(make_key(leg, joint));
 }
 
 /**************************************************************************************
