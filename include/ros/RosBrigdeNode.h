@@ -89,6 +89,7 @@ private:
 
   rclcpp::Publisher<l3xz_head_ctrl::msg::HeadAngle>::SharedPtr _head_angle_pub;
   rclcpp::Subscription<l3xz_head_ctrl::msg::HeadAngle>::SharedPtr _head_angle_sub;
+  l3xz_head_ctrl::msg::HeadAngle _head_angle_target_msg;
 
   void timerCallback();
 };

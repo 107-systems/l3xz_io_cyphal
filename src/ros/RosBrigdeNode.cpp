@@ -71,6 +71,17 @@ RosBridgeNode::RosBridgeNode(
       return msg;
     } ()
   }
+, _head_angle_target_msg{
+    []()
+    {
+      l3xz_head_ctrl::msg::HeadAngle msg;
+
+      msg.pan_angle_deg  = INITIAL_PAN_ANGLE_DEG;
+      msg.tilt_angle_deg = INITIAL_TILT_ANGLE_DEG;
+
+      return msg;
+    } ()
+  }
 {
   _timer = create_wall_timer
     (std::chrono::milliseconds(50), [this]() { this->timerCallback(); });
@@ -90,8 +101,7 @@ RosBridgeNode::RosBridgeNode(
   _head_angle_sub = create_subscription<l3xz_head_ctrl::msg::HeadAngle>
     ("/l3xz/ctrl/head/angle/target", 10, [this](l3xz_head_ctrl::msg::HeadAngle::SharedPtr const head_angle_target_msg)
     {
-      _angle_actuator_sensor_head_pan->set (head_angle_target_msg->pan_angle_deg);
-      _angle_actuator_sensor_head_tilt->set(head_angle_target_msg->tilt_angle_deg);
+      _head_angle_target_msg = *head_angle_target_msg;
     });
 
 
@@ -226,6 +236,9 @@ void RosBridgeNode::timerCallback()
   head_angle_actual_msg.pan_angle_deg  = _angle_sensor_sensor_head_pan->get().value();
   head_angle_actual_msg.tilt_angle_deg = _angle_sensor_sensor_head_tilt->get().value();
   _head_angle_pub->publish(head_angle_actual_msg);
+
+  _angle_actuator_sensor_head_pan->set (_head_angle_target_msg.pan_angle_deg);
+  _angle_actuator_sensor_head_tilt->set(_head_angle_target_msg.tilt_angle_deg);
 
   /**************************************************************************************
    * WRITE TO PERIPHERALS
