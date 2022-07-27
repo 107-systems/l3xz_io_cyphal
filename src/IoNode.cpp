@@ -10,6 +10,8 @@
 
 #include <IoNode.h>
 
+#include <iomanip>
+
 #include <driver/dynamixel/AnglePositionSensorBulkReader.h>
 
 /**************************************************************************************
