@@ -24,7 +24,7 @@ namespace l3xz
  **************************************************************************************/
 
 IoNode::IoNode(
-  driver::SharedMX28 mx28_ctrl,
+  dynamixel::SharedMX28 mx28_ctrl,
   driver::SharedOrel20 orel20_ctrl,
   driver::SharedSSC32 ssc32_ctrl,
   glue::l3xz::ELROB2022::OpenCyphalAnglePositionSensorBulkReader & open_cyphal_angle_position_sensor_bulk_reader,
@@ -139,7 +139,7 @@ void IoNode::timerCallback()
    * READ FROM PERIPHERALS
    **************************************************************************************/
 
-  auto const dynamixel_angle_position_deg = driver::AnglePositionSensorBulkReader::doBulkRead(_mx28_ctrl);
+  auto const dynamixel_angle_position_deg = dynamixel::AnglePositionSensorBulkReader::doBulkRead(_mx28_ctrl);
 
   _open_cyphal_angle_position_sensor_bulk_reader.doBulkRead();
   _open_cyphal_bumper_sensor_bulk_reader.doBulkRead();
@@ -238,8 +238,8 @@ void IoNode::timerCallback()
    **************************************************************************************/
 
   l3xz_head_ctrl::msg::HeadAngle head_angle_actual_msg;
-  head_angle_actual_msg.pan_angle_deg  = dynamixel_angle_position_deg.at(driver::AnglePositionSensorBulkReader::ServoKey::Head_Pan);
-  head_angle_actual_msg.tilt_angle_deg = dynamixel_angle_position_deg.at(driver::AnglePositionSensorBulkReader::ServoKey::Head_Tilt);
+  head_angle_actual_msg.pan_angle_deg  = dynamixel_angle_position_deg.at(dynamixel::AnglePositionSensorBulkReader::ServoKey::Head_Pan);
+  head_angle_actual_msg.tilt_angle_deg = dynamixel_angle_position_deg.at(dynamixel::AnglePositionSensorBulkReader::ServoKey::Head_Tilt);
   _head_angle_pub->publish(head_angle_actual_msg);
 
   _angle_actuator_sensor_head_pan->set (_head_angle_target_msg.pan_angle_deg);

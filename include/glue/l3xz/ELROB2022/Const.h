@@ -25,7 +25,7 @@ namespace glue::l3xz::ELROB2022
  * CONSTANT
  **************************************************************************************/
 
-static driver::Dynamixel::IdVect const DYNAMIXEL_ID_VECT{1,2,3,4,5,6,7,8};
+static dynamixel::Dynamixel::IdVect const DYNAMIXEL_ID_VECT{1,2,3,4,5,6,7,8};
 
 /**************************************************************************************
  * NAMESPACE

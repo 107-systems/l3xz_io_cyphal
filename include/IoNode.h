@@ -43,7 +43,7 @@ class IoNode : public rclcpp::Node
 {
 public:
   IoNode(
-    driver::SharedMX28 mx28_ctrl,
+    dynamixel::SharedMX28 mx28_ctrl,
     driver::SharedOrel20 orel20_ctrl,
     driver::SharedSSC32 ssc32_ctrl,
     glue::l3xz::ELROB2022::OpenCyphalAnglePositionSensorBulkReader & open_cyphal_angle_position_sensor_bulk_reader,
@@ -61,7 +61,7 @@ public:
   );
 
 private:
-  driver::SharedMX28 _mx28_ctrl;
+  dynamixel::SharedMX28 _mx28_ctrl;
   glue::l3xz::ELROB2022::OpenCyphalAnglePositionSensorBulkReader & _open_cyphal_angle_position_sensor_bulk_reader;
   glue::l3xz::ELROB2022::OpenCyphalBumperSensorBulkReader & _open_cyphal_bumper_sensor_bulk_reader;
   glue::l3xz::ELROB2022::Orel20RPMActuator & _orel20_rpm_actuator;

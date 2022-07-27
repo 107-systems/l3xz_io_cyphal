@@ -19,7 +19,7 @@
  * NAMESPACE
  **************************************************************************************/
 
-namespace driver
+namespace dynamixel
 {
 
 /**************************************************************************************
@@ -43,9 +43,9 @@ public:
     Head_Tilt,
   };
 
-  static std::map<ServoKey, float> doBulkRead(driver::SharedMX28 mx28_ctrl)
+  static std::map<ServoKey, float> doBulkRead(SharedMX28 mx28_ctrl)
   {
-    std::map<driver::Dynamixel::Id, ServoKey> const DYNAMIXEL_ID_TO_SERVO_KEY =
+    std::map<Dynamixel::Id, ServoKey> const DYNAMIXEL_ID_TO_SERVO_KEY =
     {
       {1, ServoKey::LeftFront_Coxa},
       {2, ServoKey::LeftMiddle_Coxa},
@@ -78,6 +78,6 @@ public:
  * NAMESPACE
  **************************************************************************************/
 
-} /* driver */
+} /* dynamixel */
 
 #endif /* GLUE_L3XZ_ELROB2022_DYNAMIXEL_ANGLE_POSITION_SENSOR_BULK_READER_H_ */

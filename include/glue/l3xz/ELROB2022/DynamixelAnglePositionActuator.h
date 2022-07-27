@@ -32,9 +32,9 @@ class DynamixelAnglePositionActuator : public common::actuator::interface::Angle
 {
 public:
 
-  typedef std::function<void(driver::Dynamixel::Id const, float const)> OnChangeFunc;
+  typedef std::function<void(dynamixel::Dynamixel::Id const, float const)> OnChangeFunc;
 
-  DynamixelAnglePositionActuator(std::string const & name, driver::Dynamixel::Id const id, OnChangeFunc func)
+  DynamixelAnglePositionActuator(std::string const & name, dynamixel::Dynamixel::Id const id, OnChangeFunc func)
   : AnglePositionActuator(name)
   , _id{id}
   , _on_change_func{func}
@@ -53,7 +53,7 @@ protected:
   }
 
 private:
-  driver::Dynamixel::Id _id;
+  dynamixel::Dynamixel::Id _id;
   OnChangeFunc _on_change_func;
   std::optional<float> _angle_deg;
 };
