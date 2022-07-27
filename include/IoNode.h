@@ -21,7 +21,6 @@
 #include <glue/l3xz/ELROB2022/Orel20RPMActuator.h>
 #include <glue/l3xz/ELROB2022/SSC32PWMActuatorBulkwriter.h>
 #include <glue/l3xz/ELROB2022/OpenCyphalBumperSensorBulkReader.h>
-#include <glue/l3xz/ELROB2022/DynamixelAnglePositionSensorBulkReader.h>
 #include <glue/l3xz/ELROB2022/OpenCyphalAnglePositionSensorBulkReader.h>
 #include <glue/l3xz/ELROB2022/DynamixelAnglePositionActuator.h>
 #include <glue/l3xz/ELROB2022/DynamixelAnglePositionActuatorBulkWriter.h>

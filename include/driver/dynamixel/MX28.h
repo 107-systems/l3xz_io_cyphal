@@ -13,7 +13,7 @@
 
 #include <memory>
 
-#include <driver/dynamixel/Dynamixel.h>
+#include "Dynamixel.h"
 
 /**************************************************************************************
  * NAMESPACE

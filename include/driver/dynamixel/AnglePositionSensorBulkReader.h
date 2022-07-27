@@ -11,7 +11,7 @@
  * INCLUDES
  **************************************************************************************/
 
-#include <driver/dynamixel/MX28.h>
+#include "MX28.h"
 
 #include "Const.h"
 
@@ -19,17 +19,17 @@
  * NAMESPACE
  **************************************************************************************/
 
-namespace glue::l3xz::ELROB2022
+namespace driver
 {
 
 /**************************************************************************************
  * CLASS DECLARATION
  **************************************************************************************/
 
-class DynamixelAnglePositionSensorBulkReader
+class AnglePositionSensorBulkReader
 {
 public:
-  DynamixelAnglePositionSensorBulkReader() = delete;
+  AnglePositionSensorBulkReader() = delete;
 
   enum class ServoKey
   {
@@ -57,7 +57,7 @@ public:
       {8, ServoKey::Head_Tilt},
     };
 
-    driver::MX28::AngleDataSet const angle_data_set = mx28_ctrl->getAngle(DYNAMIXEL_ID_VECT);
+    MX28::AngleDataSet const angle_data_set = mx28_ctrl->getAngle(DYNAMIXEL_ID_VECT);
 
     std::map<ServoKey, float> dynamixel_angle_position_map;
 
@@ -78,6 +78,6 @@ public:
  * NAMESPACE
  **************************************************************************************/
 
-} /* glue::l3xz::ELROB2022 */
+} /* driver */
 
 #endif /* GLUE_L3XZ_ELROB2022_DYNAMIXEL_ANGLE_POSITION_SENSOR_BULK_READER_H_ */
