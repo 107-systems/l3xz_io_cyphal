@@ -44,9 +44,9 @@ class IoNode : public rclcpp::Node
 {
 public:
   IoNode(
+    driver::SharedMX28 mx28_ctrl,
     driver::SharedOrel20 orel20_ctrl,
     driver::SharedSSC32 ssc32_ctrl,
-    glue::l3xz::ELROB2022::DynamixelAnglePositionSensorBulkReader & dynamixel_angle_position_sensor_bulk_reader,
     glue::l3xz::ELROB2022::OpenCyphalAnglePositionSensorBulkReader & open_cyphal_angle_position_sensor_bulk_reader,
     glue::l3xz::ELROB2022::OpenCyphalBumperSensorBulkReader & open_cyphal_bumper_sensor_bulk_reader,
     glue::l3xz::ELROB2022::Orel20RPMActuator & orel20_rpm_actuator,
@@ -58,13 +58,11 @@ public:
     std::map<Leg, common::sensor::interface::SharedBumperSensor> & bumper_sensor_map,
     glue::l3xz::ELROB2022::SharedDynamixelAnglePositionActuator angle_actuator_sensor_head_pan,
     glue::l3xz::ELROB2022::SharedDynamixelAnglePositionActuator angle_actuator_sensor_head_tilt,
-    std::map<LegJointKey, common::actuator::interface::SharedAnglePositionActuator> & angle_position_actuator_map,
-    glue::l3xz::ELROB2022::SharedDynamixelAnglePositionSensor angle_sensor_sensor_head_pan,
-    glue::l3xz::ELROB2022::SharedDynamixelAnglePositionSensor angle_sensor_sensor_head_tilt
+    std::map<LegJointKey, common::actuator::interface::SharedAnglePositionActuator> & angle_position_actuator_map
   );
 
 private:
-  glue::l3xz::ELROB2022::DynamixelAnglePositionSensorBulkReader & _dynamixel_angle_position_sensor_bulk_reader;
+  driver::SharedMX28 _mx28_ctrl;
   glue::l3xz::ELROB2022::OpenCyphalAnglePositionSensorBulkReader & _open_cyphal_angle_position_sensor_bulk_reader;
   glue::l3xz::ELROB2022::OpenCyphalBumperSensorBulkReader & _open_cyphal_bumper_sensor_bulk_reader;
   glue::l3xz::ELROB2022::Orel20RPMActuator & _orel20_rpm_actuator;
@@ -77,8 +75,6 @@ private:
   glue::l3xz::ELROB2022::SharedDynamixelAnglePositionActuator _angle_actuator_sensor_head_pan;
   glue::l3xz::ELROB2022::SharedDynamixelAnglePositionActuator _angle_actuator_sensor_head_tilt;
   std::map<LegJointKey, common::actuator::interface::SharedAnglePositionActuator> & _angle_position_actuator_map;
-  glue::l3xz::ELROB2022::SharedDynamixelAnglePositionSensor _angle_sensor_sensor_head_pan;
-  glue::l3xz::ELROB2022::SharedDynamixelAnglePositionSensor _angle_sensor_sensor_head_tilt;
   std::chrono::high_resolution_clock::time_point _start_calibration;
 
   rclcpp::TimerBase::SharedPtr _timer;

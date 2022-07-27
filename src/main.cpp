@@ -36,8 +36,6 @@
 #include <glue/l3xz/ELROB2022/SSC32PWMActuatorBulkwriter.h>
 #include <glue/l3xz/ELROB2022/SSC32ValveActuator.h>
 #include <glue/l3xz/ELROB2022/SSC32AnglePositionActuator.h>
-#include <glue/l3xz/ELROB2022/DynamixelAnglePositionSensor.h>
-#include <glue/l3xz/ELROB2022/DynamixelAnglePositionSensorBulkReader.h>
 #include <glue/l3xz/ELROB2022/DynamixelAnglePositionActuator.h>
 #include <glue/l3xz/ELROB2022/DynamixelAnglePositionActuatorBulkWriter.h>
 #include <glue/l3xz/ELROB2022/OpenCyphalAnglePositionSensor.h>
@@ -95,28 +93,6 @@ int main(int argc, char **argv) try
   if (!init_dynamixel(mx28_ctrl))
     printf("[ERROR] init_dynamixel failed.");
   printf("[INFO] init_dynamixel successfully completed.");
-
-  auto angle_sensor_left_front_coxa   = std::make_shared<glue::l3xz::ELROB2022::DynamixelAnglePositionSensor>("L/F Coxa");
-  auto angle_sensor_left_middle_coxa  = std::make_shared<glue::l3xz::ELROB2022::DynamixelAnglePositionSensor>("L/M Coxa");
-  auto angle_sensor_left_back_coxa    = std::make_shared<glue::l3xz::ELROB2022::DynamixelAnglePositionSensor>("L/B Coxa");
-  auto angle_sensor_right_back_coxa   = std::make_shared<glue::l3xz::ELROB2022::DynamixelAnglePositionSensor>("R/B Coxa");
-  auto angle_sensor_right_middle_coxa = std::make_shared<glue::l3xz::ELROB2022::DynamixelAnglePositionSensor>("R/M Coxa");
-  auto angle_sensor_right_front_coxa  = std::make_shared<glue::l3xz::ELROB2022::DynamixelAnglePositionSensor>("R/F Coxa");
-  auto angle_sensor_sensor_head_pan   = std::make_shared<glue::l3xz::ELROB2022::DynamixelAnglePositionSensor>("HEAD Pan");
-  auto angle_sensor_sensor_head_tilt  = std::make_shared<glue::l3xz::ELROB2022::DynamixelAnglePositionSensor>("HEAD Tilt");
-
-  glue::l3xz::ELROB2022::DynamixelAnglePositionSensorBulkReader dynamixel_angle_position_sensor_bulk_reader
-  (
-    mx28_ctrl,
-    angle_sensor_left_front_coxa,
-    angle_sensor_left_middle_coxa,
-    angle_sensor_left_back_coxa,
-    angle_sensor_right_back_coxa,
-    angle_sensor_right_middle_coxa,
-    angle_sensor_right_front_coxa,
-    angle_sensor_sensor_head_pan,
-    angle_sensor_sensor_head_tilt
-  );
 
   glue::l3xz::ELROB2022::DynamixelAnglePositionActuatorBulkWriter dynamixel_angle_position_actuator_bulk_writer(mx28_ctrl);
 
@@ -274,22 +250,16 @@ int main(int argc, char **argv) try
 
   std::map<LegJointKey, common::sensor::interface::SharedAnglePositionSensor> angle_position_sensor_map =
   {
-    {make_key(Leg::LeftFront,   Joint::Coxa),  angle_sensor_left_front_coxa},
     {make_key(Leg::LeftFront,   Joint::Femur), angle_sensor_left_front_femur},
     {make_key(Leg::LeftFront,   Joint::Tibia), angle_sensor_left_front_tibia},
-    {make_key(Leg::LeftMiddle,  Joint::Coxa),  angle_sensor_left_middle_coxa},
     {make_key(Leg::LeftMiddle,  Joint::Femur), angle_sensor_left_middle_femur},
     {make_key(Leg::LeftMiddle,  Joint::Tibia), angle_sensor_left_middle_tibia},
-    {make_key(Leg::LeftBack,    Joint::Coxa),  angle_sensor_left_back_coxa},
     {make_key(Leg::LeftBack,    Joint::Femur), angle_sensor_left_back_femur},
     {make_key(Leg::LeftBack,    Joint::Tibia), angle_sensor_left_back_tibia},
-    {make_key(Leg::RightFront,  Joint::Coxa),  angle_sensor_right_front_coxa},
     {make_key(Leg::RightFront,  Joint::Femur), angle_sensor_right_front_femur},
     {make_key(Leg::RightFront,  Joint::Tibia), angle_sensor_right_front_tibia},
-    {make_key(Leg::RightMiddle, Joint::Coxa),  angle_sensor_right_middle_coxa},
     {make_key(Leg::RightMiddle, Joint::Femur), angle_sensor_right_middle_femur},
     {make_key(Leg::RightMiddle, Joint::Tibia), angle_sensor_right_middle_tibia},
-    {make_key(Leg::RightBack,   Joint::Coxa),  angle_sensor_right_back_coxa},
     {make_key(Leg::RightBack,   Joint::Femur), angle_sensor_right_back_femur},
     {make_key(Leg::RightBack,   Joint::Tibia), angle_sensor_right_back_tibia}
   };
@@ -320,9 +290,9 @@ int main(int argc, char **argv) try
 
   auto io_node = std::make_shared<l3xz::IoNode>
   (
+    mx28_ctrl,
     orel20_ctrl,
     ssc32_ctrl,
-    dynamixel_angle_position_sensor_bulk_reader,
     open_cyphal_angle_position_sensor_bulk_reader,
     open_cyphal_bumper_sensor_bulk_reader,
     orel20_rpm_actuator,
@@ -334,9 +304,7 @@ int main(int argc, char **argv) try
     bumper_sensor_map,
     angle_actuator_sensor_head_pan,
     angle_actuator_sensor_head_tilt,
-    angle_position_actuator_map,
-    angle_sensor_sensor_head_pan,
-    angle_sensor_sensor_head_tilt
+    angle_position_actuator_map
   );
 
   if (!init_open_cyphal(open_cyphal_node,

@@ -22,12 +22,12 @@ namespace l3xz
  **************************************************************************************/
 
 IoNode::IoNode(
+  driver::SharedMX28 mx28_ctrl,
   driver::SharedOrel20 orel20_ctrl,
   driver::SharedSSC32 ssc32_ctrl,
-  glue::l3xz::ELROB2022::DynamixelAnglePositionSensorBulkReader & dynamixel_angle_position_sensor_bulk_reader,
   glue::l3xz::ELROB2022::OpenCyphalAnglePositionSensorBulkReader & open_cyphal_angle_position_sensor_bulk_reader,
   glue::l3xz::ELROB2022::OpenCyphalBumperSensorBulkReader & open_cyphal_bumper_sensor_bulk_reader,
-    glue::l3xz::ELROB2022::Orel20RPMActuator & orel20_rpm_actuator,
+  glue::l3xz::ELROB2022::Orel20RPMActuator & orel20_rpm_actuator,
   glue::l3xz::ELROB2022::SSC32PWMActuatorBulkwriter & ssc32_pwm_actuator_bulk_driver,
   glue::l3xz::ELROB2022::DynamixelAnglePositionActuatorBulkWriter & dynamixel_angle_position_actuator_bulk_writer,
   bool & is_angle_position_sensor_offset_calibration_complete,
@@ -36,12 +36,10 @@ IoNode::IoNode(
   std::map<Leg, common::sensor::interface::SharedBumperSensor> & bumper_sensor_map,
   glue::l3xz::ELROB2022::SharedDynamixelAnglePositionActuator angle_actuator_sensor_head_pan,
   glue::l3xz::ELROB2022::SharedDynamixelAnglePositionActuator angle_actuator_sensor_head_tilt,
-  std::map<LegJointKey, common::actuator::interface::SharedAnglePositionActuator> & angle_position_actuator_map,
-  glue::l3xz::ELROB2022::SharedDynamixelAnglePositionSensor angle_sensor_sensor_head_pan,
-  glue::l3xz::ELROB2022::SharedDynamixelAnglePositionSensor angle_sensor_sensor_head_tilt
+  std::map<LegJointKey, common::actuator::interface::SharedAnglePositionActuator> & angle_position_actuator_map
 )
 : Node("l3xz_io")
-, _dynamixel_angle_position_sensor_bulk_reader{dynamixel_angle_position_sensor_bulk_reader}
+, _mx28_ctrl{mx28_ctrl}
 , _open_cyphal_angle_position_sensor_bulk_reader{open_cyphal_angle_position_sensor_bulk_reader}
 , _open_cyphal_bumper_sensor_bulk_reader{open_cyphal_bumper_sensor_bulk_reader}
 , _orel20_rpm_actuator{orel20_rpm_actuator}
@@ -54,8 +52,6 @@ IoNode::IoNode(
 , _angle_actuator_sensor_head_pan{angle_actuator_sensor_head_pan}
 , _angle_actuator_sensor_head_tilt{angle_actuator_sensor_head_tilt}
 , _angle_position_actuator_map{angle_position_actuator_map}
-, _angle_sensor_sensor_head_pan{angle_sensor_sensor_head_pan}
-, _angle_sensor_sensor_head_tilt{angle_sensor_sensor_head_tilt}
 , _leg_angle_actual_msg{
     []()
     {
@@ -141,7 +137,8 @@ void IoNode::timerCallback()
    * READ FROM PERIPHERALS
    **************************************************************************************/
 
-  _dynamixel_angle_position_sensor_bulk_reader.doBulkRead();
+  auto const dynamixel_angle_position_deg = glue::l3xz::ELROB2022::DynamixelAnglePositionSensorBulkReader::doBulkRead(_mx28_ctrl);
+
   _open_cyphal_angle_position_sensor_bulk_reader.doBulkRead();
   _open_cyphal_bumper_sensor_bulk_reader.doBulkRead();
 
@@ -239,8 +236,8 @@ void IoNode::timerCallback()
    **************************************************************************************/
 
   l3xz_head_ctrl::msg::HeadAngle head_angle_actual_msg;
-  head_angle_actual_msg.pan_angle_deg  = _angle_sensor_sensor_head_pan->get().value();
-  head_angle_actual_msg.tilt_angle_deg = _angle_sensor_sensor_head_tilt->get().value();
+  head_angle_actual_msg.pan_angle_deg  = dynamixel_angle_position_deg.at(glue::l3xz::ELROB2022::DynamixelAnglePositionSensorBulkReader::ServoKey::Head_Pan);
+  head_angle_actual_msg.tilt_angle_deg = dynamixel_angle_position_deg.at(glue::l3xz::ELROB2022::DynamixelAnglePositionSensorBulkReader::ServoKey::Head_Tilt);
   _head_angle_pub->publish(head_angle_actual_msg);
 
   _angle_actuator_sensor_head_pan->set (_head_angle_target_msg.pan_angle_deg);
