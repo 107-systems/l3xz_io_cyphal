@@ -13,6 +13,8 @@
 
 #include <mutex>
 
+#include <Types.h>
+
 #include <phy/opencyphal/Node.hpp>
 
 /**************************************************************************************
@@ -31,13 +33,14 @@ class HydraulicAnglePositionReader
 public:
   HydraulicAnglePositionReader(phy::opencyphal::Node & node);
 
-  void doBulkRead();
+  std::map<LegJointKey, float> doBulkRead();
 
 private:
   std::mutex _mtx;
+  std::map<LegJointKey, float> _leg_angle_position_map;
 
-  void update_femur_angle(CanardNodeID const node_id, float const femur_angle_deg);
-  void update_tibia_angle(CanardNodeID const node_id, float const tibia_angle_deg);
+  static LegJointKey femur_toLegJointKey(CanardNodeID const node_id);
+  static LegJointKey tibia_toLegJointKey(CanardNodeID const node_id);
 };
 
 /**************************************************************************************
