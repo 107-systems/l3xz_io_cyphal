@@ -13,13 +13,13 @@
 
 #include <driver/dynamixel/MX28.h>
 
-#include "DynamixelAnglePositionActuator.h"
+#include <glue/DynamixelServoName.h>
 
 /**************************************************************************************
  * NAMESPACE
  **************************************************************************************/
 
-namespace glue::l3xz::ELROB2022
+namespace glue
 {
 
 /**************************************************************************************
@@ -29,16 +29,15 @@ namespace glue::l3xz::ELROB2022
 class DynamixelAnglePositionActuatorBulkWriter
 {
 public:
-  DynamixelAnglePositionActuatorBulkWriter(dynamixel::SharedMX28 mx28_ctrl)
-  : _mx28_ctrl{mx28_ctrl}
+  DynamixelAnglePositionActuatorBulkWriter()
   { }
 
-  void update(dynamixel::Dynamixel::Id const id, float const angle_deg)
+  void update(DynamixelServoName const name, float const angle_deg)
   {
-    _dynamixel_angle_map[id] = angle_deg;
+    _dynamixel_angle_map[toServoId(name)] = angle_deg;
   }
 
-  bool doBulkWrite()
+  bool doBulkWrite(dynamixel::SharedMX28 mx28_ctrl)
   {
     dynamixel::MX28::AngleDataSet angle_data_set;
 
@@ -48,11 +47,10 @@ public:
       angle_data_set[id] = corrected_angle_deg;
     }
 
-    return _mx28_ctrl->setAngle(angle_data_set);
+    return mx28_ctrl->setAngle(angle_data_set);
   }
 
 private:
-  dynamixel::SharedMX28 _mx28_ctrl;
   std::map<dynamixel::Dynamixel::Id, float> _dynamixel_angle_map;
 };
 
@@ -60,6 +58,6 @@ private:
  * NAMESPACE
  **************************************************************************************/
 
-} /* glue::l3xz::ELROB2022 */
+} /* glue */
 
 #endif /* GLUE_L3XZ_ELROB2022_DYNAMIXEL_ANGLE_POSITION_ACTUATOR_BULK_WRITER_H_ */

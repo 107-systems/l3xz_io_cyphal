@@ -33,13 +33,10 @@ IoNode::IoNode(
   glue::l3xz::ELROB2022::OpenCyphalBumperSensorBulkReader & open_cyphal_bumper_sensor_bulk_reader,
   glue::l3xz::ELROB2022::Orel20RPMActuator & orel20_rpm_actuator,
   glue::l3xz::ELROB2022::SSC32PWMActuatorBulkwriter & ssc32_pwm_actuator_bulk_driver,
-  glue::l3xz::ELROB2022::DynamixelAnglePositionActuatorBulkWriter & dynamixel_angle_position_actuator_bulk_writer,
   bool & is_angle_position_sensor_offset_calibration_complete,
   std::map<LegJointKey, common::sensor::interface::SharedAnglePositionSensor> & angle_position_sensor_map,
   std::map<LegJointKey, float> & angle_position_sensor_offset_map,
   std::map<Leg, common::sensor::interface::SharedBumperSensor> & bumper_sensor_map,
-  glue::l3xz::ELROB2022::SharedDynamixelAnglePositionActuator angle_actuator_sensor_head_pan,
-  glue::l3xz::ELROB2022::SharedDynamixelAnglePositionActuator angle_actuator_sensor_head_tilt,
   std::map<LegJointKey, common::actuator::interface::SharedAnglePositionActuator> & angle_position_actuator_map
 )
 : Node("l3xz_io")
@@ -48,13 +45,11 @@ IoNode::IoNode(
 , _open_cyphal_bumper_sensor_bulk_reader{open_cyphal_bumper_sensor_bulk_reader}
 , _orel20_rpm_actuator{orel20_rpm_actuator}
 , _ssc32_pwm_actuator_bulk_driver{ssc32_pwm_actuator_bulk_driver}
-, _dynamixel_angle_position_actuator_bulk_writer{dynamixel_angle_position_actuator_bulk_writer}
+, _dynamixel_angle_position_actuator_bulk_writer{}
 , _is_angle_position_sensor_offset_calibration_complete{is_angle_position_sensor_offset_calibration_complete}
 , _angle_position_sensor_map{angle_position_sensor_map}
 , _angle_position_sensor_offset_map{angle_position_sensor_offset_map}
 , _bumper_sensor_map{bumper_sensor_map}
-, _angle_actuator_sensor_head_pan{angle_actuator_sensor_head_pan}
-, _angle_actuator_sensor_head_tilt{angle_actuator_sensor_head_tilt}
 , _angle_position_actuator_map{angle_position_actuator_map}
 , _leg_angle_actual_msg{
     []()
@@ -244,14 +239,14 @@ void IoNode::timerCallback()
   head_angle_actual_msg.tilt_angle_deg = dynamixel_angle_position_deg.at(glue::DynamixelServoName::Head_Tilt);
   _head_angle_pub->publish(head_angle_actual_msg);
 
-  _angle_actuator_sensor_head_pan->set (_head_angle_target_msg.pan_angle_deg);
-  _angle_actuator_sensor_head_tilt->set(_head_angle_target_msg.tilt_angle_deg);
+  _dynamixel_angle_position_actuator_bulk_writer.update(glue::DynamixelServoName::Head_Pan,  _head_angle_target_msg.pan_angle_deg);
+  _dynamixel_angle_position_actuator_bulk_writer.update(glue::DynamixelServoName::Head_Tilt, _head_angle_target_msg.tilt_angle_deg);
 
   /**************************************************************************************
    * WRITE TO PERIPHERALS
    **************************************************************************************/
 
-  if (!_dynamixel_angle_position_actuator_bulk_writer.doBulkWrite())
+  if (!_dynamixel_angle_position_actuator_bulk_writer.doBulkWrite(_mx28_ctrl))
     printf("[ERROR] failed to set target angles for all dynamixel servos");
 
   _ssc32_pwm_actuator_bulk_driver.doBulkWrite();

@@ -41,6 +41,7 @@ enum class DynamixelServoName
  **************************************************************************************/
 
 DynamixelServoName toServoName(dynamixel::Dynamixel::Id const id);
+dynamixel::Dynamixel::Id toServoId(DynamixelServoName const name);
 
 /**************************************************************************************
  * NAMESPACE

@@ -36,8 +36,6 @@
 #include <glue/l3xz/ELROB2022/SSC32PWMActuatorBulkwriter.h>
 #include <glue/l3xz/ELROB2022/SSC32ValveActuator.h>
 #include <glue/l3xz/ELROB2022/SSC32AnglePositionActuator.h>
-#include <glue/l3xz/ELROB2022/DynamixelAnglePositionActuator.h>
-#include <glue/l3xz/ELROB2022/DynamixelAnglePositionActuatorBulkWriter.h>
 #include <glue/l3xz/ELROB2022/OpenCyphalAnglePositionSensor.h>
 #include <glue/l3xz/ELROB2022/OpenCyphalAnglePositionSensorBulkReader.h>
 #include <glue/l3xz/ELROB2022/OpenCyphalBumperSensor.h>
@@ -93,17 +91,6 @@ int main(int argc, char **argv) try
   if (!init_dynamixel(mx28_ctrl))
     printf("[ERROR] init_dynamixel failed.");
   printf("[INFO] init_dynamixel successfully completed.");
-
-  glue::l3xz::ELROB2022::DynamixelAnglePositionActuatorBulkWriter dynamixel_angle_position_actuator_bulk_writer(mx28_ctrl);
-
-  auto angle_actuator_left_front_coxa   = std::make_shared<glue::l3xz::ELROB2022::DynamixelAnglePositionActuator>("L/F Coxa",  1, [&dynamixel_angle_position_actuator_bulk_writer](dynamixel::Dynamixel::Id const id, float const angle_deg) { dynamixel_angle_position_actuator_bulk_writer.update(id, angle_deg); });
-  auto angle_actuator_left_middle_coxa  = std::make_shared<glue::l3xz::ELROB2022::DynamixelAnglePositionActuator>("L/M Coxa",  2, [&dynamixel_angle_position_actuator_bulk_writer](dynamixel::Dynamixel::Id const id, float const angle_deg) { dynamixel_angle_position_actuator_bulk_writer.update(id, angle_deg); });
-  auto angle_actuator_left_back_coxa    = std::make_shared<glue::l3xz::ELROB2022::DynamixelAnglePositionActuator>("L/B Coxa",  3, [&dynamixel_angle_position_actuator_bulk_writer](dynamixel::Dynamixel::Id const id, float const angle_deg) { dynamixel_angle_position_actuator_bulk_writer.update(id, angle_deg); });
-  auto angle_actuator_right_back_coxa   = std::make_shared<glue::l3xz::ELROB2022::DynamixelAnglePositionActuator>("R/B Coxa",  4, [&dynamixel_angle_position_actuator_bulk_writer](dynamixel::Dynamixel::Id const id, float const angle_deg) { dynamixel_angle_position_actuator_bulk_writer.update(id, angle_deg); });
-  auto angle_actuator_right_middle_coxa = std::make_shared<glue::l3xz::ELROB2022::DynamixelAnglePositionActuator>("R/M Coxa",  5, [&dynamixel_angle_position_actuator_bulk_writer](dynamixel::Dynamixel::Id const id, float const angle_deg) { dynamixel_angle_position_actuator_bulk_writer.update(id, angle_deg); });
-  auto angle_actuator_right_front_coxa  = std::make_shared<glue::l3xz::ELROB2022::DynamixelAnglePositionActuator>("R/F Coxa",  6, [&dynamixel_angle_position_actuator_bulk_writer](dynamixel::Dynamixel::Id const id, float const angle_deg) { dynamixel_angle_position_actuator_bulk_writer.update(id, angle_deg); });
-  auto angle_actuator_sensor_head_pan   = std::make_shared<glue::l3xz::ELROB2022::DynamixelAnglePositionActuator>("HEAD Pan",  7, [&dynamixel_angle_position_actuator_bulk_writer](dynamixel::Dynamixel::Id const id, float const angle_deg) { dynamixel_angle_position_actuator_bulk_writer.update(id, angle_deg); });
-  auto angle_actuator_sensor_head_tilt  = std::make_shared<glue::l3xz::ELROB2022::DynamixelAnglePositionActuator>("HEAD Tilt", 8, [&dynamixel_angle_position_actuator_bulk_writer](dynamixel::Dynamixel::Id const id, float const angle_deg) { dynamixel_angle_position_actuator_bulk_writer.update(id, angle_deg); });
 
   /**************************************************************************************
    * OPENCYPHAL
@@ -228,22 +215,16 @@ int main(int argc, char **argv) try
 
   std::map<LegJointKey, common::actuator::interface::SharedAnglePositionActuator> angle_position_actuator_map =
   {
-    {make_key(Leg::LeftFront,   Joint::Coxa),  angle_actuator_left_front_coxa},
     {make_key(Leg::LeftFront,   Joint::Femur), angle_actuator_left_front_femur},
     {make_key(Leg::LeftFront,   Joint::Tibia), angle_actuator_left_front_tibia},
-    {make_key(Leg::LeftMiddle,  Joint::Coxa),  angle_actuator_left_middle_coxa},
     {make_key(Leg::LeftMiddle,  Joint::Femur), angle_actuator_left_middle_femur},
     {make_key(Leg::LeftMiddle,  Joint::Tibia), angle_actuator_left_middle_tibia},
-    {make_key(Leg::LeftBack,    Joint::Coxa),  angle_actuator_left_back_coxa},
     {make_key(Leg::LeftBack,    Joint::Femur), angle_actuator_left_back_femur},
     {make_key(Leg::LeftBack,    Joint::Tibia), angle_actuator_left_back_tibia},
-    {make_key(Leg::RightFront,  Joint::Coxa),  angle_actuator_right_front_coxa},
     {make_key(Leg::RightFront,  Joint::Femur), angle_actuator_right_front_femur},
     {make_key(Leg::RightFront,  Joint::Tibia), angle_actuator_right_front_tibia},
-    {make_key(Leg::RightMiddle, Joint::Coxa),  angle_actuator_right_middle_coxa},
     {make_key(Leg::RightMiddle, Joint::Femur), angle_actuator_right_middle_femur},
     {make_key(Leg::RightMiddle, Joint::Tibia), angle_actuator_right_middle_tibia},
-    {make_key(Leg::RightBack,   Joint::Coxa),  angle_actuator_right_back_coxa},
     {make_key(Leg::RightBack,   Joint::Femur), angle_actuator_right_back_femur},
     {make_key(Leg::RightBack,   Joint::Tibia), angle_actuator_right_back_tibia}
   };
@@ -297,13 +278,10 @@ int main(int argc, char **argv) try
     open_cyphal_bumper_sensor_bulk_reader,
     orel20_rpm_actuator,
     ssc32_pwm_actuator_bulk_driver,
-    dynamixel_angle_position_actuator_bulk_writer,
     is_angle_position_sensor_offset_calibration_complete,
     angle_position_sensor_map,
     angle_position_sensor_offset_map,
     bumper_sensor_map,
-    angle_actuator_sensor_head_pan,
-    angle_actuator_sensor_head_tilt,
     angle_position_actuator_map
   );
 

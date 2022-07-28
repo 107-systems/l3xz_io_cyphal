@@ -23,7 +23,7 @@ namespace glue
 
 DynamixelServoName toServoName(dynamixel::Dynamixel::Id const id)
 {
-  static std::map<dynamixel::Dynamixel::Id, DynamixelServoName> const DYNAMIXEL_ID_TO_SERVO_KEY =
+  static std::map<dynamixel::Dynamixel::Id, DynamixelServoName> const DYNAMIXEL_ID_TO_SERVO_NAME =
   {
     {1, DynamixelServoName::LeftFront_Coxa},
     {2, DynamixelServoName::LeftMiddle_Coxa},
@@ -35,7 +35,24 @@ DynamixelServoName toServoName(dynamixel::Dynamixel::Id const id)
     {8, DynamixelServoName::Head_Tilt},
   };
 
-  return DYNAMIXEL_ID_TO_SERVO_KEY.at(id);
+  return DYNAMIXEL_ID_TO_SERVO_NAME.at(id);
+}
+
+dynamixel::Dynamixel::Id toServoId(DynamixelServoName const name)
+{
+  static std::map<DynamixelServoName, dynamixel::Dynamixel::Id> const DYNAMIXEL_SERVO_NAME_TO_SERVO_ID =
+  {
+    {DynamixelServoName::LeftFront_Coxa,   1},
+    {DynamixelServoName::LeftMiddle_Coxa,  2},
+    {DynamixelServoName::LeftBack_Coxa,    3},
+    {DynamixelServoName::RightBack_Coxa,   4},
+    {DynamixelServoName::RightMiddle_Coxa, 5},
+    {DynamixelServoName::RightFront_Coxa,  6},
+    {DynamixelServoName::Head_Pan,         7},
+    {DynamixelServoName::Head_Tilt,        8},
+  };
+
+  return DYNAMIXEL_SERVO_NAME_TO_SERVO_ID.at(name);
 }
 
 /**************************************************************************************
