@@ -97,8 +97,6 @@ int main(int argc, char **argv) try
   phy::opencyphal::SocketCAN open_cyphal_can_if("can0", false);
   phy::opencyphal::Node open_cyphal_node(open_cyphal_can_if);
 
-  glue::HydraulicAnglePositionReader hydraulic_angle_position_reader(open_cyphal_node);
-
   auto tibia_tip_bumper_left_front   = std::make_shared<glue::l3xz::ELROB2022::OpenCyphalBumperSensor>("L/F");
   auto tibia_tip_bumper_left_middle  = std::make_shared<glue::l3xz::ELROB2022::OpenCyphalBumperSensor>("L/M");
   auto tibia_tip_bumper_left_back    = std::make_shared<glue::l3xz::ELROB2022::OpenCyphalBumperSensor>("L/B");
@@ -199,10 +197,10 @@ int main(int argc, char **argv) try
 
   auto io_node = std::make_shared<l3xz::IoNode>
   (
+    open_cyphal_node,
     mx28_ctrl,
     orel20_ctrl,
     ssc32_ctrl,
-    hydraulic_angle_position_reader,
     open_cyphal_bumper_sensor_bulk_reader,
     orel20_rpm_actuator,
     ssc32_pwm_actuator_bulk_driver,
