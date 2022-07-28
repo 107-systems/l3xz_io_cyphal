@@ -13,6 +13,7 @@
 
 #include <driver/dynamixel/MX28.h>
 
+#include <glue/DynamixelServoName.h>
 #include <glue/l3xz/ELROB2022/Const.h>
 
 /**************************************************************************************
@@ -31,42 +32,30 @@ class DynamixelAnglePositionSensorBulkReader
 public:
   DynamixelAnglePositionSensorBulkReader() = delete;
 
-  enum class ServoKey
+  static std::map<DynamixelServoName, float> doBulkRead(dynamixel::SharedMX28 mx28_ctrl)
   {
-    LeftFront_Coxa,
-    LeftMiddle_Coxa,
-    LeftBack_Coxa,
-    RightBack_Coxa,
-    RightMiddle_Coxa,
-    RightFront_Coxa,
-    Head_Pan,
-    Head_Tilt,
-  };
-
-  static std::map<ServoKey, float> doBulkRead(dynamixel::SharedMX28 mx28_ctrl)
-  {
-    std::map<dynamixel::Dynamixel::Id, ServoKey> const DYNAMIXEL_ID_TO_SERVO_KEY =
+    std::map<dynamixel::Dynamixel::Id, DynamixelServoName> const DYNAMIXEL_ID_TO_SERVO_KEY =
     {
-      {1, ServoKey::LeftFront_Coxa},
-      {2, ServoKey::LeftMiddle_Coxa},
-      {3, ServoKey::LeftBack_Coxa},
-      {4, ServoKey::RightBack_Coxa},
-      {5, ServoKey::RightMiddle_Coxa},
-      {6, ServoKey::RightFront_Coxa},
-      {7, ServoKey::Head_Pan},
-      {8, ServoKey::Head_Tilt},
+      {1, DynamixelServoName::LeftFront_Coxa},
+      {2, DynamixelServoName::LeftMiddle_Coxa},
+      {3, DynamixelServoName::LeftBack_Coxa},
+      {4, DynamixelServoName::RightBack_Coxa},
+      {5, DynamixelServoName::RightMiddle_Coxa},
+      {6, DynamixelServoName::RightFront_Coxa},
+      {7, DynamixelServoName::Head_Pan},
+      {8, DynamixelServoName::Head_Tilt},
     };
 
     dynamixel::MX28::AngleDataSet const angle_data_set = mx28_ctrl->getAngle(l3xz::ELROB2022::DYNAMIXEL_ID_VECT);
 
-    std::map<ServoKey, float> dynamixel_angle_position_map;
+    std::map<DynamixelServoName, float> dynamixel_angle_position_map;
 
     for (auto [id, angle_deg] : angle_data_set)
     {
       printf("[DEBUG] id %d = %.2f", id, angle_deg);
       float const corrected_angle_deg = (angle_deg - 180.0f);
 
-      ServoKey const key = DYNAMIXEL_ID_TO_SERVO_KEY.at(id);
+      DynamixelServoName const key = DYNAMIXEL_ID_TO_SERVO_KEY.at(id);
       dynamixel_angle_position_map[key] = corrected_angle_deg;
     }
 

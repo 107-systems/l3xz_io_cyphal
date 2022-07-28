@@ -240,8 +240,8 @@ void IoNode::timerCallback()
    **************************************************************************************/
 
   l3xz_head_ctrl::msg::HeadAngle head_angle_actual_msg;
-  head_angle_actual_msg.pan_angle_deg  = dynamixel_angle_position_deg.at(glue::DynamixelAnglePositionSensorBulkReader::ServoKey::Head_Pan);
-  head_angle_actual_msg.tilt_angle_deg = dynamixel_angle_position_deg.at(glue::DynamixelAnglePositionSensorBulkReader::ServoKey::Head_Tilt);
+  head_angle_actual_msg.pan_angle_deg  = dynamixel_angle_position_deg.at(glue::DynamixelServoName::Head_Pan);
+  head_angle_actual_msg.tilt_angle_deg = dynamixel_angle_position_deg.at(glue::DynamixelServoName::Head_Tilt);
   _head_angle_pub->publish(head_angle_actual_msg);
 
   _angle_actuator_sensor_head_pan->set (_head_angle_target_msg.pan_angle_deg);
