@@ -34,18 +34,6 @@ public:
 
   static std::map<DynamixelServoName, float> doBulkRead(dynamixel::SharedMX28 mx28_ctrl)
   {
-    std::map<dynamixel::Dynamixel::Id, DynamixelServoName> const DYNAMIXEL_ID_TO_SERVO_KEY =
-    {
-      {1, DynamixelServoName::LeftFront_Coxa},
-      {2, DynamixelServoName::LeftMiddle_Coxa},
-      {3, DynamixelServoName::LeftBack_Coxa},
-      {4, DynamixelServoName::RightBack_Coxa},
-      {5, DynamixelServoName::RightMiddle_Coxa},
-      {6, DynamixelServoName::RightFront_Coxa},
-      {7, DynamixelServoName::Head_Pan},
-      {8, DynamixelServoName::Head_Tilt},
-    };
-
     dynamixel::MX28::AngleDataSet const angle_data_set = mx28_ctrl->getAngle(DYNAMIXEL_ID_LIST);
 
     std::map<DynamixelServoName, float> dynamixel_angle_position_map;
@@ -55,7 +43,7 @@ public:
       printf("[DEBUG] id %d = %.2f", id, angle_deg);
       float const corrected_angle_deg = (angle_deg - 180.0f);
 
-      DynamixelServoName const key = DYNAMIXEL_ID_TO_SERVO_KEY.at(id);
+      DynamixelServoName const key = toServoName(id);
       dynamixel_angle_position_map[key] = corrected_angle_deg;
     }
 

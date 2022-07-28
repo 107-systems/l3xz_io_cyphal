@@ -4,14 +4,11 @@
  * Contributors: https://github.com/107-systems/l3xz_io/graphs/contributors.
  */
 
-#ifndef GLUE_DYNAMIXEL_SERVO_NAME_H_
-#define GLUE_DYNAMIXEL_SERVO_NAME_H_
-
 /**************************************************************************************
  * INCLUDES
  **************************************************************************************/
 
-#include <driver/dynamixel/Dynamixel.h>
+#include <glue/DynamixelServoName.h>
 
 /**************************************************************************************
  * NAMESPACE
@@ -21,31 +18,28 @@ namespace glue
 {
 
 /**************************************************************************************
- * TYPEDEF
+ * FUNCTION DEFINITION
  **************************************************************************************/
 
-enum class DynamixelServoName
+DynamixelServoName toServoName(dynamixel::Dynamixel::Id const id)
 {
-  LeftFront_Coxa,
-  LeftMiddle_Coxa,
-  LeftBack_Coxa,
-  RightBack_Coxa,
-  RightMiddle_Coxa,
-  RightFront_Coxa,
-  Head_Pan,
-  Head_Tilt,
-};
+  static std::map<dynamixel::Dynamixel::Id, DynamixelServoName> const DYNAMIXEL_ID_TO_SERVO_KEY =
+  {
+    {1, DynamixelServoName::LeftFront_Coxa},
+    {2, DynamixelServoName::LeftMiddle_Coxa},
+    {3, DynamixelServoName::LeftBack_Coxa},
+    {4, DynamixelServoName::RightBack_Coxa},
+    {5, DynamixelServoName::RightMiddle_Coxa},
+    {6, DynamixelServoName::RightFront_Coxa},
+    {7, DynamixelServoName::Head_Pan},
+    {8, DynamixelServoName::Head_Tilt},
+  };
 
-/**************************************************************************************
- * FUNCTION DECLARATION
- **************************************************************************************/
-
-DynamixelServoName toServoName(dynamixel::Dynamixel::Id const id);
+  return DYNAMIXEL_ID_TO_SERVO_KEY.at(id);
+}
 
 /**************************************************************************************
  * NAMESPACE
  **************************************************************************************/
 
 } /* glue */
-
-#endif /* GLUE_DYNAMIXEL_SERVO_NAME_H_ */

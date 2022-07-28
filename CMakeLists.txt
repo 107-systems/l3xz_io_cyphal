@@ -30,6 +30,7 @@ add_executable(${PROJECT_NAME}_node
   src/driver/dynamixel/MX28.cpp
   src/driver/orel20/Orel20.cpp
   src/driver/ssc32/SSC32.cpp
+  src/glue/DynamixelServoName.cpp
   src/phy/opencyphal/Node.cpp
   src/phy/opencyphal/SocketCAN.cpp
   src/phy/serial/AsyncSerial.cpp
