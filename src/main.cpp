@@ -36,7 +36,7 @@
 #include <glue/l3xz/ELROB2022/SSC32PWMActuatorBulkwriter.h>
 #include <glue/l3xz/ELROB2022/SSC32ValveActuator.h>
 #include <glue/l3xz/ELROB2022/SSC32AnglePositionActuator.h>
-#include <glue/l3xz/ELROB2022/OpenCyphalAnglePositionSensorBulkReader.h>
+#include <glue/OpenCyphalAnglePositionSensorBulkReader.h>
 #include <glue/l3xz/ELROB2022/OpenCyphalBumperSensor.h>
 #include <glue/l3xz/ELROB2022/OpenCyphalBumperSensorBulkReader.h>
 #include <glue/l3xz/ELROB2022/Orel20RPMActuator.h>
@@ -97,7 +97,7 @@ int main(int argc, char **argv) try
   phy::opencyphal::SocketCAN open_cyphal_can_if("can0", false);
   phy::opencyphal::Node open_cyphal_node(open_cyphal_can_if);
 
-  glue::l3xz::ELROB2022::OpenCyphalAnglePositionSensorBulkReader open_cyphal_angle_position_sensor_bulk_reader(open_cyphal_node);
+  glue::OpenCyphalAnglePositionSensorBulkReader open_cyphal_angle_position_sensor_bulk_reader(open_cyphal_node);
 
   auto tibia_tip_bumper_left_front   = std::make_shared<glue::l3xz::ELROB2022::OpenCyphalBumperSensor>("L/F");
   auto tibia_tip_bumper_left_middle  = std::make_shared<glue::l3xz::ELROB2022::OpenCyphalBumperSensor>("L/M");

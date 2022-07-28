@@ -23,7 +23,7 @@
 #include <glue/l3xz/ELROB2022/Orel20RPMActuator.h>
 #include <glue/l3xz/ELROB2022/SSC32PWMActuatorBulkwriter.h>
 #include <glue/l3xz/ELROB2022/OpenCyphalBumperSensorBulkReader.h>
-#include <glue/l3xz/ELROB2022/OpenCyphalAnglePositionSensorBulkReader.h>
+#include <glue/OpenCyphalAnglePositionSensorBulkReader.h>
 #include <glue/DynamixelAnglePositionWriter.h>
 
 #include <l3xz_gait_ctrl/msg/leg_angle.hpp>
@@ -47,7 +47,7 @@ public:
     dynamixel::SharedMX28 mx28_ctrl,
     driver::SharedOrel20 orel20_ctrl,
     driver::SharedSSC32 ssc32_ctrl,
-    glue::l3xz::ELROB2022::OpenCyphalAnglePositionSensorBulkReader & open_cyphal_angle_position_sensor_bulk_reader,
+    glue::OpenCyphalAnglePositionSensorBulkReader & open_cyphal_angle_position_sensor_bulk_reader,
     glue::l3xz::ELROB2022::OpenCyphalBumperSensorBulkReader & open_cyphal_bumper_sensor_bulk_reader,
     glue::l3xz::ELROB2022::Orel20RPMActuator & orel20_rpm_actuator,
     glue::l3xz::ELROB2022::SSC32PWMActuatorBulkwriter & ssc32_pwm_actuator_bulk_driver,
@@ -56,7 +56,7 @@ public:
 
 private:
   dynamixel::SharedMX28 _mx28_ctrl;
-  glue::l3xz::ELROB2022::OpenCyphalAnglePositionSensorBulkReader & _open_cyphal_angle_position_sensor_bulk_reader;
+  glue::OpenCyphalAnglePositionSensorBulkReader & _open_cyphal_angle_position_sensor_bulk_reader;
   glue::l3xz::ELROB2022::OpenCyphalBumperSensorBulkReader & _open_cyphal_bumper_sensor_bulk_reader;
   glue::l3xz::ELROB2022::Orel20RPMActuator & _orel20_rpm_actuator;
   glue::l3xz::ELROB2022::SSC32PWMActuatorBulkwriter & _ssc32_pwm_actuator_bulk_driver;
