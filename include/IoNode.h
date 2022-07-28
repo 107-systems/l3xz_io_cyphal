@@ -24,7 +24,7 @@
 #include <glue/l3xz/ELROB2022/SSC32PWMActuatorBulkwriter.h>
 #include <glue/l3xz/ELROB2022/OpenCyphalBumperSensorBulkReader.h>
 #include <glue/l3xz/ELROB2022/OpenCyphalAnglePositionSensorBulkReader.h>
-#include <glue/DynamixelAnglePositionActuatorBulkWriter.h>
+#include <glue/DynamixelAnglePositionWriter.h>
 
 #include <l3xz_gait_ctrl/msg/leg_angle.hpp>
 #include <l3xz_head_ctrl/msg/head_angle.hpp>
@@ -64,7 +64,7 @@ private:
   glue::l3xz::ELROB2022::OpenCyphalBumperSensorBulkReader & _open_cyphal_bumper_sensor_bulk_reader;
   glue::l3xz::ELROB2022::Orel20RPMActuator & _orel20_rpm_actuator;
   glue::l3xz::ELROB2022::SSC32PWMActuatorBulkwriter & _ssc32_pwm_actuator_bulk_driver;
-  glue::DynamixelAnglePositionActuatorBulkWriter _dynamixel_angle_position_actuator_bulk_writer;
+  glue::DynamixelAnglePositionWriter _dynamixel_angle_position_writer;
   bool & _is_angle_position_sensor_offset_calibration_complete;
   std::map<LegJointKey, common::sensor::interface::SharedAnglePositionSensor> & _angle_position_sensor_map;
   std::map<LegJointKey, float> & _angle_position_sensor_offset_map;

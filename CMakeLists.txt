@@ -30,8 +30,8 @@ add_executable(${PROJECT_NAME}_node
   src/driver/dynamixel/MX28.cpp
   src/driver/orel20/Orel20.cpp
   src/driver/ssc32/SSC32.cpp
-  src/glue/DynamixelAnglePositionActuatorBulkWriter.cpp
-  src/glue/DynamixelAnglePositionSensorBulkReader.cpp
+  src/glue/DynamixelAnglePositionWriter.cpp
+  src/glue/DynamixelAnglePositionReader.cpp
   src/glue/DynamixelServoName.cpp
   src/phy/opencyphal/Node.cpp
   src/phy/opencyphal/SocketCAN.cpp

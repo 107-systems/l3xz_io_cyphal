@@ -12,7 +12,7 @@
 
 #include <iomanip>
 
-#include <glue/DynamixelAnglePositionSensorBulkReader.h>
+#include <glue/DynamixelAnglePositionReader.h>
 
 /**************************************************************************************
  * NAMESPACE
@@ -45,7 +45,7 @@ IoNode::IoNode(
 , _open_cyphal_bumper_sensor_bulk_reader{open_cyphal_bumper_sensor_bulk_reader}
 , _orel20_rpm_actuator{orel20_rpm_actuator}
 , _ssc32_pwm_actuator_bulk_driver{ssc32_pwm_actuator_bulk_driver}
-, _dynamixel_angle_position_actuator_bulk_writer{}
+, _dynamixel_angle_position_writer{}
 , _is_angle_position_sensor_offset_calibration_complete{is_angle_position_sensor_offset_calibration_complete}
 , _angle_position_sensor_map{angle_position_sensor_map}
 , _angle_position_sensor_offset_map{angle_position_sensor_offset_map}
@@ -136,7 +136,7 @@ void IoNode::timerCallback()
    * READ FROM PERIPHERALS
    **************************************************************************************/
 
-  auto const dynamixel_angle_position_deg = glue::DynamixelAnglePositionSensorBulkReader::doBulkRead(_mx28_ctrl);
+  auto const dynamixel_angle_position_deg = glue::DynamixelAnglePositionReader::doBulkRead(_mx28_ctrl);
 
   _open_cyphal_angle_position_sensor_bulk_reader.doBulkRead();
   _open_cyphal_bumper_sensor_bulk_reader.doBulkRead();
@@ -239,14 +239,14 @@ void IoNode::timerCallback()
   head_angle_actual_msg.tilt_angle_deg = dynamixel_angle_position_deg.at(glue::DynamixelServoName::Head_Tilt);
   _head_angle_pub->publish(head_angle_actual_msg);
 
-  _dynamixel_angle_position_actuator_bulk_writer.update(glue::DynamixelServoName::Head_Pan,  _head_angle_target_msg.pan_angle_deg);
-  _dynamixel_angle_position_actuator_bulk_writer.update(glue::DynamixelServoName::Head_Tilt, _head_angle_target_msg.tilt_angle_deg);
+  _dynamixel_angle_position_writer.update(glue::DynamixelServoName::Head_Pan,  _head_angle_target_msg.pan_angle_deg);
+  _dynamixel_angle_position_writer.update(glue::DynamixelServoName::Head_Tilt, _head_angle_target_msg.tilt_angle_deg);
 
   /**************************************************************************************
    * WRITE TO PERIPHERALS
    **************************************************************************************/
 
-  if (!_dynamixel_angle_position_actuator_bulk_writer.doBulkWrite(_mx28_ctrl))
+  if (!_dynamixel_angle_position_writer.doBulkWrite(_mx28_ctrl))
     printf("[ERROR] failed to set target angles for all dynamixel servos");
 
   _ssc32_pwm_actuator_bulk_driver.doBulkWrite();

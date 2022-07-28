@@ -4,8 +4,8 @@
  * Contributors: https://github.com/107-systems/l3xz_io/graphs/contributors.
  */
 
-#ifndef GLUE_L3XZ_ELROB2022_DYNAMIXEL_ANGLE_POSITION_SENSOR_BULK_READER_H_
-#define GLUE_L3XZ_ELROB2022_DYNAMIXEL_ANGLE_POSITION_SENSOR_BULK_READER_H_
+#ifndef GLUE_L3XZ_ELROB2022_DYNAMIXEL_ANGLE_POSITION_ACTUATOR_BULK_WRITER_H_
+#define GLUE_L3XZ_ELROB2022_DYNAMIXEL_ANGLE_POSITION_ACTUATOR_BULK_WRITER_H_
 
 /**************************************************************************************
  * INCLUDES
@@ -13,7 +13,6 @@
 
 #include <driver/dynamixel/MX28.h>
 
-#include <glue/DynamixelIdList.h>
 #include <glue/DynamixelServoName.h>
 
 /**************************************************************************************
@@ -27,12 +26,17 @@ namespace glue
  * CLASS DECLARATION
  **************************************************************************************/
 
-class DynamixelAnglePositionSensorBulkReader
+class DynamixelAnglePositionWriter
 {
 public:
-  DynamixelAnglePositionSensorBulkReader() = delete;
+  DynamixelAnglePositionWriter();
 
-  static std::map<DynamixelServoName, float> doBulkRead(dynamixel::SharedMX28 mx28_ctrl);
+  void update(DynamixelServoName const name, float const angle_deg);
+  bool doBulkWrite(dynamixel::SharedMX28 mx28_ctrl);
+
+
+private:
+  std::map<dynamixel::Dynamixel::Id, float> _dynamixel_angle_map;
 };
 
 /**************************************************************************************
@@ -41,4 +45,4 @@ public:
 
 } /* glue */
 
-#endif /* GLUE_L3XZ_ELROB2022_DYNAMIXEL_ANGLE_POSITION_SENSOR_BULK_READER_H_ */
+#endif /* GLUE_L3XZ_ELROB2022_DYNAMIXEL_ANGLE_POSITION_ACTUATOR_BULK_WRITER_H_ */

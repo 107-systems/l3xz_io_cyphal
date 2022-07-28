@@ -8,7 +8,7 @@
  * INCLUDES
  **************************************************************************************/
 
-#include <glue/DynamixelAnglePositionActuatorBulkWriter.h>
+#include <glue/DynamixelAnglePositionReader.h>
 
 /**************************************************************************************
  * NAMESPACE
@@ -18,32 +18,25 @@ namespace glue
 {
 
 /**************************************************************************************
- * CTOR/DTOR
- **************************************************************************************/
-
-DynamixelAnglePositionActuatorBulkWriter::DynamixelAnglePositionActuatorBulkWriter()
-{ }
-
-/**************************************************************************************
  * PUBLIC MEMBER FUNCTIONS
  **************************************************************************************/
 
-void DynamixelAnglePositionActuatorBulkWriter::update(DynamixelServoName const name, float const angle_deg)
+std::map<DynamixelServoName, float> DynamixelAnglePositionReader::doBulkRead(dynamixel::SharedMX28 mx28_ctrl)
 {
-  _dynamixel_angle_map[toServoId(name)] = angle_deg;
-}
+  dynamixel::MX28::AngleDataSet const angle_data_set = mx28_ctrl->getAngle(DYNAMIXEL_ID_LIST);
 
-bool DynamixelAnglePositionActuatorBulkWriter::doBulkWrite(dynamixel::SharedMX28 mx28_ctrl)
-{
-  dynamixel::MX28::AngleDataSet angle_data_set;
+  std::map<DynamixelServoName, float> dynamixel_angle_position_map;
 
-  for (auto [id, angle_deg] : _dynamixel_angle_map)
+  for (auto [id, angle_deg] : angle_data_set)
   {
-    float const corrected_angle_deg = (angle_deg + 180.0f);
-    angle_data_set[id] = corrected_angle_deg;
+    printf("[DEBUG] id %d = %.2f", id, angle_deg);
+    float const corrected_angle_deg = (angle_deg - 180.0f);
+
+    DynamixelServoName const key = toServoName(id);
+    dynamixel_angle_position_map[key] = corrected_angle_deg;
   }
 
-  return mx28_ctrl->setAngle(angle_data_set);
+  return dynamixel_angle_position_map;
 }
 
 /**************************************************************************************
