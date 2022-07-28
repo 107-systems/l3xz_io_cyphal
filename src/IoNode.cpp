@@ -45,21 +45,6 @@ IoNode::IoNode(
 , _ssc32_pwm_actuator_bulk_driver{ssc32_pwm_actuator_bulk_driver}
 , _dynamixel_angle_position_writer{}
 , _bumper_sensor_map{bumper_sensor_map}
-, _leg_angle_actual_msg{
-    []()
-    {
-      l3xz_gait_ctrl::msg::LegAngle msg;
-      
-      for (size_t l = 0; l < 6; l++)
-      {
-        msg.coxa_angle_deg [l] = INITIAL_COXA_ANGLE_DEG;
-        msg.femur_angle_deg[l] = INITIAL_FEMUR_ANGLE_DEG;
-        msg.tibia_angle_deg[l] = INITIAL_TIBIA_ANGLE_DEG;
-      }
-
-      return msg;
-    } ()
-  }
 , _leg_angle_target_msg{
     []()
     {
@@ -120,8 +105,7 @@ void IoNode::timerCallback()
    **************************************************************************************/
 
   auto const dynamixel_angle_position_deg = glue::DynamixelAnglePositionReader::doBulkRead(_mx28_ctrl);
-
-  _hydraulic_angle_position_reader.doBulkRead();
+  auto const hydraulic_angle_position_deg = _hydraulic_angle_position_reader.doBulkRead();
   _open_cyphal_bumper_sensor_bulk_reader.doBulkRead();
 
   /**************************************************************************************
@@ -134,6 +118,32 @@ void IoNode::timerCallback()
   head_angle_actual_msg.tilt_angle_deg = dynamixel_angle_position_deg.at(glue::DynamixelServoName::Head_Tilt);
   _head_angle_pub->publish(head_angle_actual_msg);
 
+  /* l3xz_gait_ctrl *********************************************************************/
+  l3xz_gait_ctrl::msg::LegAngle leg_angle_actual_msg;
+
+  leg_angle_actual_msg.coxa_angle_deg [0] = dynamixel_angle_position_deg.at(glue::DynamixelServoName::LeftFront_Coxa);
+  leg_angle_actual_msg.coxa_angle_deg [1] = dynamixel_angle_position_deg.at(glue::DynamixelServoName::LeftMiddle_Coxa);
+  leg_angle_actual_msg.coxa_angle_deg [2] = dynamixel_angle_position_deg.at(glue::DynamixelServoName::LeftBack_Coxa);
+  leg_angle_actual_msg.coxa_angle_deg [3] = dynamixel_angle_position_deg.at(glue::DynamixelServoName::RightBack_Coxa);
+  leg_angle_actual_msg.coxa_angle_deg [4] = dynamixel_angle_position_deg.at(glue::DynamixelServoName::RightMiddle_Coxa);
+  leg_angle_actual_msg.coxa_angle_deg [5] = dynamixel_angle_position_deg.at(glue::DynamixelServoName::RightFront_Coxa);
+
+  leg_angle_actual_msg.femur_angle_deg[0] = hydraulic_angle_position_deg.at(make_key(Leg::LeftFront,   Joint::Femur));
+  leg_angle_actual_msg.femur_angle_deg[1] = hydraulic_angle_position_deg.at(make_key(Leg::LeftMiddle,  Joint::Femur));
+  leg_angle_actual_msg.femur_angle_deg[2] = hydraulic_angle_position_deg.at(make_key(Leg::LeftBack,    Joint::Femur));
+  leg_angle_actual_msg.femur_angle_deg[3] = hydraulic_angle_position_deg.at(make_key(Leg::RightBack,   Joint::Femur));
+  leg_angle_actual_msg.femur_angle_deg[4] = hydraulic_angle_position_deg.at(make_key(Leg::RightMiddle, Joint::Femur));
+  leg_angle_actual_msg.femur_angle_deg[5] = hydraulic_angle_position_deg.at(make_key(Leg::RightFront,  Joint::Femur));
+
+  leg_angle_actual_msg.tibia_angle_deg[0] = hydraulic_angle_position_deg.at(make_key(Leg::LeftFront,   Joint::Tibia));
+  leg_angle_actual_msg.tibia_angle_deg[1] = hydraulic_angle_position_deg.at(make_key(Leg::LeftMiddle,  Joint::Tibia));
+  leg_angle_actual_msg.tibia_angle_deg[2] = hydraulic_angle_position_deg.at(make_key(Leg::LeftBack,    Joint::Tibia));
+  leg_angle_actual_msg.tibia_angle_deg[3] = hydraulic_angle_position_deg.at(make_key(Leg::RightBack,   Joint::Tibia));
+  leg_angle_actual_msg.tibia_angle_deg[4] = hydraulic_angle_position_deg.at(make_key(Leg::RightMiddle, Joint::Tibia));
+  leg_angle_actual_msg.tibia_angle_deg[5] = hydraulic_angle_position_deg.at(make_key(Leg::RightFront,  Joint::Tibia));
+
+  _leg_angle_pub->publish(leg_angle_actual_msg);
+
   /**************************************************************************************
    * GAIT CONTROL
    **************************************************************************************/
@@ -142,7 +152,7 @@ void IoNode::timerCallback()
   for (auto [leg, joint] : LEG_JOINT_LIST)
   {
     float const target_angle_deg = get_angle_deg(_leg_angle_target_msg, leg, joint);
-    float const actual_angle_deg = get_angle_deg(_leg_angle_actual_msg, leg, joint);
+    float const actual_angle_deg = get_angle_deg( leg_angle_actual_msg, leg, joint);
     float const angle_err = fabs(target_angle_deg - actual_angle_deg);
     if (angle_err > 2.0f)
       num_joints_actively_controlled++;

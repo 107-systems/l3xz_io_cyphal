@@ -67,7 +67,7 @@ private:
 
   rclcpp::Publisher<l3xz_gait_ctrl::msg::LegAngle>::SharedPtr _leg_angle_pub;
   rclcpp::Subscription<l3xz_gait_ctrl::msg::LegAngle>::SharedPtr _leg_angle_sub;
-  l3xz_gait_ctrl::msg::LegAngle _leg_angle_actual_msg, _leg_angle_target_msg;
+  l3xz_gait_ctrl::msg::LegAngle _leg_angle_target_msg;
 
   rclcpp::Publisher<l3xz_head_ctrl::msg::HeadAngle>::SharedPtr _head_angle_pub;
   rclcpp::Subscription<l3xz_head_ctrl::msg::HeadAngle>::SharedPtr _head_angle_sub;
