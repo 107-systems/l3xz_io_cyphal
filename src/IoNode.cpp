@@ -12,6 +12,8 @@
 
 #include <iomanip>
 
+#include <Const.h>
+
 #include <glue/DynamixelAnglePositionReader.h>
 
 /**************************************************************************************
@@ -33,11 +35,7 @@ IoNode::IoNode(
   glue::l3xz::ELROB2022::OpenCyphalBumperSensorBulkReader & open_cyphal_bumper_sensor_bulk_reader,
   glue::l3xz::ELROB2022::Orel20RPMActuator & orel20_rpm_actuator,
   glue::l3xz::ELROB2022::SSC32PWMActuatorBulkwriter & ssc32_pwm_actuator_bulk_driver,
-  bool & is_angle_position_sensor_offset_calibration_complete,
-  std::map<LegJointKey, common::sensor::interface::SharedAnglePositionSensor> & angle_position_sensor_map,
-  std::map<LegJointKey, float> & angle_position_sensor_offset_map,
-  std::map<Leg, common::sensor::interface::SharedBumperSensor> & bumper_sensor_map,
-  std::map<LegJointKey, common::actuator::interface::SharedAnglePositionActuator> & angle_position_actuator_map
+  std::map<Leg, common::sensor::interface::SharedBumperSensor> & bumper_sensor_map
 )
 : Node("l3xz_io")
 , _mx28_ctrl{mx28_ctrl}
@@ -46,11 +44,7 @@ IoNode::IoNode(
 , _orel20_rpm_actuator{orel20_rpm_actuator}
 , _ssc32_pwm_actuator_bulk_driver{ssc32_pwm_actuator_bulk_driver}
 , _dynamixel_angle_position_writer{}
-, _is_angle_position_sensor_offset_calibration_complete{is_angle_position_sensor_offset_calibration_complete}
-, _angle_position_sensor_map{angle_position_sensor_map}
-, _angle_position_sensor_offset_map{angle_position_sensor_offset_map}
 , _bumper_sensor_map{bumper_sensor_map}
-, _angle_position_actuator_map{angle_position_actuator_map}
 , _leg_angle_actual_msg{
     []()
     {
@@ -113,17 +107,6 @@ IoNode::IoNode(
     {
       _head_angle_target_msg = *head_angle_target_msg;
     });
-
-
-  /* Open all hydraulic valves. */
-  for (auto ch: SERVO_CHANNEL_LIST)
-    ssc32_ctrl->setPulseWidth(ch, 2000, 50);
-
-  /* Start the hydraulic pump. */
-  orel20_ctrl->setRPM(4096);
-
-  /* Capture the start time. */
-  _start_calibration = std::chrono::high_resolution_clock::now();
 }
 
 /**************************************************************************************
@@ -152,97 +135,23 @@ void IoNode::timerCallback()
   _head_angle_pub->publish(head_angle_actual_msg);
 
   /**************************************************************************************
-   * OTHER STUFF (needs cleanup)
-   **************************************************************************************/
-
-  if (!_is_angle_position_sensor_offset_calibration_complete)
-  {
-    auto const now = std::chrono::high_resolution_clock::now();
-    auto const duration = std::chrono::duration_cast<std::chrono::seconds>(now - _start_calibration);
-
-    if (duration.count() > 20)
-    {
-      _is_angle_position_sensor_offset_calibration_complete = true;
-
-      /* Capture the raw angles which are at this point
-      * in time the raw values as reported by the sensors.
-      */
-      for (auto [leg, joint] : HYDRAULIC_LEG_JOINT_LIST)
-        _angle_position_sensor_offset_map.at(make_key(leg, joint)) = _angle_position_sensor_map.at(make_key(leg, joint))->get().value();
-
-      /* Print the offset values one time for
-      * documentation.
-      */
-      std::stringstream msg;
-      msg << "Left" << std::endl
-          << "  Front" << std::endl
-          << "    Femur: " << std::fixed << std::setprecision(2) << std::setfill(' ') << std::setw(6) << _angle_position_sensor_offset_map.at(make_key(Leg::LeftFront, Joint::Femur)) << std::endl
-          << "    Tibia: " << std::fixed << std::setprecision(2) << std::setfill(' ') << std::setw(6) << _angle_position_sensor_offset_map.at(make_key(Leg::LeftFront, Joint::Tibia)) << std::endl
-          << "  Middle" << std::endl
-          << "    Femur: " << std::fixed << std::setprecision(2) << std::setfill(' ') << std::setw(6) << _angle_position_sensor_offset_map.at(make_key(Leg::LeftMiddle, Joint::Femur)) << std::endl
-          << "    Tibia: " << std::fixed << std::setprecision(2) << std::setfill(' ') << std::setw(6) << _angle_position_sensor_offset_map.at(make_key(Leg::LeftMiddle, Joint::Tibia)) << std::endl
-          << "  Back" << std::endl
-          << "    Femur: " << std::fixed << std::setprecision(2) << std::setfill(' ') << std::setw(6) << _angle_position_sensor_offset_map.at(make_key(Leg::LeftBack, Joint::Femur)) << std::endl
-          << "    Tibia: " << std::fixed << std::setprecision(2) << std::setfill(' ') << std::setw(6) << _angle_position_sensor_offset_map.at(make_key(Leg::LeftBack, Joint::Tibia)) << std::endl
-          << "Right" << std::endl
-          << "  Front" << std::endl
-          << "    Femur: " << std::fixed << std::setprecision(2) << std::setfill(' ') << std::setw(6) << _angle_position_sensor_offset_map.at(make_key(Leg::RightFront, Joint::Femur)) << std::endl
-          << "    Tibia: " << std::fixed << std::setprecision(2) << std::setfill(' ') << std::setw(6) << _angle_position_sensor_offset_map.at(make_key(Leg::RightFront, Joint::Tibia)) << std::endl
-          << "  Middle: " << std::endl
-          << "    Femur: " << std::fixed << std::setprecision(2) << std::setfill(' ') << std::setw(6) << _angle_position_sensor_offset_map.at(make_key(Leg::RightMiddle, Joint::Femur)) << std::endl
-          << "    Tibia: " << std::fixed << std::setprecision(2) << std::setfill(' ') << std::setw(6) << _angle_position_sensor_offset_map.at(make_key(Leg::RightMiddle, Joint::Tibia)) << std::endl
-          << "  Back" << std::endl
-          << "    Femur: " << std::fixed << std::setprecision(2) << std::setfill(' ') << std::setw(6) << _angle_position_sensor_offset_map.at(make_key(Leg::RightBack, Joint::Femur)) << std::endl
-          << "    Tibia: " << std::fixed << std::setprecision(2) << std::setfill(' ') << std::setw(6) << _angle_position_sensor_offset_map.at(make_key(Leg::RightBack, Joint::Tibia)) << std::endl
-          ;
-
-      printf("[INFO] Calibrate::update: captured offset angles ...\n%s", msg.str().c_str());
-    }
-  }
-
-  /* Perform the correction of the sensor values from
-   * the offset sensor map.
-   */
-  if (_is_angle_position_sensor_offset_calibration_complete)
-  {
-    for (auto [leg, joint] : HYDRAULIC_LEG_JOINT_LIST)
-    {
-      glue::l3xz::ELROB2022::OpenCyphalAnglePositionSensor * angle_pos_sensor_ptr =
-        reinterpret_cast<glue::l3xz::ELROB2022::OpenCyphalAnglePositionSensor *>(_angle_position_sensor_map.at(make_key(leg, joint)).get());
-
-      if (angle_pos_sensor_ptr->get().has_value())
-      {
-        float const raw_angle_deg    = angle_pos_sensor_ptr->get().value();
-        float const offset_angle_deg = _angle_position_sensor_offset_map.at(make_key(leg, joint));
-
-        float const offset_corrected_angle_deg = (raw_angle_deg - offset_angle_deg);
-
-        angle_pos_sensor_ptr->update(offset_corrected_angle_deg);
-      }
-    }
-  }
-
-  /**************************************************************************************
    * GAIT CONTROL
    **************************************************************************************/
 
-  if (_is_angle_position_sensor_offset_calibration_complete)
+  unsigned int num_joints_actively_controlled = 0;
+  for (auto [leg, joint] : LEG_JOINT_LIST)
   {
-    unsigned int num_joints_actively_controlled = 0;
-    for (auto [leg, joint] : LEG_JOINT_LIST)
-    {
-      float const target_angle_deg = get_angle_deg(_leg_angle_target_msg, leg, joint);
-      float const actual_angle_deg = get_angle_deg(_leg_angle_actual_msg, leg, joint);
-      float const angle_err = fabs(target_angle_deg - actual_angle_deg);
-      if (angle_err > 2.0f)
-        num_joints_actively_controlled++;
-    }
-
-    if (num_joints_actively_controlled > 0)
-      _orel20_rpm_actuator.set(4096);
-    else
-      _orel20_rpm_actuator.set(0);
+    float const target_angle_deg = get_angle_deg(_leg_angle_target_msg, leg, joint);
+    float const actual_angle_deg = get_angle_deg(_leg_angle_actual_msg, leg, joint);
+    float const angle_err = fabs(target_angle_deg - actual_angle_deg);
+    if (angle_err > 2.0f)
+      num_joints_actively_controlled++;
   }
+
+  if (num_joints_actively_controlled > 0)
+    _orel20_rpm_actuator.set(4096);
+  else
+    _orel20_rpm_actuator.set(0);
 
   /**************************************************************************************
    * WRITE TARGET STATE TO PERIPHERAL DRIVERS
