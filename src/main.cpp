@@ -31,7 +31,7 @@
 #include <phy/opencyphal/Node.hpp>
 #include <phy/opencyphal/SocketCAN.h>
 
-#include <glue/l3xz/ELROB2022/Const.h>
+#include <glue/DynamixelIdList.h>
 #include <glue/l3xz/ELROB2022/SSC32PWMActuator.h>
 #include <glue/l3xz/ELROB2022/SSC32PWMActuatorBulkwriter.h>
 #include <glue/l3xz/ELROB2022/SSC32ValveActuator.h>
@@ -360,7 +360,7 @@ bool init_dynamixel(dynamixel::SharedMX28 & mx28_ctrl)
   printf("[INFO] Detected Dynamixel MX-28: { %s}", act_id_list.str().c_str());
 
   bool all_req_id_found = true;
-  for (auto req_id : glue::l3xz::ELROB2022::DYNAMIXEL_ID_VECT)
+  for (auto req_id : glue::DYNAMIXEL_ID_LIST)
   {
     bool const req_id_found = std::count(opt_act_id_vect.value().begin(),
                                          opt_act_id_vect.value().end(),
@@ -373,14 +373,14 @@ bool init_dynamixel(dynamixel::SharedMX28 & mx28_ctrl)
   if (!all_req_id_found)
     return false;
 
-  mx28_ctrl->torqueOn(glue::l3xz::ELROB2022::DYNAMIXEL_ID_VECT);
+  mx28_ctrl->torqueOn(glue::DYNAMIXEL_ID_LIST);
 
   return true;
 }
 
 void deinit_dynamixel(dynamixel::SharedMX28 & mx28_ctrl)
 {
-  mx28_ctrl->torqueOff(glue::l3xz::ELROB2022::DYNAMIXEL_ID_VECT);
+  mx28_ctrl->torqueOff(glue::DYNAMIXEL_ID_LIST);
 }
 
 bool init_open_cyphal(phy::opencyphal::Node & open_cyphal_node,

@@ -13,8 +13,8 @@
 
 #include <driver/dynamixel/MX28.h>
 
+#include <glue/DynamixelIdList.h>
 #include <glue/DynamixelServoName.h>
-#include <glue/l3xz/ELROB2022/Const.h>
 
 /**************************************************************************************
  * NAMESPACE
@@ -46,7 +46,7 @@ public:
       {8, DynamixelServoName::Head_Tilt},
     };
 
-    dynamixel::MX28::AngleDataSet const angle_data_set = mx28_ctrl->getAngle(l3xz::ELROB2022::DYNAMIXEL_ID_VECT);
+    dynamixel::MX28::AngleDataSet const angle_data_set = mx28_ctrl->getAngle(DYNAMIXEL_ID_LIST);
 
     std::map<DynamixelServoName, float> dynamixel_angle_position_map;
 
