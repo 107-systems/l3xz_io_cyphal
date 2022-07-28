@@ -11,25 +11,25 @@
  * INCLUDES
  **************************************************************************************/
 
-#include "MX28.h"
+#include <driver/dynamixel/MX28.h>
 
-#include "Const.h"
+#include <glue/l3xz/ELROB2022/Const.h>
 
 /**************************************************************************************
  * NAMESPACE
  **************************************************************************************/
 
-namespace dynamixel
+namespace glue
 {
 
 /**************************************************************************************
  * CLASS DECLARATION
  **************************************************************************************/
 
-class AnglePositionSensorBulkReader
+class DynamixelAnglePositionSensorBulkReader
 {
 public:
-  AnglePositionSensorBulkReader() = delete;
+  DynamixelAnglePositionSensorBulkReader() = delete;
 
   enum class ServoKey
   {
@@ -43,9 +43,9 @@ public:
     Head_Tilt,
   };
 
-  static std::map<ServoKey, float> doBulkRead(SharedMX28 mx28_ctrl)
+  static std::map<ServoKey, float> doBulkRead(dynamixel::SharedMX28 mx28_ctrl)
   {
-    std::map<Dynamixel::Id, ServoKey> const DYNAMIXEL_ID_TO_SERVO_KEY =
+    std::map<dynamixel::Dynamixel::Id, ServoKey> const DYNAMIXEL_ID_TO_SERVO_KEY =
     {
       {1, ServoKey::LeftFront_Coxa},
       {2, ServoKey::LeftMiddle_Coxa},
@@ -57,7 +57,7 @@ public:
       {8, ServoKey::Head_Tilt},
     };
 
-    MX28::AngleDataSet const angle_data_set = mx28_ctrl->getAngle(DYNAMIXEL_ID_VECT);
+    dynamixel::MX28::AngleDataSet const angle_data_set = mx28_ctrl->getAngle(l3xz::ELROB2022::DYNAMIXEL_ID_VECT);
 
     std::map<ServoKey, float> dynamixel_angle_position_map;
 
@@ -78,6 +78,6 @@ public:
  * NAMESPACE
  **************************************************************************************/
 
-} /* dynamixel */
+} /* glue */
 
 #endif /* GLUE_L3XZ_ELROB2022_DYNAMIXEL_ANGLE_POSITION_SENSOR_BULK_READER_H_ */
