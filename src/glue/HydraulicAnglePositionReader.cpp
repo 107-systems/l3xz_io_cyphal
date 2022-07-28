@@ -10,7 +10,7 @@
 
 #include <glue/HydraulicAnglePositionReader.h>
 
-#include <phy/opencyphal/Types.h>
+#include <glue/OpenCyphalMessageTypes.h>
 
 /**************************************************************************************
  * NAMESPACE
@@ -27,30 +27,30 @@ HydraulicAnglePositionReader::HydraulicAnglePositionReader(phy::opencyphal::Node
 : _mtx{}
 , _leg_angle_position_map{}
 {
-  if (!node.subscribe<uavcan::primitive::scalar::Real32_1_0<1002>>(
+  if (!node.subscribe<OpenCyphalFemurAnglePositionDegreeMessage>(
     [this](CanardRxTransfer const & transfer)
     {
-      uavcan::primitive::scalar::Real32_1_0<1002> const as5048_a_angle = uavcan::primitive::scalar::Real32_1_0<1002>::deserialize(transfer);
+      OpenCyphalFemurAnglePositionDegreeMessage const as5048_a_angle = OpenCyphalFemurAnglePositionDegreeMessage::deserialize(transfer);
       LegJointKey const femur_key = femur_toLegJointKey(transfer.metadata.remote_node_id);
 
       std::lock_guard<std::mutex> lock(_mtx);
       _leg_angle_position_map[femur_key] = as5048_a_angle.data.value;
     }))
   {
-    printf("[ERROR] HydraulicAnglePositionReader: failed to subscribe to 'uavcan::primitive::scalar::Real32_1_0<1002>'");
+    printf("[ERROR] HydraulicAnglePositionReader: failed to subscribe to 'OpenCyphalFemurAnglePositionDegreeMessage'");
   }
 
-  if (!node.subscribe<uavcan::primitive::scalar::Real32_1_0<1003>>(
+  if (!node.subscribe<OpenCyphalTibiaAnglePositionDegreeMessage>(
     [this](CanardRxTransfer const & transfer)
     {
-      uavcan::primitive::scalar::Real32_1_0<1003> const as5048_b_angle = uavcan::primitive::scalar::Real32_1_0<1003>::deserialize(transfer);
+      OpenCyphalTibiaAnglePositionDegreeMessage const as5048_b_angle = OpenCyphalTibiaAnglePositionDegreeMessage::deserialize(transfer);
       LegJointKey const tibia_key = tibia_toLegJointKey(transfer.metadata.remote_node_id);
 
       std::lock_guard<std::mutex> lock(_mtx);
       _leg_angle_position_map[tibia_key] = as5048_b_angle.data.value;
     }))
   {
-    printf("[ERROR] HydraulicAnglePositionReader: failed to subscribe to 'uavcan::primitive::scalar::Real32_1_0<1003>'");
+    printf("[ERROR] HydraulicAnglePositionReader: failed to subscribe to 'OpenCyphalTibiaAnglePositionDegreeMessage'");
   }
 }
 
