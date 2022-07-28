@@ -29,10 +29,10 @@ namespace glue
  * CLASS DECLARATION
  **************************************************************************************/
 
-class OpenCyphalAnglePositionSensorBulkReader
+class HydraulicAnglePositionReader
 {
 public:
-  OpenCyphalAnglePositionSensorBulkReader(phy::opencyphal::Node & node)
+  HydraulicAnglePositionReader(phy::opencyphal::Node & node)
   {
     if (!node.subscribe<uavcan::primitive::scalar::Real32_1_0<1002>>(
       [this](CanardRxTransfer const & transfer)
@@ -41,7 +41,7 @@ public:
         this->update_femur_angle(transfer.metadata.remote_node_id, as5048_a_angle.data.value);
       }))
     {
-      printf("[ERROR] OpenCyphalAnglePositionSensorBulkReader: failed to subscribe to 'uavcan::primitive::scalar::Real32_1_0<1002>'");
+      printf("[ERROR] HydraulicAnglePositionReader: failed to subscribe to 'uavcan::primitive::scalar::Real32_1_0<1002>'");
     }
 
     if (!node.subscribe<uavcan::primitive::scalar::Real32_1_0<1003>>(
@@ -51,7 +51,7 @@ public:
         this->update_tibia_angle(transfer.metadata.remote_node_id, as5048_b_angle.data.value);
       }))
     {
-      printf("[ERROR] OpenCyphalAnglePositionSensorBulkReader: failed to subscribe to 'uavcan::primitive::scalar::Real32_1_0<1003>'");
+      printf("[ERROR] HydraulicAnglePositionReader: failed to subscribe to 'uavcan::primitive::scalar::Real32_1_0<1003>'");
     }
   }
 

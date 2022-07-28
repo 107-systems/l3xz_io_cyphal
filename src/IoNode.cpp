@@ -31,7 +31,7 @@ IoNode::IoNode(
   dynamixel::SharedMX28 mx28_ctrl,
   driver::SharedOrel20 orel20_ctrl,
   driver::SharedSSC32 ssc32_ctrl,
-  glue::OpenCyphalAnglePositionSensorBulkReader & open_cyphal_angle_position_sensor_bulk_reader,
+  glue::HydraulicAnglePositionReader & hydraulic_angle_position_reader,
   glue::l3xz::ELROB2022::OpenCyphalBumperSensorBulkReader & open_cyphal_bumper_sensor_bulk_reader,
   glue::l3xz::ELROB2022::Orel20RPMActuator & orel20_rpm_actuator,
   glue::l3xz::ELROB2022::SSC32PWMActuatorBulkwriter & ssc32_pwm_actuator_bulk_driver,
@@ -39,7 +39,7 @@ IoNode::IoNode(
 )
 : Node("l3xz_io")
 , _mx28_ctrl{mx28_ctrl}
-, _open_cyphal_angle_position_sensor_bulk_reader{open_cyphal_angle_position_sensor_bulk_reader}
+, _hydraulic_angle_position_reader{hydraulic_angle_position_reader}
 , _open_cyphal_bumper_sensor_bulk_reader{open_cyphal_bumper_sensor_bulk_reader}
 , _orel20_rpm_actuator{orel20_rpm_actuator}
 , _ssc32_pwm_actuator_bulk_driver{ssc32_pwm_actuator_bulk_driver}
@@ -121,7 +121,7 @@ void IoNode::timerCallback()
 
   auto const dynamixel_angle_position_deg = glue::DynamixelAnglePositionReader::doBulkRead(_mx28_ctrl);
 
-  _open_cyphal_angle_position_sensor_bulk_reader.doBulkRead();
+  _hydraulic_angle_position_reader.doBulkRead();
   _open_cyphal_bumper_sensor_bulk_reader.doBulkRead();
 
   /**************************************************************************************
