@@ -141,6 +141,20 @@ void IoNode::timerCallback()
   _open_cyphal_angle_position_sensor_bulk_reader.doBulkRead();
   _open_cyphal_bumper_sensor_bulk_reader.doBulkRead();
 
+  /**************************************************************************************
+   * PUBLISH ACTUAL SYSTEM STATE
+   **************************************************************************************/
+
+  /* l3xz_head_ctrl *********************************************************************/
+  l3xz_head_ctrl::msg::HeadAngle head_angle_actual_msg;
+  head_angle_actual_msg.pan_angle_deg  = dynamixel_angle_position_deg.at(glue::DynamixelServoName::Head_Pan);
+  head_angle_actual_msg.tilt_angle_deg = dynamixel_angle_position_deg.at(glue::DynamixelServoName::Head_Tilt);
+  _head_angle_pub->publish(head_angle_actual_msg);
+
+  /**************************************************************************************
+   * OTHER STUFF (needs cleanup)
+   **************************************************************************************/
+
   if (!_is_angle_position_sensor_offset_calibration_complete)
   {
     auto const now = std::chrono::high_resolution_clock::now();
@@ -231,13 +245,8 @@ void IoNode::timerCallback()
   }
 
   /**************************************************************************************
-   * HEAD CONTROL
+   * WRITE TARGET STATE TO PERIPHERAL DRIVERS
    **************************************************************************************/
-
-  l3xz_head_ctrl::msg::HeadAngle head_angle_actual_msg;
-  head_angle_actual_msg.pan_angle_deg  = dynamixel_angle_position_deg.at(glue::DynamixelServoName::Head_Pan);
-  head_angle_actual_msg.tilt_angle_deg = dynamixel_angle_position_deg.at(glue::DynamixelServoName::Head_Tilt);
-  _head_angle_pub->publish(head_angle_actual_msg);
 
   _dynamixel_angle_position_writer.update(glue::DynamixelServoName::Head_Pan,  _head_angle_target_msg.pan_angle_deg);
   _dynamixel_angle_position_writer.update(glue::DynamixelServoName::Head_Tilt, _head_angle_target_msg.tilt_angle_deg);
