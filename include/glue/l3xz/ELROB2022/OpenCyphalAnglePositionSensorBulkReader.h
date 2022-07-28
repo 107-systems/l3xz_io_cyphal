@@ -11,11 +11,10 @@
  * INCLUDES
  **************************************************************************************/
 
-#include <map>
 #include <mutex>
-#include <vector>
 
-#include <canard.h>
+#include <phy/opencyphal/Node.hpp>
+#include <phy/opencyphal/Types.h>
 
 #include <glue/OpenCyphalNodeIdList.h>
 
@@ -33,8 +32,28 @@ namespace glue::l3xz::ELROB2022
 class OpenCyphalAnglePositionSensorBulkReader
 {
 public:
-  OpenCyphalAnglePositionSensorBulkReader()
-  { }
+  OpenCyphalAnglePositionSensorBulkReader(phy::opencyphal::Node & node)
+  {
+    if (!node.subscribe<uavcan::primitive::scalar::Real32_1_0<1002>>(
+      [this](CanardRxTransfer const & transfer)
+      {
+        uavcan::primitive::scalar::Real32_1_0<1002> const as5048_a_angle = uavcan::primitive::scalar::Real32_1_0<1002>::deserialize(transfer);
+        this->update_femur_angle(transfer.metadata.remote_node_id, as5048_a_angle.data.value);
+      }))
+    {
+      printf("[ERROR] OpenCyphalAnglePositionSensorBulkReader: failed to subscribe to 'uavcan::primitive::scalar::Real32_1_0<1002>'");
+    }
+
+    if (!node.subscribe<uavcan::primitive::scalar::Real32_1_0<1003>>(
+      [this](CanardRxTransfer const & transfer)
+      {
+        uavcan::primitive::scalar::Real32_1_0<1003> const as5048_b_angle = uavcan::primitive::scalar::Real32_1_0<1003>::deserialize(transfer);
+        this->update_tibia_angle(transfer.metadata.remote_node_id, as5048_b_angle.data.value);
+      }))
+    {
+      printf("[ERROR] OpenCyphalAnglePositionSensorBulkReader: failed to subscribe to 'uavcan::primitive::scalar::Real32_1_0<1003>'");
+    }
+  }
 
   void update_femur_angle(CanardNodeID const node_id, float const femur_angle_deg)
   {
