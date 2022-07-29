@@ -13,21 +13,12 @@
 
 #include <tuple>
 
+#include <types/Leg.h>
 #include <types/Joint.h>
 
 /**************************************************************************************
  * TYPEDEF
  **************************************************************************************/
-
-enum class Leg
-{
-  LeftFront,
-  LeftMiddle,
-  LeftBack,
-  RightFront,
-  RightMiddle,
-  RightBack
-};
 
 typedef std::tuple<Leg, Joint> LegJointKey;
 
