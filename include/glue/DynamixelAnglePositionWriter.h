@@ -11,6 +11,9 @@
  * INCLUDES
  **************************************************************************************/
 
+#include <types/LegJointKey.h>
+#include <types/HeadJointKey.h>
+
 #include <driver/dynamixel/MX28.h>
 
 #include <glue/DynamixelServoName.h>
@@ -31,12 +34,15 @@ class DynamixelAnglePositionWriter
 public:
   DynamixelAnglePositionWriter();
 
-  void update(DynamixelServoName const name, float const angle_deg);
+  void update(LegJointKey const joint, float const angle_deg);
+  void update(HeadJointKey const joint, float const angle_deg);
   bool doBulkWrite(dynamixel::SharedMX28 mx28_ctrl);
 
 
 private:
   std::map<dynamixel::Dynamixel::Id, float> _dynamixel_angle_map;
+
+  void update(DynamixelServoName const name, float const angle_deg);
 };
 
 /**************************************************************************************

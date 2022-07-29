@@ -167,8 +167,15 @@ void IoNode::timerCallback()
    * WRITE TARGET STATE TO PERIPHERAL DRIVERS
    **************************************************************************************/
 
-  _dynamixel_angle_position_writer.update(glue::DynamixelServoName::Head_Pan,  _head_angle_target_msg.pan_angle_deg);
-  _dynamixel_angle_position_writer.update(glue::DynamixelServoName::Head_Tilt, _head_angle_target_msg.tilt_angle_deg);
+  _dynamixel_angle_position_writer.update(HeadJointKey::Pan,  _head_angle_target_msg.pan_angle_deg);
+  _dynamixel_angle_position_writer.update(HeadJointKey::Tilt, _head_angle_target_msg.tilt_angle_deg);
+
+  _dynamixel_angle_position_writer.update(make_key(Leg::LeftFront,   Joint::Coxa), _leg_angle_target_msg.coxa_angle_deg[0]);
+  _dynamixel_angle_position_writer.update(make_key(Leg::LeftMiddle,  Joint::Coxa), _leg_angle_target_msg.coxa_angle_deg[1]);
+  _dynamixel_angle_position_writer.update(make_key(Leg::LeftBack,    Joint::Coxa), _leg_angle_target_msg.coxa_angle_deg[2]);
+  _dynamixel_angle_position_writer.update(make_key(Leg::RightBack,   Joint::Coxa), _leg_angle_target_msg.coxa_angle_deg[3]);
+  _dynamixel_angle_position_writer.update(make_key(Leg::RightMiddle, Joint::Coxa), _leg_angle_target_msg.coxa_angle_deg[4]);
+  _dynamixel_angle_position_writer.update(make_key(Leg::RightFront,  Joint::Coxa), _leg_angle_target_msg.coxa_angle_deg[5]);
 
   /**************************************************************************************
    * WRITE TO PERIPHERALS
