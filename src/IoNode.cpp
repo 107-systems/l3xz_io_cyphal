@@ -104,7 +104,7 @@ void IoNode::timerCallback()
    * READ FROM PERIPHERALS
    **************************************************************************************/
 
-  auto const dynamixel_angle_position_deg = glue::DynamixelAnglePositionReader::doBulkRead(_mx28_ctrl);
+  auto const [dynamixel_leg_joint_angle_position, dynamixel_head_joint_angle_position] = glue::DynamixelAnglePositionReader::doBulkRead(_mx28_ctrl);
   auto const hydraulic_angle_position_deg = _hydraulic_angle_position_reader.doBulkRead();
   _open_cyphal_bumper_sensor_bulk_reader.doBulkRead();
 
@@ -114,19 +114,19 @@ void IoNode::timerCallback()
 
   /* l3xz_head_ctrl *********************************************************************/
   l3xz_head_ctrl::msg::HeadAngle head_angle_actual_msg;
-  head_angle_actual_msg.pan_angle_deg  = dynamixel_angle_position_deg.at(glue::DynamixelServoName::Head_Pan);
-  head_angle_actual_msg.tilt_angle_deg = dynamixel_angle_position_deg.at(glue::DynamixelServoName::Head_Tilt);
+  head_angle_actual_msg.pan_angle_deg  = dynamixel_head_joint_angle_position.at(HeadJointKey::Pan);
+  head_angle_actual_msg.tilt_angle_deg = dynamixel_head_joint_angle_position.at(HeadJointKey::Tilt);
   _head_angle_pub->publish(head_angle_actual_msg);
 
   /* l3xz_gait_ctrl *********************************************************************/
   l3xz_gait_ctrl::msg::LegAngle leg_angle_actual_msg;
 
-  leg_angle_actual_msg.coxa_angle_deg [0] = dynamixel_angle_position_deg.at(glue::DynamixelServoName::LeftFront_Coxa);
-  leg_angle_actual_msg.coxa_angle_deg [1] = dynamixel_angle_position_deg.at(glue::DynamixelServoName::LeftMiddle_Coxa);
-  leg_angle_actual_msg.coxa_angle_deg [2] = dynamixel_angle_position_deg.at(glue::DynamixelServoName::LeftBack_Coxa);
-  leg_angle_actual_msg.coxa_angle_deg [3] = dynamixel_angle_position_deg.at(glue::DynamixelServoName::RightBack_Coxa);
-  leg_angle_actual_msg.coxa_angle_deg [4] = dynamixel_angle_position_deg.at(glue::DynamixelServoName::RightMiddle_Coxa);
-  leg_angle_actual_msg.coxa_angle_deg [5] = dynamixel_angle_position_deg.at(glue::DynamixelServoName::RightFront_Coxa);
+  leg_angle_actual_msg.coxa_angle_deg [0] = dynamixel_leg_joint_angle_position.at(make_key(Leg::LeftFront,    Joint::Coxa));
+  leg_angle_actual_msg.coxa_angle_deg [1] = dynamixel_leg_joint_angle_position.at(make_key(Leg::LeftMiddle,   Joint::Coxa));
+  leg_angle_actual_msg.coxa_angle_deg [2] = dynamixel_leg_joint_angle_position.at(make_key(Leg::LeftBack,     Joint::Coxa));
+  leg_angle_actual_msg.coxa_angle_deg [3] = dynamixel_leg_joint_angle_position.at(make_key(Leg::RightBack,    Joint::Coxa));
+  leg_angle_actual_msg.coxa_angle_deg [4] = dynamixel_leg_joint_angle_position.at(make_key(Leg::RightMiddle,  Joint::Coxa));
+  leg_angle_actual_msg.coxa_angle_deg [5] = dynamixel_leg_joint_angle_position.at(make_key(Leg::RightFront,   Joint::Coxa));
 
   leg_angle_actual_msg.femur_angle_deg[0] = hydraulic_angle_position_deg.at(make_key(Leg::LeftFront,   Joint::Femur));
   leg_angle_actual_msg.femur_angle_deg[1] = hydraulic_angle_position_deg.at(make_key(Leg::LeftMiddle,  Joint::Femur));

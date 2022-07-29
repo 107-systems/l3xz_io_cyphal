@@ -21,7 +21,7 @@ namespace glue
  * PUBLIC MEMBER FUNCTIONS
  **************************************************************************************/
 
-std::map<DynamixelServoName, float> DynamixelAnglePositionReader::doBulkRead(dynamixel::SharedMX28 mx28_ctrl)
+std::tuple<std::map<LegJointKey, float>, std::map<HeadJointKey, float>> DynamixelAnglePositionReader::doBulkRead(dynamixel::SharedMX28 mx28_ctrl)
 {
   dynamixel::MX28::AngleDataSet const angle_data_set = mx28_ctrl->getAngle(DYNAMIXEL_ID_LIST);
 
@@ -36,7 +36,24 @@ std::map<DynamixelServoName, float> DynamixelAnglePositionReader::doBulkRead(dyn
     dynamixel_angle_position_map[key] = corrected_angle_deg;
   }
 
-  return dynamixel_angle_position_map;
+  std::map<LegJointKey, float> const dynamixel_leg_joint_angle_position =
+  {
+    {make_key(Leg::LeftFront,   Joint::Coxa), dynamixel_angle_position_map.at(DynamixelServoName::LeftFront_Coxa)},
+    {make_key(Leg::LeftMiddle,  Joint::Coxa), dynamixel_angle_position_map.at(DynamixelServoName::LeftMiddle_Coxa)},
+    {make_key(Leg::LeftBack,    Joint::Coxa), dynamixel_angle_position_map.at(DynamixelServoName::LeftBack_Coxa)},
+    {make_key(Leg::RightBack,   Joint::Coxa), dynamixel_angle_position_map.at(DynamixelServoName::RightBack_Coxa)},
+    {make_key(Leg::RightMiddle, Joint::Coxa), dynamixel_angle_position_map.at(DynamixelServoName::RightMiddle_Coxa)},
+    {make_key(Leg::RightFront,  Joint::Coxa), dynamixel_angle_position_map.at(DynamixelServoName::RightFront_Coxa)},
+  };
+
+  std::map<HeadJointKey, float> const dynamixel_head_joint_angle_position =
+  {
+    {HeadJointKey::Pan,  dynamixel_angle_position_map.at(DynamixelServoName::Head_Pan)},
+    {HeadJointKey::Tilt, dynamixel_angle_position_map.at(DynamixelServoName::Head_Tilt)},
+  };
+
+  return std::make_tuple(dynamixel_leg_joint_angle_position,
+                         dynamixel_head_joint_angle_position);
 }
 
 /**************************************************************************************

@@ -11,7 +11,13 @@
  * INCLUDES
  **************************************************************************************/
 
+#include <map>
+#include <tuple>
+
 #include <driver/dynamixel/MX28.h>
+
+#include <Types.h>
+#include <types/HeadJointKey.h>
 
 #include <glue/DynamixelIdList.h>
 #include <glue/DynamixelServoName.h>
@@ -32,7 +38,7 @@ class DynamixelAnglePositionReader
 public:
   DynamixelAnglePositionReader() = delete;
 
-  static std::map<DynamixelServoName, float> doBulkRead(dynamixel::SharedMX28 mx28_ctrl);
+  static std::tuple<std::map<LegJointKey, float>, std::map<HeadJointKey, float>> doBulkRead(dynamixel::SharedMX28 mx28_ctrl);
 };
 
 /**************************************************************************************
