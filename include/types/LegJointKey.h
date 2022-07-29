@@ -4,8 +4,8 @@
  * Contributors: https://github.com/107-systems/l3xz_io/graphs/contributors.
  */
 
-#ifndef TYPES_H_
-#define TYPES_H_
+#ifndef TYPES_LEG_JOINT_KEY_H_
+#define TYPES_LEG_JOINT_KEY_H_
 
 /**************************************************************************************
  * INCLUDE
@@ -13,8 +13,8 @@
 
 #include <tuple>
 
-#include <types/Leg.h>
-#include <types/Joint.h>
+#include "Leg.h"
+#include "Joint.h"
 
 /**************************************************************************************
  * TYPEDEF
@@ -38,4 +38,4 @@ inline LegJointKey make_key(Leg const leg, Joint const joint)
   return std::tuple(leg, joint);
 }
 
-#endif /* TYPES_H_ */
+#endif /* TYPES_LEG_JOINT_KEY_H_ */

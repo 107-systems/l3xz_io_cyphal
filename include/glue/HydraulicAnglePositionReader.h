@@ -13,7 +13,7 @@
 
 #include <mutex>
 
-#include <Types.h>
+#include <types/LegJointKey.h>
 
 #include <phy/opencyphal/Node.hpp>
 

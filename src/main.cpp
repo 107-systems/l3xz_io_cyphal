@@ -19,7 +19,7 @@
 
 #include <dynamixel_sdk.h>
 
-#include <Types.h>
+#include <types/LegJointKey.h>
 #include <Const.h>
 
 #include <driver/ssc32/SSC32.h>

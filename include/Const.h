@@ -13,7 +13,7 @@
 
 #include <list>
 
-#include "Types.h"
+#include <types/LegJointKey.h>
 
 /**************************************************************************************
  * TYPEDEF

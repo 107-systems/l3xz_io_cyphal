@@ -16,7 +16,7 @@
 
 #include <driver/dynamixel/MX28.h>
 
-#include <Types.h>
+#include <types/LegJointKey.h>
 #include <types/HeadJointKey.h>
 
 #include <glue/DynamixelIdList.h>

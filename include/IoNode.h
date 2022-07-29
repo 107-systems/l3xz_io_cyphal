@@ -13,7 +13,7 @@
 
 #include <rclcpp/rclcpp.hpp>
 
-#include <Types.h>
+#include <types/LegJointKey.h>
 
 #include <common/actuator/interface/AnglePositionActuator.h>
 
