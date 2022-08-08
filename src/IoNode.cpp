@@ -39,7 +39,7 @@ IoNode::IoNode(
 )
 : Node("l3xz_io")
 , _mx28_ctrl{mx28_ctrl}
-, _hydraulic_angle_position_reader{open_cyphal_node}
+, _hydraulic_angle_position_reader{open_cyphal_node, get_logger()}
 , _open_cyphal_bumper_sensor_bulk_reader{open_cyphal_bumper_sensor_bulk_reader}
 , _orel20_rpm_actuator{orel20_rpm_actuator}
 , _ssc32_pwm_actuator_bulk_driver{ssc32_pwm_actuator_bulk_driver}

@@ -13,6 +13,8 @@
 
 #include <mutex>
 
+#include <rclcpp/rclcpp.hpp>
+
 #include <types/LegJointKey.h>
 
 #include <phy/opencyphal/Node.hpp>
@@ -31,7 +33,8 @@ namespace glue
 class HydraulicAnglePositionReader
 {
 public:
-  HydraulicAnglePositionReader(phy::opencyphal::Node & node);
+  HydraulicAnglePositionReader(phy::opencyphal::Node & node,
+                               rclcpp::Logger const logger);
 
   std::map<LegJointKey, float> doBulkRead();
 

@@ -23,7 +23,8 @@ namespace glue
  * CTOR/DTOR
  **************************************************************************************/
 
-HydraulicAnglePositionReader::HydraulicAnglePositionReader(phy::opencyphal::Node & node)
+HydraulicAnglePositionReader::HydraulicAnglePositionReader(phy::opencyphal::Node & node,
+                                                           rclcpp::Logger const logger)
 : _mtx{}
 , _leg_angle_position_map{}
 {
@@ -37,7 +38,7 @@ HydraulicAnglePositionReader::HydraulicAnglePositionReader(phy::opencyphal::Node
       _leg_angle_position_map[femur_key] = as5048_a_angle.data.value;
     }))
   {
-    printf("[ERROR] HydraulicAnglePositionReader: failed to subscribe to 'OpenCyphalFemurAnglePositionDegreeMessage'");
+    RCLCPP_ERROR(logger, "failed to subscribe to 'OpenCyphalFemurAnglePositionDegreeMessage'");
   }
 
   if (!node.subscribe<OpenCyphalTibiaAnglePositionDegreeMessage>(
@@ -50,7 +51,7 @@ HydraulicAnglePositionReader::HydraulicAnglePositionReader(phy::opencyphal::Node
       _leg_angle_position_map[tibia_key] = as5048_b_angle.data.value;
     }))
   {
-    printf("[ERROR] HydraulicAnglePositionReader: failed to subscribe to 'OpenCyphalTibiaAnglePositionDegreeMessage'");
+    RCLCPP_ERROR(logger, "failed to subscribe to 'OpenCyphalTibiaAnglePositionDegreeMessage'");
   }
 }
 
