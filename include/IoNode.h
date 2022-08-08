@@ -17,6 +17,9 @@
 
 #include <common/actuator/interface/AnglePositionActuator.h>
 
+#include <phy/opencyphal/Node.hpp>
+#include <phy/opencyphal/SocketCAN.h>
+
 #include <driver/ssc32/SSC32.h>
 #include <driver/orel20/Orel20.h>
 
@@ -43,15 +46,17 @@ class IoNode : public rclcpp::Node
 {
 public:
   IoNode(
-    phy::opencyphal::Node & open_cyphal_node,
     dynamixel::SharedMX28 mx28_ctrl,
     driver::SharedSSC32 ssc32_ctrl,
     glue::l3xz::ELROB2022::SSC32PWMActuatorBulkwriter & ssc32_pwm_actuator_bulk_driver
   );
 
 private:
+  phy::opencyphal::SocketCAN _open_cyphal_can_if;
+  phy::opencyphal::Node _open_cyphal_node;
   dynamixel::SharedMX28 _mx28_ctrl;
   driver::Orel20 _hydraulic_pump;
+
   glue::BumperSensorReader _bumber_sensor_reader;
   glue::HydraulicAnglePositionReader _hydraulic_angle_position_reader;
   glue::l3xz::ELROB2022::SSC32PWMActuatorBulkwriter & _ssc32_pwm_actuator_bulk_driver;

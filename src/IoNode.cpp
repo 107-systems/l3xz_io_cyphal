@@ -28,16 +28,17 @@ namespace l3xz
  **************************************************************************************/
 
 IoNode::IoNode(
-  phy::opencyphal::Node & open_cyphal_node,
   dynamixel::SharedMX28 mx28_ctrl,
   driver::SharedSSC32 ssc32_ctrl,
   glue::l3xz::ELROB2022::SSC32PWMActuatorBulkwriter & ssc32_pwm_actuator_bulk_driver
 )
 : Node("l3xz_io")
+, _open_cyphal_can_if("can0", false)
+, _open_cyphal_node(_open_cyphal_can_if)
 , _mx28_ctrl{mx28_ctrl}
-, _hydraulic_pump{open_cyphal_node}
-, _bumber_sensor_reader{open_cyphal_node, get_logger()}
-, _hydraulic_angle_position_reader{open_cyphal_node, get_logger()}
+, _hydraulic_pump{_open_cyphal_node}
+, _bumber_sensor_reader{_open_cyphal_node, get_logger()}
+, _hydraulic_angle_position_reader{_open_cyphal_node, get_logger()}
 , _ssc32_pwm_actuator_bulk_driver{ssc32_pwm_actuator_bulk_driver}
 , _dynamixel_angle_position_writer{}
 , _leg_angle_target_msg{

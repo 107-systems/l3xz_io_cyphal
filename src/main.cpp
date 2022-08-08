@@ -24,11 +24,8 @@
 
 #include <driver/ssc32/SSC32.h>
 #include <driver/dynamixel/MX28.h>
+
 #include <driver/dynamixel/Dynamixel.h>
-
-#include <phy/opencyphal/Node.hpp>
-#include <phy/opencyphal/SocketCAN.h>
-
 #include <glue/DynamixelIdList.h>
 #include <glue/l3xz/ELROB2022/SSC32PWMActuator.h>
 #include <glue/l3xz/ELROB2022/SSC32PWMActuatorBulkwriter.h>
@@ -78,13 +75,6 @@ int main(int argc, char **argv) try
   if (!init_dynamixel(mx28_ctrl))
     printf("[ERROR] init_dynamixel failed.");
   printf("[INFO] init_dynamixel successfully completed.");
-
-  /**************************************************************************************
-   * OPENCYPHAL
-   **************************************************************************************/
-
-  phy::opencyphal::SocketCAN open_cyphal_can_if("can0", false);
-  phy::opencyphal::Node open_cyphal_node(open_cyphal_can_if);
 
   /**************************************************************************************
    * SSC32
@@ -147,7 +137,6 @@ int main(int argc, char **argv) try
 
   auto io_node = std::make_shared<l3xz::IoNode>
   (
-    open_cyphal_node,
     mx28_ctrl,
     ssc32_ctrl,
     ssc32_pwm_actuator_bulk_driver
