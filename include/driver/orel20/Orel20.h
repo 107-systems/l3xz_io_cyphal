@@ -11,8 +11,6 @@
  * INCLUDE
  **************************************************************************************/
 
-#include <memory>
-
 #include <phy/opencyphal/Node.hpp>
 
 /**************************************************************************************
@@ -29,24 +27,16 @@ namespace driver
 class Orel20
 {
 public:
-  Orel20(phy::opencyphal::Node & node,
-         CanardNodeID const orel_node_id);
 
-  inline void setRPM(uint16_t const rpm_val) { _rpm_val = rpm_val; }
+  Orel20(phy::opencyphal::Node & node);
 
-  void spinOnce();
+  void setRPM(uint16_t const rpm_val);
+  void doWrite();
 
 private:
   phy::opencyphal::Node & _node;
-  CanardNodeID const OREL20_NODE_ID;
   uint16_t _rpm_val;
 };
-
-/**************************************************************************************
- * TYPEDEF
- **************************************************************************************/
-
-typedef std::shared_ptr<Orel20> SharedOrel20;
 
 /**************************************************************************************
  * NAMESPACE

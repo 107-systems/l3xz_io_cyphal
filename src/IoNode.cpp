@@ -30,16 +30,14 @@ namespace l3xz
 IoNode::IoNode(
   phy::opencyphal::Node & open_cyphal_node,
   dynamixel::SharedMX28 mx28_ctrl,
-  driver::SharedOrel20 orel20_ctrl,
   driver::SharedSSC32 ssc32_ctrl,
-  glue::l3xz::ELROB2022::Orel20RPMActuator & orel20_rpm_actuator,
   glue::l3xz::ELROB2022::SSC32PWMActuatorBulkwriter & ssc32_pwm_actuator_bulk_driver
 )
 : Node("l3xz_io")
 , _mx28_ctrl{mx28_ctrl}
+, _hydraulic_pump{open_cyphal_node}
 , _bumber_sensor_reader{open_cyphal_node, get_logger()}
 , _hydraulic_angle_position_reader{open_cyphal_node, get_logger()}
-, _orel20_rpm_actuator{orel20_rpm_actuator}
 , _ssc32_pwm_actuator_bulk_driver{ssc32_pwm_actuator_bulk_driver}
 , _dynamixel_angle_position_writer{}
 , _leg_angle_target_msg{
@@ -156,9 +154,9 @@ void IoNode::timerCallback()
   }
 
   if (num_joints_actively_controlled > 0)
-    _orel20_rpm_actuator.set(4096);
+    _hydraulic_pump.setRPM(4096);
   else
-    _orel20_rpm_actuator.set(0);
+    _hydraulic_pump.setRPM(0);
 
   /**************************************************************************************
    * WRITE TARGET STATE TO PERIPHERAL DRIVERS
@@ -182,7 +180,7 @@ void IoNode::timerCallback()
     printf("[ERROR] failed to set target angles for all dynamixel servos");
 
   _ssc32_pwm_actuator_bulk_driver.doBulkWrite();
-  _orel20_rpm_actuator.doWrite();
+  _hydraulic_pump.doWrite();
 }
 
 float IoNode::get_angle_deg(l3xz_gait_ctrl::msg::LegAngle const & msg, Leg const leg, Joint const joint)

@@ -23,7 +23,6 @@
 #include <Const.h>
 
 #include <driver/ssc32/SSC32.h>
-#include <driver/orel20/Orel20.h>
 #include <driver/dynamixel/MX28.h>
 #include <driver/dynamixel/Dynamixel.h>
 
@@ -35,7 +34,6 @@
 #include <glue/l3xz/ELROB2022/SSC32PWMActuatorBulkwriter.h>
 #include <glue/l3xz/ELROB2022/SSC32ValveActuator.h>
 #include <glue/l3xz/ELROB2022/SSC32AnglePositionActuator.h>
-#include <glue/l3xz/ELROB2022/Orel20RPMActuator.h>
 
 #include <IoNode.h>
 
@@ -45,8 +43,6 @@
 
 bool init_dynamixel  (dynamixel::SharedMX28 & mx28_ctrl);
 void deinit_dynamixel(dynamixel::SharedMX28 & mx28_ctrl);
-
-void deinit_orel20(driver::SharedOrel20 orel20_ctrl);
 
 void init_ssc32  (driver::SharedSSC32 & ssc32_ctrl);
 void deinit_ssc32(driver::SharedSSC32 & ssc32_ctrl);
@@ -89,14 +85,6 @@ int main(int argc, char **argv) try
 
   phy::opencyphal::SocketCAN open_cyphal_can_if("can0", false);
   phy::opencyphal::Node open_cyphal_node(open_cyphal_can_if);
-
-  /**************************************************************************************
-   * OREL 20 / DRONECAN
-   **************************************************************************************/
-
-  auto orel20_ctrl = std::make_shared<driver::Orel20>(open_cyphal_node, OREL20_NODE_ID);
-
-  glue::l3xz::ELROB2022::Orel20RPMActuator orel20_rpm_actuator("Pump", orel20_ctrl);
 
   /**************************************************************************************
    * SSC32
@@ -161,9 +149,7 @@ int main(int argc, char **argv) try
   (
     open_cyphal_node,
     mx28_ctrl,
-    orel20_ctrl,
     ssc32_ctrl,
-    orel20_rpm_actuator,
     ssc32_pwm_actuator_bulk_driver
   );
 
@@ -177,7 +163,6 @@ int main(int argc, char **argv) try
   printf("[WARNING] STOPPING");
 
   deinit_dynamixel(mx28_ctrl);
-  deinit_orel20(orel20_ctrl);
   deinit_ssc32(ssc32_ctrl);
 
   return EXIT_SUCCESS;
@@ -233,12 +218,6 @@ bool init_dynamixel(dynamixel::SharedMX28 & mx28_ctrl)
 void deinit_dynamixel(dynamixel::SharedMX28 & mx28_ctrl)
 {
   mx28_ctrl->torqueOff(glue::DYNAMIXEL_ID_LIST);
-}
-
-void deinit_orel20(driver::SharedOrel20 orel20_ctrl)
-{
-  orel20_ctrl->setRPM(0);
-  orel20_ctrl->spinOnce();
 }
 
 void init_ssc32(driver::SharedSSC32 & ssc32_ctrl)

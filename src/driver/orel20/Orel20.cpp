@@ -10,7 +10,7 @@
 
 #include <driver/orel20/Orel20.h>
 
-#include <phy/opencyphal/Types.h>
+#include <glue/OpenCyphalMessageTypes.h>
 
 /**************************************************************************************
  * NAMESPACE
@@ -23,12 +23,11 @@ namespace driver
  * CTOR/DTOR
  **************************************************************************************/
 
-Orel20::Orel20(phy::opencyphal::Node & node, CanardNodeID const orel_node_id)
+Orel20::Orel20(phy::opencyphal::Node & node)
 : _node{node}
-, OREL20_NODE_ID{orel_node_id}
 , _rpm_val{0}
 {
-  reg::udral::service::common::Readiness_0_1<3001> readiness;
+  glue::OpenCyphalOrel20ReadinessMessage readiness;
   readiness.data.value = reg_udral_service_common_Readiness_0_1_ENGAGED;
 
   if (!_node.publish(readiness))
@@ -39,9 +38,15 @@ Orel20::Orel20(phy::opencyphal::Node & node, CanardNodeID const orel_node_id)
  * PUBLIC MEMBER FUNCTIONS
  **************************************************************************************/
 
-void Orel20::spinOnce()
+void Orel20::setRPM(uint16_t const rpm_val)
 {
-  reg::udral::service::actuator::common::sp::Scalar_0_1<3002> setpoint;
+  uint16_t const MAX_RPM = 8192;
+  _rpm_val = std::min(rpm_val, MAX_RPM);
+}
+
+void Orel20::doWrite()
+{
+  glue::OpenCyphalOrel20SetpointMessage setpoint;
   setpoint.data.value = _rpm_val;
 
   if (!_node.publish(setpoint))
