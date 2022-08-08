@@ -44,6 +44,9 @@ private:
 
   static LegJointKey femur_toLegJointKey(CanardNodeID const node_id);
   static LegJointKey tibia_toLegJointKey(CanardNodeID const node_id);
+
+  bool subscribeFemurAngleMessage(phy::opencyphal::Node & node);
+  bool subscribeTibiaAngleMessage(phy::opencyphal::Node & node);
 };
 
 /**************************************************************************************

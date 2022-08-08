@@ -28,31 +28,11 @@ HydraulicAnglePositionReader::HydraulicAnglePositionReader(phy::opencyphal::Node
 : _mtx{}
 , _leg_angle_position_map{}
 {
-  if (!node.subscribe<OpenCyphalFemurAnglePositionDegreeMessage>(
-    [this](CanardRxTransfer const & transfer)
-    {
-      OpenCyphalFemurAnglePositionDegreeMessage const as5048_a_angle = OpenCyphalFemurAnglePositionDegreeMessage::deserialize(transfer);
-      LegJointKey const femur_key = femur_toLegJointKey(transfer.metadata.remote_node_id);
-
-      std::lock_guard<std::mutex> lock(_mtx);
-      _leg_angle_position_map[femur_key] = as5048_a_angle.data.value;
-    }))
-  {
+  if (!subscribeFemurAngleMessage(node))
     RCLCPP_ERROR(logger, "failed to subscribe to 'OpenCyphalFemurAnglePositionDegreeMessage'");
-  }
 
-  if (!node.subscribe<OpenCyphalTibiaAnglePositionDegreeMessage>(
-    [this](CanardRxTransfer const & transfer)
-    {
-      OpenCyphalTibiaAnglePositionDegreeMessage const as5048_b_angle = OpenCyphalTibiaAnglePositionDegreeMessage::deserialize(transfer);
-      LegJointKey const tibia_key = tibia_toLegJointKey(transfer.metadata.remote_node_id);
-
-      std::lock_guard<std::mutex> lock(_mtx);
-      _leg_angle_position_map[tibia_key] = as5048_b_angle.data.value;
-    }))
-  {
+  if (!subscribeTibiaAngleMessage(node))
     RCLCPP_ERROR(logger, "failed to subscribe to 'OpenCyphalTibiaAnglePositionDegreeMessage'");
-  }
 }
 
 /**************************************************************************************
@@ -96,7 +76,34 @@ LegJointKey HydraulicAnglePositionReader::tibia_toLegJointKey(CanardNodeID const
     {6, make_key(Leg::RightFront,  Joint::Tibia)},
   };
 
-  return NODE_ID_TIBIA_TO_LEG_JOINT_MAP.at(node_id);}
+  return NODE_ID_TIBIA_TO_LEG_JOINT_MAP.at(node_id);
+}
+
+bool HydraulicAnglePositionReader::subscribeFemurAngleMessage(phy::opencyphal::Node & node)
+{
+  return node.subscribe<OpenCyphalFemurAnglePositionDegreeMessage>(
+    [this](CanardRxTransfer const & transfer)
+    {
+      OpenCyphalFemurAnglePositionDegreeMessage const as5048_a_angle = OpenCyphalFemurAnglePositionDegreeMessage::deserialize(transfer);
+      LegJointKey const femur_key = femur_toLegJointKey(transfer.metadata.remote_node_id);
+
+      std::lock_guard<std::mutex> lock(_mtx);
+      _leg_angle_position_map[femur_key] = as5048_a_angle.data.value;
+    });
+}
+
+bool HydraulicAnglePositionReader::subscribeTibiaAngleMessage(phy::opencyphal::Node & node)
+{
+  return node.subscribe<OpenCyphalTibiaAnglePositionDegreeMessage>(
+    [this](CanardRxTransfer const & transfer)
+    {
+      OpenCyphalTibiaAnglePositionDegreeMessage const as5048_b_angle = OpenCyphalTibiaAnglePositionDegreeMessage::deserialize(transfer);
+      LegJointKey const tibia_key = tibia_toLegJointKey(transfer.metadata.remote_node_id);
+
+      std::lock_guard<std::mutex> lock(_mtx);
+      _leg_angle_position_map[tibia_key] = as5048_b_angle.data.value;
+    });
+}
 
 /**************************************************************************************
  * NAMESPACE
