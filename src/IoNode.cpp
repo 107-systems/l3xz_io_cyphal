@@ -33,6 +33,7 @@ IoNode::IoNode(
   glue::l3xz::ELROB2022::SSC32PWMActuatorBulkwriter & ssc32_pwm_actuator_bulk_driver
 )
 : Node("l3xz_io")
+, _state{State::Init}
 , _open_cyphal_can_if("can0", false)
 , _open_cyphal_node(_open_cyphal_can_if)
 , _mx28_ctrl{mx28_ctrl}
@@ -95,6 +96,22 @@ IoNode::IoNode(
  **************************************************************************************/
 
 void IoNode::timerCallback()
+{
+  State next_state = _state;
+  switch (_state)
+  {
+  case State::Init:   next_state = handle_Init();   break;
+  case State::Active: next_state = handle_Active(); break;
+  }
+  _state = next_state;
+}
+
+IoNode::State IoNode::handle_Init()
+{
+  return State::Active;
+}
+
+IoNode::State IoNode::handle_Active()
 {
   /**************************************************************************************
    * READ FROM PERIPHERALS
@@ -182,6 +199,8 @@ void IoNode::timerCallback()
 
   _ssc32_pwm_actuator_bulk_driver.doBulkWrite();
   _hydraulic_pump.doWrite();
+
+  return State::Active;
 }
 
 float IoNode::get_angle_deg(l3xz_gait_ctrl::msg::LegAngle const & msg, Leg const leg, Joint const joint)

@@ -52,6 +52,12 @@ public:
   );
 
 private:
+  enum class State
+  {
+    Init, Active
+  };
+  State _state;
+
   phy::opencyphal::SocketCAN _open_cyphal_can_if;
   phy::opencyphal::Node _open_cyphal_node;
   dynamixel::SharedMX28 _mx28_ctrl;
@@ -73,6 +79,9 @@ private:
   l3xz_head_ctrl::msg::HeadAngle _head_angle_target_msg;
 
   void timerCallback();
+
+  State handle_Init();
+  State handle_Active();
 
   static float get_angle_deg(l3xz_gait_ctrl::msg::LegAngle const & msg, Leg const leg, Joint const joint);
 };
