@@ -56,10 +56,6 @@ target_compile_features(${PROJECT_NAME}_node PRIVATE cxx_std_17)
 target_compile_options(${PROJECT_NAME}_node PRIVATE -Wall -Werror -pedantic)
 ament_target_dependencies(${PROJECT_NAME}_node rclcpp l3xz_gait_ctrl l3xz_head_ctrl)
 #######################################################################################
-add_subdirectory(tooling/fwlegctrl)
-add_subdirectory(tooling/orocos)
-add_subdirectory(tooling/ssc32ctrl)
-#######################################################################################
 install(TARGETS
   ${PROJECT_NAME}_node
   DESTINATION lib/${PROJECT_NAME})
