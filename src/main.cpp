@@ -27,7 +27,6 @@
 #include <driver/dynamixel/MX28.h>
 #include <driver/dynamixel/Dynamixel.h>
 
-#include <phy/opencyphal/Types.h>
 #include <phy/opencyphal/Node.hpp>
 #include <phy/opencyphal/SocketCAN.h>
 
@@ -36,9 +35,6 @@
 #include <glue/l3xz/ELROB2022/SSC32PWMActuatorBulkwriter.h>
 #include <glue/l3xz/ELROB2022/SSC32ValveActuator.h>
 #include <glue/l3xz/ELROB2022/SSC32AnglePositionActuator.h>
-#include <glue/HydraulicAnglePositionReader.h>
-#include <glue/l3xz/ELROB2022/OpenCyphalBumperSensor.h>
-#include <glue/l3xz/ELROB2022/OpenCyphalBumperSensorBulkReader.h>
 #include <glue/l3xz/ELROB2022/Orel20RPMActuator.h>
 
 #include <IoNode.h>
@@ -49,9 +45,6 @@
 
 bool init_dynamixel  (dynamixel::SharedMX28 & mx28_ctrl);
 void deinit_dynamixel(dynamixel::SharedMX28 & mx28_ctrl);
-
-bool init_open_cyphal(phy::opencyphal::Node & open_cyphal_node,
-                      glue::l3xz::ELROB2022::OpenCyphalBumperSensorBulkReader & open_cyphal_bumper_sensor_bulk_reader);
 
 void deinit_orel20(driver::SharedOrel20 orel20_ctrl);
 
@@ -96,23 +89,6 @@ int main(int argc, char **argv) try
 
   phy::opencyphal::SocketCAN open_cyphal_can_if("can0", false);
   phy::opencyphal::Node open_cyphal_node(open_cyphal_can_if);
-
-  auto tibia_tip_bumper_left_front   = std::make_shared<glue::l3xz::ELROB2022::OpenCyphalBumperSensor>("L/F");
-  auto tibia_tip_bumper_left_middle  = std::make_shared<glue::l3xz::ELROB2022::OpenCyphalBumperSensor>("L/M");
-  auto tibia_tip_bumper_left_back    = std::make_shared<glue::l3xz::ELROB2022::OpenCyphalBumperSensor>("L/B");
-  auto tibia_tip_bumper_right_back   = std::make_shared<glue::l3xz::ELROB2022::OpenCyphalBumperSensor>("R/B");
-  auto tibia_tip_bumper_right_middle = std::make_shared<glue::l3xz::ELROB2022::OpenCyphalBumperSensor>("R/M");
-  auto tibia_tip_bumper_right_front  = std::make_shared<glue::l3xz::ELROB2022::OpenCyphalBumperSensor>("R/F");
-
-  glue::l3xz::ELROB2022::OpenCyphalBumperSensorBulkReader open_cyphal_bumper_sensor_bulk_reader
-  (
-    tibia_tip_bumper_left_front,
-    tibia_tip_bumper_left_middle,
-    tibia_tip_bumper_left_back,
-    tibia_tip_bumper_right_back,
-    tibia_tip_bumper_right_middle,
-    tibia_tip_bumper_right_front
-  );
 
   /**************************************************************************************
    * OREL 20 / DRONECAN
@@ -178,20 +154,6 @@ int main(int argc, char **argv) try
   auto angle_actuator_right_back_tibia       = std::make_shared<glue::l3xz::ELROB2022::SSC32AnglePositionActuator>("R/B Tibia", valve_actuator_back_right_tibia,   nullptr);
 
   /**************************************************************************************
-   * ALL ANGLE POSITION ACTUATORS
-   **************************************************************************************/
-
-  std::map<Leg, common::sensor::interface::SharedBumperSensor> bumper_sensor_map =
-  {
-    {Leg::LeftFront,   tibia_tip_bumper_left_front},
-    {Leg::LeftMiddle,  tibia_tip_bumper_left_middle},
-    {Leg::LeftBack,    tibia_tip_bumper_left_back},
-    {Leg::RightFront,  tibia_tip_bumper_right_front},
-    {Leg::RightMiddle, tibia_tip_bumper_right_middle},
-    {Leg::RightBack,   tibia_tip_bumper_right_back}
-  };
-
-  /**************************************************************************************
    * STATE
    **************************************************************************************/
 
@@ -201,18 +163,9 @@ int main(int argc, char **argv) try
     mx28_ctrl,
     orel20_ctrl,
     ssc32_ctrl,
-    open_cyphal_bumper_sensor_bulk_reader,
     orel20_rpm_actuator,
-    ssc32_pwm_actuator_bulk_driver,
-    bumper_sensor_map
+    ssc32_pwm_actuator_bulk_driver
   );
-
-  if (!init_open_cyphal(open_cyphal_node,
-                        open_cyphal_bumper_sensor_bulk_reader))
-  {
-    printf("[ERROR] init_open_cyphal failed.");
-  }
-  printf("[INFO] init_open_cyphal successfully completed.");
 
   /**************************************************************************************
    * MAIN LOOP
@@ -280,45 +233,6 @@ bool init_dynamixel(dynamixel::SharedMX28 & mx28_ctrl)
 void deinit_dynamixel(dynamixel::SharedMX28 & mx28_ctrl)
 {
   mx28_ctrl->torqueOff(glue::DYNAMIXEL_ID_LIST);
-}
-
-bool init_open_cyphal(phy::opencyphal::Node & open_cyphal_node,
-                      glue::l3xz::ELROB2022::OpenCyphalBumperSensorBulkReader & open_cyphal_bumper_sensor_bulk_reader)
-{
-  if (!open_cyphal_node.subscribe<uavcan::node::Heartbeat_1_0<>>([](CanardRxTransfer const & transfer)
-  {
-    //uavcan::node::Heartbeat_1_0<> const hb = uavcan::node::Heartbeat_1_0<>::deserialize(transfer);
-    //printf("[DEBUG] [%d] Heartbeat received\n\tMode = %d", transfer.metadata.remote_node_id, hb.data.mode.value);
-  }))
-  {
-    printf("[ERROR] init_open_cyphal failed to subscribe to 'uavcan::node::Heartbeat_1_0'");
-    return false;
-  }
-
-
-  if (!open_cyphal_node.subscribe<uavcan::primitive::scalar::Real32_1_0<1001>>([](CanardRxTransfer const & transfer)
-  {
-    //uavcan::primitive::scalar::Real32_1_0<1001> const input_voltage = uavcan::primitive::scalar::Real32_1_0<1001>::deserialize(transfer);
-    //printf("[DEBUG] [%d] Battery Voltage = %f", transfer.metadata.remote_node_id, input_voltage.data.value);
-  }))
-  {
-    printf("[ERROR] init_open_cyphal failed to subscribe to 'uavcan::primitive::scalar::Real32_1_0<1001>'");
-    return false;
-  }
-
-
-  if (!open_cyphal_node.subscribe<uavcan::primitive::scalar::Bit_1_0<1004>>([&open_cyphal_bumper_sensor_bulk_reader](CanardRxTransfer const & transfer)
-  {
-    uavcan::primitive::scalar::Bit_1_0<1004> const tibia_endpoint_switch = uavcan::primitive::scalar::Bit_1_0<1004>::deserialize(transfer);
-    open_cyphal_bumper_sensor_bulk_reader.update_bumper_sensor(transfer.metadata.remote_node_id, tibia_endpoint_switch.data.value);
-    //printf("[DEBUG] [%d] Tibia Endpoint Switch %d", transfer.metadata.remote_node_id, tibia_endpoint_switch.data.value);
-  }))
-  {
-    printf("[ERROR] init_open_cyphal failed to subscribe to 'uavcan::primitive::scalar::Bit_1_0<1004>'");
-    return false;
-  }
-
-  return true;
 }
 
 void deinit_orel20(driver::SharedOrel20 orel20_ctrl)

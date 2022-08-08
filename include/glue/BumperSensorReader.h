@@ -4,53 +4,54 @@
  * Contributors: https://github.com/107-systems/l3xz_io/graphs/contributors.
  */
 
+#ifndef GLUE_L3XZ_ELROB2022_OPEN_CYPHAL_BUMPER_SENSOR_BULK_READER_H_
+#define GLUE_L3XZ_ELROB2022_OPEN_CYPHAL_BUMPER_SENSOR_BULK_READER_H_
+
 /**************************************************************************************
  * INCLUDES
  **************************************************************************************/
 
-#include <common/sensor/interface/BumperSensor.h>
+#include <map>
+#include <mutex>
 
-#include <sstream>
+#include <types/LegJointKey.h>
 
-/**************************************************************************************
- * NAMESPACE
- **************************************************************************************/
+#include <rclcpp/rclcpp.hpp>
 
-namespace common::sensor::interface
-{
-
-/**************************************************************************************
- * PUBLIC MEMBER FUNCTIONS
- **************************************************************************************/
-
-std::string BumperSensor::toStr() const
-{
-  std::stringstream ss;
-
-  if (!isPressed().has_value()) {
-    ss << "     Inv.";
-    return ss.str();
-  }
-
-  bool const is_pressed = isPressed().value();
-  if (is_pressed)
-    ss << " Pressed.";
-  else
-    ss << "Released.";
-
-  return ss.str();
-}
-
-std::optional<bool> BumperSensor::isPressed() const
-{
-  if (get().has_value())
-    return get().value();
-  else
-    return std::nullopt;
-}
+#include <phy/opencyphal/Node.hpp>
 
 /**************************************************************************************
  * NAMESPACE
  **************************************************************************************/
 
-} /* common::sensor::interface */
+namespace glue
+{
+
+/**************************************************************************************
+ * CLASS DECLARATION
+ **************************************************************************************/
+
+class BumperSensorReader
+{
+public:
+  BumperSensorReader(phy::opencyphal::Node & node,
+                     rclcpp::Logger const logger);
+
+  std::map<Leg, bool /* is_pressed */> doBulkRead();
+
+private:
+  std::mutex _mtx;
+  std::map<Leg, bool /* is_pressed */> _tibia_tip_bumper_map;
+
+  static Leg toLeg(CanardNodeID const node_id);
+
+  bool subscribeTibiaTipBumberMessage(phy::opencyphal::Node & node);
+};
+
+/**************************************************************************************
+ * NAMESPACE
+ **************************************************************************************/
+
+} /* glue */
+
+#endif /* GLUE_L3XZ_ELROB2022_OPEN_CYPHAL_BUMPER_SENSOR_BULK_READER_H_ */

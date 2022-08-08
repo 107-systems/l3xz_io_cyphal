@@ -32,19 +32,16 @@ IoNode::IoNode(
   dynamixel::SharedMX28 mx28_ctrl,
   driver::SharedOrel20 orel20_ctrl,
   driver::SharedSSC32 ssc32_ctrl,
-  glue::l3xz::ELROB2022::OpenCyphalBumperSensorBulkReader & open_cyphal_bumper_sensor_bulk_reader,
   glue::l3xz::ELROB2022::Orel20RPMActuator & orel20_rpm_actuator,
-  glue::l3xz::ELROB2022::SSC32PWMActuatorBulkwriter & ssc32_pwm_actuator_bulk_driver,
-  std::map<Leg, common::sensor::interface::SharedBumperSensor> & bumper_sensor_map
+  glue::l3xz::ELROB2022::SSC32PWMActuatorBulkwriter & ssc32_pwm_actuator_bulk_driver
 )
 : Node("l3xz_io")
 , _mx28_ctrl{mx28_ctrl}
+, _bumber_sensor_reader{open_cyphal_node, get_logger()}
 , _hydraulic_angle_position_reader{open_cyphal_node, get_logger()}
-, _open_cyphal_bumper_sensor_bulk_reader{open_cyphal_bumper_sensor_bulk_reader}
 , _orel20_rpm_actuator{orel20_rpm_actuator}
 , _ssc32_pwm_actuator_bulk_driver{ssc32_pwm_actuator_bulk_driver}
 , _dynamixel_angle_position_writer{}
-, _bumper_sensor_map{bumper_sensor_map}
 , _leg_angle_target_msg{
     []()
     {
@@ -106,7 +103,7 @@ void IoNode::timerCallback()
 
   auto const [dynamixel_leg_joint_angle_position, dynamixel_head_joint_angle_position] = glue::DynamixelAnglePositionReader::doBulkRead(_mx28_ctrl);
   auto const hydraulic_angle_position_deg = _hydraulic_angle_position_reader.doBulkRead();
-  _open_cyphal_bumper_sensor_bulk_reader.doBulkRead();
+  auto const tibia_tip_bumper_map = _bumber_sensor_reader.doBulkRead();
 
   /**************************************************************************************
    * PUBLISH ACTUAL SYSTEM STATE

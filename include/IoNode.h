@@ -22,7 +22,7 @@
 
 #include <glue/l3xz/ELROB2022/Orel20RPMActuator.h>
 #include <glue/l3xz/ELROB2022/SSC32PWMActuatorBulkwriter.h>
-#include <glue/l3xz/ELROB2022/OpenCyphalBumperSensorBulkReader.h>
+#include <glue/BumperSensorReader.h>
 #include <glue/HydraulicAnglePositionReader.h>
 #include <glue/DynamixelAnglePositionWriter.h>
 
@@ -48,20 +48,17 @@ public:
     dynamixel::SharedMX28 mx28_ctrl,
     driver::SharedOrel20 orel20_ctrl,
     driver::SharedSSC32 ssc32_ctrl,
-    glue::l3xz::ELROB2022::OpenCyphalBumperSensorBulkReader & open_cyphal_bumper_sensor_bulk_reader,
     glue::l3xz::ELROB2022::Orel20RPMActuator & orel20_rpm_actuator,
-    glue::l3xz::ELROB2022::SSC32PWMActuatorBulkwriter & ssc32_pwm_actuator_bulk_driver,
-    std::map<Leg, common::sensor::interface::SharedBumperSensor> & bumper_sensor_map
+    glue::l3xz::ELROB2022::SSC32PWMActuatorBulkwriter & ssc32_pwm_actuator_bulk_driver
   );
 
 private:
   dynamixel::SharedMX28 _mx28_ctrl;
+  glue::BumperSensorReader _bumber_sensor_reader;
   glue::HydraulicAnglePositionReader _hydraulic_angle_position_reader;
-  glue::l3xz::ELROB2022::OpenCyphalBumperSensorBulkReader & _open_cyphal_bumper_sensor_bulk_reader;
   glue::l3xz::ELROB2022::Orel20RPMActuator & _orel20_rpm_actuator;
   glue::l3xz::ELROB2022::SSC32PWMActuatorBulkwriter & _ssc32_pwm_actuator_bulk_driver;
   glue::DynamixelAnglePositionWriter _dynamixel_angle_position_writer;
-  std::map<Leg, common::sensor::interface::SharedBumperSensor> & _bumper_sensor_map;
 
   rclcpp::TimerBase::SharedPtr _timer;
 

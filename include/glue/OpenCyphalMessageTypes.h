@@ -26,6 +26,7 @@ namespace glue
 
 typedef uavcan::primitive::scalar::Real32_1_0<1002> OpenCyphalFemurAnglePositionDegreeMessage;
 typedef uavcan::primitive::scalar::Real32_1_0<1003> OpenCyphalTibiaAnglePositionDegreeMessage;
+typedef uavcan::primitive::scalar::Bit_1_0<1004>    OpenCyphalTibiaTipBumperMessage;
 
 /**************************************************************************************
  * NAMESPACE
