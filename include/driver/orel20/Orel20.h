@@ -11,6 +11,8 @@
  * INCLUDE
  **************************************************************************************/
 
+#include <rclcpp/rclcpp.hpp>
+
 #include <phy/opencyphal/Node.hpp>
 
 /**************************************************************************************
@@ -28,13 +30,15 @@ class Orel20
 {
 public:
 
-  Orel20(phy::opencyphal::Node & node);
+  Orel20(phy::opencyphal::Node & node,
+         rclcpp::Logger const logger);
 
   void setRPM(uint16_t const rpm_val);
   void doWrite();
 
 private:
   phy::opencyphal::Node & _node;
+  rclcpp::Logger const _logger;
   uint16_t _rpm_val;
 };
 

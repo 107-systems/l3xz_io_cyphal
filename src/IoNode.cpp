@@ -12,7 +12,8 @@
 
 #include <iomanip>
 
-#include <Const.h>
+#include <const/LegJointList.h>
+#include <const/InitialAngle.h>
 
 #include <glue/DynamixelAnglePositionReader.h>
 
@@ -46,7 +47,7 @@ IoNode::IoNode()
 , _dynamixel_ctrl{new dynamixel::Dynamixel(DYNAMIXEL_DEVICE_NAME, DYNAMIXEL_PROTOCOL_VERSION, DYNAMIXEL_BAUD_RATE)}
 , _mx28_ctrl{new dynamixel::MX28(_dynamixel_ctrl)}
 , _ssc32_ctrl{new driver::SSC32(SSC32_DEVICE_NAME, DYNAMIXEL_BAUD_RATE)}
-, _hydraulic_pump{_open_cyphal_node}
+, _hydraulic_pump{_open_cyphal_node, get_logger()}
 , _bumber_sensor_reader{_open_cyphal_node, get_logger()}
 , _hydraulic_angle_position_reader{_open_cyphal_node, get_logger()}
 , _dynamixel_angle_position_writer{}

@@ -23,15 +23,17 @@ namespace driver
  * CTOR/DTOR
  **************************************************************************************/
 
-Orel20::Orel20(phy::opencyphal::Node & node)
+Orel20::Orel20(phy::opencyphal::Node & node,
+               rclcpp::Logger const logger)
 : _node{node}
+, _logger{logger}
 , _rpm_val{0}
 {
   glue::OpenCyphalOrel20ReadinessMessage readiness;
   readiness.data.value = reg_udral_service_common_Readiness_0_1_ENGAGED;
 
   if (!_node.publish(readiness))
-    printf("[ERROR] Orel20::Orel20: error, could not configure ESC to be ready");
+    RCLCPP_ERROR(_logger, "could not publish Orel20 ESC readiness message");
 }
 
 /**************************************************************************************
@@ -50,7 +52,7 @@ void Orel20::doWrite()
   setpoint.data.value = _rpm_val;
 
   if (!_node.publish(setpoint))
-    printf("[ERROR] Orel20::spinOnce: error, could not publish esc message");
+    RCLCPP_ERROR(_logger,"error, could not publish Orel20 ESC setpoint message");
 }
 
 /**************************************************************************************
