@@ -50,6 +50,7 @@ IoNode::IoNode()
 , _bumber_sensor_reader{_open_cyphal_node, get_logger()}
 , _hydraulic_angle_position_reader{_open_cyphal_node, get_logger()}
 , _dynamixel_angle_position_writer{}
+, _ssc32_valve_writer{}
 , _leg_angle_target_msg{
     []()
     {
@@ -217,6 +218,7 @@ IoNode::State IoNode::handle_Active()
     RCLCPP_ERROR(get_logger(), "failed to set target angles for all dynamixel servos");
 
   _hydraulic_pump.doWrite();
+  _ssc32_valve_writer.doBulkWrite(_ssc32_ctrl);
 
   return State::Active;
 }

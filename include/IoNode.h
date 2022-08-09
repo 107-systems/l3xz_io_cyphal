@@ -15,14 +15,13 @@
 
 #include <types/LegJointKey.h>
 
-#include <common/actuator/interface/AnglePositionActuator.h>
-
 #include <phy/opencyphal/Node.hpp>
 #include <phy/opencyphal/SocketCAN.h>
 
 #include <driver/ssc32/SSC32.h>
 #include <driver/orel20/Orel20.h>
 
+#include <glue/SSC32ValveWriter.h>
 #include <glue/BumperSensorReader.h>
 #include <glue/HydraulicAnglePositionReader.h>
 #include <glue/DynamixelAnglePositionWriter.h>
@@ -64,6 +63,7 @@ private:
   glue::BumperSensorReader _bumber_sensor_reader;
   glue::HydraulicAnglePositionReader _hydraulic_angle_position_reader;
   glue::DynamixelAnglePositionWriter _dynamixel_angle_position_writer;
+  glue::SSC32ValveWriter _ssc32_valve_writer;
 
   rclcpp::TimerBase::SharedPtr _timer;
 

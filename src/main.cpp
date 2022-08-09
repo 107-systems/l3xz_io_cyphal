@@ -12,11 +12,6 @@
 
 #include <rclcpp/rclcpp.hpp>
 
-#include <glue/l3xz/ELROB2022/SSC32PWMActuator.h>
-#include <glue/l3xz/ELROB2022/SSC32PWMActuatorBulkwriter.h>
-#include <glue/l3xz/ELROB2022/SSC32ValveActuator.h>
-#include <glue/l3xz/ELROB2022/SSC32AnglePositionActuator.h>
-
 #include <IoNode.h>
 
 /**************************************************************************************

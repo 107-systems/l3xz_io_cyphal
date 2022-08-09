@@ -23,8 +23,6 @@ include_directories(
 )
 ##########################################################################
 add_executable(${PROJECT_NAME}_node
-  src/common/actuator/interface/AnglePositionActuator.cpp
-  src/common/sensor/interface/AnglePositionSensor.cpp
   src/driver/dynamixel/Dynamixel.cpp
   src/driver/dynamixel/MX28.cpp
   src/driver/orel20/Orel20.cpp
