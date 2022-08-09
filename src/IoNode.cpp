@@ -24,11 +24,18 @@ namespace l3xz
 {
 
 /**************************************************************************************
+ * CONSTANT
+ **************************************************************************************/
+
+static std::string const DYNAMIXEL_DEVICE_NAME = "/dev/serial/by-id/usb-FTDI_USB__-__Serial_Converter_FT4NNZ55-if00-port0";
+static float       const DYNAMIXEL_PROTOCOL_VERSION = 2.0f;
+static int         const DYNAMIXEL_BAUD_RATE = 115200;
+
+/**************************************************************************************
  * CTOR/DTOR
  **************************************************************************************/
 
 IoNode::IoNode(
-  dynamixel::SharedMX28 mx28_ctrl,
   driver::SharedSSC32 ssc32_ctrl,
   glue::l3xz::ELROB2022::SSC32PWMActuatorBulkwriter & ssc32_pwm_actuator_bulk_driver
 )
@@ -36,7 +43,8 @@ IoNode::IoNode(
 , _state{State::Init}
 , _open_cyphal_can_if("can0", false)
 , _open_cyphal_node(_open_cyphal_can_if)
-, _mx28_ctrl{mx28_ctrl}
+, _dynamixel_ctrl{new dynamixel::Dynamixel(DYNAMIXEL_DEVICE_NAME, DYNAMIXEL_PROTOCOL_VERSION, DYNAMIXEL_BAUD_RATE)}
+, _mx28_ctrl{new dynamixel::MX28(_dynamixel_ctrl)}
 , _hydraulic_pump{_open_cyphal_node}
 , _bumber_sensor_reader{_open_cyphal_node, get_logger()}
 , _hydraulic_angle_position_reader{_open_cyphal_node, get_logger()}
@@ -91,6 +99,11 @@ IoNode::IoNode(
     });
 }
 
+IoNode::~IoNode()
+{
+  deinit_dynamixel();
+}
+
 /**************************************************************************************
  * PUBLIC MEMBER FUNCTIONS
  **************************************************************************************/
@@ -108,6 +121,9 @@ void IoNode::timerCallback()
 
 IoNode::State IoNode::handle_Init()
 {
+  if (!init_dynamixel())
+    RCLCPP_ERROR(get_logger(), "failed to initialize all dynamixel servos.");
+
   return State::Active;
 }
 
@@ -233,6 +249,44 @@ float IoNode::get_angle_deg(l3xz_gait_ctrl::msg::LegAngle const & msg, Leg const
   };
 
   return ANGLE_POSITION_MAP.at(make_key(leg, joint));
+}
+
+bool IoNode::init_dynamixel()
+{
+  std::optional<dynamixel::Dynamixel::IdVect> opt_act_id_vect = _mx28_ctrl->discover();
+
+  if (!opt_act_id_vect) {
+    printf("[ERROR] Zero MX-28 servos detected.");
+    return false;
+  }
+
+  std::stringstream act_id_list;
+  for (auto id : opt_act_id_vect.value())
+    act_id_list << static_cast<int>(id) << " ";
+  printf("[INFO] Detected Dynamixel MX-28: { %s}", act_id_list.str().c_str());
+
+  bool all_req_id_found = true;
+  for (auto req_id : glue::DYNAMIXEL_ID_LIST)
+  {
+    bool const req_id_found = std::count(opt_act_id_vect.value().begin(),
+                                         opt_act_id_vect.value().end(),
+                                         req_id) > 0;
+    if (!req_id_found) {
+      all_req_id_found = false;
+      printf("[ERROR] Unable to detect required dynamixel with node id %d", static_cast<int>(req_id));
+    }
+  }
+  if (!all_req_id_found)
+    return false;
+
+  _mx28_ctrl->torqueOn(glue::DYNAMIXEL_ID_LIST);
+
+  return true;
+}
+
+void IoNode::deinit_dynamixel()
+{
+  _mx28_ctrl->torqueOff(glue::DYNAMIXEL_ID_LIST);
 }
 
 /**************************************************************************************

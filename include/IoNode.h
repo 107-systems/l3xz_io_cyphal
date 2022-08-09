@@ -46,10 +46,10 @@ class IoNode : public rclcpp::Node
 {
 public:
   IoNode(
-    dynamixel::SharedMX28 mx28_ctrl,
     driver::SharedSSC32 ssc32_ctrl,
     glue::l3xz::ELROB2022::SSC32PWMActuatorBulkwriter & ssc32_pwm_actuator_bulk_driver
   );
+  ~IoNode();
 
 private:
   enum class State
@@ -60,6 +60,7 @@ private:
 
   phy::opencyphal::SocketCAN _open_cyphal_can_if;
   phy::opencyphal::Node _open_cyphal_node;
+  dynamixel::SharedDynamixel _dynamixel_ctrl;
   dynamixel::SharedMX28 _mx28_ctrl;
   driver::Orel20 _hydraulic_pump;
 
@@ -84,6 +85,9 @@ private:
   State handle_Active();
 
   static float get_angle_deg(l3xz_gait_ctrl::msg::LegAngle const & msg, Leg const leg, Joint const joint);
+
+  bool init_dynamixel();
+  void deinit_dynamixel();
 };
 
 /**************************************************************************************
