@@ -8,7 +8,10 @@
  * INCLUDES
  **************************************************************************************/
 
-#include <glue/DynamixelAnglePositionReader.h>
+#include <l3xz_io/glue/DynamixelAnglePositionReader.h>
+
+#include <l3xz_io/const/DynamixelIdList.h>
+#include <l3xz_io/glue/DynamixelServoName.h>
 
 /**************************************************************************************
  * NAMESPACE

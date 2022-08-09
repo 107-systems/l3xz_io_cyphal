@@ -8,7 +8,7 @@
  * INCLUDES
  **************************************************************************************/
 
-#include <phy/opencyphal/SocketCAN.h>
+#include <l3xz_io/phy/opencyphal/SocketCAN.h>
 
 #include <unistd.h> /* close */
 

@@ -8,9 +8,9 @@
  * INCLUDES
  **************************************************************************************/
 
-#include <glue/BumperSensorReader.h>
+#include <l3xz_io/glue/BumperSensorReader.h>
 
-#include <glue/OpenCyphalMessageTypes.h>
+#include <l3xz_io/glue/OpenCyphalMessageTypes.h>
 
 /**************************************************************************************
  * NAMESPACE

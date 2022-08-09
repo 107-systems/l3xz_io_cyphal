@@ -8,7 +8,7 @@
  * INCLUDE
  **************************************************************************************/
 
-#include <phy/opencyphal/Node.hpp>
+#include <l3xz_io/phy/opencyphal/Node.hpp>
 
 #include <cstring>
 

@@ -8,7 +8,7 @@
  * INCLUDE
  **************************************************************************************/
 
-#include <driver/ssc32/SSC32.h>
+#include <l3xz_io/driver/ssc32/SSC32.h>
 
 #include <vector>
 #include <sstream>

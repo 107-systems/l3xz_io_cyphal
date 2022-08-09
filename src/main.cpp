@@ -12,7 +12,7 @@
 
 #include <rclcpp/rclcpp.hpp>
 
-#include <IoNode.h>
+#include <l3xz_io/IoNode.h>
 
 /**************************************************************************************
  * MAIN

@@ -8,14 +8,15 @@
  * INCLUDES
  **************************************************************************************/
 
-#include <IoNode.h>
+#include <l3xz_io/IoNode.h>
 
 #include <iomanip>
 
-#include <const/LegJointList.h>
-#include <const/InitialAngle.h>
+#include <l3xz_io/const/LegJointList.h>
+#include <l3xz_io/const/InitialAngle.h>
+#include <l3xz_io/const/DynamixelIdList.h>
 
-#include <glue/DynamixelAnglePositionReader.h>
+#include <l3xz_io/glue/DynamixelAnglePositionReader.h>
 
 /**************************************************************************************
  * NAMESPACE
@@ -28,12 +29,12 @@ namespace l3xz
  * CONSTANT
  **************************************************************************************/
 
-static std::string const DYNAMIXEL_DEVICE_NAME = "/dev/serial/by-id/usb-FTDI_USB__-__Serial_Converter_FT4NNZ55-if00-port0";
+static std::string const DYNAMIXEL_DEVICE_NAME      = "/dev/serial/by-id/usb-FTDI_USB__-__Serial_Converter_FT4NNZ55-if00-port0";
 static float       const DYNAMIXEL_PROTOCOL_VERSION = 2.0f;
-static int         const DYNAMIXEL_BAUD_RATE = 115200;
+static int         const DYNAMIXEL_BAUD_RATE        = 115200;
 
 static std::string const SSC32_DEVICE_NAME = "/dev/serial/by-id/usb-FTDI_FT232R_USB_UART_AH05FOBL-if00-port0";
-static size_t      const SSC32_BAUDRATE = 115200;
+static size_t      const SSC32_BAUDRATE    = 115200;
 
 /**************************************************************************************
  * CTOR/DTOR
@@ -271,7 +272,7 @@ bool IoNode::init_dynamixel()
   RCLCPP_INFO(get_logger(), "detected Dynamixel MX-28: { %s}", act_id_list.str().c_str());
 
   bool all_req_id_found = true;
-  for (auto req_id : glue::DYNAMIXEL_ID_LIST)
+  for (auto req_id : DYNAMIXEL_ID_LIST)
   {
     bool const req_id_found = std::count(opt_act_id_vect.value().begin(),
                                          opt_act_id_vect.value().end(),
@@ -284,14 +285,14 @@ bool IoNode::init_dynamixel()
   if (!all_req_id_found)
     return false;
 
-  _mx28_ctrl->torqueOn(glue::DYNAMIXEL_ID_LIST);
+  _mx28_ctrl->torqueOn(DYNAMIXEL_ID_LIST);
 
   return true;
 }
 
 void IoNode::deinit_dynamixel()
 {
-  _mx28_ctrl->torqueOff(glue::DYNAMIXEL_ID_LIST);
+  _mx28_ctrl->torqueOff(DYNAMIXEL_ID_LIST);
 }
 
 void IoNode::init_ssc32()

@@ -8,7 +8,7 @@
  * INCLUDES
  **************************************************************************************/
 
-#include <glue/DynamixelAnglePositionWriter.h>
+#include <l3xz_io/glue/DynamixelAnglePositionWriter.h>
 
 /**************************************************************************************
  * NAMESPACE

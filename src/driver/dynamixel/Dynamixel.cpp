@@ -8,7 +8,7 @@
  * INCLUDE
  **************************************************************************************/
 
-#include <driver/dynamixel/Dynamixel.h>
+#include <l3xz_io/driver/dynamixel/Dynamixel.h>
 
 #include <stdexcept>
 

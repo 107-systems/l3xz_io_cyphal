@@ -8,7 +8,7 @@
  * INCLUDE
  **************************************************************************************/
 
-#include <driver/dynamixel/MX28.h>
+#include <l3xz_io/driver/dynamixel/MX28.h>
 
 #include <cassert>
 

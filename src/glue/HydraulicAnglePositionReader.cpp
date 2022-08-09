@@ -8,9 +8,9 @@
  * INCLUDES
  **************************************************************************************/
 
-#include <glue/HydraulicAnglePositionReader.h>
+#include <l3xz_io/glue/HydraulicAnglePositionReader.h>
 
-#include <glue/OpenCyphalMessageTypes.h>
+#include <l3xz_io/glue/OpenCyphalMessageTypes.h>
 
 /**************************************************************************************
  * NAMESPACE
