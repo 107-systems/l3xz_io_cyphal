@@ -31,24 +31,24 @@ static std::string const DYNAMIXEL_DEVICE_NAME = "/dev/serial/by-id/usb-FTDI_USB
 static float       const DYNAMIXEL_PROTOCOL_VERSION = 2.0f;
 static int         const DYNAMIXEL_BAUD_RATE = 115200;
 
+static std::string const SSC32_DEVICE_NAME = "/dev/serial/by-id/usb-FTDI_FT232R_USB_UART_AH05FOBL-if00-port0";
+static size_t      const SSC32_BAUDRATE = 115200;
+
 /**************************************************************************************
  * CTOR/DTOR
  **************************************************************************************/
 
-IoNode::IoNode(
-  driver::SharedSSC32 ssc32_ctrl,
-  glue::l3xz::ELROB2022::SSC32PWMActuatorBulkwriter & ssc32_pwm_actuator_bulk_driver
-)
+IoNode::IoNode()
 : Node("l3xz_io")
 , _state{State::Init}
 , _open_cyphal_can_if("can0", false)
 , _open_cyphal_node(_open_cyphal_can_if)
 , _dynamixel_ctrl{new dynamixel::Dynamixel(DYNAMIXEL_DEVICE_NAME, DYNAMIXEL_PROTOCOL_VERSION, DYNAMIXEL_BAUD_RATE)}
 , _mx28_ctrl{new dynamixel::MX28(_dynamixel_ctrl)}
+, _ssc32_ctrl{new driver::SSC32(SSC32_DEVICE_NAME, DYNAMIXEL_BAUD_RATE)}
 , _hydraulic_pump{_open_cyphal_node}
 , _bumber_sensor_reader{_open_cyphal_node, get_logger()}
 , _hydraulic_angle_position_reader{_open_cyphal_node, get_logger()}
-, _ssc32_pwm_actuator_bulk_driver{ssc32_pwm_actuator_bulk_driver}
 , _dynamixel_angle_position_writer{}
 , _leg_angle_target_msg{
     []()
@@ -102,6 +102,7 @@ IoNode::IoNode(
 IoNode::~IoNode()
 {
   deinit_dynamixel();
+  deinit_ssc32();
 }
 
 /**************************************************************************************
@@ -123,6 +124,8 @@ IoNode::State IoNode::handle_Init()
 {
   if (!init_dynamixel())
     RCLCPP_ERROR(get_logger(), "failed to initialize all dynamixel servos.");
+
+  init_ssc32();
 
   return State::Active;
 }
@@ -213,7 +216,6 @@ IoNode::State IoNode::handle_Active()
   if (!_dynamixel_angle_position_writer.doBulkWrite(_mx28_ctrl))
     RCLCPP_ERROR(get_logger(), "failed to set target angles for all dynamixel servos");
 
-  _ssc32_pwm_actuator_bulk_driver.doBulkWrite();
   _hydraulic_pump.doWrite();
 
   return State::Active;
@@ -287,6 +289,20 @@ bool IoNode::init_dynamixel()
 void IoNode::deinit_dynamixel()
 {
   _mx28_ctrl->torqueOff(glue::DYNAMIXEL_ID_LIST);
+}
+
+void IoNode::init_ssc32()
+{
+  /* Set all servos to neutral position, this
+   * means that all valves are turned off.
+   */
+  for (auto ch = driver::SSC32::MIN_CHANNEL; ch <= driver::SSC32::MAX_CHANNEL; ch++)
+    _ssc32_ctrl->setPulseWidth(ch, 1500, 50);
+}
+
+void IoNode::deinit_ssc32()
+{
+  init_ssc32();
 }
 
 /**************************************************************************************

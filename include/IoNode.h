@@ -23,7 +23,6 @@
 #include <driver/ssc32/SSC32.h>
 #include <driver/orel20/Orel20.h>
 
-#include <glue/l3xz/ELROB2022/SSC32PWMActuatorBulkwriter.h>
 #include <glue/BumperSensorReader.h>
 #include <glue/HydraulicAnglePositionReader.h>
 #include <glue/DynamixelAnglePositionWriter.h>
@@ -45,10 +44,7 @@ namespace l3xz
 class IoNode : public rclcpp::Node
 {
 public:
-  IoNode(
-    driver::SharedSSC32 ssc32_ctrl,
-    glue::l3xz::ELROB2022::SSC32PWMActuatorBulkwriter & ssc32_pwm_actuator_bulk_driver
-  );
+   IoNode();
   ~IoNode();
 
 private:
@@ -62,11 +58,11 @@ private:
   phy::opencyphal::Node _open_cyphal_node;
   dynamixel::SharedDynamixel _dynamixel_ctrl;
   dynamixel::SharedMX28 _mx28_ctrl;
+  driver::SharedSSC32 _ssc32_ctrl;
   driver::Orel20 _hydraulic_pump;
 
   glue::BumperSensorReader _bumber_sensor_reader;
   glue::HydraulicAnglePositionReader _hydraulic_angle_position_reader;
-  glue::l3xz::ELROB2022::SSC32PWMActuatorBulkwriter & _ssc32_pwm_actuator_bulk_driver;
   glue::DynamixelAnglePositionWriter _dynamixel_angle_position_writer;
 
   rclcpp::TimerBase::SharedPtr _timer;
@@ -88,6 +84,9 @@ private:
 
   bool init_dynamixel();
   void deinit_dynamixel();
+
+  void init_ssc32();
+  void deinit_ssc32();
 };
 
 /**************************************************************************************
