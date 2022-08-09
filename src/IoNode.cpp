@@ -181,17 +181,17 @@ IoNode::State IoNode::handle_Active()
    * GAIT CONTROL
    **************************************************************************************/
 
-  unsigned int num_joints_actively_controlled = 0;
+  bool turn_hydraulic_pump_on = false;
   for (auto [leg, joint] : LEG_JOINT_LIST)
   {
     float const target_angle_deg = get_angle_deg(_leg_angle_target_msg, leg, joint);
     float const actual_angle_deg = get_angle_deg( leg_angle_actual_msg, leg, joint);
     float const angle_err = fabs(target_angle_deg - actual_angle_deg);
     if (angle_err > 2.0f)
-      num_joints_actively_controlled++;
+      turn_hydraulic_pump_on = true;
   }
 
-  if (num_joints_actively_controlled > 0)
+  if (turn_hydraulic_pump_on)
     _hydraulic_pump.setRPM(4096);
   else
     _hydraulic_pump.setRPM(0);
