@@ -10,7 +10,7 @@
 
 #include <l3xz_io/glue/DynamixelAnglePositionReader.h>
 
-#include <l3xz_io/const/DynamixelIdList.h>
+#include <l3xz_io/glue/DynamixelIdList.h>
 #include <l3xz_io/glue/DynamixelServoName.h>
 
 /**************************************************************************************
@@ -26,7 +26,7 @@ namespace glue
 
 std::tuple<std::map<LegJointKey, float>, std::map<HeadJointKey, float>> DynamixelAnglePositionReader::doBulkRead(dynamixel::SharedMX28 mx28_ctrl)
 {
-  dynamixel::MX28::AngleDataSet const angle_data_set = mx28_ctrl->getAngle(DYNAMIXEL_ID_LIST);
+  dynamixel::MX28::AngleDataSet const angle_data_set = mx28_ctrl->getAngle(glue::DYNAMIXEL_ID_LIST);
 
   std::map<DynamixelServoName, float> dynamixel_angle_position_map;
 

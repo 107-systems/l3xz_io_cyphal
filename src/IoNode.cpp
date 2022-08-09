@@ -5,16 +5,14 @@
  */
 
 /**************************************************************************************
- * INCLUDES
+ * INCcdLUDES
  **************************************************************************************/
 
 #include <l3xz_io/IoNode.h>
 
 #include <iomanip>
 
-#include <l3xz_io/const/LegJointList.h>
-#include <l3xz_io/const/InitialAngle.h>
-#include <l3xz_io/const/DynamixelIdList.h>
+#include <l3xz_io/glue/DynamixelIdList.h>
 
 #include <l3xz_io/glue/DynamixelAnglePositionReader.h>
 
@@ -35,6 +33,29 @@ static int         const DYNAMIXEL_BAUD_RATE        = 115200;
 
 static std::string const SSC32_DEVICE_NAME = "/dev/serial/by-id/usb-FTDI_FT232R_USB_UART_AH05FOBL-if00-port0";
 static size_t      const SSC32_BAUDRATE    = 115200;
+
+static float constexpr INITIAL_COXA_ANGLE_DEG  = 0.0f;
+static float constexpr INITIAL_FEMUR_ANGLE_DEG = 0.0f;
+static float constexpr INITIAL_TIBIA_ANGLE_DEG = 0.0f;
+
+static float constexpr INITIAL_PAN_ANGLE_DEG   = 0.0f;
+static float constexpr INITIAL_TILT_ANGLE_DEG  = 0.0f;
+
+static std::list<LegJointKey> const HYDRAULIC_LEG_JOINT_LIST =
+{
+  make_key(Leg::LeftFront,   Joint::Femur),
+  make_key(Leg::LeftFront,   Joint::Tibia),
+  make_key(Leg::LeftMiddle,  Joint::Femur),
+  make_key(Leg::LeftMiddle,  Joint::Tibia),
+  make_key(Leg::LeftBack,    Joint::Femur),
+  make_key(Leg::LeftBack,    Joint::Tibia),
+  make_key(Leg::RightBack,   Joint::Femur),
+  make_key(Leg::RightBack,   Joint::Tibia),
+  make_key(Leg::RightMiddle, Joint::Femur),
+  make_key(Leg::RightMiddle, Joint::Tibia),
+  make_key(Leg::RightFront,  Joint::Femur),
+  make_key(Leg::RightFront,  Joint::Tibia),
+};
 
 /**************************************************************************************
  * CTOR/DTOR
@@ -180,25 +201,6 @@ IoNode::State IoNode::handle_Active()
   _leg_angle_pub->publish(leg_angle_actual_msg);
 
   /**************************************************************************************
-   * GAIT CONTROL
-   **************************************************************************************/
-
-  bool turn_hydraulic_pump_on = false;
-  for (auto [leg, joint] : LEG_JOINT_LIST)
-  {
-    float const target_angle_deg = get_angle_deg(_leg_angle_target_msg, leg, joint);
-    float const actual_angle_deg = get_angle_deg( leg_angle_actual_msg, leg, joint);
-    float const angle_err = fabs(target_angle_deg - actual_angle_deg);
-    if (angle_err > 2.0f)
-      turn_hydraulic_pump_on = true;
-  }
-
-  if (turn_hydraulic_pump_on)
-    _hydraulic_pump.setRPM(4096);
-  else
-    _hydraulic_pump.setRPM(0);
-
-  /**************************************************************************************
    * WRITE TARGET STATE TO PERIPHERAL DRIVERS
    **************************************************************************************/
 
@@ -211,6 +213,22 @@ IoNode::State IoNode::handle_Active()
   _dynamixel_angle_position_writer.update(make_key(Leg::RightBack,   Joint::Coxa), _leg_angle_target_msg.coxa_angle_deg[3]);
   _dynamixel_angle_position_writer.update(make_key(Leg::RightMiddle, Joint::Coxa), _leg_angle_target_msg.coxa_angle_deg[4]);
   _dynamixel_angle_position_writer.update(make_key(Leg::RightFront,  Joint::Coxa), _leg_angle_target_msg.coxa_angle_deg[5]);
+
+
+  bool turn_hydraulic_pump_on = false;
+  for (auto [leg, joint] : HYDRAULIC_LEG_JOINT_LIST)
+  {
+    float const target_angle_deg = get_angle_deg(_leg_angle_target_msg, leg, joint);
+    float const actual_angle_deg = get_angle_deg( leg_angle_actual_msg, leg, joint);
+    float const angle_err = fabs(target_angle_deg - actual_angle_deg);
+    if (angle_err > 2.0f)
+      turn_hydraulic_pump_on = true;
+  }
+
+  if (turn_hydraulic_pump_on)
+    _hydraulic_pump.setRPM(4096);
+  else
+    _hydraulic_pump.setRPM(0);
 
   /**************************************************************************************
    * WRITE TO PERIPHERALS
@@ -272,7 +290,7 @@ bool IoNode::init_dynamixel()
   RCLCPP_INFO(get_logger(), "detected Dynamixel MX-28: { %s}", act_id_list.str().c_str());
 
   bool all_req_id_found = true;
-  for (auto req_id : DYNAMIXEL_ID_LIST)
+  for (auto req_id : glue::DYNAMIXEL_ID_LIST)
   {
     bool const req_id_found = std::count(opt_act_id_vect.value().begin(),
                                          opt_act_id_vect.value().end(),
@@ -285,14 +303,14 @@ bool IoNode::init_dynamixel()
   if (!all_req_id_found)
     return false;
 
-  _mx28_ctrl->torqueOn(DYNAMIXEL_ID_LIST);
+  _mx28_ctrl->torqueOn(glue::DYNAMIXEL_ID_LIST);
 
   return true;
 }
 
 void IoNode::deinit_dynamixel()
 {
-  _mx28_ctrl->torqueOff(DYNAMIXEL_ID_LIST);
+  _mx28_ctrl->torqueOff(glue::DYNAMIXEL_ID_LIST);
 }
 
 void IoNode::init_ssc32()
