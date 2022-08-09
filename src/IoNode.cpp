@@ -211,7 +211,7 @@ IoNode::State IoNode::handle_Active()
    **************************************************************************************/
 
   if (!_dynamixel_angle_position_writer.doBulkWrite(_mx28_ctrl))
-    printf("[ERROR] failed to set target angles for all dynamixel servos");
+    RCLCPP_ERROR(get_logger(), "failed to set target angles for all dynamixel servos");
 
   _ssc32_pwm_actuator_bulk_driver.doBulkWrite();
   _hydraulic_pump.doWrite();
@@ -256,14 +256,14 @@ bool IoNode::init_dynamixel()
   std::optional<dynamixel::Dynamixel::IdVect> opt_act_id_vect = _mx28_ctrl->discover();
 
   if (!opt_act_id_vect) {
-    printf("[ERROR] Zero MX-28 servos detected.");
+    RCLCPP_ERROR(get_logger(), "error, zero MX-28 servos detected.");
     return false;
   }
 
   std::stringstream act_id_list;
   for (auto id : opt_act_id_vect.value())
     act_id_list << static_cast<int>(id) << " ";
-  printf("[INFO] Detected Dynamixel MX-28: { %s}", act_id_list.str().c_str());
+  RCLCPP_INFO(get_logger(), "detected Dynamixel MX-28: { %s}", act_id_list.str().c_str());
 
   bool all_req_id_found = true;
   for (auto req_id : glue::DYNAMIXEL_ID_LIST)
@@ -273,7 +273,7 @@ bool IoNode::init_dynamixel()
                                          req_id) > 0;
     if (!req_id_found) {
       all_req_id_found = false;
-      printf("[ERROR] Unable to detect required dynamixel with node id %d", static_cast<int>(req_id));
+      RCLCPP_ERROR(get_logger(), "error, unable to detect required dynamixel with node id %d", static_cast<int>(req_id));
     }
   }
   if (!all_req_id_found)
