@@ -83,7 +83,6 @@ private:
   static float get_angle_deg(l3xz_gait_ctrl::msg::LegAngle const & msg, Leg const leg, Joint const joint);
 
   bool init_dynamixel();
-  void deinit_dynamixel();
 
   void init_ssc32();
   void deinit_ssc32();

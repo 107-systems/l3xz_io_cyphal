@@ -125,7 +125,6 @@ IoNode::IoNode()
 
 IoNode::~IoNode()
 {
-  deinit_dynamixel();
   deinit_ssc32();
 }
 
@@ -306,11 +305,6 @@ bool IoNode::init_dynamixel()
   _mx28_ctrl->torqueOn(glue::DYNAMIXEL_ID_LIST);
 
   return true;
-}
-
-void IoNode::deinit_dynamixel()
-{
-  _mx28_ctrl->torqueOff(glue::DYNAMIXEL_ID_LIST);
 }
 
 void IoNode::init_ssc32()
