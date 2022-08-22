@@ -24,7 +24,7 @@ namespace glue
  * PUBLIC MEMBER FUNCTIONS
  **************************************************************************************/
 
-std::tuple<std::map<LegJointKey, float>, std::map<HeadJointKey, float>> DynamixelAnglePositionReader::doBulkRead(dynamixel::SharedMX28 mx28_ctrl)
+std::tuple<std::map<LegJointKey, float>, std::map<HeadJointKey, float>> DynamixelAnglePositionReader::doBulkRead(dynamixel::SharedMX28 mx28_ctrl, rclcpp::Logger const logger)
 {
   dynamixel::MX28::AngleDataSet const angle_data_set = mx28_ctrl->getAngle(glue::DYNAMIXEL_ID_LIST);
 
@@ -32,7 +32,7 @@ std::tuple<std::map<LegJointKey, float>, std::map<HeadJointKey, float>> Dynamixe
 
   for (auto [id, angle_deg] : angle_data_set)
   {
-    printf("[DEBUG] id %d = %.2f", id, angle_deg);
+    RCLCPP_DEBUG(logger, "MX28AR ID #%d angle = %.2f", id, angle_deg);
     float const corrected_angle_deg = (angle_deg - 180.0f);
 
     DynamixelServoName const key = toServoName(id);

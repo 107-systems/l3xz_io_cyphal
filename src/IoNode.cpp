@@ -159,7 +159,7 @@ IoNode::State IoNode::handle_Active()
    * READ FROM PERIPHERALS
    **************************************************************************************/
 
-  auto const [dynamixel_leg_joint_angle_position, dynamixel_head_joint_angle_position] = glue::DynamixelAnglePositionReader::doBulkRead(_mx28_ctrl);
+  auto const [dynamixel_leg_joint_angle_position, dynamixel_head_joint_angle_position] = glue::DynamixelAnglePositionReader::doBulkRead(_mx28_ctrl, get_logger());
   auto const hydraulic_angle_position_deg = _hydraulic_angle_position_reader.doBulkRead();
   auto const tibia_tip_bumper_map = _bumber_sensor_reader.doBulkRead();
 

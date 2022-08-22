@@ -14,6 +14,8 @@
 #include <map>
 #include <tuple>
 
+#include <rclcpp/rclcpp.hpp>
+
 #include <l3xz_io/driver/dynamixel/MX28.h>
 
 #include <l3xz_io/types/LegJointKey.h>
@@ -35,7 +37,7 @@ class DynamixelAnglePositionReader
 public:
   DynamixelAnglePositionReader() = delete;
 
-  static std::tuple<std::map<LegJointKey, float>, std::map<HeadJointKey, float>> doBulkRead(dynamixel::SharedMX28 mx28_ctrl);
+  static std::tuple<std::map<LegJointKey, float>, std::map<HeadJointKey, float>> doBulkRead(dynamixel::SharedMX28 mx28_ctrl, rclcpp::Logger const logger);
 };
 
 /**************************************************************************************
