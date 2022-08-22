@@ -22,6 +22,8 @@
 
 #include <canard.h>
 
+#include <rclcpp/rclcpp.hpp>
+
 #include "O1Heap.hpp"
 #include "SocketCAN.h"
 
@@ -51,7 +53,7 @@ public:
   static size_t       constexpr DEFAULT_MTU_SIZE      = CANARD_MTU_CAN_CLASSIC;
   static CanardNodeID constexpr DEFAULT_NODE_ID       = 42;
 
-  Node(SocketCAN & socket_can);
+  Node(SocketCAN & socket_can, rclcpp::Logger const logger);
 
   ~Node();
 
@@ -83,6 +85,7 @@ private:
   CanardInstance _canard_hdl;
   CanardTxQueue _canard_tx_queue;
   SocketCAN & _socket_can;
+  rclcpp::Logger const _logger;
   std::map<CanardPortID, RxTransferData> _rx_transfer_map;
   std::map<CanardPortID, CanardTransferID> _tx_transfer_map;
 

@@ -23,11 +23,12 @@ namespace phy::opencyphal
  * CTOR/DTOR
  **************************************************************************************/
 
-Node::Node(SocketCAN & socket_can)
+Node::Node(SocketCAN & socket_can, rclcpp::Logger const logger)
 : _mtx{}
 , _canard_hdl{canardInit(Node::o1heap_allocate, Node::o1heap_free)}
 , _canard_tx_queue{canardTxInit(DEFAULT_TX_QUEUE_SIZE, DEFAULT_MTU_SIZE)}
 , _socket_can{socket_can}
+, _logger{logger}
 , _rx_thread{}
 , _rx_thread_active{false}
 , _tx_thread{}
@@ -129,7 +130,7 @@ void Node::rxThreadFunc()
 
   auto const start = std::chrono::high_resolution_clock::now();
 
-  printf("[INFO] Node::rxThreadFunc starting  ...");
+  RCLCPP_INFO(_logger, "Node::rxThreadFunc starting  ...");
 
   while (_rx_thread_active)
   {
@@ -138,10 +139,11 @@ void Node::rxThreadFunc()
 
     int16_t const rc = _socket_can.pop(&rx_frame, sizeof(payload_buffer), payload_buffer, CANARD_DEFAULT_TRANSFER_ID_TIMEOUT_USEC, nullptr);
     if (rc < 0) {
-      printf("[ERROR] socketcanPop failed with error %s ", strerror(abs(rc)));
+      RCLCPP_ERROR(_logger, "socketcanPop failed with error %s ", strerror(abs(rc)));
     }
     else if (rc == 0) {
-      //printf("[INFO] socketcanPop timeout while receiving.");
+      rclcpp::Clock clock;
+      RCLCPP_DEBUG_THROTTLE(_logger, clock, 1, "socketcanPop timeout while receiving.");
     }
     else {
       auto const now = std::chrono::high_resolution_clock::now();
@@ -150,7 +152,7 @@ void Node::rxThreadFunc()
     }
   }
 
-  printf("[INFO] Node::rxThreadFunc stopping  ...");
+  RCLCPP_INFO(_logger, "Node::rxThreadFunc stopping  ...");
 }
 
 void Node::onCanFrameReceived(CanardFrame const & frame, CanardMicrosecond const rx_timestamp_us)
@@ -188,7 +190,7 @@ void Node::txThreadFunc()
 {
   _tx_thread_active = true;
 
-  printf("[INFO] Node::txThreadFunc starting  ...");
+  RCLCPP_INFO(_logger, "Node::txThreadFunc starting  ...");
 
   while (_tx_thread_active)
   {
@@ -200,8 +202,9 @@ void Node::txThreadFunc()
     if (tx_queue_item)
     {
       /* Transmit CAN frame. */
-      if (int16_t const rc = _socket_can.push(&tx_queue_item->frame, CANARD_DEFAULT_TRANSFER_ID_TIMEOUT_USEC); rc <= 0) {
-        printf("[ERROR] socketcanPush failed with error %d", abs(rc));
+      if (int16_t const rc = _socket_can.push(&tx_queue_item->frame, CANARD_DEFAULT_TRANSFER_ID_TIMEOUT_USEC); rc <= 0)
+      {
+        RCLCPP_ERROR(_logger, "[ERROR] socketcanPush failed with error %d", abs(rc));
       }
       else
       {
@@ -216,7 +219,7 @@ void Node::txThreadFunc()
     }
   }
 
-  printf("[INFO] Node::txThreadFunc stopping  ...");
+  RCLCPP_INFO(_logger, "Node::txThreadFunc stopping  ...");
 }
 
 /**************************************************************************************

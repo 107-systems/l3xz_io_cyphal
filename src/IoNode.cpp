@@ -65,7 +65,7 @@ IoNode::IoNode()
 : Node("l3xz_io")
 , _state{State::Init}
 , _open_cyphal_can_if("can0", false)
-, _open_cyphal_node(_open_cyphal_can_if)
+, _open_cyphal_node(_open_cyphal_can_if, get_logger())
 , _dynamixel_ctrl{new dynamixel::Dynamixel(DYNAMIXEL_DEVICE_NAME, DYNAMIXEL_PROTOCOL_VERSION, DYNAMIXEL_BAUD_RATE)}
 , _mx28_ctrl{new dynamixel::MX28(_dynamixel_ctrl)}
 , _ssc32_ctrl{new driver::SSC32(SSC32_DEVICE_NAME, DYNAMIXEL_BAUD_RATE)}
