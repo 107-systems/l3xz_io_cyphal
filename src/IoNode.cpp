@@ -219,7 +219,7 @@ IoNode::State IoNode::handle_Active()
   for (auto [leg, leg_ctrl] : _leg_ctrl_map)
   {
     if (leg_ctrl->isHeartbeatTimeout(std::chrono::seconds(5)))
-         RCLCPP_ERROR(get_logger(), "LEG_CTRL %d: no heartbeat since 5 seconds", static_cast<int>(leg_ctrl->node_id()));
+      RCLCPP_ERROR(get_logger(), "LEG_CTRL %d: no heartbeat since 5 seconds", static_cast<int>(leg_ctrl->node_id()));
    
     if (!leg_ctrl->isModeOperational())
       RCLCPP_ERROR(get_logger(), "LEG_CTRL %d: mode not operational", static_cast<int>(leg_ctrl->node_id()));
