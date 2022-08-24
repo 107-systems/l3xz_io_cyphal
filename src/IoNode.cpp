@@ -74,6 +74,15 @@ IoNode::IoNode()
 , _hydraulic_angle_position_reader{_open_cyphal_node, get_logger()}
 , _dynamixel_angle_position_writer{}
 , _ssc32_valve_writer{}
+, _leg_ctrl_map
+  {
+    {Leg::LeftFront,   std::make_shared<glue::LegController>(1, _open_cyphal_node, get_logger())},
+    {Leg::LeftMiddle,  std::make_shared<glue::LegController>(2, _open_cyphal_node, get_logger())},
+    {Leg::LeftBack,    std::make_shared<glue::LegController>(3, _open_cyphal_node, get_logger())},
+    {Leg::RightBack,   std::make_shared<glue::LegController>(4, _open_cyphal_node, get_logger())},
+    {Leg::RightMiddle, std::make_shared<glue::LegController>(5, _open_cyphal_node, get_logger())},
+    {Leg::RightFront,  std::make_shared<glue::LegController>(6, _open_cyphal_node, get_logger())},
+  }
 , _leg_angle_target_msg{
     []()
     {

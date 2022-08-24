@@ -21,6 +21,7 @@
 #include <l3xz_io/driver/ssc32/SSC32.h>
 #include <l3xz_io/driver/orel20/Orel20.h>
 
+#include <l3xz_io/glue/LegController.h>
 #include <l3xz_io/glue/SSC32ValveWriter.h>
 #include <l3xz_io/glue/BumperSensorReader.h>
 #include <l3xz_io/glue/HydraulicAnglePositionReader.h>
@@ -64,6 +65,8 @@ private:
   glue::HydraulicAnglePositionReader _hydraulic_angle_position_reader;
   glue::DynamixelAnglePositionWriter _dynamixel_angle_position_writer;
   glue::SSC32ValveWriter _ssc32_valve_writer;
+
+  std::map<Leg, std::shared_ptr<glue::LegController>> _leg_ctrl_map;
 
   rclcpp::TimerBase::SharedPtr _timer;
 
