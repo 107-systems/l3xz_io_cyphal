@@ -172,7 +172,10 @@ IoNode::State IoNode::handle_Init_SSC32()
 IoNode::State IoNode::handle_Init_Dynamixel()
 {
   if (!init_dynamixel())
+  {
     RCLCPP_ERROR(get_logger(), "failed to initialize all dynamixel servos.");
+    rclcpp::shutdown();
+  }
 
   return State::Init_LegController;
 }
