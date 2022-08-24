@@ -172,7 +172,7 @@ IoNode::State IoNode::handle_Init_LegController()
     if (leg_ctrl->isHeartbeatTimeout(std::chrono::seconds(5)))
     {
       all_leg_ctrl_active_heartbeat = false;
-      RCLCPP_ERROR(get_logger(), "no heartbeat since 5 seconds");
+      RCLCPP_ERROR(get_logger(), "LEG_CTRL %d: no heartbeat since 5 seconds", static_cast<int>(leg_ctrl->node_id()));
     }
   }
 

@@ -39,8 +39,7 @@ public:
   bool isModeOperational();
   bool isHealthNominal();
 
-protected:
-  inline CanardNodeID id() const { return _node_id; };
+  inline CanardNodeID node_id() const { return _node_id; };
 
 private:
   CanardNodeID _node_id;
