@@ -134,7 +134,11 @@ IoNode::IoNode()
 
 IoNode::~IoNode()
 {
-  deinit_ssc32();
+  /* Set all servos to neutral position, this
+   * means that all valves are turned off.
+   */
+  for (auto ch = driver::SSC32::MIN_CHANNEL; ch <= driver::SSC32::MAX_CHANNEL; ch++)
+    _ssc32_ctrl->setPulseWidth(ch, 1500, 50);
 }
 
 /**************************************************************************************
@@ -147,6 +151,7 @@ void IoNode::timerCallback()
   switch (_state)
   {
   case State::Init:               next_state = handle_Init(); break;
+  case State::Init_SSC32:         next_state = handle_Init_SSC32(); break;
   case State::Init_LegController: next_state = handle_Init_LegController(); break;
   case State::Active:             next_state = handle_Active(); break;
   }
@@ -158,7 +163,16 @@ IoNode::State IoNode::handle_Init()
   if (!init_dynamixel())
     RCLCPP_ERROR(get_logger(), "failed to initialize all dynamixel servos.");
 
-  init_ssc32();
+  return State::Init_SSC32;
+}
+
+IoNode::State IoNode::handle_Init_SSC32()
+{
+  /* Set all servos to neutral position, this
+   * means that all valves are turned off.
+   */
+  for (auto ch = driver::SSC32::MIN_CHANNEL; ch <= driver::SSC32::MAX_CHANNEL; ch++)
+    _ssc32_ctrl->setPulseWidth(ch, 1500, 50);
 
   return State::Init_LegController;
 }
@@ -364,20 +378,6 @@ bool IoNode::init_dynamixel()
   _mx28_ctrl->torqueOn(glue::DYNAMIXEL_ID_LIST);
 
   return true;
-}
-
-void IoNode::init_ssc32()
-{
-  /* Set all servos to neutral position, this
-   * means that all valves are turned off.
-   */
-  for (auto ch = driver::SSC32::MIN_CHANNEL; ch <= driver::SSC32::MAX_CHANNEL; ch++)
-    _ssc32_ctrl->setPulseWidth(ch, 1500, 50);
-}
-
-void IoNode::deinit_ssc32()
-{
-  init_ssc32();
 }
 
 /**************************************************************************************

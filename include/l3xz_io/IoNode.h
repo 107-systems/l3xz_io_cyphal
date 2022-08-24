@@ -50,7 +50,10 @@ public:
 private:
   enum class State
   {
-    Init, Init_LegController, Active
+    Init,
+    Init_SSC32,
+    Init_LegController,
+    Active
   };
   State _state;
 
@@ -81,15 +84,13 @@ private:
   void timerCallback();
 
   State handle_Init();
+  State handle_Init_SSC32();
   State handle_Init_LegController();
   State handle_Active();
 
   static float get_angle_deg(l3xz_gait_ctrl::msg::LegAngle const & msg, Leg const leg, Joint const joint);
 
   bool init_dynamixel();
-
-  void init_ssc32();
-  void deinit_ssc32();
 };
 
 /**************************************************************************************
