@@ -146,8 +146,9 @@ void IoNode::timerCallback()
   State next_state = _state;
   switch (_state)
   {
-  case State::Init:   next_state = handle_Init();   break;
-  case State::Active: next_state = handle_Active(); break;
+  case State::Init:               next_state = handle_Init(); break;
+  case State::Init_LegController: next_state = handle_Init_LegController(); break;
+  case State::Active:             next_state = handle_Active(); break;
   }
   _state = next_state;
 }
@@ -159,7 +160,26 @@ IoNode::State IoNode::handle_Init()
 
   init_ssc32();
 
-  return State::Active;
+  return State::Init_LegController;
+}
+
+IoNode::State IoNode::handle_Init_LegController()
+{
+  bool all_leg_ctrl_active_heartbeat = true;
+
+  for (auto [leg, leg_ctrl] : _leg_ctrl_map)
+  {
+    if (leg_ctrl->isHeartbeatTimeout(std::chrono::seconds(5)))
+    {
+      all_leg_ctrl_active_heartbeat = false;
+      RCLCPP_ERROR(get_logger(), "no heartbeat since 5 seconds");
+    }
+  }
+
+  if (all_leg_ctrl_active_heartbeat)
+    return State::Active;
+
+  return State::Init_LegController;
 }
 
 IoNode::State IoNode::handle_Active()

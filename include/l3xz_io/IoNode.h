@@ -50,7 +50,7 @@ public:
 private:
   enum class State
   {
-    Init, Active
+    Init, Init_LegController, Active
   };
   State _state;
 
@@ -81,6 +81,7 @@ private:
   void timerCallback();
 
   State handle_Init();
+  State handle_Init_LegController();
   State handle_Active();
 
   static float get_angle_deg(l3xz_gait_ctrl::msg::LegAngle const & msg, Leg const leg, Joint const joint);
