@@ -63,7 +63,7 @@ static std::list<LegJointKey> const HYDRAULIC_LEG_JOINT_LIST =
 
 IoNode::IoNode()
 : Node("l3xz_io")
-, _state{State::Init}
+, _state{State::Init_SSC32}
 , _open_cyphal_can_if("can0", false)
 , _open_cyphal_node(_open_cyphal_can_if, get_logger())
 , _dynamixel_ctrl{new dynamixel::Dynamixel(DYNAMIXEL_DEVICE_NAME, DYNAMIXEL_PROTOCOL_VERSION, DYNAMIXEL_BAUD_RATE)}
@@ -150,20 +150,12 @@ void IoNode::timerCallback()
   State next_state = _state;
   switch (_state)
   {
-  case State::Init:               next_state = handle_Init(); break;
   case State::Init_SSC32:         next_state = handle_Init_SSC32(); break;
+  case State::Init_Dynamixel:     next_state = handle_Init_Dynamixel(); break;
   case State::Init_LegController: next_state = handle_Init_LegController(); break;
   case State::Active:             next_state = handle_Active(); break;
   }
   _state = next_state;
-}
-
-IoNode::State IoNode::handle_Init()
-{
-  if (!init_dynamixel())
-    RCLCPP_ERROR(get_logger(), "failed to initialize all dynamixel servos.");
-
-  return State::Init_SSC32;
 }
 
 IoNode::State IoNode::handle_Init_SSC32()
@@ -173,6 +165,14 @@ IoNode::State IoNode::handle_Init_SSC32()
    */
   for (auto ch = driver::SSC32::MIN_CHANNEL; ch <= driver::SSC32::MAX_CHANNEL; ch++)
     _ssc32_ctrl->setPulseWidth(ch, 1500, 50);
+
+  return State::Init_Dynamixel;
+}
+
+IoNode::State IoNode::handle_Init_Dynamixel()
+{
+  if (!init_dynamixel())
+    RCLCPP_ERROR(get_logger(), "failed to initialize all dynamixel servos.");
 
   return State::Init_LegController;
 }
