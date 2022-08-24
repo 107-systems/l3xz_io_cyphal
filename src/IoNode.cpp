@@ -165,7 +165,8 @@ IoNode::State IoNode::handle_Init()
 
 IoNode::State IoNode::handle_Init_LegController()
 {
-  bool all_leg_ctrl_active_heartbeat = true;
+  bool all_leg_ctrl_active_heartbeat = true,
+       all_leg_ctrl_mode_operational = true;
 
   for (auto [leg, leg_ctrl] : _leg_ctrl_map)
   {
@@ -174,9 +175,15 @@ IoNode::State IoNode::handle_Init_LegController()
       all_leg_ctrl_active_heartbeat = false;
       RCLCPP_ERROR(get_logger(), "LEG_CTRL %d: no heartbeat since 5 seconds", static_cast<int>(leg_ctrl->node_id()));
     }
+
+    if (leg_ctrl->isModeOperational())
+    {
+      all_leg_ctrl_mode_operational = false;
+      RCLCPP_ERROR(get_logger(), "LEG_CTRL %d: mode not operational", static_cast<int>(leg_ctrl->node_id()));
+    }
   }
 
-  if (all_leg_ctrl_active_heartbeat)
+  if (all_leg_ctrl_active_heartbeat && all_leg_ctrl_mode_operational)
     return State::Active;
 
   return State::Init_LegController;
