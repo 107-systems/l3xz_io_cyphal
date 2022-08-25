@@ -159,7 +159,7 @@ IoNode::State IoNode::handle_Init_OpenCyphalHeartbeatMonitor()
   if (auto [all_nodes_connected, not_connected_nodes] = _open_cyphal_heartbeat_monitor.isConnected(std::chrono::seconds(5)); !all_nodes_connected)
   {
     RCLCPP_ERROR(get_logger(),
-                 "no heartbeat from nodes { %s}",
+                 "heartbeat timeout for nodes { %s}",
                  glue::OpenCyphalHeartbeatMonitor::toStr(not_connected_nodes).c_str());
     return State::Init_OpenCyphalHeartbeatMonitor;
   }
@@ -172,7 +172,7 @@ IoNode::State IoNode::handle_Init_OpenCyphalHeartbeatMonitor()
     return State::Init_OpenCyphalHeartbeatMonitor;
   }
 
-  if (auto [all_nodes_mode_operational, mode_not_operational_nodes] = _open_cyphal_heartbeat_monitor.isHealthy(); !all_nodes_mode_operational)
+  if (auto [all_nodes_mode_operational, mode_not_operational_nodes] = _open_cyphal_heartbeat_monitor.isOperational(); !all_nodes_mode_operational)
   {
     RCLCPP_ERROR(get_logger(),
                  "nodes { %s} mode not operational",
@@ -204,19 +204,12 @@ IoNode::State IoNode::handle_Active()
    * CHECK HEARTBEAT/MODE/HEALTH of OpenCyphalDevice's
    **************************************************************************************/
 
-  /*
-  for (auto leg : LEG_LIST)
-  {
-    if (_leg_ctrl.isHeartbeatTimeout(leg, std::chrono::seconds(5)))
-      RCLCPP_ERROR(get_logger(), "LEG_CTRL %d: no heartbeat since 5 seconds", static_cast<int>(glue::LegController::toNodeId(leg)));
-   
-    if (!_leg_ctrl.isModeOperational(leg))
-      RCLCPP_ERROR(get_logger(), "LEG_CTRL %d: mode not operational", static_cast<int>(glue::LegController::toNodeId(leg)));
-   
-    if (!_leg_ctrl.isHealthNominal(leg))
-      RCLCPP_ERROR(get_logger(), "LEG_CTRL %d: health not nominal", static_cast<int>(glue::LegController::toNodeId(leg)));
-  }
-  */
+  if (auto [good,list] = _open_cyphal_heartbeat_monitor.isConnected(std::chrono::seconds(5)); !good)
+    RCLCPP_ERROR(get_logger(), "heartbeat timeout for nodes { %s}", glue::OpenCyphalHeartbeatMonitor::toStr(list).c_str());
+  if (auto [good,list] = _open_cyphal_heartbeat_monitor.isHealthy(); !good)
+    RCLCPP_ERROR(get_logger(), "nodes { %s} health not nominal", glue::OpenCyphalHeartbeatMonitor::toStr(list).c_str());
+  if (auto [good,list] = _open_cyphal_heartbeat_monitor.isOperational(); !good)
+    RCLCPP_ERROR(get_logger(), "nodes { %s} mode not operational", glue::OpenCyphalHeartbeatMonitor::toStr(list).c_str());
 
   /**************************************************************************************
    * READ FROM PERIPHERALS
