@@ -53,7 +53,16 @@ ValveController::ValveController(driver::SharedSSC32 ssc32_ctrl)
     {make_key(Leg::RightBack,   Joint::Femur), 20},
     {make_key(Leg::RightBack,   Joint::Tibia), 21},
   }
-{ }
+{
+  closeAll();
+  doBulkWrite();
+}
+
+ValveController::~ValveController()
+{
+  closeAll();
+  doBulkWrite();
+}
 
 /**************************************************************************************
  * PUBLC MEMBER FUNCTIONS

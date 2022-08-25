@@ -67,7 +67,7 @@ static std::list<LegJointKey> const HYDRAULIC_LEG_JOINT_LIST =
 
 IoNode::IoNode()
 : Node("l3xz_io")
-, _state{State::Init_SSC32}
+, _state{State::Init_Dynamixel}
 , _open_cyphal_can_if("can0", false)
 , _open_cyphal_node(_open_cyphal_can_if, get_logger())
 , _dynamixel_ctrl{new dynamixel::Dynamixel(DYNAMIXEL_DEVICE_NAME, DYNAMIXEL_PROTOCOL_VERSION, DYNAMIXEL_BAUD_RATE)}
@@ -140,20 +140,11 @@ void IoNode::timerCallback()
   State next_state = _state;
   switch (_state)
   {
-  case State::Init_SSC32:         next_state = handle_Init_SSC32(); break;
   case State::Init_Dynamixel:     next_state = handle_Init_Dynamixel(); break;
   case State::Init_LegController: next_state = handle_Init_LegController(); break;
   case State::Active:             next_state = handle_Active(); break;
   }
   _state = next_state;
-}
-
-IoNode::State IoNode::handle_Init_SSC32()
-{
-  _valve_ctrl.closeAll();
-  _valve_ctrl.doBulkWrite();
-
-  return State::Init_Dynamixel;
 }
 
 IoNode::State IoNode::handle_Init_Dynamixel()

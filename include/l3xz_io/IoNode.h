@@ -47,7 +47,6 @@ public:
 private:
   enum class State
   {
-    Init_SSC32,
     Init_Dynamixel,
     Init_LegController,
     Active
@@ -76,7 +75,6 @@ private:
 
   void timerCallback();
 
-  State handle_Init_SSC32();
   State handle_Init_Dynamixel();
   State handle_Init_LegController();
   State handle_Active();

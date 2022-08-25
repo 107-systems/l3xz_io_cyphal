@@ -31,7 +31,8 @@ namespace glue
 class ValveController
 {
 public:
-  ValveController(driver::SharedSSC32 ssc32_ctrl);
+   ValveController(driver::SharedSSC32 ssc32_ctrl);
+  ~ValveController();
 
   void closeAll();
   void set(LegJointKey const key, float const val);
