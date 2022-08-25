@@ -8,7 +8,7 @@
  * INCLUDE
  **************************************************************************************/
 
-#include <l3xz_io/driver/orel20/Orel20.h>
+#include <l3xz_io/glue/Orel20.h>
 
 #include <l3xz_io/glue/OpenCyphalMessageTypes.h>
 

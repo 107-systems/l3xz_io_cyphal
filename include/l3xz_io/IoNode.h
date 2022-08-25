@@ -18,7 +18,7 @@
 #include <l3xz_io/phy/opencyphal/Node.hpp>
 #include <l3xz_io/phy/opencyphal/SocketCAN.h>
 
-#include <l3xz_io/driver/orel20/Orel20.h>
+#include <l3xz_io/glue/Orel20.h>
 
 #include <l3xz_io/glue/LegController.h>
 #include <l3xz_io/glue/ValveController.h>
