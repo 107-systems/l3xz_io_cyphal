@@ -20,14 +20,6 @@ namespace glue
 {
 
 /**************************************************************************************
- * CONST
- **************************************************************************************/
-
-static uavcan_node_Health_1_0 const INITAL_HEARTBEAT_HEALTH_DATA = { uavcan_node_Health_1_0_WARNING };
-static uavcan_node_Mode_1_0 const INITIAL_HEARTBEAT_MODE_DATA = { uavcan_node_Mode_1_0_INITIALIZATION };
-static LegController::THeartbeatData const INITAL_HEARTBEAT_DATA = { INITAL_HEARTBEAT_HEALTH_DATA, INITIAL_HEARTBEAT_MODE_DATA, std::chrono::system_clock::now() };
-
-/**************************************************************************************
  * CTOR/DTOR
  **************************************************************************************/
 
@@ -60,19 +52,7 @@ LegController::LegController(phy::opencyphal::Node & node, rclcpp::Logger const 
     {Leg::RightMiddle, 0.0f},
     {Leg::RightFront , 0.0f},
   }
-, _heartbeat
-  {
-    {Leg::LeftFront  , INITAL_HEARTBEAT_DATA},
-    {Leg::LeftMiddle , INITAL_HEARTBEAT_DATA},
-    {Leg::LeftBack   , INITAL_HEARTBEAT_DATA},
-    {Leg::RightBack  , INITAL_HEARTBEAT_DATA},
-    {Leg::RightMiddle, INITAL_HEARTBEAT_DATA},
-    {Leg::RightFront , INITAL_HEARTBEAT_DATA},
-  }
 {
-  if (!subscribeHeartbeat(node))
-    RCLCPP_ERROR(logger, "failed to subscribe to 'hearbeat'");
-
   if (!subscribeTibiaTipBumberMessage(node))
     RCLCPP_ERROR(logger, "failed to subscribe to 'OpenCyphalTibiaTipBumperMessage'");
 
@@ -86,29 +66,6 @@ LegController::LegController(phy::opencyphal::Node & node, rclcpp::Logger const 
 /**************************************************************************************
  * PUBLIC MEMBER FUNCTIONS
  **************************************************************************************/
-
-bool LegController::isHeartbeatTimeout(Leg const leg, std::chrono::seconds const timeout)
-{
-  std::lock_guard<std::mutex> lock(_mtx);
-
-  auto const duration_since_last_receive_timestamp = (std::chrono::system_clock::now() - _heartbeat.at(leg).timestamp);
-  if (duration_since_last_receive_timestamp > timeout)
-    return true;
-  else
-    return false;
-}
-
-bool LegController::isModeOperational(Leg const leg)
-{
-  std::lock_guard<std::mutex> lock(_mtx);
-  return (_heartbeat.at(leg).mode.value == uavcan_node_Mode_1_0_OPERATIONAL);
-}
-
-bool LegController::isHealthNominal(Leg const leg)
-{
-  std::lock_guard<std::mutex> lock(_mtx);
-  return (_heartbeat.at(leg).health.value == uavcan_node_Health_1_0_NOMINAL);
-}
 
 bool LegController::isBumperPressed(Leg const leg)
 {
@@ -161,27 +118,6 @@ Leg LegController::toLeg(CanardNodeID const node_id)
 /**************************************************************************************
  * PRIVATE MEMBER FUNCTIONS
  **************************************************************************************/
-
-bool LegController::subscribeHeartbeat(phy::opencyphal::Node & node)
-{
-  return node.subscribe<uavcan::node::Heartbeat_1_0<>>(
-    [this](CanardRxTransfer const & transfer)
-    {
-      if (isLegControllerId(transfer.metadata.remote_node_id))
-      {
-        uavcan::node::Heartbeat_1_0<> const heartbeat = uavcan::node::Heartbeat_1_0<>::deserialize(transfer);
-        
-        std::lock_guard<std::mutex> lock(_mtx);
-
-        THeartbeatData data;
-        data.health    = heartbeat.data.health;
-        data.mode      = heartbeat.data.mode;
-        data.timestamp = std::chrono::system_clock::now();
-
-        _heartbeat[toLeg(transfer.metadata.remote_node_id)] = data;
-      }
-    });
-}
 
 bool LegController::subscribeTibiaTipBumberMessage(phy::opencyphal::Node & node)
 {

@@ -73,6 +73,7 @@ IoNode::IoNode()
 , _dynamixel_ctrl{new dynamixel::Dynamixel(DYNAMIXEL_DEVICE_NAME, DYNAMIXEL_PROTOCOL_VERSION, DYNAMIXEL_BAUD_RATE)}
 , _mx28_ctrl{new dynamixel::MX28(_dynamixel_ctrl)}
 , _hydraulic_pump{_open_cyphal_node, get_logger()}
+, _open_cyphal_heartbeat_monitor{_open_cyphal_node, get_logger(), {1, 2, 3, 4, 5, 6, 10}}
 , _dynamixel_angle_position_writer{}
 , _valve_ctrl{std::make_shared<driver::SSC32>(SSC32_DEVICE_NAME, SSC32_BAUDRATE)}
 , _leg_ctrl{_open_cyphal_node, get_logger()}
@@ -155,39 +156,35 @@ IoNode::State IoNode::handle_Init_Dynamixel()
 
 IoNode::State IoNode::handle_Init_LegController()
 {
-  bool all_leg_ctrl_active_heartbeat = true,
-       all_leg_ctrl_mode_operational = true,
-       all_leg_ctrl_health_nominal   = true;
-
-  for (auto leg : LEG_LIST)
+  if (auto [all_nodes_connected, not_connected_nodes] = _open_cyphal_heartbeat_monitor.isConnected(std::chrono::seconds(5)); !all_nodes_connected)
   {
-    if (_leg_ctrl.isHeartbeatTimeout(leg, std::chrono::seconds(5)))
-    {
-      all_leg_ctrl_active_heartbeat = false;
-      RCLCPP_ERROR(get_logger(), "LEG_CTRL %d: no heartbeat since 5 seconds", static_cast<int>(glue::LegController::toNodeId(leg)));
-    }
-
-    if (!_leg_ctrl.isModeOperational(leg))
-    {
-      all_leg_ctrl_mode_operational = false;
-      RCLCPP_ERROR(get_logger(), "LEG_CTRL %d: mode not operational", static_cast<int>(glue::LegController::toNodeId(leg)));
-    }
-
-    if (!_leg_ctrl.isHealthNominal(leg))
-    {
-      all_leg_ctrl_health_nominal = false;
-      RCLCPP_ERROR(get_logger(), "LEG_CTRL %d: health not nominal", static_cast<int>(glue::LegController::toNodeId(leg)));
-    }
+    RCLCPP_ERROR(get_logger(),
+                 "no heartbeat from nodes { %s}",
+                 glue::OpenCyphalHeartbeatMonitor::toStr(not_connected_nodes).c_str());
+    return State::Init_LegController;
   }
 
-  if (all_leg_ctrl_active_heartbeat && all_leg_ctrl_mode_operational && all_leg_ctrl_health_nominal)
+  if (auto [all_nodes_health_nominal, health_not_nominal_nodes] = _open_cyphal_heartbeat_monitor.isHealthy(); !all_nodes_health_nominal)
   {
-    _valve_ctrl.openAllForCalibAndWrite();
-    _hydraulic_pump.setRPM(4096);
-    return State::Calibrate;
+    RCLCPP_ERROR(get_logger(),
+                 "nodes { %s} health not nominal",
+                 glue::OpenCyphalHeartbeatMonitor::toStr(health_not_nominal_nodes).c_str());
+    return State::Init_LegController;
   }
 
-  return State::Init_LegController;
+  if (auto [all_nodes_mode_operational, mode_not_operational_nodes] = _open_cyphal_heartbeat_monitor.isHealthy(); !all_nodes_mode_operational)
+  {
+    RCLCPP_ERROR(get_logger(),
+                 "nodes { %s} mode not operational",
+                 glue::OpenCyphalHeartbeatMonitor::toStr(mode_not_operational_nodes).c_str());
+    return State::Init_LegController;
+  }
+
+  /* All nodes present, healthy and operational. */
+
+  _valve_ctrl.openAllForCalibAndWrite();
+  //_hydraulic_pump.setRPM(4096);
+  return State::Calibrate;
 }
 
 IoNode::State IoNode::handle_Calibrate()
@@ -202,6 +199,7 @@ IoNode::State IoNode::handle_Active()
    * CHECK HEARTBEAT/MODE/HEALTH of OpenCyphalDevice's
    **************************************************************************************/
 
+  /*
   for (auto leg : LEG_LIST)
   {
     if (_leg_ctrl.isHeartbeatTimeout(leg, std::chrono::seconds(5)))
@@ -213,6 +211,7 @@ IoNode::State IoNode::handle_Active()
     if (!_leg_ctrl.isHealthNominal(leg))
       RCLCPP_ERROR(get_logger(), "LEG_CTRL %d: health not nominal", static_cast<int>(glue::LegController::toNodeId(leg)));
   }
+  */
 
   /**************************************************************************************
    * READ FROM PERIPHERALS

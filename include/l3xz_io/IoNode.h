@@ -22,6 +22,7 @@
 
 #include <l3xz_io/glue/LegController.h>
 #include <l3xz_io/glue/ValveController.h>
+#include <l3xz_io/glue/OpenCyphalHeartbeatMonitor.h>
 #include <l3xz_io/glue/DynamixelAnglePositionWriter.h>
 
 #include <l3xz_gait_ctrl/msg/leg_angle.hpp>
@@ -60,6 +61,7 @@ private:
   dynamixel::SharedMX28 _mx28_ctrl;
   driver::Orel20 _hydraulic_pump;
 
+  glue::OpenCyphalHeartbeatMonitor _open_cyphal_heartbeat_monitor;
   glue::DynamixelAnglePositionWriter _dynamixel_angle_position_writer;
   glue::ValveController _valve_ctrl;
   glue::LegController _leg_ctrl;
