@@ -46,8 +46,16 @@ public:
     return ss.str();
   }
 
+  std::list<CanardNodeID> detectedNodeIdList()
+  {
+    std::lock_guard<std::mutex> lock(_mtx);
+    return _detected_node_id_list;
+  }
+
   std::tuple<bool, std::list<CanardNodeID>> isConnected(std::chrono::seconds const heartbeat_timeout)
   {
+    std::lock_guard<std::mutex> lock(_mtx);
+
     bool is_connected = true;
     std::list<CanardNodeID> node_list;
 
@@ -63,6 +71,8 @@ public:
 
   std::tuple<bool, std::list<CanardNodeID>> isHealthy()
   {
+    std::lock_guard<std::mutex> lock(_mtx);
+
     bool is_healty = true;
     std::list<CanardNodeID> node_list;
 
@@ -78,6 +88,8 @@ public:
 
   std::tuple<bool, std::list<CanardNodeID>> isOperational()
   {
+    std::lock_guard<std::mutex> lock(_mtx);
+
     bool is_operational = true;
     std::list<CanardNodeID> node_list;
 
@@ -116,6 +128,7 @@ private:
 
   std::mutex _mtx;
   std::map<CanardNodeID, HeartbeatData> _node_heartbeat_data;
+  std::list<CanardNodeID> _detected_node_id_list;
 
   bool subscribeHeartbeat(phy::opencyphal::Node & node)
   {
@@ -125,6 +138,15 @@ private:
           uavcan::node::Heartbeat_1_0<> const heartbeat = uavcan::node::Heartbeat_1_0<>::deserialize(transfer);
             
           std::lock_guard<std::mutex> lock(_mtx);
+
+          if (std::find(std::begin(_detected_node_id_list),
+                        std::end  (_detected_node_id_list),
+                        transfer.metadata.remote_node_id)
+              == std::end(_detected_node_id_list))
+          {
+            _detected_node_id_list.push_back(transfer.metadata.remote_node_id);
+          }
+
           HeartbeatData data(std::chrono::system_clock::now(), heartbeat.data.health, heartbeat.data.mode);
           _node_heartbeat_data[transfer.metadata.remote_node_id] = data;
         });
