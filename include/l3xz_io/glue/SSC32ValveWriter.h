@@ -64,6 +64,12 @@ public:
     }
   { }
 
+  void closeAll()
+  {
+    for(auto [key, value] : LEG_JOINT_KEY_TO_SSC32_SERVO_ID_MAP)
+      set(key, 0.0);
+  }
+
   void set(LegJointKey const key, float const val)
   {
     /* Limit value to [-1,+1] which resembles

@@ -126,11 +126,8 @@ IoNode::IoNode()
 
 IoNode::~IoNode()
 {
-  /* Set all servos to neutral position, this
-   * means that all valves are turned off.
-   */
-  for (auto ch = driver::SSC32::MIN_CHANNEL; ch <= driver::SSC32::MAX_CHANNEL; ch++)
-    _ssc32_ctrl->setPulseWidth(ch, 1500, 50);
+  _ssc32_valve_writer.closeAll();
+  _ssc32_valve_writer.doBulkWrite(_ssc32_ctrl);
 }
 
 /**************************************************************************************
@@ -152,11 +149,8 @@ void IoNode::timerCallback()
 
 IoNode::State IoNode::handle_Init_SSC32()
 {
-  /* Set all servos to neutral position, this
-   * means that all valves are turned off.
-   */
-  for (auto ch = driver::SSC32::MIN_CHANNEL; ch <= driver::SSC32::MAX_CHANNEL; ch++)
-    _ssc32_ctrl->setPulseWidth(ch, 1500, 50);
+  _ssc32_valve_writer.closeAll();
+  _ssc32_valve_writer.doBulkWrite(_ssc32_ctrl);
 
   return State::Init_Dynamixel;
 }
