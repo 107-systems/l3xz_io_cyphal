@@ -182,6 +182,11 @@ IoNode::State IoNode::handle_Init_OpenCyphalHeartbeatMonitor()
 
   /* All nodes present, healthy and operational. */
 
+  RCLCPP_INFO(get_logger(),
+              "heartbeat messages from nodes { %s} detected",
+              glue::OpenCyphalHeartbeatMonitor::toStr(_open_cyphal_heartbeat_monitor.detectedNodeIdList()).c_str());
+
+  /* Start the calibration. */
   _valve_ctrl.openAllForCalibAndWrite();
   //_hydraulic_pump.setRPM(4096);
   return State::Calibrate;

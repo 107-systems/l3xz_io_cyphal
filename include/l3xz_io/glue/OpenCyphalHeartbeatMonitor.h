@@ -145,6 +145,7 @@ private:
               == std::end(_detected_node_id_list))
           {
             _detected_node_id_list.push_back(transfer.metadata.remote_node_id);
+            _detected_node_id_list.sort(); /* Make sure its in ascending order for better readability. */
           }
 
           HeartbeatData data(std::chrono::system_clock::now(), heartbeat.data.health, heartbeat.data.mode);
