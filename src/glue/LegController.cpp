@@ -156,7 +156,6 @@ bool LegController::subscribeHeartbeat(phy::opencyphal::Node & node)
   return node.subscribe<uavcan::node::Heartbeat_1_0<>>(
     [this](CanardRxTransfer const & transfer)
     {
-      std::cerr << "HEARTBEAT ID = " << (int)transfer.metadata.remote_node_id << std::endl;
       if (isLegControllerId(transfer.metadata.remote_node_id))
       {
         uavcan::node::Heartbeat_1_0<> const heartbeat = uavcan::node::Heartbeat_1_0<>::deserialize(transfer);
