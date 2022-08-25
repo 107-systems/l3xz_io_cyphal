@@ -20,49 +20,56 @@ namespace glue
 {
 
 /**************************************************************************************
+ * CONST
+ **************************************************************************************/
+
+static uavcan_node_Health_1_0 const INITAL_HEARTBEAT_HEALTH_DATA = { uavcan_node_Health_1_0_WARNING };
+static uavcan_node_Mode_1_0 const INITIAL_HEARTBEAT_MODE_DATA = { uavcan_node_Mode_1_0_INITIALIZATION };
+static LegController::THeartbeatData const INITAL_HEARTBEAT_DATA = { INITAL_HEARTBEAT_HEALTH_DATA, INITIAL_HEARTBEAT_MODE_DATA, std::chrono::system_clock::now() };
+
+/**************************************************************************************
  * CTOR/DTOR
  **************************************************************************************/
 
 LegController::LegController(phy::opencyphal::Node & node, rclcpp::Logger const logger)
 : _mtx{}
-{
-  _is_bumper_pressed[Leg::LeftFront  ] = false;
-  _is_bumper_pressed[Leg::LeftMiddle ] = false;
-  _is_bumper_pressed[Leg::LeftBack   ] = false;
-  _is_bumper_pressed[Leg::RightBack  ] = false;
-  _is_bumper_pressed[Leg::RightMiddle] = false;
-  _is_bumper_pressed[Leg::RightFront ] = false;
-
-  _femur_angle_deg[Leg::LeftFront  ] = 0.0f;
-  _femur_angle_deg[Leg::LeftMiddle ] = 0.0f;
-  _femur_angle_deg[Leg::LeftBack   ] = 0.0f;
-  _femur_angle_deg[Leg::RightBack  ] = 0.0f;
-  _femur_angle_deg[Leg::RightMiddle] = 0.0f;
-  _femur_angle_deg[Leg::RightFront ] = 0.0f;
-
-  _tibia_angle_deg[Leg::LeftFront  ] = 0.0f;
-  _tibia_angle_deg[Leg::LeftMiddle ] = 0.0f;
-  _tibia_angle_deg[Leg::LeftBack   ] = 0.0f;
-  _tibia_angle_deg[Leg::RightBack  ] = 0.0f;
-  _tibia_angle_deg[Leg::RightMiddle] = 0.0f;
-  _tibia_angle_deg[Leg::RightFront ] = 0.0f;
-
-  uavcan_node_Health_1_0 const INITAL_HEARTBEAT_HEALTH_DATA = { uavcan_node_Health_1_0_WARNING };
-  uavcan_node_Mode_1_0 const INITIAL_HEARTBEAT_MODE_DATA = { uavcan_node_Mode_1_0_INITIALIZATION };
-
-  THeartbeatData const INITAL_HEARTBEAT_DATA =
+, _is_bumper_pressed
   {
-    INITAL_HEARTBEAT_HEALTH_DATA, INITIAL_HEARTBEAT_MODE_DATA, std::chrono::system_clock::now()
-  };
-
-  _heartbeat[Leg::LeftFront  ] = INITAL_HEARTBEAT_DATA;
-  _heartbeat[Leg::LeftMiddle ] = INITAL_HEARTBEAT_DATA;
-  _heartbeat[Leg::LeftBack   ] = INITAL_HEARTBEAT_DATA;
-  _heartbeat[Leg::RightBack  ] = INITAL_HEARTBEAT_DATA;
-  _heartbeat[Leg::RightMiddle] = INITAL_HEARTBEAT_DATA;
-  _heartbeat[Leg::RightFront ] = INITAL_HEARTBEAT_DATA;
-
-
+    {Leg::LeftFront  , false},
+    {Leg::LeftMiddle , false},
+    {Leg::LeftBack   , false},
+    {Leg::RightBack  , false},
+    {Leg::RightMiddle, false},
+    {Leg::RightFront , false},
+  }
+, _femur_angle_deg
+  {
+    {Leg::LeftFront  , 0.0f},
+    {Leg::LeftMiddle , 0.0f},
+    {Leg::LeftBack   , 0.0f},
+    {Leg::RightBack  , 0.0f},
+    {Leg::RightMiddle, 0.0f},
+    {Leg::RightFront , 0.0f},
+  }
+, _tibia_angle_deg
+  {
+    {Leg::LeftFront  , 0.0f},
+    {Leg::LeftMiddle , 0.0f},
+    {Leg::LeftBack   , 0.0f},
+    {Leg::RightBack  , 0.0f},
+    {Leg::RightMiddle, 0.0f},
+    {Leg::RightFront , 0.0f},
+  }
+, _heartbeat
+  {
+    {Leg::LeftFront  , INITAL_HEARTBEAT_DATA},
+    {Leg::LeftMiddle , INITAL_HEARTBEAT_DATA},
+    {Leg::LeftBack   , INITAL_HEARTBEAT_DATA},
+    {Leg::RightBack  , INITAL_HEARTBEAT_DATA},
+    {Leg::RightMiddle, INITAL_HEARTBEAT_DATA},
+    {Leg::RightFront , INITAL_HEARTBEAT_DATA},
+  }
+{
   if (!subscribeHeartbeat(node))
     RCLCPP_ERROR(logger, "failed to subscribe to 'hearbeat'");
 

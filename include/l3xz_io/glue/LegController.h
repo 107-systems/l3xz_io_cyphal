@@ -47,17 +47,17 @@ public:
   static CanardNodeID toNodeId(Leg const leg);
   static Leg          toLeg   (CanardNodeID const node_id);
 
-
-private:
-  std::mutex _mtx;
-  std::map<Leg, bool> _is_bumper_pressed;
-  std::map<Leg, float> _femur_angle_deg, _tibia_angle_deg;
   typedef struct
   {
     uavcan_node_Health_1_0 health;
     uavcan_node_Mode_1_0 mode;
     std::chrono::system_clock::time_point timestamp;
   } THeartbeatData;
+
+private:
+  std::mutex _mtx;
+  std::map<Leg, bool> _is_bumper_pressed;
+  std::map<Leg, float> _femur_angle_deg, _tibia_angle_deg;
   std::map<Leg, THeartbeatData> _heartbeat;
 
 
