@@ -368,8 +368,6 @@ bool IoNode::init_dynamixel()
   if (!all_req_id_found)
     return false;
 
-  _mx28_ctrl->torqueOn(glue::DYNAMIXEL_ID_LIST);
-
   return true;
 }
 
