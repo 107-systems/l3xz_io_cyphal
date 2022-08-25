@@ -70,7 +70,6 @@ IoNode::IoNode()
 , _mx28_ctrl{new dynamixel::MX28(_dynamixel_ctrl)}
 , _ssc32_ctrl{new driver::SSC32(SSC32_DEVICE_NAME, DYNAMIXEL_BAUD_RATE)}
 , _hydraulic_pump{_open_cyphal_node, get_logger()}
-, _hydraulic_angle_position_reader{_open_cyphal_node, get_logger()}
 , _dynamixel_angle_position_writer{}
 , _ssc32_valve_writer{}
 , _leg_ctrl_map
@@ -235,7 +234,6 @@ IoNode::State IoNode::handle_Active()
    **************************************************************************************/
 
   auto const [dynamixel_leg_joint_angle_position, dynamixel_head_joint_angle_position] = glue::DynamixelAnglePositionReader::doBulkRead(_mx28_ctrl, get_logger());
-  auto const hydraulic_angle_position_deg = _hydraulic_angle_position_reader.doBulkRead();
 
   /**************************************************************************************
    * PUBLISH ACTUAL SYSTEM STATE
@@ -257,19 +255,19 @@ IoNode::State IoNode::handle_Active()
   leg_angle_actual_msg.coxa_angle_deg [4] = dynamixel_leg_joint_angle_position.at(make_key(Leg::RightMiddle,  Joint::Coxa));
   leg_angle_actual_msg.coxa_angle_deg [5] = dynamixel_leg_joint_angle_position.at(make_key(Leg::RightFront,   Joint::Coxa));
 
-  leg_angle_actual_msg.femur_angle_deg[0] = hydraulic_angle_position_deg.at(make_key(Leg::LeftFront,   Joint::Femur));
-  leg_angle_actual_msg.femur_angle_deg[1] = hydraulic_angle_position_deg.at(make_key(Leg::LeftMiddle,  Joint::Femur));
-  leg_angle_actual_msg.femur_angle_deg[2] = hydraulic_angle_position_deg.at(make_key(Leg::LeftBack,    Joint::Femur));
-  leg_angle_actual_msg.femur_angle_deg[3] = hydraulic_angle_position_deg.at(make_key(Leg::RightBack,   Joint::Femur));
-  leg_angle_actual_msg.femur_angle_deg[4] = hydraulic_angle_position_deg.at(make_key(Leg::RightMiddle, Joint::Femur));
-  leg_angle_actual_msg.femur_angle_deg[5] = hydraulic_angle_position_deg.at(make_key(Leg::RightFront,  Joint::Femur));
+  leg_angle_actual_msg.femur_angle_deg[0] = _leg_ctrl_map.at(Leg::LeftFront  )->femurAngle_deg();
+  leg_angle_actual_msg.femur_angle_deg[1] = _leg_ctrl_map.at(Leg::LeftMiddle )->femurAngle_deg();
+  leg_angle_actual_msg.femur_angle_deg[2] = _leg_ctrl_map.at(Leg::LeftBack   )->femurAngle_deg();
+  leg_angle_actual_msg.femur_angle_deg[3] = _leg_ctrl_map.at(Leg::RightBack  )->femurAngle_deg();
+  leg_angle_actual_msg.femur_angle_deg[4] = _leg_ctrl_map.at(Leg::RightMiddle)->femurAngle_deg();
+  leg_angle_actual_msg.femur_angle_deg[5] = _leg_ctrl_map.at(Leg::RightFront )->femurAngle_deg();
 
-  leg_angle_actual_msg.tibia_angle_deg[0] = hydraulic_angle_position_deg.at(make_key(Leg::LeftFront,   Joint::Tibia));
-  leg_angle_actual_msg.tibia_angle_deg[1] = hydraulic_angle_position_deg.at(make_key(Leg::LeftMiddle,  Joint::Tibia));
-  leg_angle_actual_msg.tibia_angle_deg[2] = hydraulic_angle_position_deg.at(make_key(Leg::LeftBack,    Joint::Tibia));
-  leg_angle_actual_msg.tibia_angle_deg[3] = hydraulic_angle_position_deg.at(make_key(Leg::RightBack,   Joint::Tibia));
-  leg_angle_actual_msg.tibia_angle_deg[4] = hydraulic_angle_position_deg.at(make_key(Leg::RightMiddle, Joint::Tibia));
-  leg_angle_actual_msg.tibia_angle_deg[5] = hydraulic_angle_position_deg.at(make_key(Leg::RightFront,  Joint::Tibia));
+  leg_angle_actual_msg.tibia_angle_deg[0] = _leg_ctrl_map.at(Leg::LeftFront  )->tibiaAngle_deg();
+  leg_angle_actual_msg.tibia_angle_deg[1] = _leg_ctrl_map.at(Leg::LeftMiddle )->tibiaAngle_deg();
+  leg_angle_actual_msg.tibia_angle_deg[2] = _leg_ctrl_map.at(Leg::LeftBack   )->tibiaAngle_deg();
+  leg_angle_actual_msg.tibia_angle_deg[3] = _leg_ctrl_map.at(Leg::RightBack  )->tibiaAngle_deg();
+  leg_angle_actual_msg.tibia_angle_deg[4] = _leg_ctrl_map.at(Leg::RightMiddle)->tibiaAngle_deg();
+  leg_angle_actual_msg.tibia_angle_deg[5] = _leg_ctrl_map.at(Leg::RightFront )->tibiaAngle_deg();
 
   _leg_angle_pub->publish(leg_angle_actual_msg);
 

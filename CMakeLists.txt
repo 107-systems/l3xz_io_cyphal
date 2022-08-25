@@ -30,7 +30,6 @@ add_executable(${PROJECT_NAME}_node
   src/glue/DynamixelAnglePositionWriter.cpp
   src/glue/DynamixelAnglePositionReader.cpp
   src/glue/DynamixelServoName.cpp
-  src/glue/HydraulicAnglePositionReader.cpp
   src/glue/LegController.cpp
   src/glue/OpenCyphalDevice.cpp
   src/phy/opencyphal/Node.cpp

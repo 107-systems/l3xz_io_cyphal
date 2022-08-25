@@ -37,13 +37,18 @@ public:
   static CanardNodeID toNodeId(Leg const leg);
 
 
-  bool isBumperPressed();
+  bool  isBumperPressed();
+  float femurAngle_deg();
+  float tibiaAngle_deg();
 
 
 private:
   std::atomic<bool> _is_bumper_pressed;
+  std::atomic<float> _femur_angle_deg, _tibia_angle_deg;
 
   bool subscribeTibiaTipBumberMessage(phy::opencyphal::Node & node);
+  bool subscribeFemurAngleMessage    (phy::opencyphal::Node & node);
+  bool subscribeTibiaAngleMessage    (phy::opencyphal::Node & node);
 };
 
 /**************************************************************************************

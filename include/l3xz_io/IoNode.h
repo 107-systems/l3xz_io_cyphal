@@ -23,7 +23,6 @@
 
 #include <l3xz_io/glue/LegController.h>
 #include <l3xz_io/glue/SSC32ValveWriter.h>
-#include <l3xz_io/glue/HydraulicAnglePositionReader.h>
 #include <l3xz_io/glue/DynamixelAnglePositionWriter.h>
 
 #include <l3xz_gait_ctrl/msg/leg_angle.hpp>
@@ -63,7 +62,6 @@ private:
   driver::SharedSSC32 _ssc32_ctrl;
   driver::Orel20 _hydraulic_pump;
 
-  glue::HydraulicAnglePositionReader _hydraulic_angle_position_reader;
   glue::DynamixelAnglePositionWriter _dynamixel_angle_position_writer;
   glue::SSC32ValveWriter _ssc32_valve_writer;
 
