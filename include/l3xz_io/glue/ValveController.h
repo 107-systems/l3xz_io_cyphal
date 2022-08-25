@@ -28,10 +28,10 @@ namespace glue
  * CLASS DECLARATION
  **************************************************************************************/
 
-class SSC32ValveWriter
+class ValveController
 {
 public:
-  SSC32ValveWriter(driver::SharedSSC32 ssc32_ctrl)
+  ValveController(driver::SharedSSC32 ssc32_ctrl)
   : _ssc32_ctrl{ssc32_ctrl}
   , _channel_pulse_width_map
     {

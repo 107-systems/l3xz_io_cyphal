@@ -74,7 +74,7 @@ IoNode::IoNode()
 , _mx28_ctrl{new dynamixel::MX28(_dynamixel_ctrl)}
 , _hydraulic_pump{_open_cyphal_node, get_logger()}
 , _dynamixel_angle_position_writer{}
-, _ssc32_valve_writer{std::make_shared<driver::SSC32>(SSC32_DEVICE_NAME, SSC32_BAUDRATE)}
+, _valve_ctrl{std::make_shared<driver::SSC32>(SSC32_DEVICE_NAME, SSC32_BAUDRATE)}
 , _leg_ctrl{_open_cyphal_node, get_logger()}
 , _leg_angle_target_msg{
     []()
@@ -127,8 +127,8 @@ IoNode::IoNode()
 
 IoNode::~IoNode()
 {
-  _ssc32_valve_writer.closeAll();
-  _ssc32_valve_writer.doBulkWrite();
+  _valve_ctrl.closeAll();
+  _valve_ctrl.doBulkWrite();
 }
 
 /**************************************************************************************
@@ -150,8 +150,8 @@ void IoNode::timerCallback()
 
 IoNode::State IoNode::handle_Init_SSC32()
 {
-  _ssc32_valve_writer.closeAll();
-  _ssc32_valve_writer.doBulkWrite();
+  _valve_ctrl.closeAll();
+  _valve_ctrl.doBulkWrite();
 
   return State::Init_Dynamixel;
 }
@@ -298,7 +298,7 @@ IoNode::State IoNode::handle_Active()
     RCLCPP_ERROR(get_logger(), "failed to set target angles for all dynamixel servos");
 
   _hydraulic_pump.doWrite();
-  _ssc32_valve_writer.doBulkWrite();
+  _valve_ctrl.doBulkWrite();
 
   return State::Active;
 }

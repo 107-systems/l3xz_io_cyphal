@@ -21,7 +21,7 @@
 #include <l3xz_io/driver/orel20/Orel20.h>
 
 #include <l3xz_io/glue/LegController.h>
-#include <l3xz_io/glue/SSC32ValveWriter.h>
+#include <l3xz_io/glue/ValveController.h>
 #include <l3xz_io/glue/DynamixelAnglePositionWriter.h>
 
 #include <l3xz_gait_ctrl/msg/leg_angle.hpp>
@@ -61,7 +61,7 @@ private:
   driver::Orel20 _hydraulic_pump;
 
   glue::DynamixelAnglePositionWriter _dynamixel_angle_position_writer;
-  glue::SSC32ValveWriter _ssc32_valve_writer;
+  glue::ValveController _valve_ctrl;
   glue::LegController _leg_ctrl;
 
   rclcpp::TimerBase::SharedPtr _timer;
