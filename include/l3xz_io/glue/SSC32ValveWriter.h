@@ -31,8 +31,9 @@ namespace glue
 class SSC32ValveWriter
 {
 public:
-  SSC32ValveWriter()
-  : _channel_pulse_width_map
+  SSC32ValveWriter(driver::SharedSSC32 ssc32_ctrl)
+  : _ssc32_ctrl{ssc32_ctrl}
+  , _channel_pulse_width_map
     {
       { 0, 1500},
       { 1, 1500},
@@ -94,14 +95,15 @@ public:
     _channel_pulse_width_map.at(LEG_JOINT_KEY_TO_SSC32_SERVO_ID_MAP.at(key)) = pulse_width_us;
   }
 
-  void doBulkWrite(driver::SharedSSC32 ssc32_ctrl)
+  void doBulkWrite()
   {
     for (auto [channel, pulse_width_us] : _channel_pulse_width_map)
-      ssc32_ctrl->setPulseWidth(channel, pulse_width_us, 50);
+      _ssc32_ctrl->setPulseWidth(channel, pulse_width_us, 50);
   }
 
 
 private:
+  driver::SharedSSC32 _ssc32_ctrl;
   std::map<uint8_t, uint16_t> _channel_pulse_width_map;
   std::map<LegJointKey, uint8_t> LEG_JOINT_KEY_TO_SSC32_SERVO_ID_MAP;
 };

@@ -18,7 +18,6 @@
 #include <l3xz_io/phy/opencyphal/Node.hpp>
 #include <l3xz_io/phy/opencyphal/SocketCAN.h>
 
-#include <l3xz_io/driver/ssc32/SSC32.h>
 #include <l3xz_io/driver/orel20/Orel20.h>
 
 #include <l3xz_io/glue/LegController.h>
@@ -59,7 +58,6 @@ private:
   phy::opencyphal::Node _open_cyphal_node;
   dynamixel::SharedDynamixel _dynamixel_ctrl;
   dynamixel::SharedMX28 _mx28_ctrl;
-  driver::SharedSSC32 _ssc32_ctrl;
   driver::Orel20 _hydraulic_pump;
 
   glue::DynamixelAnglePositionWriter _dynamixel_angle_position_writer;
