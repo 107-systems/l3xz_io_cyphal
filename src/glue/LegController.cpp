@@ -24,6 +24,7 @@ namespace glue
  **************************************************************************************/
 
 LegController::LegController(phy::opencyphal::Node & node, rclcpp::Logger const logger)
+: _mtx{}
 {
   _is_bumper_pressed[Leg::LeftFront  ] = false;
   _is_bumper_pressed[Leg::LeftMiddle ] = false;
@@ -81,7 +82,7 @@ LegController::LegController(phy::opencyphal::Node & node, rclcpp::Logger const 
 
 bool LegController::isHeartbeatTimeout(Leg const leg, std::chrono::seconds const timeout)
 {
-  std::lock_guard<std::mutex> lock(_heartbeat_mtx);
+  std::lock_guard<std::mutex> lock(_mtx);
 
   auto const duration_since_last_receive_timestamp = (std::chrono::system_clock::now() - _heartbeat.at(leg).timestamp);
   if (duration_since_last_receive_timestamp > timeout)
@@ -92,28 +93,31 @@ bool LegController::isHeartbeatTimeout(Leg const leg, std::chrono::seconds const
 
 bool LegController::isModeOperational(Leg const leg)
 {
-  std::lock_guard<std::mutex> lock(_heartbeat_mtx);
+  std::lock_guard<std::mutex> lock(_mtx);
   return (_heartbeat.at(leg).mode.value == uavcan_node_Mode_1_0_OPERATIONAL);
 }
 
 bool LegController::isHealthNominal(Leg const leg)
 {
-  std::lock_guard<std::mutex> lock(_heartbeat_mtx);
+  std::lock_guard<std::mutex> lock(_mtx);
   return (_heartbeat.at(leg).health.value == uavcan_node_Health_1_0_NOMINAL);
 }
 
 bool LegController::isBumperPressed(Leg const leg)
 {
+  std::lock_guard<std::mutex> lock(_mtx);
   return _is_bumper_pressed.at(leg);
 }
 
 float LegController::femurAngle_deg(Leg const leg)
 {
+  std::lock_guard<std::mutex> lock(_mtx);
   return _femur_angle_deg.at(leg);
 }
 
 float LegController::tibiaAngle_deg(Leg const leg)
 {
+  std::lock_guard<std::mutex> lock(_mtx);
   return _tibia_angle_deg.at(leg);
 }
 
@@ -160,7 +164,7 @@ bool LegController::subscribeHeartbeat(phy::opencyphal::Node & node)
       {
         uavcan::node::Heartbeat_1_0<> const heartbeat = uavcan::node::Heartbeat_1_0<>::deserialize(transfer);
         
-        std::lock_guard<std::mutex> lock(_heartbeat_mtx);
+        std::lock_guard<std::mutex> lock(_mtx);
 
         THeartbeatData data;
         data.health    = heartbeat.data.health;
@@ -180,6 +184,8 @@ bool LegController::subscribeTibiaTipBumberMessage(phy::opencyphal::Node & node)
       if (isLegControllerId(transfer.metadata.remote_node_id))
       {
         OpenCyphalTibiaTipBumperMessage const tibia_endpoint_switch = OpenCyphalTibiaTipBumperMessage::deserialize(transfer);
+        
+        std::lock_guard<std::mutex> lock(_mtx);
         _is_bumper_pressed[toLeg(transfer.metadata.remote_node_id)] = !tibia_endpoint_switch.data.value;
       }
     });
@@ -193,6 +199,8 @@ bool LegController::subscribeFemurAngleMessage(phy::opencyphal::Node & node)
       if (isLegControllerId(transfer.metadata.remote_node_id))
       {
         OpenCyphalFemurAnglePositionDegreeMessage const as5048_a_angle = OpenCyphalFemurAnglePositionDegreeMessage::deserialize(transfer);
+
+        std::lock_guard<std::mutex> lock(_mtx);
         _femur_angle_deg[toLeg(transfer.metadata.remote_node_id)] = as5048_a_angle.data.value;
       }
     });
@@ -206,6 +214,8 @@ bool LegController::subscribeTibiaAngleMessage(phy::opencyphal::Node & node)
       if (isLegControllerId(transfer.metadata.remote_node_id))
       {
         OpenCyphalTibiaAnglePositionDegreeMessage const as5048_b_angle = OpenCyphalTibiaAnglePositionDegreeMessage::deserialize(transfer);
+
+        std::lock_guard<std::mutex> lock(_mtx);
         _tibia_angle_deg[toLeg(transfer.metadata.remote_node_id)] = as5048_b_angle.data.value;
       }
     });
