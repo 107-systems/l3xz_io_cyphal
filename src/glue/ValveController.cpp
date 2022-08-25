@@ -96,6 +96,14 @@ void ValveController::doBulkWrite()
     _ssc32_ctrl->setPulseWidth(channel, pulse_width_us, 50);
 }
 
+void ValveController::openAllForCalibAndWrite()
+{
+  for(auto [key, value] : LEG_JOINT_KEY_TO_SSC32_SERVO_ID_MAP)
+    set(key, 1.0);
+
+  doBulkWrite();
+}
+
 /**************************************************************************************
  * PRIVATE MEMBER FUNCTIONS
  **************************************************************************************/

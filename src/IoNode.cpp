@@ -136,6 +136,7 @@ void IoNode::timerCallback()
   {
   case State::Init_Dynamixel:     next_state = handle_Init_Dynamixel(); break;
   case State::Init_LegController: next_state = handle_Init_LegController(); break;
+  case State::Calibrate:          next_state = handle_Calibrate(); break;
   case State::Active:             next_state = handle_Active(); break;
   }
   _state = next_state;
@@ -180,9 +181,19 @@ IoNode::State IoNode::handle_Init_LegController()
   }
 
   if (all_leg_ctrl_active_heartbeat && all_leg_ctrl_mode_operational && all_leg_ctrl_health_nominal)
-    return State::Active;
+  {
+    _valve_ctrl.openAllForCalibAndWrite();
+    _hydraulic_pump.setRPM(4096);
+    return State::Calibrate;
+  }
 
   return State::Init_LegController;
+}
+
+IoNode::State IoNode::handle_Calibrate()
+{
+  _hydraulic_pump.doWrite();
+  return State::Calibrate;
 }
 
 IoNode::State IoNode::handle_Active()

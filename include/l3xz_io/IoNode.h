@@ -49,6 +49,7 @@ private:
   {
     Init_Dynamixel,
     Init_LegController,
+    Calibrate,
     Active
   };
   State _state;
@@ -77,6 +78,7 @@ private:
 
   State handle_Init_Dynamixel();
   State handle_Init_LegController();
+  State handle_Calibrate();
   State handle_Active();
 
   static float get_angle_deg(l3xz_gait_ctrl::msg::LegAngle const & msg, Leg const leg, Joint const joint);

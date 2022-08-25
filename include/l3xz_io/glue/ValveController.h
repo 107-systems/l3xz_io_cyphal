@@ -38,6 +38,8 @@ public:
   void doBulkWrite();
 
 
+  void openAllForCalibAndWrite();
+
 private:
   driver::SharedSSC32 _ssc32_ctrl;
   std::map<uint8_t, uint16_t> _channel_pulse_width_map;
