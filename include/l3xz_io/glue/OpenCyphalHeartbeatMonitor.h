@@ -104,19 +104,20 @@ private:
   private:
     static uavcan_node_Health_1_0 constexpr INITAL_HEARTBEAT_HEALTH_DATA = { uavcan_node_Health_1_0_WARNING };
     static uavcan_node_Mode_1_0   constexpr INITIAL_HEARTBEAT_MODE_DATA = { uavcan_node_Mode_1_0_INITIALIZATION };
-
+    std::chrono::system_clock::time_point _timestamp;
+    uavcan_node_Health_1_0 _health;
+    uavcan_node_Mode_1_0 _mode;
   public:
-    HeartbeatData()
-    : timestamp(std::chrono::system_clock::now())
-    , health(INITAL_HEARTBEAT_HEALTH_DATA)
-    , mode(INITIAL_HEARTBEAT_MODE_DATA)
+    HeartbeatData(std::chrono::system_clock::time_point const timestamp, uavcan_node_Health_1_0 const health, uavcan_node_Mode_1_0 const mode)
+    : _timestamp(timestamp)
+    , _health(health)
+    , _mode(mode)
     { }
-    std::chrono::system_clock::time_point timestamp;
-    uavcan_node_Health_1_0 health;
-    uavcan_node_Mode_1_0 mode;
-    inline bool isConnected(std::chrono::seconds const heartbeat_timeout) { return ((std::chrono::system_clock::now() - timestamp) < heartbeat_timeout); }
-    inline bool isHealthy() { return health.value == uavcan_node_Health_1_0_NOMINAL; }
-    inline bool isOperational() { return mode.value == uavcan_node_Mode_1_0_OPERATIONAL; }
+    HeartbeatData() : HeartbeatData(std::chrono::system_clock::now(),INITAL_HEARTBEAT_HEALTH_DATA, INITIAL_HEARTBEAT_MODE_DATA)
+    { }
+    inline bool isConnected(std::chrono::seconds const heartbeat_timeout) { return ((std::chrono::system_clock::now() - _timestamp) < heartbeat_timeout); }
+    inline bool isHealthy() { return _health.value == uavcan_node_Health_1_0_NOMINAL; }
+    inline bool isOperational() { return _mode.value == uavcan_node_Mode_1_0_OPERATIONAL; }
   };
 
   std::mutex _mtx;
@@ -130,12 +131,7 @@ private:
           uavcan::node::Heartbeat_1_0<> const heartbeat = uavcan::node::Heartbeat_1_0<>::deserialize(transfer);
             
           std::lock_guard<std::mutex> lock(_mtx);
-
-          HeartbeatData data;
-          data.timestamp = std::chrono::system_clock::now();
-          data.health    = heartbeat.data.health;
-          data.mode      = heartbeat.data.mode;
-
+          HeartbeatData data(std::chrono::system_clock::now(), heartbeat.data.health, heartbeat.data.mode);
           _node_heartbeat_data[transfer.metadata.remote_node_id] = data;
         });
   }
