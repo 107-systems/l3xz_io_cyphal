@@ -44,11 +44,11 @@ public:
   float tibiaAngle_deg (Leg const leg);
 
 
-  CanardNodeID toNodeId(Leg const leg) const;
+  static CanardNodeID toNodeId(Leg const leg);
+  static Leg          toLeg   (CanardNodeID const node_id);
 
 
 private:
-  std::map<CanardNodeID, Leg> const NODE_ID_2_LEG_MAP;
   std::map<Leg, std::atomic<bool>> _is_bumper_pressed;
   std::map<Leg, std::atomic<float>> _femur_angle_deg, _tibia_angle_deg;
 
@@ -66,6 +66,8 @@ private:
   bool subscribeTibiaTipBumberMessage(phy::opencyphal::Node & node);
   bool subscribeFemurAngleMessage    (phy::opencyphal::Node & node);
   bool subscribeTibiaAngleMessage    (phy::opencyphal::Node & node);
+
+  static bool isLegControllerId(CanardNodeID const node_id);
 };
 
 /**************************************************************************************

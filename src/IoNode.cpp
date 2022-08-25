@@ -183,19 +183,19 @@ IoNode::State IoNode::handle_Init_LegController()
     if (_leg_ctrl.isHeartbeatTimeout(leg, std::chrono::seconds(5)))
     {
       all_leg_ctrl_active_heartbeat = false;
-      RCLCPP_ERROR(get_logger(), "LEG_CTRL %d: no heartbeat since 5 seconds", static_cast<int>(_leg_ctrl.toNodeId(leg)));
+      RCLCPP_ERROR(get_logger(), "LEG_CTRL %d: no heartbeat since 5 seconds", static_cast<int>(glue::LegController::toNodeId(leg)));
     }
 
     if (!_leg_ctrl.isModeOperational(leg))
     {
       all_leg_ctrl_mode_operational = false;
-      RCLCPP_ERROR(get_logger(), "LEG_CTRL %d: mode not operational", static_cast<int>(_leg_ctrl.toNodeId(leg)));
+      RCLCPP_ERROR(get_logger(), "LEG_CTRL %d: mode not operational", static_cast<int>(glue::LegController::toNodeId(leg)));
     }
 
     if (!_leg_ctrl.isHealthNominal(leg))
     {
       all_leg_ctrl_health_nominal = false;
-      RCLCPP_ERROR(get_logger(), "LEG_CTRL %d: health not nominal", static_cast<int>(_leg_ctrl.toNodeId(leg)));
+      RCLCPP_ERROR(get_logger(), "LEG_CTRL %d: health not nominal", static_cast<int>(glue::LegController::toNodeId(leg)));
     }
   }
 
@@ -214,13 +214,13 @@ IoNode::State IoNode::handle_Active()
   for (auto leg : LEG_LIST)
   {
     if (_leg_ctrl.isHeartbeatTimeout(leg, std::chrono::seconds(5)))
-      RCLCPP_ERROR(get_logger(), "LEG_CTRL %d: no heartbeat since 5 seconds", static_cast<int>(_leg_ctrl.toNodeId(leg)));
+      RCLCPP_ERROR(get_logger(), "LEG_CTRL %d: no heartbeat since 5 seconds", static_cast<int>(glue::LegController::toNodeId(leg)));
    
     if (!_leg_ctrl.isModeOperational(leg))
-      RCLCPP_ERROR(get_logger(), "LEG_CTRL %d: mode not operational", static_cast<int>(_leg_ctrl.toNodeId(leg)));
+      RCLCPP_ERROR(get_logger(), "LEG_CTRL %d: mode not operational", static_cast<int>(glue::LegController::toNodeId(leg)));
    
     if (!_leg_ctrl.isHealthNominal(leg))
-      RCLCPP_ERROR(get_logger(), "LEG_CTRL %d: health not nominal", static_cast<int>(_leg_ctrl.toNodeId(leg)));
+      RCLCPP_ERROR(get_logger(), "LEG_CTRL %d: health not nominal", static_cast<int>(glue::LegController::toNodeId(leg)));
   }
 
   /**************************************************************************************
