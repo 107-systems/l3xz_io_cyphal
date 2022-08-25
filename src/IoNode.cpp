@@ -188,7 +188,7 @@ IoNode::State IoNode::handle_Init_OpenCyphalHeartbeatMonitor()
 
   /* Start the calibration. */
   _valve_ctrl.openAllForCalibAndWrite();
-  //_pump_ctrl.setRPM(4096);
+  _pump_ctrl.setRPM(4096);
   return State::Calibrate;
 }
 
