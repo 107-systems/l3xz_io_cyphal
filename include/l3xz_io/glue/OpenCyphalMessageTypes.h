@@ -28,7 +28,7 @@ typedef uavcan::primitive::scalar::Real32_1_0<1002> OpenCyphalFemurAnglePosition
 typedef uavcan::primitive::scalar::Real32_1_0<1003> OpenCyphalTibiaAnglePositionDegreeMessage;
 typedef uavcan::primitive::scalar::Bit_1_0<1004>    OpenCyphalTibiaTipBumperMessage;
 
-typedef reg::udral::service::common::Readiness_0_1<3001> OpenCyphalOrel20ReadinessMessage;
+typedef reg::udral::service::common::Readiness_0_1<3001>            OpenCyphalOrel20ReadinessMessage;
 typedef reg::udral::service::actuator::common::sp::Scalar_0_1<3002> OpenCyphalOrel20SetpointMessage;
 
 /**************************************************************************************

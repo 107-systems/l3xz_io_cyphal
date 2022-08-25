@@ -30,6 +30,14 @@ public:
   LegController(CanardNodeID const node_id,
                 phy::opencyphal::Node & node,
                 rclcpp::Logger const logger);
+
+
+  bool isBumperPressed();
+
+private:
+  std::atomic<bool> _is_bumper_pressed;
+
+  bool subscribeTibiaTipBumberMessage(phy::opencyphal::Node & node);
 };
 
 /**************************************************************************************

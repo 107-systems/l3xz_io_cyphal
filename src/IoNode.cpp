@@ -70,7 +70,6 @@ IoNode::IoNode()
 , _mx28_ctrl{new dynamixel::MX28(_dynamixel_ctrl)}
 , _ssc32_ctrl{new driver::SSC32(SSC32_DEVICE_NAME, DYNAMIXEL_BAUD_RATE)}
 , _hydraulic_pump{_open_cyphal_node, get_logger()}
-, _bumber_sensor_reader{_open_cyphal_node, get_logger()}
 , _hydraulic_angle_position_reader{_open_cyphal_node, get_logger()}
 , _dynamixel_angle_position_writer{}
 , _ssc32_valve_writer{}
@@ -237,7 +236,6 @@ IoNode::State IoNode::handle_Active()
 
   auto const [dynamixel_leg_joint_angle_position, dynamixel_head_joint_angle_position] = glue::DynamixelAnglePositionReader::doBulkRead(_mx28_ctrl, get_logger());
   auto const hydraulic_angle_position_deg = _hydraulic_angle_position_reader.doBulkRead();
-  auto const tibia_tip_bumper_map = _bumber_sensor_reader.doBulkRead();
 
   /**************************************************************************************
    * PUBLISH ACTUAL SYSTEM STATE

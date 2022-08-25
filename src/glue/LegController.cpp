@@ -10,6 +10,8 @@
 
 #include <l3xz_io/glue/LegController.h>
 
+#include <l3xz_io/glue/OpenCyphalMessageTypes.h>
+
 /**************************************************************************************
  * NAMESPACE
  **************************************************************************************/
@@ -25,8 +27,36 @@ LegController::LegController(CanardNodeID const node_id,
                              phy::opencyphal::Node & node,
                              rclcpp::Logger const logger)
 : OpenCyphalDevice{node_id, node, logger}
+, _is_bumper_pressed{false}
 {
+  if (!subscribeTibiaTipBumberMessage(node))
+    RCLCPP_ERROR(logger, "failed to subscribe to 'OpenCyphalTibiaTipBumperMessage'");
+}
 
+/**************************************************************************************
+ * PUBLIC MEMBER FUNCTIONS
+ **************************************************************************************/
+
+bool LegController::isBumperPressed()
+{
+  return _is_bumper_pressed;
+}
+
+/**************************************************************************************
+ * PRIVATE MEMBER FUNCTIONS
+ **************************************************************************************/
+
+bool LegController::subscribeTibiaTipBumberMessage(phy::opencyphal::Node & node)
+{
+  return node.subscribe<OpenCyphalTibiaTipBumperMessage>(
+    [this](CanardRxTransfer const & transfer)
+    {
+      if (transfer.metadata.remote_node_id == node_id())
+      {
+        OpenCyphalTibiaTipBumperMessage const tibia_endpoint_switch = OpenCyphalTibiaTipBumperMessage::deserialize(transfer);
+        _is_bumper_pressed = !tibia_endpoint_switch.data.value;
+      }
+    });
 }
 
 /**************************************************************************************
