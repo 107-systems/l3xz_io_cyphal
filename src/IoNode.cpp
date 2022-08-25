@@ -135,10 +135,10 @@ void IoNode::timerCallback()
   State next_state = _state;
   switch (_state)
   {
-  case State::Init_Dynamixel:     next_state = handle_Init_Dynamixel(); break;
-  case State::Init_LegController: next_state = handle_Init_LegController(); break;
-  case State::Calibrate:          next_state = handle_Calibrate(); break;
-  case State::Active:             next_state = handle_Active(); break;
+  case State::Init_Dynamixel:                  next_state = handle_Init_Dynamixel(); break;
+  case State::Init_OpenCyphalHeartbeatMonitor: next_state = handle_Init_OpenCyphalHeartbeatMonitor(); break;
+  case State::Calibrate:                       next_state = handle_Calibrate(); break;
+  case State::Active:                          next_state = handle_Active(); break;
   }
   _state = next_state;
 }
@@ -151,17 +151,17 @@ IoNode::State IoNode::handle_Init_Dynamixel()
     rclcpp::shutdown();
   }
 
-  return State::Init_LegController;
+  return State::Init_OpenCyphalHeartbeatMonitor;
 }
 
-IoNode::State IoNode::handle_Init_LegController()
+IoNode::State IoNode::handle_Init_OpenCyphalHeartbeatMonitor()
 {
   if (auto [all_nodes_connected, not_connected_nodes] = _open_cyphal_heartbeat_monitor.isConnected(std::chrono::seconds(5)); !all_nodes_connected)
   {
     RCLCPP_ERROR(get_logger(),
                  "no heartbeat from nodes { %s}",
                  glue::OpenCyphalHeartbeatMonitor::toStr(not_connected_nodes).c_str());
-    return State::Init_LegController;
+    return State::Init_OpenCyphalHeartbeatMonitor;
   }
 
   if (auto [all_nodes_health_nominal, health_not_nominal_nodes] = _open_cyphal_heartbeat_monitor.isHealthy(); !all_nodes_health_nominal)
@@ -169,7 +169,7 @@ IoNode::State IoNode::handle_Init_LegController()
     RCLCPP_ERROR(get_logger(),
                  "nodes { %s} health not nominal",
                  glue::OpenCyphalHeartbeatMonitor::toStr(health_not_nominal_nodes).c_str());
-    return State::Init_LegController;
+    return State::Init_OpenCyphalHeartbeatMonitor;
   }
 
   if (auto [all_nodes_mode_operational, mode_not_operational_nodes] = _open_cyphal_heartbeat_monitor.isHealthy(); !all_nodes_mode_operational)
@@ -177,7 +177,7 @@ IoNode::State IoNode::handle_Init_LegController()
     RCLCPP_ERROR(get_logger(),
                  "nodes { %s} mode not operational",
                  glue::OpenCyphalHeartbeatMonitor::toStr(mode_not_operational_nodes).c_str());
-    return State::Init_LegController;
+    return State::Init_OpenCyphalHeartbeatMonitor;
   }
 
   /* All nodes present, healthy and operational. */

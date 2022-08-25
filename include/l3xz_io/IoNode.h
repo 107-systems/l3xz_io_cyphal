@@ -49,7 +49,7 @@ private:
   enum class State
   {
     Init_Dynamixel,
-    Init_LegController,
+    Init_OpenCyphalHeartbeatMonitor,
     Calibrate,
     Active
   };
@@ -79,7 +79,7 @@ private:
   void timerCallback();
 
   State handle_Init_Dynamixel();
-  State handle_Init_LegController();
+  State handle_Init_OpenCyphalHeartbeatMonitor();
   State handle_Calibrate();
   State handle_Active();
 
