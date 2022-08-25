@@ -130,7 +130,7 @@ void Node::rxThreadFunc()
 
   auto const start = std::chrono::high_resolution_clock::now();
 
-  RCLCPP_INFO(_logger, "Node::rxThreadFunc starting  ...");
+  RCLCPP_INFO(_logger, "[OpenCyphal] RX thread starting  ...");
 
   while (_rx_thread_active)
   {
@@ -152,7 +152,7 @@ void Node::rxThreadFunc()
     }
   }
 
-  RCLCPP_INFO(_logger, "Node::rxThreadFunc stopping  ...");
+  RCLCPP_INFO(_logger, "[OpenCyphal] RX thread stopping  ...");
 }
 
 void Node::onCanFrameReceived(CanardFrame const & frame, CanardMicrosecond const rx_timestamp_us)
@@ -190,7 +190,7 @@ void Node::txThreadFunc()
 {
   _tx_thread_active = true;
 
-  RCLCPP_INFO(_logger, "Node::txThreadFunc starting  ...");
+  RCLCPP_INFO(_logger, "[OpenCyphal] TX thread starting  ...");
 
   while (_tx_thread_active)
   {
@@ -219,7 +219,7 @@ void Node::txThreadFunc()
     }
   }
 
-  RCLCPP_INFO(_logger, "Node::txThreadFunc stopping  ...");
+  RCLCPP_INFO(_logger, "[OpenCyphal] TX thread stopping  ...");
 }
 
 /**************************************************************************************
