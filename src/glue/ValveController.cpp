@@ -21,8 +21,9 @@ namespace glue
  * CTOR/DTOR
  **************************************************************************************/
 
-ValveController::ValveController(driver::SharedSSC32 ssc32_ctrl)
+ValveController::ValveController(driver::SharedSSC32 ssc32_ctrl, rclcpp::Logger const logger)
 : _ssc32_ctrl{ssc32_ctrl}
+, _logger{logger}
 , _channel_pulse_width_map
   {
     { 0, 1500},
@@ -102,6 +103,8 @@ void ValveController::openAllForCalibAndWrite()
     set(key, 1.0);
 
   doBulkWrite();
+
+  RCLCPP_INFO(_logger, "ValveController::openAllForCalibAndWrite(): opening all valves for calibration.");
 }
 
 /**************************************************************************************
@@ -114,6 +117,8 @@ void ValveController::closeAllAndWrite()
     set(key, 0.0);
 
   doBulkWrite();
+
+  RCLCPP_INFO(_logger, "ValveController::closeAllAndWrite(): closing all valves.");
 }
 
 /**************************************************************************************
