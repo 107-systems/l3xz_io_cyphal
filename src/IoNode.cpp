@@ -72,10 +72,10 @@ IoNode::IoNode()
 , _open_cyphal_node(_open_cyphal_can_if, get_logger())
 , _dynamixel_ctrl{new dynamixel::Dynamixel(DYNAMIXEL_DEVICE_NAME, DYNAMIXEL_PROTOCOL_VERSION, DYNAMIXEL_BAUD_RATE)}
 , _mx28_ctrl{new dynamixel::MX28(_dynamixel_ctrl)}
-, _hydraulic_pump{_open_cyphal_node, get_logger()}
 , _open_cyphal_heartbeat_monitor{_open_cyphal_node, get_logger(), {1, 2, 3, 4, 5, 6, 10}}
 , _dynamixel_angle_position_writer{}
 , _valve_ctrl{std::make_shared<driver::SSC32>(SSC32_DEVICE_NAME, SSC32_BAUDRATE)}
+, _pump_ctrl{_open_cyphal_node, get_logger()}
 , _leg_ctrl{_open_cyphal_node, get_logger()}
 , _leg_angle_target_msg{
     []()
@@ -188,13 +188,13 @@ IoNode::State IoNode::handle_Init_OpenCyphalHeartbeatMonitor()
 
   /* Start the calibration. */
   _valve_ctrl.openAllForCalibAndWrite();
-  //_hydraulic_pump.setRPM(4096);
+  //_pump_ctrl.setRPM(4096);
   return State::Calibrate;
 }
 
 IoNode::State IoNode::handle_Calibrate()
 {
-  _hydraulic_pump.doWrite();
+  _pump_ctrl.doWrite();
   return State::Calibrate;
 }
 
@@ -279,9 +279,9 @@ IoNode::State IoNode::handle_Active()
   }
 
   if (turn_hydraulic_pump_on)
-    _hydraulic_pump.setRPM(4096);
+    _pump_ctrl.setRPM(4096);
   else
-    _hydraulic_pump.setRPM(0);
+    _pump_ctrl.setRPM(0);
 
   /**************************************************************************************
    * WRITE TO PERIPHERALS
@@ -290,7 +290,7 @@ IoNode::State IoNode::handle_Active()
   if (!_dynamixel_angle_position_writer.doBulkWrite(_mx28_ctrl))
     RCLCPP_ERROR(get_logger(), "failed to set target angles for all dynamixel servos");
 
-  _hydraulic_pump.doWrite();
+  _pump_ctrl.doWrite();
   _valve_ctrl.doBulkWrite();
 
   return State::Active;

@@ -30,7 +30,7 @@ add_executable(${PROJECT_NAME}_node
   src/glue/DynamixelAnglePositionReader.cpp
   src/glue/DynamixelServoName.cpp
   src/glue/LegController.cpp
-  src/glue/Orel20.cpp
+  src/glue/PumpController.cpp
   src/glue/ValveController.cpp
   src/phy/opencyphal/Node.cpp
   src/phy/opencyphal/SocketCAN.cpp

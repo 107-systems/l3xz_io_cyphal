@@ -19,19 +19,18 @@
  * NAMESPACE
  **************************************************************************************/
 
-namespace driver
+namespace glue
 {
 
 /**************************************************************************************
  * CLASS DECLARATION
  **************************************************************************************/
 
-class Orel20
+class PumpController
 {
 public:
 
-  Orel20(phy::opencyphal::Node & node,
-         rclcpp::Logger const logger);
+  PumpController(phy::opencyphal::Node & node, rclcpp::Logger const logger);
 
   void setRPM(uint16_t const rpm_val);
   void doWrite();
@@ -46,6 +45,6 @@ private:
  * NAMESPACE
  **************************************************************************************/
 
-} /* driver */
+} /* glue */
 
 #endif /* DRIVER_OREL20_OREL20_H_ */
