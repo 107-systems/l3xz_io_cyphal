@@ -34,7 +34,6 @@ public:
    ValveController(driver::SharedSSC32 ssc32_ctrl);
   ~ValveController();
 
-  void closeAll();
   void set(LegJointKey const key, float const val);
   void doBulkWrite();
 
@@ -43,6 +42,8 @@ private:
   driver::SharedSSC32 _ssc32_ctrl;
   std::map<uint8_t, uint16_t> _channel_pulse_width_map;
   std::map<LegJointKey, uint8_t> LEG_JOINT_KEY_TO_SSC32_SERVO_ID_MAP;
+
+  void closeAllAndWrite();
 };
 
 /**************************************************************************************

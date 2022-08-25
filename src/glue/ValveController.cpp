@@ -54,25 +54,17 @@ ValveController::ValveController(driver::SharedSSC32 ssc32_ctrl)
     {make_key(Leg::RightBack,   Joint::Tibia), 21},
   }
 {
-  closeAll();
-  doBulkWrite();
+  closeAllAndWrite();
 }
 
 ValveController::~ValveController()
 {
-  closeAll();
-  doBulkWrite();
+  closeAllAndWrite();
 }
 
 /**************************************************************************************
- * PUBLC MEMBER FUNCTIONS
+ * PUBLIC MEMBER FUNCTIONS
  **************************************************************************************/
-
-void ValveController::closeAll()
-{
-  for(auto [key, value] : LEG_JOINT_KEY_TO_SSC32_SERVO_ID_MAP)
-    set(key, 0.0);
-}
 
 void ValveController::set(LegJointKey const key, float const val)
 {
@@ -102,6 +94,18 @@ void ValveController::doBulkWrite()
 {
   for (auto [channel, pulse_width_us] : _channel_pulse_width_map)
     _ssc32_ctrl->setPulseWidth(channel, pulse_width_us, 50);
+}
+
+/**************************************************************************************
+ * PRIVATE MEMBER FUNCTIONS
+ **************************************************************************************/
+
+void ValveController::closeAllAndWrite()
+{
+  for(auto [key, value] : LEG_JOINT_KEY_TO_SSC32_SERVO_ID_MAP)
+    set(key, 0.0);
+
+  doBulkWrite();
 }
 
 /**************************************************************************************

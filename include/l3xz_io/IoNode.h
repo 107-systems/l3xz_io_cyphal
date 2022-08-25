@@ -41,8 +41,8 @@ namespace l3xz
 class IoNode : public rclcpp::Node
 {
 public:
-   IoNode();
-  ~IoNode();
+  IoNode();
+
 
 private:
   enum class State
