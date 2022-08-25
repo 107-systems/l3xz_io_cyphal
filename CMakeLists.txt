@@ -31,7 +31,6 @@ add_executable(${PROJECT_NAME}_node
   src/glue/DynamixelAnglePositionReader.cpp
   src/glue/DynamixelServoName.cpp
   src/glue/LegController.cpp
-  src/glue/OpenCyphalDevice.cpp
   src/phy/opencyphal/Node.cpp
   src/phy/opencyphal/SocketCAN.cpp
   src/phy/serial/AsyncSerial.cpp

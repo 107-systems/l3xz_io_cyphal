@@ -12,6 +12,8 @@
 
 #include <iomanip>
 
+#include <l3xz_io/const/LegList.h>
+
 #include <l3xz_io/glue/DynamixelIdList.h>
 
 #include <l3xz_io/glue/DynamixelAnglePositionReader.h>
@@ -72,15 +74,7 @@ IoNode::IoNode()
 , _hydraulic_pump{_open_cyphal_node, get_logger()}
 , _dynamixel_angle_position_writer{}
 , _ssc32_valve_writer{}
-, _leg_ctrl_map
-  {
-    {Leg::LeftFront,   std::make_shared<glue::LegController>(glue::LegController::toNodeId(Leg::LeftFront),   _open_cyphal_node, get_logger())},
-    {Leg::LeftMiddle,  std::make_shared<glue::LegController>(glue::LegController::toNodeId(Leg::LeftMiddle),  _open_cyphal_node, get_logger())},
-    {Leg::LeftBack,    std::make_shared<glue::LegController>(glue::LegController::toNodeId(Leg::LeftBack),    _open_cyphal_node, get_logger())},
-    {Leg::RightBack,   std::make_shared<glue::LegController>(glue::LegController::toNodeId(Leg::RightBack),   _open_cyphal_node, get_logger())},
-    {Leg::RightMiddle, std::make_shared<glue::LegController>(glue::LegController::toNodeId(Leg::RightMiddle), _open_cyphal_node, get_logger())},
-    {Leg::RightFront,  std::make_shared<glue::LegController>(glue::LegController::toNodeId(Leg::RightFront),  _open_cyphal_node, get_logger())},
-  }
+, _leg_ctrl{_open_cyphal_node, get_logger()}
 , _leg_angle_target_msg{
     []()
     {
@@ -184,24 +178,24 @@ IoNode::State IoNode::handle_Init_LegController()
        all_leg_ctrl_mode_operational = true,
        all_leg_ctrl_health_nominal   = true;
 
-  for (auto [leg, leg_ctrl] : _leg_ctrl_map)
+  for (auto leg : LEG_LIST)
   {
-    if (leg_ctrl->isHeartbeatTimeout(std::chrono::seconds(5)))
+    if (_leg_ctrl.isHeartbeatTimeout(leg, std::chrono::seconds(5)))
     {
       all_leg_ctrl_active_heartbeat = false;
-      RCLCPP_ERROR(get_logger(), "LEG_CTRL %d: no heartbeat since 5 seconds", static_cast<int>(leg_ctrl->node_id()));
+      RCLCPP_ERROR(get_logger(), "LEG_CTRL %d: no heartbeat since 5 seconds", static_cast<int>(_leg_ctrl.toNodeId(leg)));
     }
 
-    if (!leg_ctrl->isModeOperational())
+    if (!_leg_ctrl.isModeOperational(leg))
     {
       all_leg_ctrl_mode_operational = false;
-      RCLCPP_ERROR(get_logger(), "LEG_CTRL %d: mode not operational", static_cast<int>(leg_ctrl->node_id()));
+      RCLCPP_ERROR(get_logger(), "LEG_CTRL %d: mode not operational", static_cast<int>(_leg_ctrl.toNodeId(leg)));
     }
 
-    if (!leg_ctrl->isHealthNominal())
+    if (!_leg_ctrl.isHealthNominal(leg))
     {
       all_leg_ctrl_health_nominal = false;
-      RCLCPP_ERROR(get_logger(), "LEG_CTRL %d: health not nominal", static_cast<int>(leg_ctrl->node_id()));
+      RCLCPP_ERROR(get_logger(), "LEG_CTRL %d: health not nominal", static_cast<int>(_leg_ctrl.toNodeId(leg)));
     }
   }
 
@@ -217,16 +211,16 @@ IoNode::State IoNode::handle_Active()
    * CHECK HEARTBEAT/MODE/HEALTH of OpenCyphalDevice's
    **************************************************************************************/
 
-  for (auto [leg, leg_ctrl] : _leg_ctrl_map)
+  for (auto leg : LEG_LIST)
   {
-    if (leg_ctrl->isHeartbeatTimeout(std::chrono::seconds(5)))
-      RCLCPP_ERROR(get_logger(), "LEG_CTRL %d: no heartbeat since 5 seconds", static_cast<int>(leg_ctrl->node_id()));
+    if (_leg_ctrl.isHeartbeatTimeout(leg, std::chrono::seconds(5)))
+      RCLCPP_ERROR(get_logger(), "LEG_CTRL %d: no heartbeat since 5 seconds", static_cast<int>(_leg_ctrl.toNodeId(leg)));
    
-    if (!leg_ctrl->isModeOperational())
-      RCLCPP_ERROR(get_logger(), "LEG_CTRL %d: mode not operational", static_cast<int>(leg_ctrl->node_id()));
+    if (!_leg_ctrl.isModeOperational(leg))
+      RCLCPP_ERROR(get_logger(), "LEG_CTRL %d: mode not operational", static_cast<int>(_leg_ctrl.toNodeId(leg)));
    
-    if (!leg_ctrl->isHealthNominal())
-      RCLCPP_ERROR(get_logger(), "LEG_CTRL %d: health not nominal", static_cast<int>(leg_ctrl->node_id()));
+    if (!_leg_ctrl.isHealthNominal(leg))
+      RCLCPP_ERROR(get_logger(), "LEG_CTRL %d: health not nominal", static_cast<int>(_leg_ctrl.toNodeId(leg)));
   }
 
   /**************************************************************************************
@@ -255,19 +249,19 @@ IoNode::State IoNode::handle_Active()
   leg_angle_actual_msg.coxa_angle_deg [4] = dynamixel_leg_joint_angle_position.at(make_key(Leg::RightMiddle,  Joint::Coxa));
   leg_angle_actual_msg.coxa_angle_deg [5] = dynamixel_leg_joint_angle_position.at(make_key(Leg::RightFront,   Joint::Coxa));
 
-  leg_angle_actual_msg.femur_angle_deg[0] = _leg_ctrl_map.at(Leg::LeftFront  )->femurAngle_deg();
-  leg_angle_actual_msg.femur_angle_deg[1] = _leg_ctrl_map.at(Leg::LeftMiddle )->femurAngle_deg();
-  leg_angle_actual_msg.femur_angle_deg[2] = _leg_ctrl_map.at(Leg::LeftBack   )->femurAngle_deg();
-  leg_angle_actual_msg.femur_angle_deg[3] = _leg_ctrl_map.at(Leg::RightBack  )->femurAngle_deg();
-  leg_angle_actual_msg.femur_angle_deg[4] = _leg_ctrl_map.at(Leg::RightMiddle)->femurAngle_deg();
-  leg_angle_actual_msg.femur_angle_deg[5] = _leg_ctrl_map.at(Leg::RightFront )->femurAngle_deg();
+  leg_angle_actual_msg.femur_angle_deg[0] = _leg_ctrl.femurAngle_deg(Leg::LeftFront);
+  leg_angle_actual_msg.femur_angle_deg[1] = _leg_ctrl.femurAngle_deg(Leg::LeftMiddle);
+  leg_angle_actual_msg.femur_angle_deg[2] = _leg_ctrl.femurAngle_deg(Leg::LeftBack);
+  leg_angle_actual_msg.femur_angle_deg[3] = _leg_ctrl.femurAngle_deg(Leg::RightBack);
+  leg_angle_actual_msg.femur_angle_deg[4] = _leg_ctrl.femurAngle_deg(Leg::RightMiddle);
+  leg_angle_actual_msg.femur_angle_deg[5] = _leg_ctrl.femurAngle_deg(Leg::RightFront);
 
-  leg_angle_actual_msg.tibia_angle_deg[0] = _leg_ctrl_map.at(Leg::LeftFront  )->tibiaAngle_deg();
-  leg_angle_actual_msg.tibia_angle_deg[1] = _leg_ctrl_map.at(Leg::LeftMiddle )->tibiaAngle_deg();
-  leg_angle_actual_msg.tibia_angle_deg[2] = _leg_ctrl_map.at(Leg::LeftBack   )->tibiaAngle_deg();
-  leg_angle_actual_msg.tibia_angle_deg[3] = _leg_ctrl_map.at(Leg::RightBack  )->tibiaAngle_deg();
-  leg_angle_actual_msg.tibia_angle_deg[4] = _leg_ctrl_map.at(Leg::RightMiddle)->tibiaAngle_deg();
-  leg_angle_actual_msg.tibia_angle_deg[5] = _leg_ctrl_map.at(Leg::RightFront )->tibiaAngle_deg();
+  leg_angle_actual_msg.tibia_angle_deg[0] = _leg_ctrl.tibiaAngle_deg(Leg::LeftFront);
+  leg_angle_actual_msg.tibia_angle_deg[1] = _leg_ctrl.tibiaAngle_deg(Leg::LeftMiddle);
+  leg_angle_actual_msg.tibia_angle_deg[2] = _leg_ctrl.tibiaAngle_deg(Leg::LeftBack);
+  leg_angle_actual_msg.tibia_angle_deg[3] = _leg_ctrl.tibiaAngle_deg(Leg::RightBack);
+  leg_angle_actual_msg.tibia_angle_deg[4] = _leg_ctrl.tibiaAngle_deg(Leg::RightMiddle);
+  leg_angle_actual_msg.tibia_angle_deg[5] = _leg_ctrl.tibiaAngle_deg(Leg::RightFront);
 
   _leg_angle_pub->publish(leg_angle_actual_msg);
 

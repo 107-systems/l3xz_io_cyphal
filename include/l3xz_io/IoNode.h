@@ -64,8 +64,7 @@ private:
 
   glue::DynamixelAnglePositionWriter _dynamixel_angle_position_writer;
   glue::SSC32ValveWriter _ssc32_valve_writer;
-
-  std::map<Leg, std::shared_ptr<glue::LegController>> _leg_ctrl_map;
+  glue::LegController _leg_ctrl;
 
   rclcpp::TimerBase::SharedPtr _timer;
 
