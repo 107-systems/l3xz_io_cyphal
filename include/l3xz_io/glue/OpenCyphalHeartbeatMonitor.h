@@ -32,16 +32,10 @@ public:
   : _mtx{}
   {
     for (auto node_id : node_id_list)
-      addNodeId(node_id);
+      _node_heartbeat_data[node_id] = HeartbeatData();
 
     if (!subscribeHeartbeat(node))
       RCLCPP_ERROR(logger, "failed to subscribe to 'hearbeat'");
-  }
-
-  void addNodeId(CanardNodeID const node_id)
-  {
-    std::lock_guard<std::mutex> lock(_mtx);
-    _node_heartbeat_data[node_id] = HeartbeatData();
   }
 
   static std::string toStr(std::list<CanardNodeID> const & node_list)
