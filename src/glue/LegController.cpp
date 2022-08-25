@@ -37,6 +37,21 @@ LegController::LegController(CanardNodeID const node_id,
  * PUBLIC MEMBER FUNCTIONS
  **************************************************************************************/
 
+CanardNodeID LegController::toNodeId(Leg const leg)
+{
+  static std::map<Leg, CanardNodeID> const LEG_NODE_ID_MAP =
+  {
+    {Leg::LeftFront,   1},
+    {Leg::LeftMiddle,  2},
+    {Leg::LeftBack,    3},
+    {Leg::RightBack,   4},
+    {Leg::RightMiddle, 5},
+    {Leg::RightFront,  6},
+  };
+
+  return LEG_NODE_ID_MAP.at(leg);
+}
+
 bool LegController::isBumperPressed()
 {
   return _is_bumper_pressed;

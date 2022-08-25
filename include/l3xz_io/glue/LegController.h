@@ -13,6 +13,8 @@
 
 #include <l3xz_io/glue/OpenCyphalDevice.h>
 
+#include <l3xz_io/types/Leg.h>
+
 /**************************************************************************************
  * NAMESPACE
  **************************************************************************************/
@@ -32,7 +34,11 @@ public:
                 rclcpp::Logger const logger);
 
 
+  static CanardNodeID toNodeId(Leg const leg);
+
+
   bool isBumperPressed();
+
 
 private:
   std::atomic<bool> _is_bumper_pressed;
