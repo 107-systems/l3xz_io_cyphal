@@ -20,18 +20,6 @@ namespace control
 {
 
 /**************************************************************************************
- * CONSTANT
- **************************************************************************************/
-
-enum class MX28ControlTable : uint16_t
-{
-  Torque_Enable   =  64,
-  LED             =  65,
-  GoalPosition    = 116,
-  PresentPosition = 132,
-};
-
-/**************************************************************************************
  * CTOR/DTOR
  **************************************************************************************/
 
@@ -63,7 +51,7 @@ void DynamixelMX28::turnLedOn(Dynamixel::IdVect const & id_vect)
   for (auto id : id_vect)
     led_on_data.push_back(std::make_tuple(id, &led_on));
 
-  _dyn_ctrl->syncWrite(static_cast<int>(MX28ControlTable::LED), sizeof(led_on), led_on_data);
+  _dyn_ctrl->syncWrite(static_cast<int>(ControlTable::LED), sizeof(led_on), led_on_data);
 }
 
 void DynamixelMX28::torqueOn(Dynamixel::Id const id)
@@ -81,7 +69,7 @@ void DynamixelMX28::torqueOn(Dynamixel::IdVect const & id_vect)
   for (auto id : id_vect)
     torque_enable_on_data.push_back(std::make_tuple(id, &torque_enable_on));
 
-  _dyn_ctrl->syncWrite(static_cast<int>(MX28ControlTable::Torque_Enable), sizeof(torque_enable_on), torque_enable_on_data);
+  _dyn_ctrl->syncWrite(static_cast<int>(ControlTable::Torque_Enable), sizeof(torque_enable_on), torque_enable_on_data);
 }
 
 void DynamixelMX28::torqueOff(Dynamixel::IdVect const & id_vect)
@@ -94,7 +82,7 @@ void DynamixelMX28::torqueOff(Dynamixel::IdVect const & id_vect)
   for (auto id : id_vect)
     torque_enable_off_data.push_back(std::make_tuple(id, &torque_enable_off));
 
-  _dyn_ctrl->syncWrite(static_cast<int>(MX28ControlTable::Torque_Enable), sizeof(torque_enable_off), torque_enable_off_data);
+  _dyn_ctrl->syncWrite(static_cast<int>(ControlTable::Torque_Enable), sizeof(torque_enable_off), torque_enable_off_data);
 }
 
 void DynamixelMX28::turnLedOff(Dynamixel::IdVect const & id_vect)
@@ -107,7 +95,7 @@ void DynamixelMX28::turnLedOff(Dynamixel::IdVect const & id_vect)
   for (auto id : id_vect)
     led_off_data.push_back(std::make_tuple(id, &led_off));
 
-  _dyn_ctrl->syncWrite(static_cast<int>(MX28ControlTable::LED), sizeof(led_off), led_off_data);
+  _dyn_ctrl->syncWrite(static_cast<int>(ControlTable::LED), sizeof(led_off), led_off_data);
 }
 
 std::optional<float> DynamixelMX28::getAngle(Dynamixel::Id const id)
@@ -128,7 +116,7 @@ DynamixelMX28::AngleDataSet DynamixelMX28::getAngle(Dynamixel::IdVect const & id
   if(!id_vect.size())
     return angle_data_set;
 
-  if (auto [err, position_vect] = _dyn_ctrl->syncRead(static_cast<int>(MX28ControlTable::PresentPosition), 4, id_vect); err == Dynamixel::Error::None)
+  if (auto [err, position_vect] = _dyn_ctrl->syncRead(static_cast<int>(ControlTable::PresentPosition), 4, id_vect); err == Dynamixel::Error::None)
   {
     for (auto [id, position_raw] : position_vect)
       if (position_raw)
@@ -165,7 +153,7 @@ bool DynamixelMX28::setAngle(AngleDataSet const & angle_data_set)
     arr_idx++;
   }
 
-  return (_dyn_ctrl->syncWrite(static_cast<int>(MX28ControlTable::GoalPosition), 4, sync_write_data_vect) == Dynamixel::Error::None);
+  return (_dyn_ctrl->syncWrite(static_cast<int>(ControlTable::GoalPosition), 4, sync_write_data_vect) == Dynamixel::Error::None);
 }
 
 /**************************************************************************************

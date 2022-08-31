@@ -55,6 +55,14 @@ public:
 private:
 
   std::shared_ptr<Dynamixel> _dyn_ctrl;
+
+  enum class ControlTable : uint16_t
+  {
+    Torque_Enable   =  64,
+    LED             =  65,
+    GoalPosition    = 116,
+    PresentPosition = 132,
+  };
 };
 
 /**************************************************************************************
