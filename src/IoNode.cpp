@@ -194,6 +194,44 @@ IoNode::State IoNode::handle_Init_OpenCyphalHeartbeatMonitor()
 
 IoNode::State IoNode::handle_Calibrate()
 {
+  static std::map<Leg, std::tuple<float, float>> last_femur_tibia_angle_map =
+  {
+    {Leg::LeftFront,   std::make_tuple(_leg_ctrl.femurAngle_deg(Leg::LeftFront),   _leg_ctrl.tibiaAngle_deg(Leg::LeftFront))},
+    {Leg::LeftMiddle,  std::make_tuple(_leg_ctrl.femurAngle_deg(Leg::LeftMiddle),  _leg_ctrl.tibiaAngle_deg(Leg::LeftMiddle))},
+    {Leg::LeftBack,    std::make_tuple(_leg_ctrl.femurAngle_deg(Leg::LeftBack),    _leg_ctrl.tibiaAngle_deg(Leg::LeftBack))},
+    {Leg::RightBack,   std::make_tuple(_leg_ctrl.femurAngle_deg(Leg::RightBack),   _leg_ctrl.tibiaAngle_deg(Leg::LeftBack))},
+    {Leg::RightMiddle, std::make_tuple(_leg_ctrl.femurAngle_deg(Leg::RightMiddle), _leg_ctrl.tibiaAngle_deg(Leg::RightMiddle))},
+    {Leg::RightFront,  std::make_tuple(_leg_ctrl.femurAngle_deg(Leg::RightFront),  _leg_ctrl.tibiaAngle_deg(Leg::RightFront))},
+  };
+
+  /* Capture all angles. */
+  std::map<Leg, std::tuple<float, float>> current_femur_tibia_angle_map;
+  for (auto leg : LEG_LIST)
+    current_femur_tibia_angle_map[leg] = std::make_tuple(_leg_ctrl.femurAngle_deg(leg), _leg_ctrl.tibiaAngle_deg(leg));
+
+  /* Check if angles are stable for a given time. */
+  auto isLegAngleStable = [](std::tuple<float, float> const last, std::tuple<float, float> const current)
+  {
+    float const EPSILON_deg = 0.5f;
+    auto [last_femur_deg, last_tibia_deg]       = last;
+    auto [current_femur_deg, current_tibia_deg] = current;
+    float const abs_femur_diff = abs(last_femur_deg - current_femur_deg);
+    float const abs_tibia_diff = abs(last_tibia_deg - current_tibia_deg);
+    if (abs_femur_diff > EPSILON_deg)
+      return false;
+    if (abs_tibia_diff > EPSILON_deg)
+      return false;
+    return true;
+  };
+
+  std::map<Leg, std::chrono::system_clock::time_point> femur_tibia_angle_stable_map;
+  for (auto leg : LEG_LIST)
+    if (!isLegAngleStable(last_femur_tibia_angle_map.at(leg), current_femur_tibia_angle_map.at(leg)))
+      femur_tibia_angle_stable_map[leg] = std::chrono::system_clock::now();
+
+
+  /* TODO: Send request to calibrate that specific leg. */
+
   _pump_ctrl.doWrite();
   return State::Calibrate;
 }
