@@ -12,6 +12,7 @@
 
 #include <vector>
 #include <sstream>
+#include <stdexcept>
 
 /**************************************************************************************
  * NAMESPACE
@@ -38,16 +39,26 @@ SSC32::~SSC32()
  * PUBLIC MEMBER FUNCTIONS
  **************************************************************************************/
 
-SSC32::Error SSC32::setPulseWidth(uint8_t const channel, uint16_t const pulse_width_us, uint16_t const move_time_ms)
+void SSC32::setPulseWidth(uint8_t const channel, uint16_t const pulse_width_us, uint16_t const move_time_ms)
 {
   auto isValidChannel    = [](size_t const c) -> bool { return ((c >= 0) && (c <= 31)); };
   auto isValidPulseWidth = [](size_t const p) -> bool { return ((p >= 500) && (p <= 2500)); };
 
   if (!isValidChannel(channel))
-    return Error::InvParam_Channel;
+  {
+    std::stringstream err_msg;
+    err_msg << "SSC32::setPulseWidth: error invalid channel parameter: "
+            << static_cast<int>(channel);
+    throw std::runtime_error(err_msg.str());
+  }
 
   if (!isValidPulseWidth(pulse_width_us))
-    return Error::InvParam_PulseWidth;
+  {
+    std::stringstream err_msg;
+    err_msg << "SSC32::setPulseWidth: error invalid pulse width parameter: "
+            << static_cast<int>(pulse_width_us);
+    throw std::runtime_error(err_msg.str());
+  }
 
   std::stringstream msg;
   msg << "#"
@@ -61,10 +72,7 @@ SSC32::Error SSC32::setPulseWidth(uint8_t const channel, uint16_t const pulse_wi
   std::vector<uint8_t> const msg_vect(msg_str.begin(), msg_str.end());
 
   _serial.transmit(msg_vect);
-
-  return Error::None;
 }
-
 
 /**************************************************************************************
  * NAMESPACE
