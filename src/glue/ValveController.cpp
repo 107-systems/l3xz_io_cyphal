@@ -21,7 +21,7 @@ namespace glue
  * CTOR/DTOR
  **************************************************************************************/
 
-ValveController::ValveController(driver::SharedSSC32 ssc32_ctrl, rclcpp::Logger const logger)
+ValveController::ValveController(SharedSSC32 ssc32_ctrl, rclcpp::Logger const logger)
 : _ssc32_ctrl{ssc32_ctrl}
 , _logger{logger}
 , _channel_pulse_width_map

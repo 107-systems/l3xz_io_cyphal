@@ -24,12 +24,12 @@ include_directories(
 add_executable(${PROJECT_NAME}_node
   src/driver/dynamixel/Dynamixel.cpp
   src/driver/dynamixel/MX28.cpp
-  src/driver/ssc32/SSC32.cpp
   src/glue/DynamixelAnglePositionWriter.cpp
   src/glue/DynamixelAnglePositionReader.cpp
   src/glue/DynamixelServoName.cpp
   src/glue/LegController.cpp
   src/glue/PumpController.cpp
+  src/glue/SSC32.cpp
   src/glue/ValveController.cpp
   src/phy/opencyphal/Node.cpp
   src/phy/opencyphal/NodeMonitor.cpp

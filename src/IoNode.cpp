@@ -12,12 +12,10 @@
 
 #include <iomanip>
 
-#include <l3xz_io/driver/ssc32/SSC32.h>
-
 #include <l3xz_io/const/LegList.h>
 
+#include <l3xz_io/glue/SSC32.h>
 #include <l3xz_io/glue/DynamixelIdList.h>
-
 #include <l3xz_io/glue/DynamixelAnglePositionReader.h>
 
 /**************************************************************************************
@@ -74,7 +72,7 @@ IoNode::IoNode()
 , _mx28_ctrl{new dynamixel::MX28(_dynamixel_ctrl)}
 , _open_cyphal_node_monitor{_open_cyphal_node, get_logger(), {1, 2, 3, 4, 5, 6, 10}}
 , _dynamixel_angle_position_writer{}
-, _valve_ctrl{std::make_shared<driver::SSC32>(SSC32_DEVICE_NAME, SSC32_BAUDRATE), get_logger()}
+, _valve_ctrl{std::make_shared<glue::SSC32>(SSC32_DEVICE_NAME, SSC32_BAUDRATE), get_logger()}
 , _pump_ctrl{_open_cyphal_node, get_logger()}
 , _leg_ctrl{_open_cyphal_node, get_logger()}
 , _leg_angle_target_msg{

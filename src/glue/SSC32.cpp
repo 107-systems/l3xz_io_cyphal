@@ -8,7 +8,7 @@
  * INCLUDE
  **************************************************************************************/
 
-#include <l3xz_io/driver/ssc32/SSC32.h>
+#include <l3xz_io/glue/SSC32.h>
 
 #include <vector>
 #include <sstream>
@@ -17,15 +17,14 @@
  * NAMESPACE
  **************************************************************************************/
 
-namespace driver
+namespace glue
 {
 
 /**************************************************************************************
  * CTOR/DTOR
  **************************************************************************************/
 
-SSC32::SSC32(std::string const device_name,
-             size_t const baudrate)
+SSC32::SSC32(std::string const device_name, size_t const baudrate)
 {
   _serial.open(device_name, baudrate);
 }
@@ -71,4 +70,4 @@ SSC32::Error SSC32::setPulseWidth(uint8_t const channel, uint16_t const pulse_wi
  * NAMESPACE
  **************************************************************************************/
 
-} /* driver */
+} /* glue */
