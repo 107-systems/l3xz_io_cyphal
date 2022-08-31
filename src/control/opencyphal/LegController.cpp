@@ -10,7 +10,7 @@
 
 #include <l3xz_io/control/opencyphal/LegController.h>
 
-#include <l3xz_io/control/opencyphal/OpenCyphalMessageTypes.h>
+#include <l3xz_io/control/opencyphal/MessageTypes.h>
 
 /**************************************************************************************
  * NAMESPACE
