@@ -14,7 +14,7 @@
 #include <l3xz_io/types/LegJointKey.h>
 #include <l3xz_io/types/HeadJointKey.h>
 
-#include <l3xz_io/control/dynamixel/MX28.h>
+#include <l3xz_io/control/dynamixel/DynamixelMX28.h>
 #include <l3xz_io/control/dynamixel/DynamixelServoName.h>
 
 /**************************************************************************************

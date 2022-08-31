@@ -26,7 +26,7 @@ namespace control
 
 std::tuple<std::map<LegJointKey, float>, std::map<HeadJointKey, float>> DynamixelAnglePositionReader::doBulkRead(SharedMX28 mx28_ctrl, rclcpp::Logger const logger)
 {
-  MX28::AngleDataSet const angle_data_set = mx28_ctrl->getAngle(control::DYNAMIXEL_ID_LIST);
+  DynamixelMX28::AngleDataSet const angle_data_set = mx28_ctrl->getAngle(control::DYNAMIXEL_ID_LIST);
 
   std::map<DynamixelServoName, float> dynamixel_angle_position_map;
 

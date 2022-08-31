@@ -26,11 +26,11 @@ namespace control
  * CLASS DECLARATION
  **************************************************************************************/
 
-class MX28
+class DynamixelMX28
 {
 public:
 
-  MX28(std::shared_ptr<Dynamixel> dyn_ctrl);
+  DynamixelMX28(std::shared_ptr<Dynamixel> dyn_ctrl);
 
   std::optional<Dynamixel::IdVect> discover();
 
@@ -61,7 +61,7 @@ private:
  * TYPEDEF
  **************************************************************************************/
 
-typedef std::shared_ptr<MX28> SharedMX28;
+typedef std::shared_ptr<DynamixelMX28> SharedMX28;
 
 /**************************************************************************************
  * NAMESPACE

@@ -56,7 +56,7 @@ void DynamixelAnglePositionWriter::update(HeadJointKey const joint, float const 
 
 bool DynamixelAnglePositionWriter::doBulkWrite(SharedMX28 mx28_ctrl)
 {
-  MX28::AngleDataSet angle_data_set;
+  DynamixelMX28::AngleDataSet angle_data_set;
 
   for (auto [id, angle_deg] : _dynamixel_angle_map)
   {

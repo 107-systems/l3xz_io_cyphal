@@ -24,7 +24,7 @@ include_directories(
 ##########################################################################
 add_executable(${PROJECT_NAME}_node
   src/control/dynamixel/Dynamixel.cpp
-  src/control/dynamixel/MX28.cpp
+  src/control/dynamixel/DynamixelMX28.cpp
   src/control/dynamixel/DynamixelAnglePositionWriter.cpp
   src/control/dynamixel/DynamixelAnglePositionReader.cpp
   src/control/dynamixel/DynamixelServoName.cpp

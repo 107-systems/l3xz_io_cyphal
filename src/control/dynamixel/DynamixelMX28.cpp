@@ -8,7 +8,7 @@
  * INCLUDE
  **************************************************************************************/
 
-#include <l3xz_io/control/dynamixel/MX28.h>
+#include <l3xz_io/control/dynamixel/DynamixelMX28.h>
 
 #include <cassert>
 
@@ -35,7 +35,7 @@ enum class MX28ControlTable : uint16_t
  * CTOR/DTOR
  **************************************************************************************/
 
-MX28::MX28(std::shared_ptr<Dynamixel> dyn_ctrl)
+DynamixelMX28::DynamixelMX28(std::shared_ptr<Dynamixel> dyn_ctrl)
 : _dyn_ctrl{dyn_ctrl}
 {
 
@@ -45,7 +45,7 @@ MX28::MX28(std::shared_ptr<Dynamixel> dyn_ctrl)
  * PUBLIC MEMBER FUNCTIONS
  **************************************************************************************/
 
-std::optional<Dynamixel::IdVect> MX28::discover()
+std::optional<Dynamixel::IdVect> DynamixelMX28::discover()
 {
   if (auto [err, id_vect] = _dyn_ctrl->broadcastPing(); err == Dynamixel::Error::None)
     return id_vect;
@@ -53,7 +53,7 @@ std::optional<Dynamixel::IdVect> MX28::discover()
     return std::nullopt;
 }
 
-void MX28::turnLedOn(Dynamixel::IdVect const & id_vect)
+void DynamixelMX28::turnLedOn(Dynamixel::IdVect const & id_vect)
 {
   assert(id_vect.size() > 0);
 
@@ -66,12 +66,12 @@ void MX28::turnLedOn(Dynamixel::IdVect const & id_vect)
   _dyn_ctrl->syncWrite(static_cast<int>(MX28ControlTable::LED), sizeof(led_on), led_on_data);
 }
 
-void MX28::torqueOn(Dynamixel::Id const id)
+void DynamixelMX28::torqueOn(Dynamixel::Id const id)
 {
   torqueOn(Dynamixel::IdVect{id});
 }
 
-void MX28::torqueOn(Dynamixel::IdVect const & id_vect)
+void DynamixelMX28::torqueOn(Dynamixel::IdVect const & id_vect)
 {
   assert(id_vect.size() > 0);
 
@@ -84,7 +84,7 @@ void MX28::torqueOn(Dynamixel::IdVect const & id_vect)
   _dyn_ctrl->syncWrite(static_cast<int>(MX28ControlTable::Torque_Enable), sizeof(torque_enable_on), torque_enable_on_data);
 }
 
-void MX28::torqueOff(Dynamixel::IdVect const & id_vect)
+void DynamixelMX28::torqueOff(Dynamixel::IdVect const & id_vect)
 {
   assert(id_vect.size() > 0);
 
@@ -97,7 +97,7 @@ void MX28::torqueOff(Dynamixel::IdVect const & id_vect)
   _dyn_ctrl->syncWrite(static_cast<int>(MX28ControlTable::Torque_Enable), sizeof(torque_enable_off), torque_enable_off_data);
 }
 
-void MX28::turnLedOff(Dynamixel::IdVect const & id_vect)
+void DynamixelMX28::turnLedOff(Dynamixel::IdVect const & id_vect)
 {
   assert(id_vect.size() > 0);
 
@@ -110,9 +110,9 @@ void MX28::turnLedOff(Dynamixel::IdVect const & id_vect)
   _dyn_ctrl->syncWrite(static_cast<int>(MX28ControlTable::LED), sizeof(led_off), led_off_data);
 }
 
-std::optional<float> MX28::getAngle(Dynamixel::Id const id)
+std::optional<float> DynamixelMX28::getAngle(Dynamixel::Id const id)
 {
-  MX28::AngleDataSet const angle_data_set = getAngle(Dynamixel::IdVect{id});
+  DynamixelMX28::AngleDataSet const angle_data_set = getAngle(Dynamixel::IdVect{id});
 
   if (!angle_data_set.count(id))
     return std::nullopt;
@@ -120,7 +120,7 @@ std::optional<float> MX28::getAngle(Dynamixel::Id const id)
   return angle_data_set.at(id);
 }
 
-MX28::AngleDataSet MX28::getAngle(Dynamixel::IdVect const & id_vect)
+DynamixelMX28::AngleDataSet DynamixelMX28::getAngle(Dynamixel::IdVect const & id_vect)
 {
   AngleDataSet angle_data_set;
 
@@ -141,14 +141,14 @@ MX28::AngleDataSet MX28::getAngle(Dynamixel::IdVect const & id_vect)
   return angle_data_set;
 }
 
-bool MX28::setAngle(Dynamixel::Id const id, float const angle_deg)
+bool DynamixelMX28::setAngle(Dynamixel::Id const id, float const angle_deg)
 {
   AngleDataSet angle_data_set;
   angle_data_set[id] = angle_deg;
   return setAngle(angle_data_set);
 }
 
-bool MX28::setAngle(AngleDataSet const & angle_data_set)
+bool DynamixelMX28::setAngle(AngleDataSet const & angle_data_set)
 {
   if(!angle_data_set.size())
     return false;
