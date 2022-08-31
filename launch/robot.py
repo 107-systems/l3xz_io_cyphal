@@ -20,7 +20,17 @@ def generate_launch_description():
       parameters=[]
     )
 
+    l3xz_gait_ctrl = Node(
+      package='l3xz_gait_ctrl',
+      namespace='l3xz',
+      executable='l3xz_gait_ctrl_node',
+      name='l3xz_gait_ctrl',
+      output='screen',
+      parameters=[]
+    )
+
     return LaunchDescription([
         l3xz_io,
         l3xz_head_ctrl,
+        l3xz_gait_ctrl,
     ])

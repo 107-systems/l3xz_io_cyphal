@@ -8,7 +8,7 @@
  * INCLUDES
  **************************************************************************************/
 
-#include <phy/serial/AsyncSerial.h>
+#include <l3xz_io/phy/serial/AsyncSerial.h>
 
 #include <boost/bind.hpp>
 

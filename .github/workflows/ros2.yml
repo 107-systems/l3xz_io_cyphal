@@ -36,7 +36,12 @@ jobs:
       with:
         repository: '107-systems/l3xz_head_ctrl'
         path: 'ros2_ws/src/l3xz_head_ctrl'
-        
+
+    - uses: actions/checkout@v2
+      with:
+        repository: '107-systems/l3xz_gait_ctrl'
+        path: 'ros2_ws/src/l3xz_gait_ctrl'
+
     - name: colcon build
       run: |
         source /opt/ros/${{ matrix.ros_distro }}/setup.bash
