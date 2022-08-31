@@ -8,7 +8,7 @@
  * INCLUDES
  **************************************************************************************/
 
-#include <l3xz_io/control/DynamixelAnglePositionWriter.h>
+#include <l3xz_io/control/dynamixel/DynamixelAnglePositionWriter.h>
 
 /**************************************************************************************
  * NAMESPACE

@@ -25,9 +25,9 @@ include_directories(
 add_executable(${PROJECT_NAME}_node
   src/driver/dynamixel/Dynamixel.cpp
   src/driver/dynamixel/MX28.cpp
-  src/control/DynamixelAnglePositionWriter.cpp
-  src/control/DynamixelAnglePositionReader.cpp
-  src/control/DynamixelServoName.cpp
+  src/control/dynamixel/DynamixelAnglePositionWriter.cpp
+  src/control/dynamixel/DynamixelAnglePositionReader.cpp
+  src/control/dynamixel/DynamixelServoName.cpp
   src/control/LegController.cpp
   src/control/PumpController.cpp
   src/control/SSC32.cpp

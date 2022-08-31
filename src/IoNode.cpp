@@ -15,8 +15,8 @@
 #include <l3xz_io/const/LegList.h>
 
 #include <l3xz_io/control/SSC32.h>
-#include <l3xz_io/control/DynamixelIdList.h>
-#include <l3xz_io/control/DynamixelAnglePositionReader.h>
+#include <l3xz_io/control/dynamixel/DynamixelIdList.h>
+#include <l3xz_io/control/dynamixel/DynamixelAnglePositionReader.h>
 
 /**************************************************************************************
  * NAMESPACE

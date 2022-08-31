@@ -16,7 +16,7 @@
 
 #include <l3xz_io/driver/dynamixel/MX28.h>
 
-#include <l3xz_io/control/DynamixelServoName.h>
+#include <l3xz_io/control/dynamixel/DynamixelServoName.h>
 
 /**************************************************************************************
  * NAMESPACE

@@ -8,10 +8,10 @@
  * INCLUDES
  **************************************************************************************/
 
-#include <l3xz_io/control/DynamixelAnglePositionReader.h>
+#include <l3xz_io/control/dynamixel/DynamixelAnglePositionReader.h>
 
-#include <l3xz_io/control/DynamixelIdList.h>
-#include <l3xz_io/control/DynamixelServoName.h>
+#include <l3xz_io/control/dynamixel/DynamixelIdList.h>
+#include <l3xz_io/control/dynamixel/DynamixelServoName.h>
 
 /**************************************************************************************
  * NAMESPACE

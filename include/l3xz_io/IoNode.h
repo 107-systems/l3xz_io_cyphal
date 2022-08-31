@@ -22,7 +22,7 @@
 #include <l3xz_io/control/LegController.h>
 #include <l3xz_io/control/PumpController.h>
 #include <l3xz_io/control/ValveController.h>
-#include <l3xz_io/control/DynamixelAnglePositionWriter.h>
+#include <l3xz_io/control/dynamixel/DynamixelAnglePositionWriter.h>
 
 #include <l3xz_gait_ctrl/msg/leg_angle.hpp>
 #include <l3xz_head_ctrl/msg/head_angle.hpp>
