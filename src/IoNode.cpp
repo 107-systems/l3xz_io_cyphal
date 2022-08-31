@@ -72,7 +72,7 @@ IoNode::IoNode()
 , _open_cyphal_node(_open_cyphal_can_if, get_logger())
 , _dynamixel_ctrl{new dynamixel::Dynamixel(DYNAMIXEL_DEVICE_NAME, DYNAMIXEL_PROTOCOL_VERSION, DYNAMIXEL_BAUD_RATE)}
 , _mx28_ctrl{new dynamixel::MX28(_dynamixel_ctrl)}
-, _open_cyphal_heartbeat_monitor{_open_cyphal_node, get_logger(), {1, 2, 3, 4, 5, 6, 10}}
+, _open_cyphal_node_monitor{_open_cyphal_node, get_logger(), {1, 2, 3, 4, 5, 6, 10}}
 , _dynamixel_angle_position_writer{}
 , _valve_ctrl{std::make_shared<driver::SSC32>(SSC32_DEVICE_NAME, SSC32_BAUDRATE), get_logger()}
 , _pump_ctrl{_open_cyphal_node, get_logger()}
@@ -136,7 +136,7 @@ void IoNode::timerCallback()
   switch (_state)
   {
   case State::Init_Dynamixel:                  next_state = handle_Init_Dynamixel(); break;
-  case State::Init_OpenCyphalHeartbeatMonitor: next_state = handle_Init_OpenCyphalHeartbeatMonitor(); break;
+  case State::Init_NodeMonitor: next_state = handle_Init_NodeMonitor(); break;
   case State::Calibrate:                       next_state = handle_Calibrate(); break;
   case State::Active:                          next_state = handle_Active(); break;
   }
@@ -151,40 +151,40 @@ IoNode::State IoNode::handle_Init_Dynamixel()
     rclcpp::shutdown();
   }
 
-  return State::Init_OpenCyphalHeartbeatMonitor;
+  return State::Init_NodeMonitor;
 }
 
-IoNode::State IoNode::handle_Init_OpenCyphalHeartbeatMonitor()
+IoNode::State IoNode::handle_Init_NodeMonitor()
 {
-  if (auto [all_nodes_connected, not_connected_nodes] = _open_cyphal_heartbeat_monitor.isConnected(std::chrono::seconds(5)); !all_nodes_connected)
+  if (auto [all_nodes_connected, not_connected_nodes] = _open_cyphal_node_monitor.isConnected(std::chrono::seconds(5)); !all_nodes_connected)
   {
     RCLCPP_ERROR(get_logger(),
                  "heartbeat timeout for nodes { %s}",
-                 glue::OpenCyphalHeartbeatMonitor::toStr(not_connected_nodes).c_str());
-    return State::Init_OpenCyphalHeartbeatMonitor;
+                 phy::opencyphal::NodeMonitor::toStr(not_connected_nodes).c_str());
+    return State::Init_NodeMonitor;
   }
 
-  if (auto [all_nodes_health_nominal, health_not_nominal_nodes] = _open_cyphal_heartbeat_monitor.isHealthy(); !all_nodes_health_nominal)
+  if (auto [all_nodes_health_nominal, health_not_nominal_nodes] = _open_cyphal_node_monitor.isHealthy(); !all_nodes_health_nominal)
   {
     RCLCPP_ERROR(get_logger(),
                  "nodes { %s} health not nominal",
-                 glue::OpenCyphalHeartbeatMonitor::toStr(health_not_nominal_nodes).c_str());
-    return State::Init_OpenCyphalHeartbeatMonitor;
+                 phy::opencyphal::NodeMonitor::toStr(health_not_nominal_nodes).c_str());
+    return State::Init_NodeMonitor;
   }
 
-  if (auto [all_nodes_mode_operational, mode_not_operational_nodes] = _open_cyphal_heartbeat_monitor.isOperational(); !all_nodes_mode_operational)
+  if (auto [all_nodes_mode_operational, mode_not_operational_nodes] = _open_cyphal_node_monitor.isOperational(); !all_nodes_mode_operational)
   {
     RCLCPP_ERROR(get_logger(),
                  "nodes { %s} mode not operational",
-                 glue::OpenCyphalHeartbeatMonitor::toStr(mode_not_operational_nodes).c_str());
-    return State::Init_OpenCyphalHeartbeatMonitor;
+                 phy::opencyphal::NodeMonitor::toStr(mode_not_operational_nodes).c_str());
+    return State::Init_NodeMonitor;
   }
 
   /* All nodes present, healthy and operational. */
 
   RCLCPP_INFO(get_logger(),
               "heartbeat messages from nodes { %s} detected",
-              glue::OpenCyphalHeartbeatMonitor::toStr(_open_cyphal_heartbeat_monitor.detectedNodeIdList()).c_str());
+              phy::opencyphal::NodeMonitor::toStr(_open_cyphal_node_monitor.detectedNodeIdList()).c_str());
 
   /* Start the calibration. */
   _valve_ctrl.openAllForCalibAndWrite();
@@ -242,12 +242,12 @@ IoNode::State IoNode::handle_Active()
    * CHECK HEARTBEAT/MODE/HEALTH of OpenCyphalDevice's
    **************************************************************************************/
 
-  if (auto [good,list] = _open_cyphal_heartbeat_monitor.isConnected(std::chrono::seconds(5)); !good)
-    RCLCPP_ERROR(get_logger(), "heartbeat timeout for nodes { %s}", glue::OpenCyphalHeartbeatMonitor::toStr(list).c_str());
-  if (auto [good,list] = _open_cyphal_heartbeat_monitor.isHealthy(); !good)
-    RCLCPP_ERROR(get_logger(), "nodes { %s} health not nominal", glue::OpenCyphalHeartbeatMonitor::toStr(list).c_str());
-  if (auto [good,list] = _open_cyphal_heartbeat_monitor.isOperational(); !good)
-    RCLCPP_ERROR(get_logger(), "nodes { %s} mode not operational", glue::OpenCyphalHeartbeatMonitor::toStr(list).c_str());
+  if (auto [good,list] = _open_cyphal_node_monitor.isConnected(std::chrono::seconds(5)); !good)
+    RCLCPP_ERROR(get_logger(), "heartbeat timeout for nodes { %s}", phy::opencyphal::NodeMonitor::toStr(list).c_str());
+  if (auto [good,list] = _open_cyphal_node_monitor.isHealthy(); !good)
+    RCLCPP_ERROR(get_logger(), "nodes { %s} health not nominal", phy::opencyphal::NodeMonitor::toStr(list).c_str());
+  if (auto [good,list] = _open_cyphal_node_monitor.isOperational(); !good)
+    RCLCPP_ERROR(get_logger(), "nodes { %s} mode not operational", phy::opencyphal::NodeMonitor::toStr(list).c_str());
 
   /**************************************************************************************
    * READ FROM PERIPHERALS

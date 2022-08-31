@@ -17,12 +17,11 @@
 
 #include <l3xz_io/phy/opencyphal/Node.hpp>
 #include <l3xz_io/phy/opencyphal/SocketCAN.h>
-
+#include <l3xz_io/phy/opencyphal/NodeMonitor.h>
 
 #include <l3xz_io/glue/LegController.h>
 #include <l3xz_io/glue/PumpController.h>
 #include <l3xz_io/glue/ValveController.h>
-#include <l3xz_io/glue/OpenCyphalHeartbeatMonitor.h>
 #include <l3xz_io/glue/DynamixelAnglePositionWriter.h>
 
 #include <l3xz_gait_ctrl/msg/leg_angle.hpp>
@@ -49,7 +48,7 @@ private:
   enum class State
   {
     Init_Dynamixel,
-    Init_OpenCyphalHeartbeatMonitor,
+    Init_NodeMonitor,
     Calibrate,
     Active
   };
@@ -60,7 +59,7 @@ private:
   dynamixel::SharedDynamixel _dynamixel_ctrl;
   dynamixel::SharedMX28 _mx28_ctrl;
 
-  glue::OpenCyphalHeartbeatMonitor _open_cyphal_heartbeat_monitor;
+  phy::opencyphal::NodeMonitor _open_cyphal_node_monitor;
   glue::DynamixelAnglePositionWriter _dynamixel_angle_position_writer;
   glue::ValveController _valve_ctrl;
   glue::PumpController _pump_ctrl;
@@ -79,7 +78,7 @@ private:
   void timerCallback();
 
   State handle_Init_Dynamixel();
-  State handle_Init_OpenCyphalHeartbeatMonitor();
+  State handle_Init_NodeMonitor();
   State handle_Calibrate();
   State handle_Active();
 

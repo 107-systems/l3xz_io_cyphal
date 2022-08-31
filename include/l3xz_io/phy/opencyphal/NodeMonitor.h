@@ -4,31 +4,33 @@
  * Contributors: https://github.com/107-systems/l3xz_io/graphs/contributors.
  */
 
-#ifndef GLUE_OPEN_CYPHAL_HEARTBEAT_MONITOR_H_
-#define GLUE_OPEN_CYPHAL_HEARTBEAT_MONITOR_H_
+#ifndef PHY_OPENCYPHAL_open_cyphal_node_monitor_H_
+#define PHY_OPENCYPHAL_open_cyphal_node_monitor_H_
 
 /**************************************************************************************
  * INCLUDES
  **************************************************************************************/
 
-#include <l3xz_io/phy/opencyphal/Node.hpp>
 #include <l3xz_io/phy/opencyphal/Types.h>
+#include <l3xz_io/phy/opencyphal/Node.hpp>
+
+#include <rclcpp/rclcpp.hpp>
 
 /**************************************************************************************
  * NAMESPACE
  **************************************************************************************/
 
-namespace glue
+namespace phy::opencyphal
 {
 
 /**************************************************************************************
  * CLASS DECLARATION
  **************************************************************************************/
 
-class OpenCyphalHeartbeatMonitor
+class NodeMonitor
 {
 public:
-  OpenCyphalHeartbeatMonitor(phy::opencyphal::Node & node, rclcpp::Logger const logger, std::list<CanardNodeID> const node_id_list)
+  NodeMonitor(phy::opencyphal::Node & node, rclcpp::Logger const logger, std::list<CanardNodeID> const node_id_list)
   : _mtx{}
   {
     for (auto node_id : node_id_list)
@@ -158,6 +160,6 @@ private:
  * NAMESPACE
  **************************************************************************************/
 
-} /* glue */
+} /* phy::opencyphal */
 
-#endif /* GLUE_OPEN_CYPHAL_HEARTBEAT_MONITOR_H_ */
+#endif /* PHY_OPENCYPHAL_open_cyphal_node_monitor_H_ */
