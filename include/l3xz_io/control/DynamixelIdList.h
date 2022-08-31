@@ -4,47 +4,32 @@
  * Contributors: https://github.com/107-systems/l3xz_io/graphs/contributors.
  */
 
-#ifndef DRIVER_OREL20_OREL20_H_
-#define DRIVER_OREL20_OREL20_H_
+#ifndef GLUE_DYNAMIXEL_ID_LIST_H_
+#define GLUE_DYNAMIXEL_ID_LIST_H_
 
 /**************************************************************************************
- * INCLUDE
+ * INCLUDES
  **************************************************************************************/
 
-#include <rclcpp/rclcpp.hpp>
-
-#include <l3xz_io/phy/opencyphal/Node.hpp>
+#include <l3xz_io/driver/dynamixel/Dynamixel.h>
 
 /**************************************************************************************
  * NAMESPACE
  **************************************************************************************/
 
-namespace glue
+namespace control
 {
 
 /**************************************************************************************
- * CLASS DECLARATION
+ * CONSTANT
  **************************************************************************************/
 
-class PumpController
-{
-public:
-
-  PumpController(phy::opencyphal::Node & node, rclcpp::Logger const logger);
-
-  void setRPM(uint16_t const rpm_val);
-  void doWrite();
-
-private:
-  phy::opencyphal::Node & _node;
-  rclcpp::Logger const _logger;
-  uint16_t _rpm_val;
-};
+static dynamixel::Dynamixel::IdVect const DYNAMIXEL_ID_LIST{1,2,3,4,5,6,7,8};
 
 /**************************************************************************************
  * NAMESPACE
  **************************************************************************************/
 
-} /* glue */
+} /* control */
 
-#endif /* DRIVER_OREL20_OREL20_H_ */
+#endif /* GLUE_DYNAMIXEL_ID_LIST_H_ */

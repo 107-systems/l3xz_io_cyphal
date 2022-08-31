@@ -17,7 +17,7 @@
  * NAMESPACE
  **************************************************************************************/
 
-namespace glue
+namespace control
 {
 
 /**************************************************************************************
@@ -35,6 +35,6 @@ typedef reg::udral::service::actuator::common::sp::Scalar_0_1<3002> OpenCyphalOr
  * NAMESPACE
  **************************************************************************************/
 
-} /* glue */
+} /* control */
 
 #endif /* GLUE_OPEN_CYPHAL_MESSAGE_TYPES_H_ */

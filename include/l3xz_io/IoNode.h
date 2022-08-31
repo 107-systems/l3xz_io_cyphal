@@ -19,10 +19,10 @@
 #include <l3xz_io/phy/opencyphal/SocketCAN.h>
 #include <l3xz_io/phy/opencyphal/NodeMonitor.h>
 
-#include <l3xz_io/glue/LegController.h>
-#include <l3xz_io/glue/PumpController.h>
-#include <l3xz_io/glue/ValveController.h>
-#include <l3xz_io/glue/DynamixelAnglePositionWriter.h>
+#include <l3xz_io/control/LegController.h>
+#include <l3xz_io/control/PumpController.h>
+#include <l3xz_io/control/ValveController.h>
+#include <l3xz_io/control/DynamixelAnglePositionWriter.h>
 
 #include <l3xz_gait_ctrl/msg/leg_angle.hpp>
 #include <l3xz_head_ctrl/msg/head_angle.hpp>
@@ -60,10 +60,10 @@ private:
   dynamixel::SharedMX28 _mx28_ctrl;
 
   phy::opencyphal::NodeMonitor _open_cyphal_node_monitor;
-  glue::DynamixelAnglePositionWriter _dynamixel_angle_position_writer;
-  glue::ValveController _valve_ctrl;
-  glue::PumpController _pump_ctrl;
-  glue::LegController _leg_ctrl;
+  control::DynamixelAnglePositionWriter _dynamixel_angle_position_writer;
+  control::ValveController _valve_ctrl;
+  control::PumpController _pump_ctrl;
+  control::LegController _leg_ctrl;
 
   rclcpp::TimerBase::SharedPtr _timer;
 

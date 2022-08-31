@@ -8,13 +8,13 @@
  * INCLUDES
  **************************************************************************************/
 
-#include <l3xz_io/glue/DynamixelAnglePositionWriter.h>
+#include <l3xz_io/control/DynamixelAnglePositionWriter.h>
 
 /**************************************************************************************
  * NAMESPACE
  **************************************************************************************/
 
-namespace glue
+namespace control
 {
 
 /**************************************************************************************
@@ -80,4 +80,4 @@ void DynamixelAnglePositionWriter::update(DynamixelServoName const name, float c
  * NAMESPACE
  **************************************************************************************/
 
-} /* glue */
+} /* control */

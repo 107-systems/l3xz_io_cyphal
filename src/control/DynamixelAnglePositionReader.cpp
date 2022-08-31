@@ -8,16 +8,16 @@
  * INCLUDES
  **************************************************************************************/
 
-#include <l3xz_io/glue/DynamixelAnglePositionReader.h>
+#include <l3xz_io/control/DynamixelAnglePositionReader.h>
 
-#include <l3xz_io/glue/DynamixelIdList.h>
-#include <l3xz_io/glue/DynamixelServoName.h>
+#include <l3xz_io/control/DynamixelIdList.h>
+#include <l3xz_io/control/DynamixelServoName.h>
 
 /**************************************************************************************
  * NAMESPACE
  **************************************************************************************/
 
-namespace glue
+namespace control
 {
 
 /**************************************************************************************
@@ -26,7 +26,7 @@ namespace glue
 
 std::tuple<std::map<LegJointKey, float>, std::map<HeadJointKey, float>> DynamixelAnglePositionReader::doBulkRead(dynamixel::SharedMX28 mx28_ctrl, rclcpp::Logger const logger)
 {
-  dynamixel::MX28::AngleDataSet const angle_data_set = mx28_ctrl->getAngle(glue::DYNAMIXEL_ID_LIST);
+  dynamixel::MX28::AngleDataSet const angle_data_set = mx28_ctrl->getAngle(control::DYNAMIXEL_ID_LIST);
 
   std::map<DynamixelServoName, float> dynamixel_angle_position_map;
 
@@ -63,4 +63,4 @@ std::tuple<std::map<LegJointKey, float>, std::map<HeadJointKey, float>> Dynamixe
  * NAMESPACE
  **************************************************************************************/
 
-} /* glue */
+} /* control */

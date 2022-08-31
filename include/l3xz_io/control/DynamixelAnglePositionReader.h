@@ -4,32 +4,46 @@
  * Contributors: https://github.com/107-systems/l3xz_io/graphs/contributors.
  */
 
-#ifndef GLUE_DYNAMIXEL_ID_LIST_H_
-#define GLUE_DYNAMIXEL_ID_LIST_H_
+#ifndef GLUE_L3XZ_ELROB2022_DYNAMIXEL_ANGLE_POSITION_SENSOR_BULK_READER_H_
+#define GLUE_L3XZ_ELROB2022_DYNAMIXEL_ANGLE_POSITION_SENSOR_BULK_READER_H_
 
 /**************************************************************************************
  * INCLUDES
  **************************************************************************************/
 
-#include <l3xz_io/driver/dynamixel/Dynamixel.h>
+#include <map>
+#include <tuple>
+
+#include <rclcpp/rclcpp.hpp>
+
+#include <l3xz_io/driver/dynamixel/MX28.h>
+
+#include <l3xz_io/types/LegJointKey.h>
+#include <l3xz_io/types/HeadJointKey.h>
 
 /**************************************************************************************
  * NAMESPACE
  **************************************************************************************/
 
-namespace glue
+namespace control
 {
 
 /**************************************************************************************
- * CONSTANT
+ * CLASS DECLARATION
  **************************************************************************************/
 
-static dynamixel::Dynamixel::IdVect const DYNAMIXEL_ID_LIST{1,2,3,4,5,6,7,8};
+class DynamixelAnglePositionReader
+{
+public:
+  DynamixelAnglePositionReader() = delete;
+
+  static std::tuple<std::map<LegJointKey, float>, std::map<HeadJointKey, float>> doBulkRead(dynamixel::SharedMX28 mx28_ctrl, rclcpp::Logger const logger);
+};
 
 /**************************************************************************************
  * NAMESPACE
  **************************************************************************************/
 
-} /* glue */
+} /* control */
 
-#endif /* GLUE_DYNAMIXEL_ID_LIST_H_ */
+#endif /* GLUE_L3XZ_ELROB2022_DYNAMIXEL_ANGLE_POSITION_SENSOR_BULK_READER_H_ */

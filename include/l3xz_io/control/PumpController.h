@@ -4,49 +4,47 @@
  * Contributors: https://github.com/107-systems/l3xz_io/graphs/contributors.
  */
 
-#ifndef GLUE_DYNAMIXEL_SERVO_NAME_H_
-#define GLUE_DYNAMIXEL_SERVO_NAME_H_
+#ifndef DRIVER_OREL20_OREL20_H_
+#define DRIVER_OREL20_OREL20_H_
 
 /**************************************************************************************
- * INCLUDES
+ * INCLUDE
  **************************************************************************************/
 
-#include <l3xz_io/driver/dynamixel/Dynamixel.h>
+#include <rclcpp/rclcpp.hpp>
+
+#include <l3xz_io/phy/opencyphal/Node.hpp>
 
 /**************************************************************************************
  * NAMESPACE
  **************************************************************************************/
 
-namespace glue
+namespace control
 {
 
 /**************************************************************************************
- * TYPEDEF
+ * CLASS DECLARATION
  **************************************************************************************/
 
-enum class DynamixelServoName
+class PumpController
 {
-  LeftFront_Coxa,
-  LeftMiddle_Coxa,
-  LeftBack_Coxa,
-  RightBack_Coxa,
-  RightMiddle_Coxa,
-  RightFront_Coxa,
-  Head_Pan,
-  Head_Tilt,
+public:
+
+  PumpController(phy::opencyphal::Node & node, rclcpp::Logger const logger);
+
+  void setRPM(uint16_t const rpm_val);
+  void doWrite();
+
+private:
+  phy::opencyphal::Node & _node;
+  rclcpp::Logger const _logger;
+  uint16_t _rpm_val;
 };
 
 /**************************************************************************************
- * FUNCTION DECLARATION
- **************************************************************************************/
-
-DynamixelServoName toServoName(dynamixel::Dynamixel::Id const id);
-dynamixel::Dynamixel::Id toServoId(DynamixelServoName const name);
-
-/**************************************************************************************
  * NAMESPACE
  **************************************************************************************/
 
-} /* glue */
+} /* control */
 
-#endif /* GLUE_DYNAMIXEL_SERVO_NAME_H_ */
+#endif /* DRIVER_OREL20_OREL20_H_ */

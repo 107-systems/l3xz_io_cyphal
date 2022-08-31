@@ -16,13 +16,13 @@
 
 #include <l3xz_io/driver/dynamixel/MX28.h>
 
-#include <l3xz_io/glue/DynamixelServoName.h>
+#include <l3xz_io/control/DynamixelServoName.h>
 
 /**************************************************************************************
  * NAMESPACE
  **************************************************************************************/
 
-namespace glue
+namespace control
 {
 
 /**************************************************************************************
@@ -49,6 +49,6 @@ private:
  * NAMESPACE
  **************************************************************************************/
 
-} /* glue */
+} /* control */
 
 #endif /* GLUE_L3XZ_ELROB2022_DYNAMIXEL_ANGLE_POSITION_ACTUATOR_BULK_WRITER_H_ */

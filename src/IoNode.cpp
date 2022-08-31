@@ -14,9 +14,9 @@
 
 #include <l3xz_io/const/LegList.h>
 
-#include <l3xz_io/glue/SSC32.h>
-#include <l3xz_io/glue/DynamixelIdList.h>
-#include <l3xz_io/glue/DynamixelAnglePositionReader.h>
+#include <l3xz_io/control/SSC32.h>
+#include <l3xz_io/control/DynamixelIdList.h>
+#include <l3xz_io/control/DynamixelAnglePositionReader.h>
 
 /**************************************************************************************
  * NAMESPACE
@@ -72,7 +72,7 @@ IoNode::IoNode()
 , _mx28_ctrl{new dynamixel::MX28(_dynamixel_ctrl)}
 , _open_cyphal_node_monitor{_open_cyphal_node, get_logger(), {1, 2, 3, 4, 5, 6, 10}}
 , _dynamixel_angle_position_writer{}
-, _valve_ctrl{std::make_shared<glue::SSC32>(SSC32_DEVICE_NAME, SSC32_BAUDRATE), get_logger()}
+, _valve_ctrl{std::make_shared<control::SSC32>(SSC32_DEVICE_NAME, SSC32_BAUDRATE), get_logger()}
 , _pump_ctrl{_open_cyphal_node, get_logger()}
 , _leg_ctrl{_open_cyphal_node, get_logger()}
 , _leg_angle_target_msg{
@@ -251,7 +251,7 @@ IoNode::State IoNode::handle_Active()
    * READ FROM PERIPHERALS
    **************************************************************************************/
 
-  auto const [dynamixel_leg_joint_angle_position, dynamixel_head_joint_angle_position] = glue::DynamixelAnglePositionReader::doBulkRead(_mx28_ctrl, get_logger());
+  auto const [dynamixel_leg_joint_angle_position, dynamixel_head_joint_angle_position] = control::DynamixelAnglePositionReader::doBulkRead(_mx28_ctrl, get_logger());
 
   /**************************************************************************************
    * PUBLISH ACTUAL SYSTEM STATE
@@ -379,7 +379,7 @@ bool IoNode::init_dynamixel()
   RCLCPP_INFO(get_logger(), "detected Dynamixel MX-28: { %s}", act_id_list.str().c_str());
 
   bool all_req_id_found = true;
-  for (auto req_id : glue::DYNAMIXEL_ID_LIST)
+  for (auto req_id : control::DYNAMIXEL_ID_LIST)
   {
     bool const req_id_found = std::count(opt_act_id_vect.value().begin(),
                                          opt_act_id_vect.value().end(),

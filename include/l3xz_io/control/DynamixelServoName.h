@@ -4,54 +4,49 @@
  * Contributors: https://github.com/107-systems/l3xz_io/graphs/contributors.
  */
 
-#ifndef GLUE_L3XZ_ELROB2022_SSC32_VALVE_ACTUATOR_H_
-#define GLUE_L3XZ_ELROB2022_SSC32_VALVE_ACTUATOR_H_
+#ifndef GLUE_DYNAMIXEL_SERVO_NAME_H_
+#define GLUE_DYNAMIXEL_SERVO_NAME_H_
 
 /**************************************************************************************
  * INCLUDES
  **************************************************************************************/
 
-#include <rclcpp/rclcpp.hpp>
-
-#include <l3xz_io/types/LegJointKey.h>
-#include <l3xz_io/glue/SSC32.h>
+#include <l3xz_io/driver/dynamixel/Dynamixel.h>
 
 /**************************************************************************************
  * NAMESPACE
  **************************************************************************************/
 
-namespace glue
+namespace control
 {
 
 /**************************************************************************************
- * CLASS DECLARATION
+ * TYPEDEF
  **************************************************************************************/
 
-class ValveController
+enum class DynamixelServoName
 {
-public:
-   ValveController(SharedSSC32 ssc32_ctrl, rclcpp::Logger const logger);
-  ~ValveController();
-
-  void set(LegJointKey const key, float const val);
-  void doBulkWrite();
-
-
-  void openAllForCalibAndWrite();
-
-private:
-  SharedSSC32 _ssc32_ctrl;
-  rclcpp::Logger const _logger;
-  std::map<uint8_t, uint16_t> _channel_pulse_width_map;
-  std::map<LegJointKey, uint8_t> LEG_JOINT_KEY_TO_SSC32_SERVO_ID_MAP;
-
-  void closeAllAndWrite();
+  LeftFront_Coxa,
+  LeftMiddle_Coxa,
+  LeftBack_Coxa,
+  RightBack_Coxa,
+  RightMiddle_Coxa,
+  RightFront_Coxa,
+  Head_Pan,
+  Head_Tilt,
 };
 
 /**************************************************************************************
+ * FUNCTION DECLARATION
+ **************************************************************************************/
+
+DynamixelServoName toServoName(dynamixel::Dynamixel::Id const id);
+dynamixel::Dynamixel::Id toServoId(DynamixelServoName const name);
+
+/**************************************************************************************
  * NAMESPACE
  **************************************************************************************/
 
-} /* glue */
+} /* control */
 
-#endif /* GLUE_L3XZ_ELROB2022_SSC32_VALVE_ACTUATOR_H_ */
+#endif /* GLUE_DYNAMIXEL_SERVO_NAME_H_ */

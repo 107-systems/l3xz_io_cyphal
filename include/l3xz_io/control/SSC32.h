@@ -4,58 +4,63 @@
  * Contributors: https://github.com/107-systems/l3xz_io/graphs/contributors.
  */
 
+#ifndef DRIVER_SSC32_SSC32_H_
+#define DRIVER_SSC32_SSC32_H_
+
 /**************************************************************************************
  * INCLUDE
  **************************************************************************************/
 
-#include <l3xz_io/glue/PumpController.h>
+#include <stdint.h>
 
-#include <l3xz_io/glue/OpenCyphalMessageTypes.h>
+#include <string>
+#include <memory>
 
-/**************************************************************************************
- * NAMESPACE
- **************************************************************************************/
-
-namespace glue
-{
-
-/**************************************************************************************
- * CTOR/DTOR
- **************************************************************************************/
-
-PumpController::PumpController(phy::opencyphal::Node & node, rclcpp::Logger const logger)
-: _node{node}
-, _logger{logger}
-, _rpm_val{0}
-{
-  OpenCyphalOrel20ReadinessMessage readiness;
-  readiness.data.value = reg_udral_service_common_Readiness_0_1_ENGAGED;
-
-  if (!_node.publish(readiness))
-    RCLCPP_ERROR(_logger, "could not publish PumpController ESC readiness message");
-}
-
-/**************************************************************************************
- * PUBLIC MEMBER FUNCTIONS
- **************************************************************************************/
-
-void PumpController::setRPM(uint16_t const rpm_val)
-{
-  uint16_t const MAX_RPM = 8192;
-  _rpm_val = std::min(rpm_val, MAX_RPM);
-}
-
-void PumpController::doWrite()
-{
-  OpenCyphalOrel20SetpointMessage setpoint;
-  setpoint.data.value = _rpm_val;
-
-  if (!_node.publish(setpoint))
-    RCLCPP_ERROR(_logger,"error, could not publish PumpController ESC setpoint message");
-}
+#include <l3xz_io/phy/serial/AsyncSerial.h>
 
 /**************************************************************************************
  * NAMESPACE
  **************************************************************************************/
 
-} /* glue */
+namespace control
+{
+
+/**************************************************************************************
+ * CLASS DECLARATION
+ **************************************************************************************/
+
+class SSC32
+{
+public:
+   SSC32(std::string const device_name, size_t const baudrate);
+  ~SSC32();
+
+  enum class Error : int
+  {
+    None                =  0,
+    InvParam_Channel    = -1,
+    InvParam_PulseWidth = -2,
+  };
+
+  static uint8_t constexpr MIN_CHANNEL =  0;
+  static uint8_t constexpr MAX_CHANNEL = 31;
+
+  Error setPulseWidth(uint8_t const channel, uint16_t const pulse_width_us, uint16_t const move_time_ms);
+
+private:
+  phy::serial::AsyncSerial _serial;
+};
+
+/**************************************************************************************
+ * TYPEDEF
+ **************************************************************************************/
+
+typedef std::shared_ptr<SSC32> SharedSSC32;
+
+/**************************************************************************************
+ * NAMESPACE
+ **************************************************************************************/
+
+} /* control */
+
+#endif /* DRIVER_SSC32_SSC32_H_ */

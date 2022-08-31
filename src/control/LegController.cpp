@@ -8,15 +8,15 @@
  * INCLUDES
  **************************************************************************************/
 
-#include <l3xz_io/glue/LegController.h>
+#include <l3xz_io/control/LegController.h>
 
-#include <l3xz_io/glue/OpenCyphalMessageTypes.h>
+#include <l3xz_io/control/OpenCyphalMessageTypes.h>
 
 /**************************************************************************************
  * NAMESPACE
  **************************************************************************************/
 
-namespace glue
+namespace control
 {
 
 /**************************************************************************************
@@ -174,4 +174,4 @@ bool LegController::isLegControllerId(CanardNodeID const node_id)
  * NAMESPACE
  **************************************************************************************/
 
-} /* glue */
+} /* control */
