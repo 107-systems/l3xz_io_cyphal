@@ -7,7 +7,7 @@
 #    define _GNU_SOURCE
 #endif
 
-#include <l3xz_io/phy/opencyphal/socketcan.h>
+#include "socketcan.h"
 
 #ifdef __linux__
 #    include <linux/can.h>

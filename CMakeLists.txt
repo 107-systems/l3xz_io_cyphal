@@ -15,6 +15,7 @@ find_package(orocos_kdl REQUIRED)
 add_subdirectory(external/libcanard/current)
 add_subdirectory(external/libdynamixel/current)
 add_subdirectory(external/libo1heap/current)
+add_subdirectory(external/libsocketcan)
 ##########################################################################
 include_directories(
   include
@@ -33,7 +34,6 @@ add_executable(${PROJECT_NAME}_node
   src/control/ValveController.cpp
   src/phy/opencyphal/Node.cpp
   src/phy/opencyphal/NodeMonitor.cpp
-  src/phy/opencyphal/socketcan.c
   src/phy/opencyphal/SocketCAN.cpp
   src/phy/serial/AsyncSerial.cpp
   src/IoNode.cpp
@@ -48,6 +48,7 @@ target_link_libraries(${PROJECT_NAME}_node
   o1heap
   orocos-kdl
   pthread
+  socketcan
 )
 #######################################################################################
 target_compile_features(${PROJECT_NAME}_node PRIVATE cxx_std_17)
