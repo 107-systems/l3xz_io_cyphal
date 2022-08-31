@@ -14,7 +14,8 @@
 #include <rclcpp/rclcpp.hpp>
 
 #include <l3xz_io/types/LegJointKey.h>
-#include <l3xz_io/control/SSC32.h>
+
+#include <l3xz_io/control/ssc32/SSC32.h>
 
 /**************************************************************************************
  * NAMESPACE

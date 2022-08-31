@@ -8,7 +8,7 @@
  * INCLUDE
  **************************************************************************************/
 
-#include <l3xz_io/control/SSC32.h>
+#include <l3xz_io/control/ssc32/SSC32.h>
 
 #include <vector>
 #include <sstream>

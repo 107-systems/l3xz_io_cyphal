@@ -30,8 +30,8 @@ add_executable(${PROJECT_NAME}_node
   src/control/dynamixel/DynamixelServoName.cpp
   src/control/opencyphal/LegController.cpp
   src/control/opencyphal/PumpController.cpp
-  src/control/SSC32.cpp
-  src/control/ValveController.cpp
+  src/control/ssc32/SSC32.cpp
+  src/control/ssc32/ValveController.cpp
   src/phy/opencyphal/Node.cpp
   src/phy/opencyphal/NodeMonitor.cpp
   src/phy/opencyphal/SocketCAN.cpp
