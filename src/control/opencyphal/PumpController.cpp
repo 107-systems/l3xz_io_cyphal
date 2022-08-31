@@ -10,7 +10,7 @@
 
 #include <l3xz_io/control/opencyphal/PumpController.h>
 
-#include <l3xz_io/control/opencyphal/MessageTypes.h>
+#include <l3xz_io/control/opencyphal/OpenCyphalMessageTypes.h>
 
 /**************************************************************************************
  * NAMESPACE
