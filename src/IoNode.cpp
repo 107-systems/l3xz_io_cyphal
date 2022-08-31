@@ -16,6 +16,7 @@
 
 #include <l3xz_io/control/dynamixel/DynamixelIdList.h>
 #include <l3xz_io/control/dynamixel/DynamixelAnglePositionReader.h>
+#include <l3xz_io/control/opencyphal/OpenCyphalNodeIdList.h>
 
 /**************************************************************************************
  * NAMESPACE
@@ -69,7 +70,7 @@ IoNode::IoNode()
 , _open_cyphal_node(_open_cyphal_can_if, get_logger())
 , _dynamixel_ctrl{new control::Dynamixel(DYNAMIXEL_DEVICE_NAME, DYNAMIXEL_PROTOCOL_VERSION, DYNAMIXEL_BAUD_RATE)}
 , _mx28_ctrl{new control::DynamixelMX28(_dynamixel_ctrl)}
-, _open_cyphal_node_monitor{_open_cyphal_node, get_logger(), {1, 2, 3, 4, 5, 6, 10}}
+, _open_cyphal_node_monitor{_open_cyphal_node, get_logger(), control::OPEN_CYPHAL_NODE_ID_LIST}
 , _dynamixel_angle_position_writer{}
 , _valve_ctrl{std::make_shared<control::SSC32>(SSC32_DEVICE_NAME, SSC32_BAUDRATE), get_logger()}
 , _pump_ctrl{_open_cyphal_node, get_logger()}
