@@ -8,9 +8,9 @@
  * INCLUDES
  **************************************************************************************/
 
-#include <l3xz_io/control/LegController.h>
+#include <l3xz_io/control/opencyphal/LegController.h>
 
-#include <l3xz_io/control/OpenCyphalMessageTypes.h>
+#include <l3xz_io/control/opencyphal/OpenCyphalMessageTypes.h>
 
 /**************************************************************************************
  * NAMESPACE
