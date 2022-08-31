@@ -33,6 +33,7 @@ add_executable(${PROJECT_NAME}_node
   src/glue/PumpController.cpp
   src/glue/ValveController.cpp
   src/phy/opencyphal/Node.cpp
+  src/phy/opencyphal/NodeMonitor.cpp
   src/phy/opencyphal/SocketCAN.cpp
   src/phy/serial/AsyncSerial.cpp
   src/IoNode.cpp
