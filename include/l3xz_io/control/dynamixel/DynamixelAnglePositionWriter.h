@@ -14,8 +14,7 @@
 #include <l3xz_io/types/LegJointKey.h>
 #include <l3xz_io/types/HeadJointKey.h>
 
-#include <l3xz_io/driver/dynamixel/MX28.h>
-
+#include <l3xz_io/control/dynamixel/MX28.h>
 #include <l3xz_io/control/dynamixel/DynamixelServoName.h>
 
 /**************************************************************************************
@@ -36,11 +35,11 @@ public:
 
   void update(LegJointKey const joint, float const angle_deg);
   void update(HeadJointKey const joint, float const angle_deg);
-  bool doBulkWrite(dynamixel::SharedMX28 mx28_ctrl);
+  bool doBulkWrite(SharedMX28 mx28_ctrl);
 
 
 private:
-  std::map<dynamixel::Dynamixel::Id, float> _dynamixel_angle_map;
+  std::map<Dynamixel::Id, float> _dynamixel_angle_map;
 
   void update(DynamixelServoName const name, float const angle_deg);
 };

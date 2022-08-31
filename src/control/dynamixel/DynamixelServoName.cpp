@@ -21,9 +21,9 @@ namespace control
  * FUNCTION DEFINITION
  **************************************************************************************/
 
-DynamixelServoName toServoName(dynamixel::Dynamixel::Id const id)
+DynamixelServoName toServoName(Dynamixel::Id const id)
 {
-  static std::map<dynamixel::Dynamixel::Id, DynamixelServoName> const DYNAMIXEL_ID_TO_SERVO_NAME =
+  static std::map<Dynamixel::Id, DynamixelServoName> const DYNAMIXEL_ID_TO_SERVO_NAME =
   {
     {1, DynamixelServoName::LeftFront_Coxa},
     {2, DynamixelServoName::LeftMiddle_Coxa},
@@ -38,9 +38,9 @@ DynamixelServoName toServoName(dynamixel::Dynamixel::Id const id)
   return DYNAMIXEL_ID_TO_SERVO_NAME.at(id);
 }
 
-dynamixel::Dynamixel::Id toServoId(DynamixelServoName const name)
+Dynamixel::Id toServoId(DynamixelServoName const name)
 {
-  static std::map<DynamixelServoName, dynamixel::Dynamixel::Id> const DYNAMIXEL_SERVO_NAME_TO_SERVO_ID =
+  static std::map<DynamixelServoName, Dynamixel::Id> const DYNAMIXEL_SERVO_NAME_TO_SERVO_ID =
   {
     {DynamixelServoName::LeftFront_Coxa,   1},
     {DynamixelServoName::LeftMiddle_Coxa,  2},

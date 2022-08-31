@@ -8,7 +8,7 @@
  * INCLUDE
  **************************************************************************************/
 
-#include <l3xz_io/driver/dynamixel/MX28.h>
+#include <l3xz_io/control/dynamixel/MX28.h>
 
 #include <cassert>
 
@@ -16,7 +16,7 @@
  * NAMESPACE
  **************************************************************************************/
 
-namespace dynamixel
+namespace control
 {
 
 /**************************************************************************************
@@ -172,4 +172,4 @@ bool MX28::setAngle(AngleDataSet const & angle_data_set)
  * NAMESPACE
  **************************************************************************************/
 
-} /* dynamixel */
+} /* control */

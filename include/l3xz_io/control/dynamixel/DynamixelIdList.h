@@ -11,7 +11,7 @@
  * INCLUDES
  **************************************************************************************/
 
-#include <l3xz_io/driver/dynamixel/Dynamixel.h>
+#include <l3xz_io/control/dynamixel/Dynamixel.h>
 
 /**************************************************************************************
  * NAMESPACE
@@ -24,7 +24,7 @@ namespace control
  * CONSTANT
  **************************************************************************************/
 
-static dynamixel::Dynamixel::IdVect const DYNAMIXEL_ID_LIST{1,2,3,4,5,6,7,8};
+static Dynamixel::IdVect const DYNAMIXEL_ID_LIST{1,2,3,4,5,6,7,8};
 
 /**************************************************************************************
  * NAMESPACE

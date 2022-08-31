@@ -11,7 +11,7 @@
  * INCLUDES
  **************************************************************************************/
 
-#include <l3xz_io/driver/dynamixel/Dynamixel.h>
+#include <l3xz_io/control/dynamixel/Dynamixel.h>
 
 /**************************************************************************************
  * NAMESPACE
@@ -40,8 +40,8 @@ enum class DynamixelServoName
  * FUNCTION DECLARATION
  **************************************************************************************/
 
-DynamixelServoName toServoName(dynamixel::Dynamixel::Id const id);
-dynamixel::Dynamixel::Id toServoId(DynamixelServoName const name);
+DynamixelServoName toServoName(Dynamixel::Id const id);
+Dynamixel::Id toServoId(DynamixelServoName const name);
 
 /**************************************************************************************
  * NAMESPACE

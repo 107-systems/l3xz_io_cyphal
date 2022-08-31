@@ -24,7 +24,7 @@
  * NAMESPACE
  **************************************************************************************/
 
-namespace dynamixel
+namespace control
 {
 
 /**************************************************************************************
@@ -69,8 +69,8 @@ public:
 
 private:
 
-  std::unique_ptr<PortHandler> _port_handler;
-  std::unique_ptr<PacketHandler> _packet_handler;
+  std::unique_ptr<dynamixel::PortHandler> _port_handler;
+  std::unique_ptr<dynamixel::PacketHandler> _packet_handler;
 };
 
 /**************************************************************************************
@@ -83,6 +83,6 @@ typedef std::shared_ptr<Dynamixel> SharedDynamixel;
  * NAMESPACE
  **************************************************************************************/
 
-} /* dynamixel */
+} /* control */
 
 #endif /* DYNAMIXEL_H_ */

@@ -56,8 +56,8 @@ private:
 
   phy::opencyphal::SocketCAN _open_cyphal_can_if;
   phy::opencyphal::Node _open_cyphal_node;
-  dynamixel::SharedDynamixel _dynamixel_ctrl;
-  dynamixel::SharedMX28 _mx28_ctrl;
+  control::SharedDynamixel _dynamixel_ctrl;
+  control::SharedMX28 _mx28_ctrl;
 
   phy::opencyphal::NodeMonitor _open_cyphal_node_monitor;
   control::DynamixelAnglePositionWriter _dynamixel_angle_position_writer;

@@ -68,8 +68,8 @@ IoNode::IoNode()
 , _state{State::Init_Dynamixel}
 , _open_cyphal_can_if("can0", false)
 , _open_cyphal_node(_open_cyphal_can_if, get_logger())
-, _dynamixel_ctrl{new dynamixel::Dynamixel(DYNAMIXEL_DEVICE_NAME, DYNAMIXEL_PROTOCOL_VERSION, DYNAMIXEL_BAUD_RATE)}
-, _mx28_ctrl{new dynamixel::MX28(_dynamixel_ctrl)}
+, _dynamixel_ctrl{new control::Dynamixel(DYNAMIXEL_DEVICE_NAME, DYNAMIXEL_PROTOCOL_VERSION, DYNAMIXEL_BAUD_RATE)}
+, _mx28_ctrl{new control::MX28(_dynamixel_ctrl)}
 , _open_cyphal_node_monitor{_open_cyphal_node, get_logger(), {1, 2, 3, 4, 5, 6, 10}}
 , _dynamixel_angle_position_writer{}
 , _valve_ctrl{std::make_shared<control::SSC32>(SSC32_DEVICE_NAME, SSC32_BAUDRATE), get_logger()}
@@ -366,7 +366,7 @@ float IoNode::get_angle_deg(l3xz_gait_ctrl::msg::LegAngle const & msg, Leg const
 
 bool IoNode::init_dynamixel()
 {
-  std::optional<dynamixel::Dynamixel::IdVect> opt_act_id_vect = _mx28_ctrl->discover();
+  std::optional<control::Dynamixel::IdVect> opt_act_id_vect = _mx28_ctrl->discover();
 
   if (!opt_act_id_vect) {
     RCLCPP_ERROR(get_logger(), "error, zero MX-28 servos detected.");
