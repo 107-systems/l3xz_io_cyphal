@@ -11,7 +11,7 @@ find_package(l3xz_gait_ctrl REQUIRED)
 find_package(l3xz_head_ctrl REQUIRED)
 ##########################################################################
 add_subdirectory(external/libcanard/current)
-add_subdirectory(external/libdynamixel/current)
+add_subdirectory(external/libdynamixelplusplus)
 add_subdirectory(external/libo1heap/current)
 add_subdirectory(external/libsocketcan)
 ##########################################################################
@@ -20,7 +20,6 @@ include_directories(
 )
 ##########################################################################
 add_executable(${PROJECT_NAME}_node
-  src/control/dynamixel/Dynamixel.cpp
   src/control/dynamixel/DynamixelMX28.cpp
   src/control/dynamixel/DynamixelAnglePositionWriter.cpp
   src/control/dynamixel/DynamixelAnglePositionReader.cpp
@@ -39,7 +38,7 @@ add_executable(${PROJECT_NAME}_node
 #######################################################################################
 target_link_libraries(${PROJECT_NAME}_node
   canard
-  dynamixel
+  dynamixel++
   boost_system
   boost_thread
   o1heap

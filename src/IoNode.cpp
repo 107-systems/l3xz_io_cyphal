@@ -30,7 +30,7 @@ namespace l3xz
  **************************************************************************************/
 
 static std::string const DYNAMIXEL_DEVICE_NAME      = "/dev/serial/by-id/usb-FTDI_USB__-__Serial_Converter_FT4NNZ55-if00-port0";
-static float       const DYNAMIXEL_PROTOCOL_VERSION = 2.0f;
+static dynamixelplusplus::Dynamixel::Protocol const DYNAMIXEL_PROTOCOL_VERSION = dynamixelplusplus::Dynamixel::Protocol::V2_0;
 static int         const DYNAMIXEL_BAUD_RATE        = 115200;
 
 static std::string const SSC32_DEVICE_NAME = "/dev/serial/by-id/usb-FTDI_FT232R_USB_UART_AH05FOBL-if00-port0";
@@ -68,7 +68,7 @@ IoNode::IoNode()
 , _state{State::Init_Dynamixel}
 , _open_cyphal_can_if("can0", false)
 , _open_cyphal_node(_open_cyphal_can_if, get_logger())
-, _dynamixel_ctrl{new control::Dynamixel(DYNAMIXEL_DEVICE_NAME, DYNAMIXEL_PROTOCOL_VERSION, DYNAMIXEL_BAUD_RATE)}
+, _dynamixel_ctrl{new dynamixelplusplus::Dynamixel(DYNAMIXEL_DEVICE_NAME, DYNAMIXEL_PROTOCOL_VERSION, DYNAMIXEL_BAUD_RATE)}
 , _mx28_ctrl{new control::DynamixelMX28(_dynamixel_ctrl)}
 , _open_cyphal_node_monitor{_open_cyphal_node, get_logger(), control::OPEN_CYPHAL_NODE_ID_LIST}
 , _dynamixel_angle_position_writer{}
@@ -366,7 +366,7 @@ float IoNode::get_angle_deg(l3xz_gait_ctrl::msg::LegAngle const & msg, Leg const
 
 bool IoNode::init_dynamixel()
 {
-  std::optional<control::Dynamixel::IdVect> opt_act_id_vect = _mx28_ctrl->discover();
+  std::optional<dynamixelplusplus::Dynamixel::IdVect> opt_act_id_vect = _mx28_ctrl->discover();
 
   if (!opt_act_id_vect) {
     RCLCPP_ERROR(get_logger(), "error, zero MX-28 servos detected.");
