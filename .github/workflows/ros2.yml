@@ -28,7 +28,7 @@ jobs:
         ls /opt/ros/${{ matrix.rod_distryo }}
         stat -c "%a %n" /opt/ros/${{ matrix.rod_distryo }}
         ls -l `which sh`
-        . /opt/ros/${{ matrix.ros_distro }}/setup.bash
+        . /opt/ros/${{ matrix.ros_distro }}/setup.sh
         mkdir -p ${{github.workspace}}/ros2_ws/src
         cd ${{github.workspace}}/ros2_ws
 #        colcon build
