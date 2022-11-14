@@ -28,7 +28,7 @@ jobs:
         source /opt/ros/${{ matrix.ros_distro }}/setup.bash
         mkdir -p ${{github.workspace}}/ros2_ws/src
         cd ${{github.workspace}}/ros2_ws
-        colcon build
+#        colcon build
         
     - uses: actions/checkout@v3
       with:
