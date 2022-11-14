@@ -31,6 +31,8 @@ jobs:
       with:
         repository: '107-systems/l3xz_io'
         path: 'ros2_ws/src/l3xz_io'
+        submodules: true
+        fetch-depth: 1
         
     - uses: actions/checkout@v3
       with:
