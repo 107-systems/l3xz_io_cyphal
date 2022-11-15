@@ -39,7 +39,7 @@ public:
 
 
 private:
-  std::map<Dynamixel::Id, float> _dynamixel_angle_map;
+  std::map<dynamixelplusplus::Dynamixel::Id, float> _dynamixel_angle_map;
 
   void update(DynamixelServoName const name, float const angle_deg);
 };

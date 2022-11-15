@@ -13,7 +13,7 @@
 
 #include <memory>
 
-#include <l3xz_io/control/dynamixel/Dynamixel.h>
+#include <dynamixel++/Dynamixel++.h>
 
 /**************************************************************************************
  * NAMESPACE
@@ -30,31 +30,31 @@ class DynamixelMX28
 {
 public:
 
-  DynamixelMX28(std::shared_ptr<Dynamixel> dyn_ctrl);
+  DynamixelMX28(std::shared_ptr<dynamixelplusplus::Dynamixel> dyn_ctrl);
 
-  std::optional<Dynamixel::IdVect> discover();
+  std::optional<dynamixelplusplus::Dynamixel::IdVect> discover();
 
 
-  void turnLedOn (Dynamixel::IdVect const & id_vect);
-  void turnLedOff(Dynamixel::IdVect const & id_vect);
+  void turnLedOn (dynamixelplusplus::Dynamixel::IdVect const & id_vect);
+  void turnLedOff(dynamixelplusplus::Dynamixel::IdVect const & id_vect);
 
-  void torqueOn (Dynamixel::Id const id);
-  void torqueOn (Dynamixel::IdVect const & id_vect);
-  void torqueOff(Dynamixel::IdVect const & id_vect);
+  void torqueOn (dynamixelplusplus::Dynamixel::Id const id);
+  void torqueOn (dynamixelplusplus::Dynamixel::IdVect const & id_vect);
+  void torqueOff(dynamixelplusplus::Dynamixel::IdVect const & id_vect);
 
-  typedef std::tuple<Dynamixel::Id, float> AngleData;
-  typedef std::map<Dynamixel::Id, float> AngleDataSet;
+  typedef std::tuple<dynamixelplusplus::Dynamixel::Id, float> AngleData;
+  typedef std::map<dynamixelplusplus::Dynamixel::Id, float> AngleDataSet;
 
-  std::optional<float> getAngle(Dynamixel::Id const id);
-  AngleDataSet         getAngle(Dynamixel::IdVect const & id_vect);
+  std::optional<float> getAngle(dynamixelplusplus::Dynamixel::Id const id);
+  AngleDataSet         getAngle(dynamixelplusplus::Dynamixel::IdVect const & id_vect);
 
-  bool setAngle(Dynamixel::Id const id, float const angle_deg);
+  bool setAngle(dynamixelplusplus::Dynamixel::Id const id, float const angle_deg);
   bool setAngle(AngleDataSet const & angle_data_set);
 
 
 private:
 
-  std::shared_ptr<Dynamixel> _dyn_ctrl;
+  std::shared_ptr<dynamixelplusplus::Dynamixel> _dyn_ctrl;
 
   enum class ControlTable : uint16_t
   {

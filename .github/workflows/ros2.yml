@@ -10,7 +10,10 @@ env:
 jobs:
   build:
     name: Build on ros2 ${{ matrix.ros_distro }}
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-20.04  # or ubuntu-latest or ubuntu-22.04
+    container:
+      image: ubuntu:focal  # for Foxy or Galactic, and "ubuntu:jammy" for Humble or Rolling
+
     strategy:
       matrix:
         ros_distro: [foxy, galactic]
@@ -22,15 +25,17 @@ jobs:
     
     - name: Setup ros2 workspace
       run: | 
-        source /opt/ros/${{ matrix.ros_distro }}/setup.bash
+        source /opt/ros/${{ matrix.ros_distro }}/setup.sh
         mkdir -p ${{github.workspace}}/ros2_ws/src
         cd ${{github.workspace}}/ros2_ws
-        colcon build
+      shell: bash
         
     - uses: actions/checkout@v3
       with:
         repository: '107-systems/l3xz_io'
         path: 'ros2_ws/src/l3xz_io'
+        submodules: true
+        fetch-depth: 1
         
     - uses: actions/checkout@v3
       with:
@@ -47,3 +52,4 @@ jobs:
         source /opt/ros/${{ matrix.ros_distro }}/setup.bash
         cd ${{github.workspace}}/ros2_ws
         colcon build --event-handlers console_direct+
+      shell: bash
