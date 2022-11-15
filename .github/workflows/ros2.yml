@@ -25,10 +25,10 @@ jobs:
     
     - name: Setup ros2 workspace
       run: | 
-        source /opt/ros/${{ matrix.ros_distro }}/setup.bash
+        source /opt/ros/${{ matrix.ros_distro }}/setup.sh
         mkdir -p ${{github.workspace}}/ros2_ws/src
         cd ${{github.workspace}}/ros2_ws
-#        colcon build
+      shell: bash
         
     - uses: actions/checkout@v3
       with:
@@ -52,3 +52,4 @@ jobs:
         source /opt/ros/${{ matrix.ros_distro }}/setup.bash
         cd ${{github.workspace}}/ros2_ws
         colcon build --event-handlers console_direct+
+      shell: bash
