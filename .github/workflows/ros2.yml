@@ -16,7 +16,7 @@ jobs:
 
     strategy:
       matrix:
-        ros_distro: [foxy, galactic]
+        ros_distro: [ galactic ]
 
     steps:   
     - uses: ros-tooling/setup-ros@v0.4
