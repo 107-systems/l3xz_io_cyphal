@@ -1,22 +1,22 @@
 /**
  * Copyright (c) 2022 LXRobotics GmbH.
  * Author: Alexander Entinger <alexander.entinger@lxrobotics.com>
- * Contributors: https://github.com/107-systems/l3xz_io_cyphal/graphs/contributors.
+ * Contributors: https://github.com/107-systems/l3xz_ros_cyphal_bridge/graphs/contributors.
  */
 
 /**************************************************************************************
  * INCcdLUDES
  **************************************************************************************/
 
-#include <l3xz_io_cyphal/IoNode.h>
+#include <l3xz_ros_cyphal_bridge/IoNode.h>
 
 #include <iomanip>
 
-#include <l3xz_io_cyphal/const/LegList.h>
+#include <l3xz_ros_cyphal_bridge/const/LegList.h>
 
-#include <l3xz_io_cyphal/control/dynamixel/DynamixelIdList.h>
-#include <l3xz_io_cyphal/control/dynamixel/DynamixelAnglePositionReader.h>
-#include <l3xz_io_cyphal/control/opencyphal/OpenCyphalNodeIdList.h>
+#include <l3xz_ros_cyphal_bridge/control/dynamixel/DynamixelIdList.h>
+#include <l3xz_ros_cyphal_bridge/control/dynamixel/DynamixelAnglePositionReader.h>
+#include <l3xz_ros_cyphal_bridge/control/opencyphal/OpenCyphalNodeIdList.h>
 
 /**************************************************************************************
  * NAMESPACE
@@ -64,7 +64,7 @@ static std::list<LegJointKey> const HYDRAULIC_LEG_JOINT_LIST =
  **************************************************************************************/
 
 IoNode::IoNode()
-: Node("l3xz_io_cyphal")
+: Node("l3xz_ros_cyphal_bridge")
 , _state{State::Init_Dynamixel}
 , _open_cyphal_can_if("can0", false)
 , _open_cyphal_node(_open_cyphal_can_if, get_logger())

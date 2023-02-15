@@ -46,8 +46,8 @@ jobs:
         
     - uses: actions/checkout@v3
       with:
-        repository: '107-systems/l3xz_io_cyphal'
-        path: 'ros2_ws/src/l3xz_io_cyphal'
+        repository: '107-systems/l3xz_ros_cyphal_bridge'
+        path: 'ros2_ws/src/l3xz_ros_cyphal_bridge'
         submodules: true
         fetch-depth: 1
         

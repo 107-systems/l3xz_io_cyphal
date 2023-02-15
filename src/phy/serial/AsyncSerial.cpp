@@ -1,14 +1,14 @@
 /**
  * Copyright (c) 2022 LXRobotics GmbH.
  * Author: Alexander Entinger <alexander.entinger@lxrobotics.com>
- * Contributors: https://github.com/107-systems/l3xz_io_cyphal/graphs/contributors.
+ * Contributors: https://github.com/107-systems/l3xz_ros_cyphal_bridge/graphs/contributors.
  */
 
 /**************************************************************************************
  * INCLUDES
  **************************************************************************************/
 
-#include <l3xz_io_cyphal/phy/serial/AsyncSerial.h>
+#include <l3xz_ros_cyphal_bridge/phy/serial/AsyncSerial.h>
 
 #include <boost/bind.hpp>
 
