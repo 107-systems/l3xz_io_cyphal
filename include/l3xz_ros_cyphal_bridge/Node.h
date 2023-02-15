@@ -4,46 +4,50 @@
  * Contributors: https://github.com/107-systems/l3xz_ros_cyphal_bridge/graphs/contributors.
  */
 
-#ifndef PHY_OPENCYPHAL_O1HEAP_HPP_
-#define PHY_OPENCYPHAL_O1HEAP_HPP_
+#ifndef ROS_ROS_BRIDGE_NODE_H_
+#define ROS_ROS_BRIDGE_NODE_H_
 
 /**************************************************************************************
- * INCLUDE
+ * INCLUDES
  **************************************************************************************/
 
-#include <o1heap.h>
+#include <rclcpp/rclcpp.hpp>
+
+#include <l3xz_gait_ctrl/msg/leg_angle.hpp>
 
 /**************************************************************************************
  * NAMESPACE
  **************************************************************************************/
 
-namespace phy::opencyphal
+namespace l3xz
 {
 
 /**************************************************************************************
  * CLASS DECLARATION
  **************************************************************************************/
 
-template <size_t HEAP_SIZE>
-class O1Heap
+class Node : public rclcpp::Node
 {
 public:
-  O1Heap() : _o1heap_ins{o1heapInit(_base, HEAP_SIZE)}
-  { }
-
-  inline void * allocate(size_t const amount) { return o1heapAllocate(_o1heap_ins, amount); }
-  inline void   free    (void * const pointer) { return o1heapFree(_o1heap_ins, pointer); }
+  Node();
 
 
 private:
-  uint8_t _base[HEAP_SIZE] __attribute__ ((aligned (O1HEAP_ALIGNMENT)));
-  O1HeapInstance * _o1heap_ins;
+  rclcpp::TimerBase::SharedPtr _io_loop_timer;
+
+  rclcpp::Publisher<l3xz_gait_ctrl::msg::LegAngle>::SharedPtr _leg_angle_pub;
+  rclcpp::Subscription<l3xz_gait_ctrl::msg::LegAngle>::SharedPtr _leg_angle_sub;
+  l3xz_gait_ctrl::msg::LegAngle _leg_angle_target_msg;
+
+  std::chrono::steady_clock::time_point _prev_io_loop_timepoint;
+  static std::chrono::milliseconds constexpr IO_LOOP_RATE{10};
+  void io_loop();
 };
 
 /**************************************************************************************
  * NAMESPACE
  **************************************************************************************/
 
-} /* phy::opencyphal */
+} /* l3xz */
 
-#endif /* PHY_OPENCYPHAL_O1HEAP_HPP_ */
+#endif /* ROS_ROS_BRIDGE_NODE_H_ */

@@ -9,33 +9,17 @@ find_package(builtin_interfaces REQUIRED)
 find_package(common_interfaces REQUIRED)
 find_package(l3xz_gait_ctrl REQUIRED)
 ##########################################################################
-add_subdirectory(external/libcanard/current)
-add_subdirectory(external/libdynamixelplusplus)
-add_subdirectory(external/libo1heap/current)
-add_subdirectory(external/libsocketcan)
-##########################################################################
 include_directories(
   include
 )
 ##########################################################################
 add_executable(${PROJECT_NAME}_node
-  src/control/opencyphal/LegController.cpp
-  src/control/opencyphal/PumpController.cpp
-  src/phy/opencyphal/Node.cpp
-  src/phy/opencyphal/NodeMonitor.cpp
-  src/phy/opencyphal/SocketCAN.cpp
-  src/IoNode.cpp
+  src/Node.cpp
   src/main.cpp
 )
 #######################################################################################
 target_link_libraries(${PROJECT_NAME}_node
-  canard
-  dynamixel++
-  boost_system
-  boost_thread
-  o1heap
-  pthread
-  socketcan
+
 )
 #######################################################################################
 target_compile_features(${PROJECT_NAME}_node PRIVATE cxx_std_17)
