@@ -19,18 +19,11 @@ include_directories(
 )
 ##########################################################################
 add_executable(${PROJECT_NAME}_node
-  src/control/dynamixel/DynamixelMX28.cpp
-  src/control/dynamixel/DynamixelAnglePositionWriter.cpp
-  src/control/dynamixel/DynamixelAnglePositionReader.cpp
-  src/control/dynamixel/DynamixelServoName.cpp
   src/control/opencyphal/LegController.cpp
   src/control/opencyphal/PumpController.cpp
-  src/control/ssc32/SSC32.cpp
-  src/control/ssc32/ValveController.cpp
   src/phy/opencyphal/Node.cpp
   src/phy/opencyphal/NodeMonitor.cpp
   src/phy/opencyphal/SocketCAN.cpp
-  src/phy/serial/AsyncSerial.cpp
   src/IoNode.cpp
   src/main.cpp
 )

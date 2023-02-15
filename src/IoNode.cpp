@@ -14,8 +14,6 @@
 
 #include <l3xz_ros_cyphal_bridge/const/LegList.h>
 
-#include <l3xz_ros_cyphal_bridge/control/dynamixel/DynamixelIdList.h>
-#include <l3xz_ros_cyphal_bridge/control/dynamixel/DynamixelAnglePositionReader.h>
 #include <l3xz_ros_cyphal_bridge/control/opencyphal/OpenCyphalNodeIdList.h>
 
 /**************************************************************************************
@@ -28,13 +26,6 @@ namespace l3xz
 /**************************************************************************************
  * CONSTANT
  **************************************************************************************/
-
-static std::string const DYNAMIXEL_DEVICE_NAME      = "/dev/serial/by-id/usb-FTDI_USB__-__Serial_Converter_FT4NNZ55-if00-port0";
-static dynamixelplusplus::Dynamixel::Protocol const DYNAMIXEL_PROTOCOL_VERSION = dynamixelplusplus::Dynamixel::Protocol::V2_0;
-static int         const DYNAMIXEL_BAUD_RATE        = 115200;
-
-static std::string const SSC32_DEVICE_NAME = "/dev/serial/by-id/usb-FTDI_FT232R_USB_UART_AH05FOBL-if00-port0";
-static size_t      const SSC32_BAUDRATE    = 115200;
 
 static float constexpr INITIAL_COXA_ANGLE_DEG  = 0.0f;
 static float constexpr INITIAL_FEMUR_ANGLE_DEG = 0.0f;
@@ -65,14 +56,10 @@ static std::list<LegJointKey> const HYDRAULIC_LEG_JOINT_LIST =
 
 IoNode::IoNode()
 : Node("l3xz_ros_cyphal_bridge")
-, _state{State::Init_Dynamixel}
+, _state{State::Init_NodeMonitor}
 , _open_cyphal_can_if("can0", false)
 , _open_cyphal_node(_open_cyphal_can_if, get_logger())
-, _dynamixel_ctrl{new dynamixelplusplus::Dynamixel(DYNAMIXEL_DEVICE_NAME, DYNAMIXEL_PROTOCOL_VERSION, DYNAMIXEL_BAUD_RATE)}
-, _mx28_ctrl{new control::DynamixelMX28(_dynamixel_ctrl)}
 , _open_cyphal_node_monitor{_open_cyphal_node, get_logger(), control::OPEN_CYPHAL_NODE_ID_LIST}
-, _dynamixel_angle_position_writer{}
-, _valve_ctrl{std::make_shared<control::SSC32>(SSC32_DEVICE_NAME, SSC32_BAUDRATE), get_logger()}
 , _pump_ctrl{_open_cyphal_node, get_logger()}
 , _leg_ctrl{_open_cyphal_node, get_logger()}
 , _leg_angle_target_msg{
@@ -113,23 +100,11 @@ void IoNode::timerCallback()
   State next_state = _state;
   switch (_state)
   {
-  case State::Init_Dynamixel:                  next_state = handle_Init_Dynamixel(); break;
-  case State::Init_NodeMonitor: next_state = handle_Init_NodeMonitor(); break;
-  case State::Calibrate:                       next_state = handle_Calibrate(); break;
-  case State::Active:                          next_state = handle_Active(); break;
+    case State::Init_NodeMonitor: next_state = handle_Init_NodeMonitor(); break;
+    case State::Calibrate:        next_state = handle_Calibrate(); break;
+    case State::Active:           next_state = handle_Active(); break;
   }
   _state = next_state;
-}
-
-IoNode::State IoNode::handle_Init_Dynamixel()
-{
-  if (!init_dynamixel())
-  {
-    RCLCPP_ERROR(get_logger(), "failed to initialize all dynamixel servos.");
-    rclcpp::shutdown();
-  }
-
-  return State::Init_NodeMonitor;
 }
 
 IoNode::State IoNode::handle_Init_NodeMonitor()
@@ -165,7 +140,6 @@ IoNode::State IoNode::handle_Init_NodeMonitor()
               phy::opencyphal::NodeMonitor::toStr(_open_cyphal_node_monitor.detectedNodeIdList()).c_str());
 
   /* Start the calibration. */
-  _valve_ctrl.openAllForCalibAndWrite();
   _pump_ctrl.setRPM(4096);
   return State::Calibrate;
 }
@@ -231,21 +205,12 @@ IoNode::State IoNode::handle_Active()
    * READ FROM PERIPHERALS
    **************************************************************************************/
 
-  auto const [dynamixel_leg_joint_angle_position, dynamixel_head_joint_angle_position] = control::DynamixelAnglePositionReader::doBulkRead(_mx28_ctrl, get_logger());
-
   /**************************************************************************************
    * PUBLISH ACTUAL SYSTEM STATE
    **************************************************************************************/
 
   /* l3xz_gait_ctrl *********************************************************************/
   l3xz_gait_ctrl::msg::LegAngle leg_angle_actual_msg;
-
-  leg_angle_actual_msg.coxa_angle_deg [0] = dynamixel_leg_joint_angle_position.at(make_key(Leg::LeftFront,    Joint::Coxa));
-  leg_angle_actual_msg.coxa_angle_deg [1] = dynamixel_leg_joint_angle_position.at(make_key(Leg::LeftMiddle,   Joint::Coxa));
-  leg_angle_actual_msg.coxa_angle_deg [2] = dynamixel_leg_joint_angle_position.at(make_key(Leg::LeftBack,     Joint::Coxa));
-  leg_angle_actual_msg.coxa_angle_deg [3] = dynamixel_leg_joint_angle_position.at(make_key(Leg::RightBack,    Joint::Coxa));
-  leg_angle_actual_msg.coxa_angle_deg [4] = dynamixel_leg_joint_angle_position.at(make_key(Leg::RightMiddle,  Joint::Coxa));
-  leg_angle_actual_msg.coxa_angle_deg [5] = dynamixel_leg_joint_angle_position.at(make_key(Leg::RightFront,   Joint::Coxa));
 
   leg_angle_actual_msg.femur_angle_deg[0] = _leg_ctrl.femurAngle_deg(Leg::LeftFront);
   leg_angle_actual_msg.femur_angle_deg[1] = _leg_ctrl.femurAngle_deg(Leg::LeftMiddle);
@@ -267,14 +232,6 @@ IoNode::State IoNode::handle_Active()
    * WRITE TARGET STATE TO PERIPHERAL DRIVERS
    **************************************************************************************/
 
-  _dynamixel_angle_position_writer.update(make_key(Leg::LeftFront,   Joint::Coxa), _leg_angle_target_msg.coxa_angle_deg[0]);
-  _dynamixel_angle_position_writer.update(make_key(Leg::LeftMiddle,  Joint::Coxa), _leg_angle_target_msg.coxa_angle_deg[1]);
-  _dynamixel_angle_position_writer.update(make_key(Leg::LeftBack,    Joint::Coxa), _leg_angle_target_msg.coxa_angle_deg[2]);
-  _dynamixel_angle_position_writer.update(make_key(Leg::RightBack,   Joint::Coxa), _leg_angle_target_msg.coxa_angle_deg[3]);
-  _dynamixel_angle_position_writer.update(make_key(Leg::RightMiddle, Joint::Coxa), _leg_angle_target_msg.coxa_angle_deg[4]);
-  _dynamixel_angle_position_writer.update(make_key(Leg::RightFront,  Joint::Coxa), _leg_angle_target_msg.coxa_angle_deg[5]);
-
-
   bool turn_hydraulic_pump_on = false;
   for (auto [leg, joint] : HYDRAULIC_LEG_JOINT_LIST)
   {
@@ -294,11 +251,7 @@ IoNode::State IoNode::handle_Active()
    * WRITE TO PERIPHERALS
    **************************************************************************************/
 
-  if (!_dynamixel_angle_position_writer.doBulkWrite(_mx28_ctrl))
-    RCLCPP_ERROR(get_logger(), "failed to set target angles for all dynamixel servos");
-
   _pump_ctrl.doWrite();
-  _valve_ctrl.doBulkWrite();
 
   return State::Active;
 }
@@ -333,37 +286,6 @@ float IoNode::get_angle_deg(l3xz_gait_ctrl::msg::LegAngle const & msg, Leg const
   };
 
   return ANGLE_POSITION_MAP.at(make_key(leg, joint));
-}
-
-bool IoNode::init_dynamixel()
-{
-  std::optional<dynamixelplusplus::Dynamixel::IdVect> opt_act_id_vect = _mx28_ctrl->discover();
-
-  if (!opt_act_id_vect) {
-    RCLCPP_ERROR(get_logger(), "error, zero MX-28 servos detected.");
-    return false;
-  }
-
-  std::stringstream act_id_list;
-  for (auto id : opt_act_id_vect.value())
-    act_id_list << static_cast<int>(id) << " ";
-  RCLCPP_INFO(get_logger(), "detected Dynamixel MX-28: { %s}", act_id_list.str().c_str());
-
-  bool all_req_id_found = true;
-  for (auto req_id : control::DYNAMIXEL_ID_LIST)
-  {
-    bool const req_id_found = std::count(opt_act_id_vect.value().begin(),
-                                         opt_act_id_vect.value().end(),
-                                         req_id) > 0;
-    if (!req_id_found) {
-      all_req_id_found = false;
-      RCLCPP_ERROR(get_logger(), "error, unable to detect required dynamixel with node id %d", static_cast<int>(req_id));
-    }
-  }
-  if (!all_req_id_found)
-    return false;
-
-  return true;
 }
 
 /**************************************************************************************

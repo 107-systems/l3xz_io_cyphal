@@ -19,10 +19,8 @@
 #include <l3xz_ros_cyphal_bridge/phy/opencyphal/SocketCAN.h>
 #include <l3xz_ros_cyphal_bridge/phy/opencyphal/NodeMonitor.h>
 
-#include <l3xz_ros_cyphal_bridge/control/dynamixel/DynamixelAnglePositionWriter.h>
 #include <l3xz_ros_cyphal_bridge/control/opencyphal/LegController.h>
 #include <l3xz_ros_cyphal_bridge/control/opencyphal/PumpController.h>
-#include <l3xz_ros_cyphal_bridge/control/ssc32/ValveController.h>
 
 #include <l3xz_gait_ctrl/msg/leg_angle.hpp>
 
@@ -46,7 +44,6 @@ public:
 private:
   enum class State
   {
-    Init_Dynamixel,
     Init_NodeMonitor,
     Calibrate,
     Active
@@ -55,12 +52,8 @@ private:
 
   phy::opencyphal::SocketCAN _open_cyphal_can_if;
   phy::opencyphal::Node _open_cyphal_node;
-  dynamixelplusplus::SharedDynamixel _dynamixel_ctrl;
-  control::SharedMX28 _mx28_ctrl;
 
   phy::opencyphal::NodeMonitor _open_cyphal_node_monitor;
-  control::DynamixelAnglePositionWriter _dynamixel_angle_position_writer;
-  control::ValveController _valve_ctrl;
   control::PumpController _pump_ctrl;
   control::LegController _leg_ctrl;
 
@@ -72,14 +65,11 @@ private:
 
   void timerCallback();
 
-  State handle_Init_Dynamixel();
   State handle_Init_NodeMonitor();
   State handle_Calibrate();
   State handle_Active();
 
   static float get_angle_deg(l3xz_gait_ctrl::msg::LegAngle const & msg, Leg const leg, Joint const joint);
-
-  bool init_dynamixel();
 };
 
 /**************************************************************************************
