@@ -1,7 +1,7 @@
 /**
  * Copyright (c) 2022 LXRobotics GmbH.
  * Author: Alexander Entinger <alexander.entinger@lxrobotics.com>
- * Contributors: https://github.com/107-systems/l3xz_io/graphs/contributors.
+ * Contributors: https://github.com/107-systems/l3xz_ros_cyphal_bridge/graphs/contributors.
  */
 
 /**************************************************************************************
@@ -12,7 +12,7 @@
 
 #include <rclcpp/rclcpp.hpp>
 
-#include <l3xz_io/IoNode.h>
+#include <l3xz_ros_cyphal_bridge/Node.h>
 
 /**************************************************************************************
  * MAIN
@@ -21,7 +21,7 @@
 int main(int argc, char **argv) try
 {
   rclcpp::init(argc, argv);
-  rclcpp::spin(std::make_shared<l3xz::IoNode>());
+  rclcpp::spin(std::make_shared<l3xz::Node>());
   rclcpp::shutdown();
 
   return EXIT_SUCCESS;

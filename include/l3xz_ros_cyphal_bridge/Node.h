@@ -1,37 +1,53 @@
 /**
  * Copyright (c) 2022 LXRobotics GmbH.
  * Author: Alexander Entinger <alexander.entinger@lxrobotics.com>
- * Contributors: https://github.com/107-systems/l3xz_io/graphs/contributors.
+ * Contributors: https://github.com/107-systems/l3xz_ros_cyphal_bridge/graphs/contributors.
  */
 
-#ifndef CONTROL_OPEN_CYPHAL_ID_LIST_H_
-#define CONTROL_OPEN_CYPHAL_ID_LIST_H_
+#ifndef ROS_ROS_BRIDGE_NODE_H_
+#define ROS_ROS_BRIDGE_NODE_H_
 
 /**************************************************************************************
  * INCLUDES
  **************************************************************************************/
 
-#include <list>
+#include <rclcpp/rclcpp.hpp>
 
-#include <canard.h>
+#include <l3xz_gait_ctrl/msg/leg_angle.hpp>
 
 /**************************************************************************************
  * NAMESPACE
  **************************************************************************************/
 
-namespace control
+namespace l3xz
 {
 
 /**************************************************************************************
- * CONSTANT
+ * CLASS DECLARATION
  **************************************************************************************/
 
-static std::list<CanardNodeID> const OPEN_CYPHAL_NODE_ID_LIST = {1, 2, 3, 4, 5, 6, 10};
+class Node : public rclcpp::Node
+{
+public:
+  Node();
+
+
+private:
+  rclcpp::TimerBase::SharedPtr _io_loop_timer;
+
+  rclcpp::Publisher<l3xz_gait_ctrl::msg::LegAngle>::SharedPtr _leg_angle_pub;
+  rclcpp::Subscription<l3xz_gait_ctrl::msg::LegAngle>::SharedPtr _leg_angle_sub;
+  l3xz_gait_ctrl::msg::LegAngle _leg_angle_target_msg;
+
+  std::chrono::steady_clock::time_point _prev_io_loop_timepoint;
+  static std::chrono::milliseconds constexpr IO_LOOP_RATE{10};
+  void io_loop();
+};
 
 /**************************************************************************************
  * NAMESPACE
  **************************************************************************************/
 
-} /* control */
+} /* l3xz */
 
-#endif /* CONTROL_OPEN_CYPHAL_ID_LIST_H_ */
+#endif /* ROS_ROS_BRIDGE_NODE_H_ */

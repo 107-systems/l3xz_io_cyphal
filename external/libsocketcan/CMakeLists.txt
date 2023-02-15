@@ -7,5 +7,5 @@ add_library(${LIBSOCKETCAN_TARGET} STATIC
   socketcan.c
 )
 target_include_directories(${LIBSOCKETCAN_TARGET} PUBLIC .)
-target_include_directories(${LIBSOCKETCAN_TARGET} PRIVATE ../libcanard/current)
+target_include_directories(${LIBSOCKETCAN_TARGET} PRIVATE ../107-Arduino-Cyphal/src/libcanard)
 ##########################################################################

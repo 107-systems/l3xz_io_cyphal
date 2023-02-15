@@ -1,20 +1,19 @@
 <?xml version="1.0"?>
 <?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
 <package format="3">
-  <name>l3xz_io</name>
+  <name>l3xz_ros_cyphal_bridge</name>
   <version>1.0.0</version>
   <description>ROS2 IO driver package for the L3X-Z hexapod.</description>
   <maintainer email="consulting@lxrobotics.com">Alexander Entinger</maintainer>
   <license>Copyright LXRobotics GmbH</license>
 
   <url type="website">https://107-systems.org/</url>
-  <url type="repository">https://github.com/107-systems/l3xz_io</url>
+  <url type="repository">https://github.com/107-systems/l3xz_ros_cyphal_bridge</url>
 
   <buildtool_depend>ament_cmake</buildtool_depend>
 
   <depend>rclcpp</depend>
   <depend>l3xz_gait_ctrl</depend>
-  <depend>l3xz_head_ctrl</depend>
 
   <test_depend>ament_lint_auto</test_depend>
   <test_depend>ament_lint_common</test_depend>
