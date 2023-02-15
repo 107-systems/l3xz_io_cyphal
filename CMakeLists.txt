@@ -9,6 +9,9 @@ find_package(builtin_interfaces REQUIRED)
 find_package(common_interfaces REQUIRED)
 find_package(l3xz_gait_ctrl REQUIRED)
 ##########################################################################
+add_subdirectory(external/107-Arduino-Cyphal)
+add_subdirectory(external/libsocketcan)
+##########################################################################
 include_directories(
   include
 )
@@ -19,7 +22,7 @@ add_executable(${PROJECT_NAME}_node
 )
 #######################################################################################
 target_link_libraries(${PROJECT_NAME}_node
-
+  cyphal++
 )
 #######################################################################################
 target_compile_features(${PROJECT_NAME}_node PRIVATE cxx_std_17)
