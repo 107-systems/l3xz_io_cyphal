@@ -1,14 +1,14 @@
 /**
  * Copyright (c) 2022 LXRobotics GmbH.
  * Author: Alexander Entinger <alexander.entinger@lxrobotics.com>
- * Contributors: https://github.com/107-systems/l3xz_io/graphs/contributors.
+ * Contributors: https://github.com/107-systems/l3xz_io_cyphal/graphs/contributors.
  */
 
 /**************************************************************************************
  * INCLUDE
  **************************************************************************************/
 
-#include <l3xz_io/phy/opencyphal/Node.hpp>
+#include <l3xz_io_cyphal/phy/opencyphal/Node.hpp>
 
 #include <cstring>
 

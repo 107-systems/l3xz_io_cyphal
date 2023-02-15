@@ -1,22 +1,22 @@
 /**
  * Copyright (c) 2022 LXRobotics GmbH.
  * Author: Alexander Entinger <alexander.entinger@lxrobotics.com>
- * Contributors: https://github.com/107-systems/l3xz_io/graphs/contributors.
+ * Contributors: https://github.com/107-systems/l3xz_io_cyphal/graphs/contributors.
  */
 
 /**************************************************************************************
  * INCcdLUDES
  **************************************************************************************/
 
-#include <l3xz_io/IoNode.h>
+#include <l3xz_io_cyphal/IoNode.h>
 
 #include <iomanip>
 
-#include <l3xz_io/const/LegList.h>
+#include <l3xz_io_cyphal/const/LegList.h>
 
-#include <l3xz_io/control/dynamixel/DynamixelIdList.h>
-#include <l3xz_io/control/dynamixel/DynamixelAnglePositionReader.h>
-#include <l3xz_io/control/opencyphal/OpenCyphalNodeIdList.h>
+#include <l3xz_io_cyphal/control/dynamixel/DynamixelIdList.h>
+#include <l3xz_io_cyphal/control/dynamixel/DynamixelAnglePositionReader.h>
+#include <l3xz_io_cyphal/control/opencyphal/OpenCyphalNodeIdList.h>
 
 /**************************************************************************************
  * NAMESPACE
@@ -64,7 +64,7 @@ static std::list<LegJointKey> const HYDRAULIC_LEG_JOINT_LIST =
  **************************************************************************************/
 
 IoNode::IoNode()
-: Node("l3xz_io")
+: Node("l3xz_io_cyphal")
 , _state{State::Init_Dynamixel}
 , _open_cyphal_can_if("can0", false)
 , _open_cyphal_node(_open_cyphal_can_if, get_logger())
@@ -90,17 +90,6 @@ IoNode::IoNode()
       return msg;
     } ()
   }
-, _head_angle_target_msg{
-    []()
-    {
-      l3xz_head_ctrl::msg::HeadAngle msg;
-
-      msg.pan_angle_deg  = INITIAL_PAN_ANGLE_DEG;
-      msg.tilt_angle_deg = INITIAL_TILT_ANGLE_DEG;
-
-      return msg;
-    } ()
-  }
 {
   _timer = create_wall_timer
     (std::chrono::milliseconds(50), [this]() { this->timerCallback(); });
@@ -112,15 +101,6 @@ IoNode::IoNode()
     ("/l3xz/ctrl/gait/angle/actual", 10, [this](l3xz_gait_ctrl::msg::LegAngle::SharedPtr const leg_angle_target_msg)
     {
       _leg_angle_target_msg = *leg_angle_target_msg;
-    });
-
-  _head_angle_pub = create_publisher<l3xz_head_ctrl::msg::HeadAngle>
-    ("/l3xz/ctrl/head/angle/actual", 10);
-
-  _head_angle_sub = create_subscription<l3xz_head_ctrl::msg::HeadAngle>
-    ("/l3xz/ctrl/head/angle/target", 10, [this](l3xz_head_ctrl::msg::HeadAngle::SharedPtr const head_angle_target_msg)
-    {
-      _head_angle_target_msg = *head_angle_target_msg;
     });
 }
 
@@ -257,12 +237,6 @@ IoNode::State IoNode::handle_Active()
    * PUBLISH ACTUAL SYSTEM STATE
    **************************************************************************************/
 
-  /* l3xz_head_ctrl *********************************************************************/
-  l3xz_head_ctrl::msg::HeadAngle head_angle_actual_msg;
-  head_angle_actual_msg.pan_angle_deg  = dynamixel_head_joint_angle_position.at(HeadJointKey::Pan);
-  head_angle_actual_msg.tilt_angle_deg = dynamixel_head_joint_angle_position.at(HeadJointKey::Tilt);
-  _head_angle_pub->publish(head_angle_actual_msg);
-
   /* l3xz_gait_ctrl *********************************************************************/
   l3xz_gait_ctrl::msg::LegAngle leg_angle_actual_msg;
 
@@ -292,9 +266,6 @@ IoNode::State IoNode::handle_Active()
   /**************************************************************************************
    * WRITE TARGET STATE TO PERIPHERAL DRIVERS
    **************************************************************************************/
-
-  _dynamixel_angle_position_writer.update(HeadJointKey::Pan,  _head_angle_target_msg.pan_angle_deg);
-  _dynamixel_angle_position_writer.update(HeadJointKey::Tilt, _head_angle_target_msg.tilt_angle_deg);
 
   _dynamixel_angle_position_writer.update(make_key(Leg::LeftFront,   Joint::Coxa), _leg_angle_target_msg.coxa_angle_deg[0]);
   _dynamixel_angle_position_writer.update(make_key(Leg::LeftMiddle,  Joint::Coxa), _leg_angle_target_msg.coxa_angle_deg[1]);

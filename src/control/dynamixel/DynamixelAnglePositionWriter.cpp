@@ -1,14 +1,14 @@
 /**
  * Copyright (c) 2022 LXRobotics GmbH.
  * Author: Alexander Entinger <alexander.entinger@lxrobotics.com>
- * Contributors: https://github.com/107-systems/l3xz_io/graphs/contributors.
+ * Contributors: https://github.com/107-systems/l3xz_io_cyphal/graphs/contributors.
  */
 
 /**************************************************************************************
  * INCLUDES
  **************************************************************************************/
 
-#include <l3xz_io/control/dynamixel/DynamixelAnglePositionWriter.h>
+#include <l3xz_io_cyphal/control/dynamixel/DynamixelAnglePositionWriter.h>
 
 /**************************************************************************************
  * NAMESPACE
