@@ -73,7 +73,7 @@ void CanManager::rx_thread_func()
        */
       for(size_t retry_cnt = 0; ; retry_cnt++)
       {
-        /* Close (if possible) and invalidate the the file descriptor
+        /* Close (if possible) and invalidate the file descriptor
          * before starting the process of re-establishing connection.
          */
         close(_socket_can_fd);
@@ -88,10 +88,10 @@ void CanManager::rx_thread_func()
                        IS_CAN_FD,
                        strerror(abs(_socket_can_fd)));
 
-          /* Wait a little bit before the next retry. */
+          /* Wait a little before the next retry. */
           std::this_thread::sleep_for(std::chrono::seconds(1));
 
-          /* Jumpt to the end of the loop. */
+          /* Jump to the end of the loop. */
           continue;
         }
 
@@ -114,7 +114,7 @@ void CanManager::rx_thread_func()
                        retry_cnt,
                        strerror(abs(rc_blocking)));
 
-          /* Wait a little bit before the next retry. */
+          /* Wait a little before the next retry. */
           std::this_thread::sleep_for(std::chrono::seconds(1));
         }
       }
