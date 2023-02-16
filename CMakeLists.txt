@@ -17,12 +17,13 @@ include_directories(
 )
 ##########################################################################
 add_executable(${PROJECT_NAME}_node
+  src/CanManager.cpp
   src/Node.cpp
   src/main.cpp
 )
 #######################################################################################
 target_link_libraries(${PROJECT_NAME}_node
-  cyphal++
+  cyphal++ socketcan
 )
 #######################################################################################
 target_compile_features(${PROJECT_NAME}_node PRIVATE cxx_std_17)

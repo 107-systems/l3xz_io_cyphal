@@ -39,6 +39,14 @@ Node::Node()
     } ()
   }
 {
+  _can_mgr = std::unique_ptr<CanManager>
+    (new CanManager(get_logger(),
+                    "vcan0",
+                    [this](CanardFrame const & frame)
+                    {
+                      RCLCPP_INFO(get_logger(), "CAN frame received");
+                    }));
+
   _leg_angle_pub = create_publisher<l3xz_gait_ctrl::msg::LegAngle>
     ("/l3xz/ctrl/gait/angle/actual", 10);
 
@@ -54,6 +62,8 @@ Node::Node()
      {
        this->io_loop();
      });
+
+  RCLCPP_INFO(get_logger(), "Node started successfully.");
 }
 
 /**************************************************************************************

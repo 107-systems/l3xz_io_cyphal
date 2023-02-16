@@ -9,6 +9,7 @@ def generate_launch_description():
       executable='l3xz_ros_cyphal_bridge_node',
       name='l3xz_ros_cyphal_bridge',
       output='screen',
+      emulate_tty=True,
       parameters=[]
     )
   ])

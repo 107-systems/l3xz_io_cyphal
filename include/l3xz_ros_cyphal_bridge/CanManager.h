@@ -4,20 +4,21 @@
  * Contributors: https://github.com/107-systems/l3xz_ros_cyphal_bridge/graphs/contributors.
  */
 
-#ifndef ROS_ROS_BRIDGE_NODE_H_
-#define ROS_ROS_BRIDGE_NODE_H_
+#ifndef L3XZ_ROS_CYPHAL_BRIDGE_CANMANAGER_H
+#define L3XZ_ROS_CYPHAL_BRIDGE_CANMANAGER_H
 
 /**************************************************************************************
  * INCLUDES
  **************************************************************************************/
 
-#include <memory>
+#include <socketcan.h>
+
+#include <string>
+#include <thread>
+#include <atomic>
+#include <functional>
 
 #include <rclcpp/rclcpp.hpp>
-
-#include <l3xz_gait_ctrl/msg/leg_angle.hpp>
-
-#include "CanManager.h"
 
 /**************************************************************************************
  * NAMESPACE
@@ -30,23 +31,26 @@ namespace l3xz
  * CLASS DECLARATION
  **************************************************************************************/
 
-class Node : public rclcpp::Node
+class CanManager
 {
 public:
-  Node();
+  typedef std::function<void(CanardFrame const &)> OnCanFrameReceivedFunc;
 
+  CanManager(rclcpp::Logger const logger,
+             std::string const & iface_name,
+             OnCanFrameReceivedFunc on_can_frame_received);
+  ~CanManager();
 
 private:
-  std::unique_ptr<CanManager> _can_mgr;
+  rclcpp::Logger const _logger;
+  std::string const IFACE_NAME;
+  bool const IS_CAN_FD;
+  int _socket_can_fd;
+  OnCanFrameReceivedFunc _on_can_frame_received;
 
-  rclcpp::Publisher<l3xz_gait_ctrl::msg::LegAngle>::SharedPtr _leg_angle_pub;
-  rclcpp::Subscription<l3xz_gait_ctrl::msg::LegAngle>::SharedPtr _leg_angle_sub;
-  l3xz_gait_ctrl::msg::LegAngle _leg_angle_target_msg;
-
-  rclcpp::TimerBase::SharedPtr _io_loop_timer;
-  std::chrono::steady_clock::time_point _prev_io_loop_timepoint;
-  static std::chrono::milliseconds constexpr IO_LOOP_RATE{10};
-  void io_loop();
+  std::atomic<bool> _rx_thread_active;
+  std::thread _rx_thread;
+  void rx_thread_func();
 };
 
 /**************************************************************************************
@@ -55,4 +59,4 @@ private:
 
 } /* l3xz */
 
-#endif /* ROS_ROS_BRIDGE_NODE_H_ */
+#endif /* L3XZ_ROS_CYPHAL_BRIDGE_CANMANAGER_H */
