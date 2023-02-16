@@ -45,6 +45,29 @@ CanManager::~CanManager()
 }
 
 /**************************************************************************************
+ * PUBLIC MEMBER FUNCTIONS
+ **************************************************************************************/
+
+bool CanManager::transmit(CanardFrame const & frame)
+{
+  static CanardMicrosecond constexpr CAN_TRANSMIT_TIMEOUT_us = 1000*1000UL; /* 1 second. */
+
+  int16_t const rc = socketcanPush(_socket_can_fd, &frame, CAN_TRANSMIT_TIMEOUT_us);
+
+  if (rc < 0) {
+    RCLCPP_ERROR(_logger, "'socketcanPush' failed with error %s.", strerror(abs(rc)));
+    return false;
+  }
+
+  if (rc == 0) {
+    RCLCPP_ERROR(_logger, "'socketcanPush' failed with error 'timeout'.");
+    return false;
+  }
+
+  return true;
+}
+
+/**************************************************************************************
  * PRIVATE MEMBER FUNCTIONS
  **************************************************************************************/
 

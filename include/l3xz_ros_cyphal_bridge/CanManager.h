@@ -41,6 +41,10 @@ public:
              OnCanFrameReceivedFunc on_can_frame_received);
   ~CanManager();
 
+
+  bool transmit(CanardFrame const & frame);
+
+
 private:
   rclcpp::Logger const _logger;
   std::string const IFACE_NAME;
