@@ -39,6 +39,18 @@ Node::Node()
     } ()
   }
 {
+  declare_parameter("can_iface", "can0");
+
+  RCLCPP_INFO(get_logger(), "configuring CAN bus:\n\tDevice: %s", get_parameter("can_iface").as_string().c_str());
+
+  _can_mgr = std::unique_ptr<CanManager>
+    (new CanManager(get_logger(),
+                    get_parameter("can_iface").as_string(),
+                    [this](CanardFrame const & frame)
+                    {
+                      RCLCPP_INFO(get_logger(), "CAN frame received");
+                    }));
+
   _leg_angle_pub = create_publisher<l3xz_gait_ctrl::msg::LegAngle>
     ("/l3xz/ctrl/gait/angle/actual", 10);
 
@@ -54,6 +66,8 @@ Node::Node()
      {
        this->io_loop();
      });
+
+  RCLCPP_INFO(get_logger(), "Node started successfully.");
 }
 
 /**************************************************************************************

@@ -22,3 +22,8 @@ colcon_ws$ colcon build --packages-select l3xz_ros_cyphal_bridge
 colcon_ws$ source install/setup.bash
 colcon_ws$ ros2 launch l3xz_ros_cyphal_bridge bridge.py
 ```
+
+##### Parameters
+| Name | Default | Description |
+|:-:|:-:|-|
+| `can_iface` | `can0` | Network name of CAN bus. |
