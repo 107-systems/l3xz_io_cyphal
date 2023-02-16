@@ -59,7 +59,11 @@ void CanManager::rx_thread_func()
 
     int16_t const rc_blocking = socketcanPop(_socket_can_fd, &rx_frame, sizeof(payload_buffer), payload_buffer, CANARD_DEFAULT_TRANSFER_ID_TIMEOUT_USEC, nullptr);
 
-    if (rc_blocking < 0)
+    if (rc_blocking > 0)
+      _on_can_frame_received(rx_frame);
+    else if (rc_blocking == 0)
+      RCLCPP_DEBUG(_logger, "'socketcanPop' receive time-out (this is expected if no CAN messages are being received).");
+    else
     {
       RCLCPP_ERROR(_logger, "'socketcanPop' failed with error %s.", strerror(abs(rc_blocking)));
 
@@ -75,7 +79,8 @@ void CanManager::rx_thread_func()
         close(_socket_can_fd);
         _socket_can_fd = socketcanOpen(IFACE_NAME.c_str(), IS_CAN_FD);
 
-        if (_socket_can_fd < 0) {
+        if (_socket_can_fd < 0)
+        {
           RCLCPP_ERROR(_logger,
                        "[Retry #%ld] 'socketcanOpen(\"%s\", %d)' failed with error %s.",
                        retry_cnt,
@@ -86,6 +91,7 @@ void CanManager::rx_thread_func()
           /* Wait a little bit before the next retry. */
           std::this_thread::sleep_for(std::chrono::seconds(1));
 
+          /* Jumpt to the end of the loop. */
           continue;
         }
 
@@ -94,7 +100,14 @@ void CanManager::rx_thread_func()
          * leave this loop.
          */
         int16_t const rc_non_blocking = socketcanPop(_socket_can_fd, &rx_frame, sizeof(payload_buffer), payload_buffer, 0, nullptr);
-        if (rc_non_blocking < 0)
+        if (rc_non_blocking > 0) /* Frame received. */
+        {
+          _on_can_frame_received(rx_frame);
+          break;
+        }
+        else if (rc_non_blocking == 0) /* Timeout. */
+          break;
+        else
         {
           RCLCPP_ERROR(_logger,
                        "[Retry #%ld] 'socketcanPop' failed with error %s.",
@@ -103,23 +116,11 @@ void CanManager::rx_thread_func()
 
           /* Wait a little bit before the next retry. */
           std::this_thread::sleep_for(std::chrono::seconds(1));
-
-          continue;
-        }
-        else if (rc_non_blocking == 0) /* Timeout. */
-          break;
-        else if (rc_non_blocking > 0) { /* Frame received. */
-          _on_can_frame_received(rx_frame);
-          break;
         }
       }
 
       RCLCPP_INFO(_logger, "Re-opening CAN device succeeded.");
     }
-    else if (rc_blocking == 0)
-      RCLCPP_DEBUG(_logger, "'socketcanPop' receive time-out (this is expected if no CAN messages are being received).");
-    else
-      _on_can_frame_received(rx_frame);
   }
 
   /* Cleanup. */
