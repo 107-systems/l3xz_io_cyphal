@@ -10,6 +10,8 @@ def generate_launch_description():
       name='l3xz_ros_cyphal_bridge',
       output='screen',
       emulate_tty=True,
-      parameters=[]
+      parameters=[
+        {'can_iface' : 'vcan0'},
+      ]
     )
   ])

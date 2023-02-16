@@ -39,9 +39,13 @@ Node::Node()
     } ()
   }
 {
+  declare_parameter("can_iface", "can0");
+
+  RCLCPP_INFO(get_logger(), "configuring CAN bus:\n\tDevice: %s", get_parameter("can_iface").as_string().c_str());
+
   _can_mgr = std::unique_ptr<CanManager>
     (new CanManager(get_logger(),
-                    "vcan0",
+                    get_parameter("can_iface").as_string(),
                     [this](CanardFrame const & frame)
                     {
                       RCLCPP_INFO(get_logger(), "CAN frame received");
