@@ -1,7 +1,7 @@
 /**
  * Copyright (c) 2022 LXRobotics GmbH.
  * Author: Alexander Entinger <alexander.entinger@lxrobotics.com>
- * Contributors: https://github.com/107-systems/l3xz_ros_cyphal_bridge/graphs/contributors.
+ * Contributors: https://github.com/107-systems/ros2_cyphal_bridge/graphs/contributors.
  */
 
 #ifndef ROS_ROS_BRIDGE_NODE_H_
@@ -14,8 +14,6 @@
 #include <memory>
 
 #include <rclcpp/rclcpp.hpp>
-
-#include <l3xz_gait_ctrl/msg/leg_angle.hpp>
 
 #include "CanManager.h"
 
@@ -38,10 +36,6 @@ public:
 
 private:
   std::unique_ptr<CanManager> _can_mgr;
-
-  rclcpp::Publisher<l3xz_gait_ctrl::msg::LegAngle>::SharedPtr _leg_angle_pub;
-  rclcpp::Subscription<l3xz_gait_ctrl::msg::LegAngle>::SharedPtr _leg_angle_sub;
-  l3xz_gait_ctrl::msg::LegAngle _leg_angle_target_msg;
 
   rclcpp::TimerBase::SharedPtr _io_loop_timer;
   std::chrono::steady_clock::time_point _prev_io_loop_timepoint;

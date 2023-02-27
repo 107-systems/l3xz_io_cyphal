@@ -1,7 +1,7 @@
 /**
  * Copyright (c) 2022 LXRobotics GmbH.
  * Author: Alexander Entinger <alexander.entinger@lxrobotics.com>
- * Contributors: https://github.com/107-systems/l3xz_ros_cyphal_bridge/graphs/contributors.
+ * Contributors: https://github.com/107-systems/ros2_cyphal_bridge/graphs/contributors.
  */
 
 /**************************************************************************************
@@ -12,7 +12,7 @@
 
 #include <rclcpp/rclcpp.hpp>
 
-#include <l3xz_ros_cyphal_bridge/Node.h>
+#include <ros2_cyphal_bridge/Node.h>
 
 /**************************************************************************************
  * MAIN
