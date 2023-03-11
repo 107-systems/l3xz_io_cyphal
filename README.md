@@ -22,7 +22,7 @@ colcon build --packages-select ros2_cyphal_bridge
 #### How-to-run
 ```bash
 cd $COLCON_WS
-source install/setup.bash
+. install/setup.bash
 ros2 launch ros2_cyphal_bridge bridge.py
 ```
 
