@@ -12,15 +12,18 @@ This package provides the interface between ROS and [L3X-Z](https://github.com/1
 
 #### How-to-build
 ```bash
-colcon_ws/src$ git clone --recursive https://github.com/107-systems/ros2_cyphal_bridge
-colcon_ws$ source /opt/ros/humble/setup.bash
-colcon_ws$ colcon build --packages-select ros2_cyphal_bridge
+cd $COLCON_WS/src
+git clone --recursive https://github.com/107-systems/ros2_cyphal_bridge
+cd $COLCON_WS
+source /opt/ros/humble/setup.bash
+colcon build --packages-select ros2_cyphal_bridge
 ```
 
 #### How-to-run
 ```bash
-colcon_ws$ source install/setup.bash
-colcon_ws$ ros2 launch ros2_cyphal_bridge bridge.py
+cd $COLCON_WS
+source install/setup.bash
+ros2 launch ros2_cyphal_bridge bridge.py
 ```
 
 #### Interface Documentation
