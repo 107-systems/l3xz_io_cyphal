@@ -5,6 +5,7 @@ project(ros2_cyphal_bridge)
 #######################################################################################
 find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
+find_package(std_msgs REQUIRED)
 find_package(builtin_interfaces REQUIRED)
 find_package(common_interfaces REQUIRED)
 ##########################################################################
@@ -16,6 +17,8 @@ include_directories(
 )
 ##########################################################################
 add_executable(${PROJECT_NAME}_node
+  src/types/Leg.cpp
+  src/types/Joint.cpp
   src/CanManager.cpp
   src/Node.cpp
   src/main.cpp
@@ -27,7 +30,7 @@ target_link_libraries(${PROJECT_NAME}_node
 #######################################################################################
 target_compile_features(${PROJECT_NAME}_node PRIVATE cxx_std_17)
 target_compile_options(${PROJECT_NAME}_node PRIVATE -Wall -Werror -pedantic)
-ament_target_dependencies(${PROJECT_NAME}_node rclcpp)
+ament_target_dependencies(${PROJECT_NAME}_node rclcpp std_msgs)
 #######################################################################################
 install(TARGETS
   ${PROJECT_NAME}_node

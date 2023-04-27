@@ -12,6 +12,7 @@ def generate_launch_description():
       emulate_tty=True,
       parameters=[
         {'can_iface' : 'vcan0'},
+        {'can_node_id' : 100},
       ]
     )
   ])
