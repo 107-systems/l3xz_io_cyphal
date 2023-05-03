@@ -77,14 +77,14 @@ Node::Node()
 
   _node_hdl.setNodeId(get_parameter("can_node_id").as_int());
 
-  _can_mgr = std::unique_ptr<CanManager>(new CanManager(
+  _can_mgr = std::make_unique<CanManager>(
     get_logger(),
     get_parameter("can_iface").as_string(),
     [this](CanardFrame const & frame)
     {
       std::lock_guard<std::mutex> lock(_node_mtx);
       _node_hdl.onCanFrameReceived(frame);
-    }));
+    });
 
   /* Configure periodic control loop function. */
   _io_loop_timer = create_wall_timer
