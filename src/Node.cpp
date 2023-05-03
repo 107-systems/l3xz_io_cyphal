@@ -33,8 +33,12 @@ Node::Node()
             CYPHAL_RX_QUEUE_SIZE,
             ::Node::DEFAULT_MTU_SIZE}
 , _node_mtx{}
+, _cyphal_node_start{std::chrono::steady_clock::now()}
+, _prev_heartbeat_timepoint{std::chrono::steady_clock::now()}
 , _prev_io_loop_timepoint{std::chrono::steady_clock::now()}
 {
+  _cyphal_heartbeat_pub = _node_hdl.create_publisher<uavcan::node::Heartbeat_1_0>(1*1000*1000UL /* = 1 sec in usecs. */);
+
   init_cyphal_to_ros_angle_actual();
   init_cyphal_to_ros_tibia_endpoint_switch();
   init_cyphal_to_ros_estop();
@@ -93,9 +97,22 @@ void Node::io_loop()
                          std::chrono::duration_cast<std::chrono::milliseconds>(io_loop_rate).count());
   _prev_io_loop_timepoint = now;
 
+  std::lock_guard<std::mutex> lock(_node_mtx);
+
+  _node_hdl.spinSome();
+
+  if ((now - _prev_heartbeat_timepoint) > HEARTBEAT_PERIOD)
   {
-    std::lock_guard<std::mutex> lock(_node_mtx);
-    _node_hdl.spinSome();
+    uavcan::node::Heartbeat_1_0 msg;
+
+    msg.uptime = std::chrono::duration_cast<std::chrono::seconds>(now - _cyphal_node_start).count();
+    msg.health.value = uavcan::node::Health_1_0::NOMINAL;
+    msg.mode.value = uavcan::node::Mode_1_0::OPERATIONAL;
+    msg.vendor_specific_status_code = 0;
+
+    _cyphal_heartbeat_pub->publish(msg);
+
+    _prev_heartbeat_timepoint = now;
   }
 }
 
