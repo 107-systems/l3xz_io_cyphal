@@ -329,14 +329,9 @@ void Node::init_ros_to_cyphal_pump_setpoint()
 
 CanardMicrosecond Node::micros()
 {
-  ::timespec ts{};
-  if (0 != clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &ts))
-  {
-    RCLCPP_ERROR(get_logger(), "CLOCK_PROCESS_CPUTIME_ID");
-    rclcpp::shutdown();
-  }
-  auto const nsec = (ts.tv_sec * 1000*1000*1000UL) + ts.tv_nsec;
-  return static_cast<CanardMicrosecond>(nsec / 1000UL);
+  auto const now = std::chrono::steady_clock::now();
+  auto const node_uptime = (now - _cyphal_node_start);
+  return std::chrono::duration_cast<std::chrono::microseconds>(node_uptime).count();
 }
 
 /**************************************************************************************
