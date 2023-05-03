@@ -31,3 +31,10 @@ ros2 launch ros2_cyphal_bridge bridge.py
 | Name | Default | Description |
 |:-:|:-:|-|
 | `can_iface` | `can0` | Network name of CAN bus. |
+| 'can_node_id' | 100 | Cyphal/CAN node id. |
+
+#### Notes
+Configure light mode from bash:
+```bash
+ros2 topic pub --once /l3xz/light_mode/target std_msgs/msg/Int8 "{data: 3}"
+```
