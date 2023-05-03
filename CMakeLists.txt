@@ -17,8 +17,6 @@ include_directories(
 )
 ##########################################################################
 add_executable(${PROJECT_NAME}_node
-  src/types/Leg.cpp
-  src/types/Joint.cpp
   src/CanManager.cpp
   src/Node.cpp
   src/main.cpp

@@ -10,10 +10,6 @@
 
 #include <ros2_cyphal_bridge/Node.h>
 
-#include <ros2_cyphal_bridge/const/LegList.h>
-#include <ros2_cyphal_bridge/const/JointList.h>
-#include <ros2_cyphal_bridge/types/LegJoint.h>
-
 /**************************************************************************************
  * NAMESPACE
  **************************************************************************************/
@@ -39,7 +35,14 @@ Node::Node()
 , _node_mtx{}
 , _prev_io_loop_timepoint{std::chrono::steady_clock::now()}
 {
-  init_cyphal_to_ros();
+  init_cyphal_to_ros_angle_actual();
+  init_cyphal_to_ros_tibia_endpoint_switch();
+  init_cyphal_to_ros_estop();
+  init_cyphal_to_ros_radiation_tick_cnt();
+  init_ros_to_cyphal_light_mode();
+  init_ros_to_cyphal_servo_pulse_width();
+  init_ros_to_cyphal_pump_readiness();
+  init_ros_to_cyphal_pump_setpoint();
 
   declare_parameter("can_iface", "can0");
   declare_parameter("can_node_id", 100);
@@ -100,46 +103,192 @@ void Node::io_loop()
  * PRIVATE MEMBER FUNCTIONS
  **************************************************************************************/
 
-void Node::init_cyphal_to_ros()
+void Node::init_cyphal_to_ros_angle_actual()
 {
-  RCLCPP_INFO(get_logger(), "Mapping Cyphal/CAN femur/tibia angle actual to ROS topics:");
-  for (auto leg : LEG_LIST)
-    for (auto joint : JOINT_LIST)
+  std::map<CanardPortID, std::string> const ANGLE_ACTUAL_PORT_ID_to_TOPIC =
     {
-      static std::map<LegJointKey, CanardPortID> const ANGLE_ACTUAL_PORT_ID_MAP =
-        {
-          {make_key(Leg::LeftFront,   Joint::Femur), 1001U},
-          {make_key(Leg::LeftFront,   Joint::Tibia), 1002U},
-          {make_key(Leg::LeftMiddle,  Joint::Femur), 1004U},
-          {make_key(Leg::LeftMiddle,  Joint::Tibia), 1005U},
-          {make_key(Leg::LeftBack,    Joint::Femur), 1007U},
-          {make_key(Leg::LeftBack,    Joint::Tibia), 1008U},
-          {make_key(Leg::RightBack,   Joint::Femur), 1010U},
-          {make_key(Leg::RightBack,   Joint::Tibia), 1011U},
-          {make_key(Leg::RightMiddle, Joint::Femur), 1013U},
-          {make_key(Leg::RightMiddle, Joint::Tibia), 1014U},
-          {make_key(Leg::RightFront,  Joint::Femur), 1016U},
-          {make_key(Leg::RightFront,  Joint::Tibia), 1017U},
-        };
+      {1001U, "/l3xz/leg/left_front/femur/angle/actual"},
+      {1002U, "/l3xz/leg/left_front/tibia/angle/actual"},
+      {1004U, "/l3xz/leg/left_middle/femur/angle/actual"},
+      {1005U, "/l3xz/leg/left_middle/tibia/angle/actual"},
+      {1007U, "/l3xz/leg/left_back/femur/angle/actual"},
+      {1008U, "/l3xz/leg/left_back/tibia/angle/actual"},
+      {1010U, "/l3xz/leg/right_back/femur/angle/actual"},
+      {1011U, "/l3xz/leg/right_back/tibia/angle/actual"},
+      {1013U, "/l3xz/leg/right_middle/femur/angle/actual"},
+      {1014U, "/l3xz/leg/right_middle/tibia/angle/actual"},
+      {1016U, "/l3xz/leg/right_front/femur/angle/actual"},
+      {1017U, "/l3xz/leg/right_front/tibia/angle/actual"},
+    };
 
-      std::stringstream angle_actual_pub_topic;
-      angle_actual_pub_topic << "/l3xz/leg/" << LegToStr(leg) << "/" << JointToStr(joint) << "/angle/actual";
+  for (auto [port_id, ros_topic] : ANGLE_ACTUAL_PORT_ID_to_TOPIC)
+  {
+    _angle_actual_ros_pub[port_id] = create_publisher<std_msgs::msg::Float32>(ros_topic, 1);
 
-      CanardPortID const port_id = ANGLE_ACTUAL_PORT_ID_MAP.at(make_key(leg, joint));
+    _angle_actual_cyphal_sub[port_id] = _node_hdl.create_subscription<uavcan::si::unit::angle::Scalar_1_0>(
+      port_id,
+      [this, port_id](uavcan::si::unit::angle::Scalar_1_0 const & msg)
+      {
+        std_msgs::msg::Float32 angle_actual_rad_msg;
+        angle_actual_rad_msg.data = msg.radian;
+        _angle_actual_ros_pub.at(port_id)->publish(angle_actual_rad_msg);
+      });
 
-      _angle_actual_ros_pub[port_id] = create_publisher<std_msgs::msg::Float32>(angle_actual_pub_topic.str(), 1);
+    RCLCPP_INFO(get_logger(), "Mapping [%d] to \"%s\"", port_id, ros_topic.c_str());
+  }
+}
 
-      _angle_actual_cyphal_sub[port_id] = _node_hdl.create_subscription<uavcan::si::unit::angle::Scalar_1_0>(
-        port_id,
-        [this, port_id](uavcan::si::unit::angle::Scalar_1_0 const & msg)
-        {
-          std_msgs::msg::Float32 angle_actual_rad_msg;
-          angle_actual_rad_msg.data = msg.radian;
-          _angle_actual_ros_pub.at(port_id)->publish(angle_actual_rad_msg);
-        });
+void Node::init_cyphal_to_ros_tibia_endpoint_switch()
+{
+  std::map<CanardPortID, std::string> const TIBIA_ENDPOINT_SWITCH_ACTUAL_PORT_ID_to_TOPIC =
+    {
+      {1003U, "/l3xz/leg/left_front/tibia_endpoint_switch/actual"},
+      {1006U, "/l3xz/leg/left_middle/tibia_endpoint_switch/actual"},
+      {1009U, "/l3xz/leg/left_back/tibia_endpoint_switch/actual"},
+      {1012U, "/l3xz/leg/right_back/tibia_endpoint_switch/actual"},
+      {1015U, "/l3xz/leg/right_middle/tibia_endpoint_switch/actual"},
+      {1018U, "/l3xz/leg/right_front/tibia_endpoint_switch/actual"},
+    };
 
-      RCLCPP_INFO(get_logger(), "Mapping [%d] to \"%s\"", port_id, angle_actual_pub_topic.str().c_str());
-    }
+  for (auto [port_id, ros_topic] : TIBIA_ENDPOINT_SWITCH_ACTUAL_PORT_ID_to_TOPIC)
+  {
+    _tibia_endpoint_switch_ros_pub[port_id] = create_publisher<std_msgs::msg::Bool>(ros_topic, 1);
+
+    _tibia_endpoint_switch_cyphal_sub[port_id] = _node_hdl.create_subscription<uavcan::primitive::scalar::Bit_1_0>(
+      port_id,
+      [this, port_id](uavcan::primitive::scalar::Bit_1_0 const & msg)
+      {
+        std_msgs::msg::Bool tibia_endpoint_switch_msg;
+        tibia_endpoint_switch_msg.data = msg.value;
+        _tibia_endpoint_switch_ros_pub.at(port_id)->publish(tibia_endpoint_switch_msg);
+      });
+
+    RCLCPP_INFO(get_logger(), "Mapping [%d] to \"%s\"", port_id, ros_topic.c_str());
+  }
+}
+
+void Node::init_cyphal_to_ros_estop()
+{
+  std::string const ROS_TOPIC = "/l3xz/estop/actual";
+  CanardPortID const PORT_ID = 2001U;
+
+  _estop_ros_pub = create_publisher<std_msgs::msg::Bool>(ROS_TOPIC, 1);
+
+  _estop_cyphal_sub = _node_hdl.create_subscription<uavcan::primitive::scalar::Bit_1_0>(
+    PORT_ID,
+    [this](uavcan::primitive::scalar::Bit_1_0 const & msg)
+    {
+      std_msgs::msg::Bool estop_msg;
+      estop_msg.data = msg.value;
+      _estop_ros_pub->publish(estop_msg);
+    });
+
+  RCLCPP_INFO(get_logger(), "Mapping [%d] to \"%s\"", PORT_ID, ROS_TOPIC.c_str());
+}
+
+void Node::init_cyphal_to_ros_radiation_tick_cnt()
+{
+  std::string const ROS_TOPIC = "/l3xz/radiation/actual";
+  CanardPortID const PORT_ID = 3001U;
+
+  _radiation_tick_cnt_ros_pub = create_publisher<std_msgs::msg::Int16>(ROS_TOPIC, 1);
+
+  _radiation_tick_cnt_cyphal_sub = _node_hdl.create_subscription<uavcan::primitive::scalar::Natural16_1_0>(
+    PORT_ID,
+    [this](uavcan::primitive::scalar::Natural16_1_0 const & msg)
+    {
+      std_msgs::msg::Int16 radiation_tick_msg;
+      radiation_tick_msg.data = msg.value;
+      _radiation_tick_cnt_ros_pub->publish(radiation_tick_msg);
+    });
+
+  RCLCPP_INFO(get_logger(), "Mapping [%d] to \"%s\"", PORT_ID, ROS_TOPIC.c_str());
+}
+
+void Node::init_ros_to_cyphal_light_mode()
+{
+  std::string const ROS_TOPIC = "/l3xz/light_mode/target";
+  CanardPortID const PORT_ID = 2002U;
+
+  _light_mode_cyphal_pub = _node_hdl.create_publisher<uavcan::primitive::scalar::Integer8_1_0>(PORT_ID, 1*1000*1000UL /* = 1 sec in usecs. */);
+
+  _light_mode_ros_sub = create_subscription<std_msgs::msg::Int8>(
+    ROS_TOPIC,
+    1,
+    [this](std_msgs::msg::Int8::SharedPtr const msg)
+    {
+      uavcan::primitive::scalar::Integer8_1_0 light_mode_msg;
+      light_mode_msg.value = msg->data;
+      _light_mode_cyphal_pub->publish(light_mode_msg);
+    });
+
+  RCLCPP_INFO(get_logger(), "Mapping [%d] to \"%s\"", PORT_ID, ROS_TOPIC.c_str());
+}
+
+void Node::init_ros_to_cyphal_servo_pulse_width()
+{
+  std::string const ROS_TOPIC = "/l3xz/servo_pulse_width/target";
+  CanardPortID const PORT_ID = 4001U;
+
+  _servo_pulse_width_cyphal_pub = _node_hdl.create_publisher<uavcan::primitive::array::Natural16_1_0>(PORT_ID, 1*1000*1000UL /* = 1 sec in usecs. */);
+
+  _servo_pulse_width_ros_sub = create_subscription<std_msgs::msg::UInt16MultiArray>(
+    ROS_TOPIC,
+    1,
+    [this](std_msgs::msg::UInt16MultiArray::SharedPtr const msg)
+    {
+      uavcan::primitive::array::Natural16_1_0 pulse_width_msg;
+
+      for (size_t i = 0; i < msg->layout.dim[0].size; i++)
+      {
+        uint16_t const pulse_width_us = msg->data[i];
+        pulse_width_msg.value.push_back(pulse_width_us);
+      }
+
+      _servo_pulse_width_cyphal_pub->publish(pulse_width_msg);
+    });
+
+  RCLCPP_INFO(get_logger(), "Mapping [%d] to \"%s\"", PORT_ID, ROS_TOPIC.c_str());
+}
+
+void Node::init_ros_to_cyphal_pump_readiness()
+{
+  std::string const ROS_TOPIC = "/l3xz/pump/readiness/target";
+  CanardPortID const PORT_ID = 5001U;
+
+  _pump_readiness_cyphal_pub = _node_hdl.create_publisher<reg::udral::service::common::Readiness_0_1>(PORT_ID, 1*1000*1000UL /* = 1 sec in usecs. */);
+
+  _pump_readiness_ros_sub = create_subscription<std_msgs::msg::Byte>(
+    ROS_TOPIC,
+    1,
+    [this](std_msgs::msg::Byte::SharedPtr const msg)
+    {
+      reg::udral::service::common::Readiness_0_1 readiness_msg;
+      readiness_msg.value = msg->data;
+      _pump_readiness_cyphal_pub->publish(readiness_msg);
+    });
+
+  RCLCPP_INFO(get_logger(), "Mapping [%d] to \"%s\"", PORT_ID, ROS_TOPIC.c_str());
+}
+
+void Node::init_ros_to_cyphal_pump_setpoint()
+{
+  std::string const ROS_TOPIC = "/l3xz/pump/rpm/target";
+  CanardPortID const PORT_ID = 5002U;
+
+  _pump_rpm_setpoint_cyphal_pub = _node_hdl.create_publisher<reg::udral::service::actuator::common::sp::Scalar_0_1>(PORT_ID, 1*1000*1000UL /* = 1 sec in usecs. */);
+
+  _pump_rpm_setpoint_ros_sub = create_subscription<std_msgs::msg::Float32>(
+    ROS_TOPIC,
+    1,
+    [this](std_msgs::msg::Float32::SharedPtr const msg)
+    {
+      reg::udral::service::actuator::common::sp::Scalar_0_1 rpm_setpoint_msg;
+      rpm_setpoint_msg.value = msg->data;
+      _pump_rpm_setpoint_cyphal_pub->publish(rpm_setpoint_msg);
+    });
+
+  RCLCPP_INFO(get_logger(), "Mapping [%d] to \"%s\"", PORT_ID, ROS_TOPIC.c_str());
 }
 
 CanardMicrosecond Node::micros()
