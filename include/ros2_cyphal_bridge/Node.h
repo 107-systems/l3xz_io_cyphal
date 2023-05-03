@@ -62,6 +62,8 @@ private:
   std::chrono::steady_clock::time_point _prev_heartbeat_timepoint;
   static auto constexpr HEARTBEAT_PERIOD = std::chrono::milliseconds(1000);
 
+  ::NodeInfo _cyphal_node_info;
+
   std::map<CanardPortID, rclcpp::Publisher<std_msgs::msg::Float32>::SharedPtr> _angle_actual_ros_pub;
   std::map<CanardPortID, ::Subscription> _angle_actual_cyphal_sub;
   void init_cyphal_to_ros_angle_actual();

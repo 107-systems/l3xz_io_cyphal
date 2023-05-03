@@ -29,6 +29,14 @@ target_link_libraries(${PROJECT_NAME}_node
 target_compile_features(${PROJECT_NAME}_node PRIVATE cxx_std_17)
 target_compile_options(${PROJECT_NAME}_node PRIVATE -Wall -Werror -pedantic)
 ament_target_dependencies(${PROJECT_NAME}_node rclcpp std_msgs)
+##########################################################################
+execute_process(
+        COMMAND git rev-parse --short=16 HEAD
+        WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}
+        OUTPUT_VARIABLE GIT_HASH
+        OUTPUT_STRIP_TRAILING_WHITESPACE
+)
+target_compile_definitions(${PROJECT_NAME}_node PUBLIC CYPHAL_NODE_INFO_GIT_VERSION=0x${GIT_HASH})
 #######################################################################################
 install(TARGETS
   ${PROJECT_NAME}_node
