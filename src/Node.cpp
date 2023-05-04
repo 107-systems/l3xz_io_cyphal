@@ -294,10 +294,10 @@ void Node::init_ros_to_cyphal_pump_readiness()
 
   _pump_readiness_cyphal_pub = _node_hdl.create_publisher<reg::udral::service::common::Readiness_0_1>(PORT_ID, 1*1000*1000UL /* = 1 sec in usecs. */);
 
-  _pump_readiness_ros_sub = create_subscription<std_msgs::msg::Byte>(
+  _pump_readiness_ros_sub = create_subscription<std_msgs::msg::Int8>(
     ROS_TOPIC,
     1,
-    [this](std_msgs::msg::Byte::SharedPtr const msg)
+    [this](std_msgs::msg::Int8::SharedPtr const msg)
     {
       reg::udral::service::common::Readiness_0_1 readiness_msg;
       readiness_msg.value = msg->data;

@@ -88,7 +88,7 @@ private:
   ::Publisher<uavcan::primitive::array::Natural16_1_0> _servo_pulse_width_cyphal_pub;
   void init_ros_to_cyphal_servo_pulse_width();
 
-  rclcpp::Subscription<std_msgs::msg::Byte>::SharedPtr _pump_readiness_ros_sub;
+  rclcpp::Subscription<std_msgs::msg::Int8>::SharedPtr _pump_readiness_ros_sub;
   ::Publisher<reg::udral::service::common::Readiness_0_1> _pump_readiness_cyphal_pub;
   void init_ros_to_cyphal_pump_readiness();
 
