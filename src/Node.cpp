@@ -33,30 +33,13 @@ Node::Node()
             CYPHAL_RX_QUEUE_SIZE,
             ::Node::DEFAULT_MTU_SIZE}
 , _node_mtx{}
-, _cyphal_node_start{std::chrono::steady_clock::now()}
+, _node_start{std::chrono::steady_clock::now()}
 , _prev_heartbeat_timepoint{std::chrono::steady_clock::now()}
 , _prev_io_loop_timepoint{std::chrono::steady_clock::now()}
 {
-  _cyphal_heartbeat_pub = _node_hdl.create_publisher<uavcan::node::Heartbeat_1_0>(1*1000*1000UL /* = 1 sec in usecs. */);
-
-  _cyphal_node_info = _node_hdl.create_node_info(
-    /* uavcan.node.Version.1.0 protocol_version */
-    1, 0,
-    /* uavcan.node.Version.1.0 hardware_version */
-    1, 0,
-    /* uavcan.node.Version.1.0 software_version */
-    0, 1,
-    /* saturated uint64 software_vcs_revision_id */
-#ifdef CYPHAL_NODE_INFO_GIT_VERSION
-    CYPHAL_NODE_INFO_GIT_VERSION,
-#else
-    0,
-#endif
-    /* saturated uint8[16] unique_id */
-    std::array<uint8_t, 16>{0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F},
-    /* saturated uint8[<=50] name */
-    "107-systems.ros2_cyphal_bridge"
-  );
+  init_heartbeat();
+  init_cyphal_heartbeat();
+  init_cyphal_node_info();
 
   init_cyphal_to_ros_angle_actual();
   init_cyphal_to_ros_tibia_endpoint_switch();
@@ -87,21 +70,61 @@ Node::Node()
     });
 
   /* Configure periodic control loop function. */
-  _io_loop_timer = create_wall_timer
-    (std::chrono::milliseconds(IO_LOOP_RATE.count()),
-     [this]() { this->io_loop(); });
+  _io_loop_timer = create_wall_timer(IO_LOOP_RATE, [this]() { this->io_loop(); });
 
-  RCLCPP_INFO(get_logger(), "Node started successfully.");
+  RCLCPP_INFO(get_logger(), "%s init complete.", get_name());
 }
 
 Node::~Node()
 {
-  RCLCPP_INFO(get_logger(), "Node shut down successfully.");
+  RCLCPP_INFO(get_logger(), "%s shut down successfully.", get_name());
 }
 
 /**************************************************************************************
  * PUBLIC MEMBER FUNCTIONS
  **************************************************************************************/
+
+void Node::init_heartbeat()
+{
+  std::stringstream heartbeat_topic;
+  heartbeat_topic << "/l3xz/" << get_name() << "/heartbeat";
+  _heartbeat_pub = create_publisher<std_msgs::msg::UInt64>(heartbeat_topic.str(), 1);
+  _heartbeat_loop_timer = create_wall_timer(HEARTBEAT_LOOP_RATE,
+                                            [this]()
+                                            {
+                                              std_msgs::msg::UInt64 heartbeat_msg;
+                                              heartbeat_msg.data = std::chrono::duration_cast<std::chrono::seconds>(
+                                                std::chrono::steady_clock::now() - _node_start).count();
+                                              _heartbeat_pub->publish(heartbeat_msg);
+                                            });
+}
+
+void Node::init_cyphal_heartbeat()
+{
+  _cyphal_heartbeat_pub = _node_hdl.create_publisher<uavcan::node::Heartbeat_1_0>(1*1000*1000UL /* = 1 sec in usecs. */);
+}
+
+void Node::init_cyphal_node_info()
+{
+  _cyphal_node_info = _node_hdl.create_node_info(
+    /* uavcan.node.Version.1.0 protocol_version */
+    1, 0,
+    /* uavcan.node.Version.1.0 hardware_version */
+    1, 0,
+    /* uavcan.node.Version.1.0 software_version */
+    0, 1,
+    /* saturated uint64 software_vcs_revision_id */
+#ifdef CYPHAL_NODE_INFO_GIT_VERSION
+    CYPHAL_NODE_INFO_GIT_VERSION,
+#else
+    0,
+#endif
+    /* saturated uint8[16] unique_id */
+    std::array<uint8_t, 16>{0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F},
+    /* saturated uint8[<=50] name */
+    "107-systems.ros2_cyphal_bridge"
+  );
+}
 
 void Node::io_loop()
 {
@@ -120,11 +143,11 @@ void Node::io_loop()
 
   _node_hdl.spinSome();
 
-  if ((now - _prev_heartbeat_timepoint) > HEARTBEAT_PERIOD)
+  if ((now - _prev_heartbeat_timepoint) > CYPHAL_HEARTBEAT_PERIOD)
   {
     uavcan::node::Heartbeat_1_0 msg;
 
-    msg.uptime = std::chrono::duration_cast<std::chrono::seconds>(now - _cyphal_node_start).count();
+    msg.uptime = std::chrono::duration_cast<std::chrono::seconds>(now - _node_start).count();
     msg.health.value = uavcan::node::Health_1_0::NOMINAL;
     msg.mode.value = uavcan::node::Mode_1_0::OPERATIONAL;
     msg.vendor_specific_status_code = 0;
@@ -330,7 +353,7 @@ void Node::init_ros_to_cyphal_pump_setpoint()
 CanardMicrosecond Node::micros()
 {
   auto const now = std::chrono::steady_clock::now();
-  auto const node_uptime = (now - _cyphal_node_start);
+  auto const node_uptime = (now - _node_start);
   return std::chrono::duration_cast<std::chrono::microseconds>(node_uptime).count();
 }
 

@@ -27,6 +27,11 @@ ros2 launch ros2_cyphal_bridge bridge.py
 ```
 
 #### Interface Documentation
+Published Topics
+|               Default name               |                                             Type                              | Description                                             |
+|:----------------------------------------:|:-----------------------------------------------------------------------------:|---------------------------------------------------------|
+|     `/l3xz/ros2_cyphal_bridge/heartbeat` |  [`std_msgs/UInt64`](https://docs.ros2.org/foxy/api/std_msgs/msg/UInt64.html) | Heartbeat signal containing the node uptime in seconds. |
+
 ##### Parameters
 | Name | Default | Description |
 |:-:|:-:|-|
