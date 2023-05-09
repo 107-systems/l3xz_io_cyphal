@@ -33,10 +33,12 @@ Node::Node()
             CYPHAL_RX_QUEUE_SIZE,
             ::Node::DEFAULT_MTU_SIZE}
 , _node_mtx{}
-, _cyphal_node_start{std::chrono::steady_clock::now()}
+, _node_start{std::chrono::steady_clock::now()}
 , _prev_heartbeat_timepoint{std::chrono::steady_clock::now()}
 , _prev_io_loop_timepoint{std::chrono::steady_clock::now()}
 {
+  init_heartbeat();
+
   _cyphal_heartbeat_pub = _node_hdl.create_publisher<uavcan::node::Heartbeat_1_0>(1*1000*1000UL /* = 1 sec in usecs. */);
 
   _cyphal_node_info = _node_hdl.create_node_info(
@@ -103,6 +105,21 @@ Node::~Node()
  * PUBLIC MEMBER FUNCTIONS
  **************************************************************************************/
 
+void Node::init_heartbeat()
+{
+  std::stringstream heartbeat_topic;
+  heartbeat_topic << "/l3xz/" << get_name() << "/heartbeat";
+  _heartbeat_pub = create_publisher<std_msgs::msg::UInt64>(heartbeat_topic.str(), 1);
+  _heartbeat_loop_timer = create_wall_timer(HEARTBEAT_LOOP_RATE,
+                                            [this]()
+                                            {
+                                              std_msgs::msg::UInt64 heartbeat_msg;
+                                              heartbeat_msg.data = std::chrono::duration_cast<std::chrono::seconds>(
+                                                std::chrono::steady_clock::now() - _node_start).count();
+                                              _heartbeat_pub->publish(heartbeat_msg);
+                                            });
+}
+
 void Node::io_loop()
 {
   auto const now = std::chrono::steady_clock::now();
@@ -124,7 +141,7 @@ void Node::io_loop()
   {
     uavcan::node::Heartbeat_1_0 msg;
 
-    msg.uptime = std::chrono::duration_cast<std::chrono::seconds>(now - _cyphal_node_start).count();
+    msg.uptime = std::chrono::duration_cast<std::chrono::seconds>(now - _node_start).count();
     msg.health.value = uavcan::node::Health_1_0::NOMINAL;
     msg.mode.value = uavcan::node::Mode_1_0::OPERATIONAL;
     msg.vendor_specific_status_code = 0;
@@ -330,7 +347,7 @@ void Node::init_ros_to_cyphal_pump_setpoint()
 CanardMicrosecond Node::micros()
 {
   auto const now = std::chrono::steady_clock::now();
-  auto const node_uptime = (now - _cyphal_node_start);
+  auto const node_uptime = (now - _node_start);
   return std::chrono::duration_cast<std::chrono::microseconds>(node_uptime).count();
 }
 

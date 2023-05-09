@@ -24,6 +24,7 @@
 #include <std_msgs/msg/int8.hpp>
 #include <std_msgs/msg/int16.hpp>
 #include <std_msgs/msg/float32.hpp>
+#include <std_msgs/msg/u_int64.hpp>
 #include <std_msgs/msg/u_int16_multi_array.hpp>
 
 #include "CanManager.h"
@@ -56,7 +57,12 @@ private:
   ::Node _node_hdl;
   std::mutex _node_mtx;
 
-  std::chrono::steady_clock::time_point const _cyphal_node_start;
+  std::chrono::steady_clock::time_point const _node_start;
+
+  rclcpp::Publisher<std_msgs::msg::UInt64>::SharedPtr _heartbeat_pub;
+  static std::chrono::milliseconds constexpr HEARTBEAT_LOOP_RATE{100};
+  rclcpp::TimerBase::SharedPtr _heartbeat_loop_timer;
+  void init_heartbeat();
 
   ::Publisher<uavcan::node::Heartbeat_1_0> _cyphal_heartbeat_pub;
   std::chrono::steady_clock::time_point _prev_heartbeat_timepoint;
