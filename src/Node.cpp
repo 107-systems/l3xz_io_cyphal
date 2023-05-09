@@ -89,16 +89,14 @@ Node::Node()
     });
 
   /* Configure periodic control loop function. */
-  _io_loop_timer = create_wall_timer
-    (std::chrono::milliseconds(IO_LOOP_RATE.count()),
-     [this]() { this->io_loop(); });
+  _io_loop_timer = create_wall_timer(IO_LOOP_RATE, [this]() { this->io_loop(); });
 
-  RCLCPP_INFO(get_logger(), "Node started successfully.");
+  RCLCPP_INFO(get_logger(), "%s init complete.", get_name());
 }
 
 Node::~Node()
 {
-  RCLCPP_INFO(get_logger(), "Node shut down successfully.");
+  RCLCPP_INFO(get_logger(), "%s shut down successfully.", get_name());
 }
 
 /**************************************************************************************
