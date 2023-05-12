@@ -43,3 +43,12 @@ Configure light mode from bash:
 ```bash
 ros2 topic pub --once /l3xz/light_mode/target std_msgs/msg/Int8 "{data: 3}"
 ```
+Turn on Zubax Orel 20 from bash:
+```bash
+# yakut
+y pub --period=0.1 5001:reg.udral.service.common.Readiness.0.1 "{value: 3}"
+y pub --period=0.1 5002:reg.udral.service.actuator.common.sp.Scalar.0.1 "{value: 10.0}"
+# ros
+ros2 topic pub -r 10 /l3xz/pump/readiness/target std_msgs/msg/Int8 "{data: 3}"
+ros2 topic pub -r 10 /l3xz/pump/rpm/target std_msgs/msg/Float32 "{data: 10}"
+```
