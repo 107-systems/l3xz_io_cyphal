@@ -34,13 +34,15 @@ jobs:
       with:
         required-ros-distributions: ${{ matrix.ros_distro }}
     
-    - name: Setup ros2 workspace
+    - name: Prepare ROS2 workspace
       run: | 
-        source /opt/ros/${{ matrix.ros_distro }}/setup.sh
         mkdir -p ${{github.workspace}}/ros2_ws/src
-        cd ${{github.workspace}}/ros2_ws
-      shell: bash
-        
+
+    - uses: actions/checkout@v3
+      with:
+        repository: '107-systems/ros2_heartbeat'
+        path: 'ros2_ws/src/ros2_heartbeat'
+
     - uses: actions/checkout@v3
       with:
         repository: '107-systems/ros2_cyphal_bridge'
