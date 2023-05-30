@@ -263,7 +263,7 @@ void Node::init_cyphal_to_ros_pressure()
   /* PRESSURE 0 */
   {
     std::string const ROS_TOPIC = "/l3xz/pressure_0/actual";
-    CanardPortID const PORT_ID = 2003U;
+    CanardPortID const PORT_ID = 6001U;
 
     _pressure_0_ros_pub = create_publisher<std_msgs::msg::Float32>(ROS_TOPIC, 1);
 
@@ -282,7 +282,7 @@ void Node::init_cyphal_to_ros_pressure()
   /* PRESSURE 1 */
   {
     std::string const ROS_TOPIC = "/l3xz/pressure_1/actual";
-    CanardPortID const PORT_ID = 2004U;
+    CanardPortID const PORT_ID = 6002U;
 
     _pressure_1_ros_pub = create_publisher<std_msgs::msg::Float32>(ROS_TOPIC, 1);
 
