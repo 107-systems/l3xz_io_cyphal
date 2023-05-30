@@ -45,6 +45,7 @@ Node::Node()
   init_cyphal_to_ros_tibia_endpoint_switch();
   init_cyphal_to_ros_estop();
   init_cyphal_to_ros_radiation_tick_cnt();
+  init_cyphal_to_ros_pressure();
   init_ros_to_cyphal_light_mode();
   init_ros_to_cyphal_servo_pulse_width();
   init_ros_to_cyphal_pump_readiness();
@@ -255,6 +256,47 @@ void Node::init_cyphal_to_ros_radiation_tick_cnt()
     });
 
   RCLCPP_INFO(get_logger(), "Mapping [%d] to \"%s\"", PORT_ID, ROS_TOPIC.c_str());
+}
+
+void Node::init_cyphal_to_ros_pressure()
+{
+  /* PRESSURE 0 */
+  {
+    std::string const ROS_TOPIC = "/l3xz/pressure_0/actual";
+    CanardPortID const PORT_ID = 2003U;
+
+    _pressure_0_ros_pub = create_publisher<std_msgs::msg::Float32>(ROS_TOPIC, 1);
+
+    _pressure_0_cyphal_sub = _node_hdl.create_subscription<uavcan::si::unit::pressure::Scalar_1_0>(
+      PORT_ID,
+      [this](uavcan::si::unit::pressure::Scalar_1_0 const & msg)
+      {
+        std_msgs::msg::Float32 pressure_msg;
+        pressure_msg.data = msg.pascal;
+        _pressure_0_ros_pub->publish(pressure_msg);
+      });
+
+    RCLCPP_INFO(get_logger(), "Mapping [%d] to \"%s\"", PORT_ID, ROS_TOPIC.c_str());
+  }
+
+  /* PRESSURE 1 */
+  {
+    std::string const ROS_TOPIC = "/l3xz/pressure_1/actual";
+    CanardPortID const PORT_ID = 2004U;
+
+    _pressure_1_ros_pub = create_publisher<std_msgs::msg::Float32>(ROS_TOPIC, 1);
+
+    _pressure_1_cyphal_sub = _node_hdl.create_subscription<uavcan::si::unit::pressure::Scalar_1_0>(
+      PORT_ID,
+      [this](uavcan::si::unit::pressure::Scalar_1_0 const & msg)
+      {
+        std_msgs::msg::Float32 pressure_msg;
+        pressure_msg.data = msg.pascal;
+        _pressure_1_ros_pub->publish(pressure_msg);
+      });
+
+    RCLCPP_INFO(get_logger(), "Mapping [%d] to \"%s\"", PORT_ID, ROS_TOPIC.c_str());
+  }
 }
 
 void Node::init_ros_to_cyphal_light_mode()

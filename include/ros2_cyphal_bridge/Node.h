@@ -89,6 +89,10 @@ private:
   ::Subscription _radiation_tick_cnt_cyphal_sub;
   void init_cyphal_to_ros_radiation_tick_cnt();
 
+  rclcpp::Publisher<std_msgs::msg::Float32>::SharedPtr _pressure_0_ros_pub, _pressure_1_ros_pub;
+  ::Subscription _pressure_0_cyphal_sub, _pressure_1_cyphal_sub;
+  void init_cyphal_to_ros_pressure();
+
   rclcpp::Subscription<std_msgs::msg::Int8>::SharedPtr _light_mode_ros_sub;
   ::Publisher<uavcan::primitive::scalar::Integer8_1_0> _light_mode_cyphal_pub;
   void init_ros_to_cyphal_light_mode();
