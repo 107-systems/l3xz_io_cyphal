@@ -7,6 +7,7 @@ find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(std_msgs REQUIRED)
 find_package(ros2_heartbeat REQUIRED)
+find_package(ros2_loop_rate_monitor REQUIRED)
 find_package(builtin_interfaces REQUIRED)
 find_package(common_interfaces REQUIRED)
 ##########################################################################
@@ -29,7 +30,7 @@ target_link_libraries(${PROJECT_NAME}_node
 #######################################################################################
 target_compile_features(${PROJECT_NAME}_node PRIVATE cxx_std_17)
 target_compile_options(${PROJECT_NAME}_node PRIVATE -Wall -Werror -pedantic)
-ament_target_dependencies(${PROJECT_NAME}_node rclcpp std_msgs ros2_heartbeat)
+ament_target_dependencies(${PROJECT_NAME}_node rclcpp std_msgs ros2_heartbeat ros2_loop_rate_monitor)
 ##########################################################################
 execute_process(
         COMMAND git rev-parse --short=16 HEAD
