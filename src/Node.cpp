@@ -92,7 +92,7 @@ void Node::init_heartbeat()
   std::stringstream heartbeat_topic;
   heartbeat_topic << "/l3xz/" << get_name() << "/heartbeat";
 
-  _heartbeat_pub = heartbeat::Publisher::create(*this, heartbeat_topic.str(), HEARTBEAT_LOOP_RATE);
+  _heartbeat_pub = heartbeat::Publisher::create(*this, heartbeat_topic.str());
 }
 
 void Node::init_cyphal_heartbeat()
