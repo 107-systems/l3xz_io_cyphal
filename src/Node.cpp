@@ -28,10 +28,10 @@ Node::Node()
             _node_heap.size(),
             [this] () { return micros(); },
             [this] (CanardFrame const & frame) { return _can_mgr->transmit(frame); },
-            ::Node::DEFAULT_NODE_ID,
+            cyphal::Node::DEFAULT_NODE_ID,
             CYPHAL_TX_QUEUE_SIZE,
             CYPHAL_RX_QUEUE_SIZE,
-            ::Node::DEFAULT_MTU_SIZE}
+            cyphal::Node::DEFAULT_MTU_SIZE}
 , _node_mtx{}
 , _node_start{std::chrono::steady_clock::now()}
 , _prev_heartbeat_timepoint{std::chrono::steady_clock::now()}
