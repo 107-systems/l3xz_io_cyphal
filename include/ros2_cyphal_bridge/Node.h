@@ -53,11 +53,11 @@ public:
 private:
   std::unique_ptr<CanManager> _can_mgr;
 
-  static size_t constexpr CYPHAL_O1HEAP_SIZE = (::Node::DEFAULT_O1HEAP_SIZE * 16);
+  static size_t constexpr CYPHAL_O1HEAP_SIZE = (cyphal::Node::DEFAULT_O1HEAP_SIZE * 16);
   static size_t constexpr CYPHAL_TX_QUEUE_SIZE = 256;
   static size_t constexpr CYPHAL_RX_QUEUE_SIZE = 256;
-  ::Node::Heap<CYPHAL_O1HEAP_SIZE> _node_heap;
-  ::Node _node_hdl;
+  cyphal::Node::Heap<CYPHAL_O1HEAP_SIZE> _node_heap;
+  cyphal::Node _node_hdl;
   std::mutex _node_mtx;
 
   std::chrono::steady_clock::time_point const _node_start;
@@ -65,48 +65,48 @@ private:
   heartbeat::Publisher::SharedPtr _heartbeat_pub;
   void init_heartbeat();
 
-  ::Publisher<uavcan::node::Heartbeat_1_0> _cyphal_heartbeat_pub;
+  cyphal::Publisher<uavcan::node::Heartbeat_1_0> _cyphal_heartbeat_pub;
   std::chrono::steady_clock::time_point _prev_heartbeat_timepoint;
   static std::chrono::milliseconds constexpr CYPHAL_HEARTBEAT_PERIOD{1000};
   void init_cyphal_heartbeat();
 
-  ::NodeInfo _cyphal_node_info;
+  cyphal::NodeInfo _cyphal_node_info;
   void init_cyphal_node_info();
 
   std::map<CanardPortID, rclcpp::Publisher<std_msgs::msg::Float32>::SharedPtr> _angle_actual_ros_pub;
-  std::map<CanardPortID, ::Subscription> _angle_actual_cyphal_sub;
+  std::map<CanardPortID, cyphal::Subscription> _angle_actual_cyphal_sub;
   void init_cyphal_to_ros_angle_actual();
 
   std::map<CanardPortID, rclcpp::Publisher<std_msgs::msg::Bool>::SharedPtr> _tibia_endpoint_switch_ros_pub;
-  std::map<CanardPortID, ::Subscription> _tibia_endpoint_switch_cyphal_sub;
+  std::map<CanardPortID, cyphal::Subscription> _tibia_endpoint_switch_cyphal_sub;
   void init_cyphal_to_ros_tibia_endpoint_switch();
 
   rclcpp::Publisher<std_msgs::msg::Bool>::SharedPtr _estop_ros_pub;
-  ::Subscription _estop_cyphal_sub;
+  cyphal::Subscription _estop_cyphal_sub;
   void init_cyphal_to_ros_estop();
 
   rclcpp::Publisher<std_msgs::msg::Int16>::SharedPtr _radiation_tick_cnt_ros_pub;
-  ::Subscription _radiation_tick_cnt_cyphal_sub;
+  cyphal::Subscription _radiation_tick_cnt_cyphal_sub;
   void init_cyphal_to_ros_radiation_tick_cnt();
 
   rclcpp::Publisher<std_msgs::msg::Float32>::SharedPtr _pressure_0_ros_pub, _pressure_1_ros_pub;
-  ::Subscription _pressure_0_cyphal_sub, _pressure_1_cyphal_sub;
+  cyphal::Subscription _pressure_0_cyphal_sub, _pressure_1_cyphal_sub;
   void init_cyphal_to_ros_pressure();
 
   rclcpp::Subscription<std_msgs::msg::Int8>::SharedPtr _light_mode_ros_sub;
-  ::Publisher<uavcan::primitive::scalar::Integer8_1_0> _light_mode_cyphal_pub;
+  cyphal::Publisher<uavcan::primitive::scalar::Integer8_1_0> _light_mode_cyphal_pub;
   void init_ros_to_cyphal_light_mode();
 
   rclcpp::Subscription<std_msgs::msg::UInt16MultiArray>::SharedPtr _servo_pulse_width_ros_sub;
-  ::Publisher<uavcan::primitive::array::Natural16_1_0> _servo_pulse_width_cyphal_pub;
+  cyphal::Publisher<uavcan::primitive::array::Natural16_1_0> _servo_pulse_width_cyphal_pub;
   void init_ros_to_cyphal_servo_pulse_width();
 
   rclcpp::Subscription<std_msgs::msg::Int8>::SharedPtr _pump_readiness_ros_sub;
-  ::Publisher<reg::udral::service::common::Readiness_0_1> _pump_readiness_cyphal_pub;
+  cyphal::Publisher<reg::udral::service::common::Readiness_0_1> _pump_readiness_cyphal_pub;
   void init_ros_to_cyphal_pump_readiness();
 
   rclcpp::Subscription<std_msgs::msg::Float32>::SharedPtr _pump_rpm_setpoint_ros_sub;
-  ::Publisher<reg::udral::service::actuator::common::sp::Scalar_0_1> _pump_rpm_setpoint_cyphal_pub;
+  cyphal::Publisher<reg::udral::service::actuator::common::sp::Scalar_0_1> _pump_rpm_setpoint_cyphal_pub;
   void init_ros_to_cyphal_pump_setpoint();
 
   CanardMicrosecond micros();
